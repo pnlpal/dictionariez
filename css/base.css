@@ -1,0 +1,189 @@
+body, html, h1, h2, h3, h4, h5, h6, div, p, blockquote, hr, pre, code, a, em, strong, abbr, acronym, del, dfn, img, q, dl, dt, dd, ol, ul, li, table, caption, tbody, tfoot, thead, tr, th, td
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	letter-spacing: inherit;
+	text-decoration: none;
+	vertical-align: baseline;
+	color: inherit;
+	text-align: inherit;
+	word-break: break-word; /***/
+}
+th
+{
+	font-weight: normal;
+}
+blockquote:before, blockquote:after, q:before, q:after
+{
+	content: "";
+}
+blockquote, q
+{
+	quotes: "" "";
+}
+a img
+{
+	border: none;
+}
+h1, h2, h3, h4, h5, h6
+{
+	font-weight: normal;
+	padding-top: 1em;
+}
+h1
+{
+	font-size: 3em;
+	line-height: 1;
+	padding-bottom: 0.5em;
+}
+h2
+{
+	font-size: 2em;
+	padding-bottom: 0.75em;
+}
+h3
+{
+	font-size: 1.5em;
+	line-height: 1;
+	padding-bottom: 1em;
+}
+h4
+{
+	font-size: 1.2em;
+	line-height: 1.25;
+	padding-bottom: 1.25em;
+	height: 1.25em;
+}
+h5
+{
+	font-size: 1em;
+	font-weight: bold;
+	padding-bottom: 1.5em;
+}
+h6
+{
+	font-size: 1em;
+	font-weight: bold;
+}
+blockquote
+{
+	padding: 1.5em;
+	padding-bottom: 0;
+	font-style: italic;
+}
+blockquote > :first-child:before
+{
+	content: '"';
+	font-size: 2.5em;
+	line-height: 0;
+	margin-left: -0.65em;
+	padding-right: 0.20em;
+}
+blockquote > p:last-child
+{
+	margin-bottom: 0;
+}
+a
+{
+	cursor: pointer;
+	text-decoration: underline;
+}
+strong, dfn
+{
+	font-weight: bold;
+}
+em, dfn
+{
+	font-style: italic;
+}
+del
+{
+	text-decoration: line-through;
+}
+del:hover
+{
+	text-decoration: none;
+}
+abbr, acronym
+{
+	border-bottom: 1px dotted;
+}
+pre, code
+{
+	margin-bottom: 1.5em;
+	font-family: "Lucida Console" , "Courier New" ,Courier,monospace;
+	white-space: pre;
+}
+ul, ol
+{
+	margin: 1.5em;
+	margin-bottom: 0;
+}
+ul
+{
+	list-style-type: disc;
+}
+ol
+{
+	list-style-type: decimal;
+}
+li
+{
+	margin-bottom: 0.3em;
+	display:block;
+}
+li ul, li ol
+{
+	margin-left: 1.5em;
+	margin-right: 1.5em;
+}
+dl
+{
+}
+dt
+{
+	font-weight: bold;
+}
+dd
+{
+	margin-left: 1.5em;
+}
+table
+{
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+th
+{
+	font-weight: bold;
+}
+th, td
+{
+	padding: 0.3em;
+	vertical-align: middle;
+	border: solid 0.1em;
+}
+hr
+{
+	clear: both;
+	float: none;
+	display: block;
+	height: 0;
+	padding: 0;
+	margin: 0;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+	border-bottom: 0.13em dashed;
+}
+/*
+p, div, blockquote, table, ul, ol, dl
+{
+	margin-bottom: 1em;
+}
+*/

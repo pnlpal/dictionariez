@@ -1,0 +1,38 @@
+{
+    "manifest_version": 2,
+    "name": "FairyDict",
+    "description": "web dictionary",
+    "permissions": ["tabs", "<all_urls>"],
+    "background": {
+        "persistent": true,
+        "scripts": ["js/jquery-1.10.2.js", "settings.js", "dictManager.js", "windowManager.js", "core.js"]
+    },
+    "content_scripts": [{
+        "js": ["js/jquery-1.10.2.js", "page.js"],
+        "matches": ["<all_urls>"]
+    }],
+    "web_accessible_resources": [
+        "css/bootstrap.css",
+        "css/font-awesome.css",
+        "css/custom.css",
+        "minidict.html",
+        "modal_test.html",
+        "font/FontAwesome.otf",
+        "font/fontawesome-webfont.ttf",
+        "font/fontawesome-webfont.eot",
+        "font/fontawesome-webfont.woff",
+        "font/fontawesome-webfont.svg",
+        "images/icon-on19.png",
+        "images/icon-off19.png"
+    ],
+
+    "browser_action":{
+        "default_icon": {
+            "19": "images/icon-on19.png",    
+            "38": "images/icon-on38.png"  
+        }
+    },
+    "minimum_chrome_version": "23",
+    "version": "0.2",
+    "update_url": "http://clients2.google.com/service/update2/crx"
+}

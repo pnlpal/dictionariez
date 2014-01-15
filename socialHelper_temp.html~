@@ -1,0 +1,11 @@
+<html>
+    <head>
+    </head>
+
+    <body>
+    	<div id="social_helper_div">
+    		<p class="social_helper_p weibo"> hello, world, 你好</p>
+    	</div>
+    </body>
+
+</html>

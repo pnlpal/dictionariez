@@ -1,0 +1,33 @@
+.klip_notify {
+	font: 15px 'Arial', 'Helvetica', sans-serif;
+	font-weight: bold;
+    position: absolute;
+    z-index: 999;
+    cursor: pointer;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    padding: 10px;
+    border: 3px;
+    border-style: solid;
+    border-color: #B2B2B2;
+    background: #333;
+    color: #FFF;
+	text-align:left;
+}
+
+.klip_notify .klip_notify_title {
+    border-bottom: 1px solid;
+}
+
+.klip_notify .klip_notify_message {
+    padding-top: 10px;
+}
+
+.klip_notify a {
+    color: #FFF;
+}
+
+.klip_notify.klip_alert .klip_notify_title {
+	color:red;
+}
+

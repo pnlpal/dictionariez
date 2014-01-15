@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>test</title>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
+  <link rel="stylesheet" type="text/css" href="css/custom.css">
+</head>
+
+<body>
+<div class="littleDictWrapper">
+        <!-- input box -->
+        <form class="form-inline" role="form" onsubmit="return false;">
+          <div class="form-group">
+            <input type="text" class="form-control dict_input" placeholder="input word">
+          </div>
+
+          <button type="submit" class="btn btn-sm btn-primary dict_query">查询</button>
+          <!-- <button type="submit" class="btn btn-sm btn-primary dict_translate">翻译</button> -->
+
+          <i class="icon-circle-arrow-left icon-large"></i>
+          <div class="form-group">
+            <div class="dropdown">
+              <button data-toggle="dropdown" class="btn dropdown-toggle btn-default dict_name" type="button" id="dropdownMenu1">Dictionary Name
+                  <span class="caret"></span>
+              </button>
+
+              <ul class="dropdown-menu dict_list" role="menu" aria-labelledby="dropdownMenu1">
+              </ul>
+            </div>
+          </div>
+          <i class="icon-circle-arrow-right icon-large"></i>
+        </form>
+
+        <div class="dict_result">
+
+        </div>
+
+</div>
+<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<script type="text/javascript" src="page.js"></script>
+</body>
+
+</html>

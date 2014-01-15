@@ -1,0 +1,31 @@
+.littleDictWrapper .icon-circle-arrow-left {
+	margin-left: 30px;
+	margin-right: 5px;
+}
+.littleDictWrapper .icon-circle-arrow-right {
+	margin-left: 5px;
+}
+
+.littleDictWrapper .pron{
+    color: rgb(58, 120, 213);
+}
+.littleDictWrapper .example{
+    color: rgb(162, 111, 20);
+}
+.littleDictWrapper .icon-coffee, .littleDictWrapper .icon-volume-up{
+    color: black;
+}
+
+.littleDictWrapper .modal-body{
+	padding-top: 5px;
+}
+
+.littleDictWrapper .form-inline input{
+    margin-right: 15px;
+}
+
+.littleDictWrapper iframe{
+    border: none;
+    height: 350px;
+    width: 100%;
+}

@@ -1,0 +1,127 @@
+.klip_bounder {
+	position:absolute;
+	overflow:hidden;
+	z-index:9997;
+	background-color:#009900;	
+
+	opacity=1;
+	filter:alpha(opacity=25);
+	-khtml-opacity:0.25;
+}
+
+.klip_bounder_border {
+	position:absolute;
+	overflow:hidden;
+	z-index:9997;
+	background-color:#ff8415;	
+
+	opacity=1;
+	filter:alpha(opacity=25);
+	-khtml-opacity:0.25;
+}
+
+.klip_tracker {
+	position:absolute;
+	overflow:hidden;
+	z-index:9997;
+	border:#0000ff 2px dotted;
+}
+
+.klip_tracker_border {
+	position:absolute;
+	overflow:hidden;
+	z-index:9997;
+	background-color:#ff9900;	
+}
+
+.klip_button {
+	position:absolute;
+	height:32px;
+	width:32px;
+	text-indent:-9999px;
+	z-index:9999;
+	cursor:pointer;
+
+	-webkit-transition:opacity 1.0s;
+	opacity=1;
+	filter:alpha(opacity=40);
+	-khtml-opacity:0.40;
+}
+
+.klip_button:hover {
+	-webkit-transition:opacity 0.5s;
+	opacity=1;
+	filter:alpha(opacity=100);
+	-khtml-opacity:1.00;
+}
+
+.klip_button2 {
+	position:absolute;
+	height:32px;
+	width:32px;
+	text-indent:-9999px;
+	z-index:9999;
+	cursor:pointer;
+}
+
+.klip_button_zoom {
+	background: url(chrome-extension://phnooeicdgodjlmhencbgognelabonlg/images/zoom32.png) no-repeat;
+}
+
+.klip_button_delete {
+	background: url(chrome-extension://phnooeicdgodjlmhencbgognelabonlg/images/delete32.png) no-repeat;
+}
+
+.klip_button_cancel {
+	background: url(chrome-extension://phnooeicdgodjlmhencbgognelabonlg/images/delete32.png) no-repeat;
+}
+
+.klip_button_check {
+	background: url(chrome-extension://phnooeicdgodjlmhencbgognelabonlg/images/check32.png) no-repeat;
+}
+
+.klip_button_pin {
+	background: url(chrome-extension://phnooeicdgodjlmhencbgognelabonlg/images/pin32.png) no-repeat;
+}
+
+.klip_button_plus {
+	background: url(chrome-extension://phnooeicdgodjlmhencbgognelabonlg/images/plus32.png) no-repeat;
+}
+
+.klip_button_more {
+	background: url(chrome-extension://phnooeicdgodjlmhencbgognelabonlg/images/more32.png) no-repeat;
+}
+
+.klip_button_mail {
+	background: url(chrome-extension://phnooeicdgodjlmhencbgognelabonlg/images/mail32.png) no-repeat;
+}
+
+.klip_corner {
+	display: block;
+	z-index: 9999;
+	background: white;
+	position: absolute;
+	border: 1px solid black;
+	width: 6px;
+	height: 6px;
+}
+
+.klip_corner_br {
+	cursor: se-resize;
+	-webkit-animation-name: cornerPulse;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-iteration-count: infinite;
+}
+
+.klip_corner_tl {
+	cursor: se-resize;
+	-webkit-animation-name: cornerPulse;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-iteration-count: infinite;
+}
+@-webkit-keyframes cornerPulse {
+  from { background-color: #f00; -webkit-box-shadow: 0 0 9px #333; }
+  50% { background-color: #fff; -webkit-box-shadow: 0 0 18px #fff; }
+  to { background-color: #f00; -webkit-box-shadow: 0 0 9px #333; }
+}
+
