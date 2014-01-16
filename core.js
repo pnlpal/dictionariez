@@ -33,17 +33,17 @@ function setBrowserIcon(enable) {
     });
 }
 
-function sendQueryResult (queryResult){
-    if(dictWindowManager.dictWindow && dictWindowManager.dictIsReady){
+function sendQueryResult(queryResult) {
+    if (dictWindowManager.dictWindow && dictWindowManager.dictIsReady) {
         var tid = dictWindowManager.dictWindow.tabs[0].id;
-        console.info('[temp]queryResult.data: '+queryResult.data);
+        console.info('[temp]queryResult.data: ' + queryResult.data);
         chrome.tabs.sendMessage(tid, {
             type: 'queryResult',
             data: queryResult.data,
             text: queryResult.text
         });
         queryResultCache = {};
-    } else{
+    } else {
         queryResultCache = queryResult;
     }
 }
@@ -56,7 +56,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 });
 
 chrome.runtime.onMessage.addListener(
-    
+
     function(request, sender, sendResponse) {
         if (request.type === 'keySettings') {
             sendResponse({
@@ -72,25 +72,32 @@ chrome.runtime.onMessage.addListener(
                 dictList: dictManager.allDicts,
                 defaultDictName: dictManager.defaultDict.dictName
             });
-            sendQueryResult(queryResultCache);
+            if(queryResultCache.data)
+                sendQueryResult(queryResultCache);
 
         } else if (request.type === 'queryDict') {
-            if (Settings.getValue('enableMinidict')) {
-                var _onSuccess = function(data) {
-                    var result = {text: request.text, data: data};
-                    sendQueryResult(result);
+            if (request.means === 'mouse' && !Settings.getValue('enableMinidict'))
+                return;
+            var _onSuccess = function(data) {
+                var result = {
+                    text: request.text,
+                    data: data
                 };
-                var _onFail = function() {
-                    var result = {text: request.text, data: ''};
-                    sendQueryResult(result);
+                sendQueryResult(result);
+            };
+            var _onFail = function() {
+                var result = {
+                    text: request.text,
+                    data: ''
                 };
-                dictWindowManager.open();
+                sendQueryResult(result);
+            };
+            dictWindowManager.open();
 
-                var dictionary = request.dictionary || dictManager.defaultDict;
-                dictManager.defaultDict = dictionary;
-                if(request.text)
-                    dictManager.queryDict(request.text, dictionary, _onSuccess, _onFail);
-            }
+            var dictionary = request.dictionary || dictManager.defaultDict;
+            dictManager.defaultDict = dictionary;
+            if (request.text)
+                dictManager.queryDict(request.text, dictionary, _onSuccess, _onFail);
         }
     }
 );

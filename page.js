@@ -35,6 +35,8 @@ function processContentPage() {
                 if (b) {
                     chrome.runtime.sendMessage({
                         type: 'queryDict',
+                        means: 'keyboard',
+                        text: window.getSelection().toString()
                     });
                 }
             });
@@ -43,13 +45,21 @@ function processContentPage() {
 }
 
 function processDict() {
-    jQuery(document.body).click(function(event) {
+    jQuery(document).keydown(function(event) {
+        if(event.metaKey || event.keyCode === 27 || event.keyCode === 10){
+            $('.littleDictWrapper .dict_input').focus();
+            $('.littleDictWrapper .dict_input').select();
+        }
+    });
+
+    jQuery(document).click(function(event) {
         var node = jQuery(event.target);
         if (node.is('.dict_item')) {
             updateDictList(node[0].dictionary, node.text());
             queryDict();
         }
         if (node.is('.dict_query')) {
+            event.preventDefault();
             queryDict();
         }
         if (node.is('.sound')) {
@@ -76,9 +86,10 @@ function processDict() {
             $('.littleDictWrapper .dict_name').get(0).dictionary = dictionary;
         }
     };
-    var queryDict = function(){
+    var queryDict = function() {
         chrome.runtime.sendMessage({
             type: 'queryDict',
+            means: 'minidict',
             text: $('.littleDictWrapper .dict_input').val(),
             dictionary: $('.littleDictWrapper .dict_name').get(0).dictionary
         });
@@ -89,6 +100,8 @@ function processDict() {
             console.log(request.data);
             $('.littleDictWrapper .dict_result').html(request.data);
             $('.littleDictWrapper .dict_input').val(request.text);
+            $('.littleDictWrapper .dict_input').focus();
+            $('.littleDictWrapper .dict_input').select();
         }
         if (request.type === 'info') {
             if (!$('.littleDictWrapper .dict_item').length && request.dictList) {
@@ -97,6 +110,8 @@ function processDict() {
             }
         }
     });
+
+    console.log('[temp]send dictReady...');
     chrome.runtime.sendMessage({
         type: 'dictReady'
     });
@@ -113,6 +128,7 @@ function processDict() {
         if (window.getSelection().toString()) {
             chrome.runtime.sendMessage({
                 type: 'queryDict',
+                means: 'mouse',
                 text: window.getSelection().toString()
             });
         }

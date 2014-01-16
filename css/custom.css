@@ -17,11 +17,23 @@
 }
 
 .littleDictWrapper .modal-body{
-	padding-top: 5px;
+	padding-top: 8px;
+}
+
+.littleDictWrapper .form-inline{
+    margin-bottom: 8px;
+}
+
+.littleDictWrapper .form-group.pull-right{
+    margin-right: 40px;
 }
 
 .littleDictWrapper .form-inline input{
     margin-right: 15px;
+}
+
+.littleDictWrapper .dict_name {
+    width: 150px;
 }
 
 .littleDictWrapper iframe{

@@ -1,7 +1,7 @@
 var dictWindowManager = {};
 dictWindowManager.dictIsReady = false;
-dictWindowManager.defaultWidth = 540;
-dictWindowManager.defaultHeight = 650;
+dictWindowManager.defaultWidth = 600;
+dictWindowManager.defaultHeight = 680;
 dictWindowManager.getWindow = function(){
     if(dictWindowManager.dictWindow){
         return dictWindowManager.dictWindow;

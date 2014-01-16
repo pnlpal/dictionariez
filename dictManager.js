@@ -1,6 +1,15 @@
 var dictManager = {};
 dictManager.loadingHtml = '<i class="icon-spinner icon-spin icon-2x pull-left"></i>正在查询...';
 dictManager.allDicts = [{
+    'dictName': 'iciba.com',
+    'entry': 'Iciba',
+    'baseUrl': 'http://dict-co.iciba.com/api/dictionary.php',
+    'queryType': 'get',
+    'params': {
+        'key': '0AAE477DB66EC58D12E1451877045CA5'
+    },
+    'queryKey': 'w'
+}, {
     'dictName': 'dict.cn',
     'entry': 'DictCN'
 }, {
@@ -13,26 +22,30 @@ dictManager.allDicts = [{
     },
     'queryKey': 'word'
 }, {
-    'dictName': 'iciba.com',
-    'entry': 'Iciba',
-    'baseUrl': 'http://dict-co.iciba.com/api/dictionary.php',
-    'queryType': 'get',
+    'dictName': 'The Collaborative International Dictionary of English',
+    'entry': 'Aonaware',
+    'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
+    'queryType': 'post',
     'params': {
-        'key': '0AAE477DB66EC58D12E1451877045CA5'
+        'dictId': 'gcide'
     },
-    'queryKey': 'w'
+    'queryKey': 'word'
+}, {
+    'dictName': 'Easton\'s 1897 Bible Dictionary',
+    'entry': 'Aonaware',
+    'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
+    'queryType': 'post',
+    'params': {
+        'dictId': 'easton'
+    },
+    'queryKey': 'word'
 }];
 
 dictManager.defaultDict = dictManager.allDicts[0];
 
 dictManager.parseAonaware = function(text) {
-    var xmlobject = new DOMParser().parseFromString(text, "text/xml");
-    var meaning = '';
-    jQuery('Definition', xmlobject).each(function() {
-        meaning = jQuery('WordDefinition', this).text();
-        return false;
-    });
-    return meaning;
+    var xml = $.parseXML(text);
+    return '<pre>'+$('Definitions WordDefinition', xml).text()+'</pre>';
 };
 
 dictManager.parseIciba = function(text) {
