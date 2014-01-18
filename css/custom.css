@@ -1,11 +1,11 @@
 body{
     margin: 8px;
 }
-.littleDictWrapper .icon-circle-arrow-left {
+.littleDictWrapper .fa-arrow-circle-left {
 	margin-left: 30px;
 	margin-right: 5px;
 }
-.littleDictWrapper .icon-circle-arrow-right {
+.littleDictWrapper .fa-arrow-circle-right {
 	margin-left: 5px;
 }
 
@@ -15,7 +15,7 @@ body{
 .littleDictWrapper .example{
     color: rgb(162, 111, 20);
 }
-.littleDictWrapper .icon-coffee, .littleDictWrapper .icon-volume-up{
+.littleDictWrapper .fa-coffee, .littleDictWrapper .fa-volume-up{
     color: black;
 }
 

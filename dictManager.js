@@ -66,7 +66,7 @@ dictManager.parseIciba = function(text) {
     });
     jQuery('orig, fy', xml).each(function(i, el) {
         var m = $(el).next('trans').text();
-        var s = '<p class="example"><i class="icon-coffee"></i>' + $(el).text() + '</p>';
+        var s = '<p class="example"><i class="fa fa-coffee"></i>' + $(el).text() + '</p>';
         var s2 = '<p>' + m + '</p>';
         d.append(s);
         d.append(s2);
