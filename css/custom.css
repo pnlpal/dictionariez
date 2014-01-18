@@ -1,3 +1,6 @@
+body{
+    margin: 8px;
+}
 .littleDictWrapper .icon-circle-arrow-left {
 	margin-left: 30px;
 	margin-right: 5px;
@@ -22,6 +25,10 @@
 
 .littleDictWrapper .form-inline{
     margin-bottom: 8px;
+}
+
+.littleDictWrapper .fa-2x{
+    vertical-align: middle;
 }
 
 .littleDictWrapper .form-group.pull-right{

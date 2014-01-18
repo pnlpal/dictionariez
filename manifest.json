@@ -11,20 +11,6 @@
         "js": ["js/jquery-1.10.2.js", "page.js"],
         "matches": ["<all_urls>"]
     }],
-    "web_accessible_resources": [
-        "css/bootstrap.css",
-        "css/font-awesome.css",
-        "css/custom.css",
-        "minidict.html",
-        "modal_test.html",
-        "font/FontAwesome.otf",
-        "font/fontawesome-webfont.ttf",
-        "font/fontawesome-webfont.eot",
-        "font/fontawesome-webfont.woff",
-        "font/fontawesome-webfont.svg",
-        "images/icon-on19.png",
-        "images/icon-off19.png"
-    ],
 
     "browser_action":{
         "default_icon": {

@@ -55,7 +55,7 @@ dictManager.parseIciba = function(text) {
     jQuery('ps', xml).each(function(index, el) {
         var t = jQuery(el).text();
         var audio = jQuery(el).next('pron').text();
-        var n = '<span class="pron">' + t + '&nbsp<i class="icon-volume-up icon-middle sound"></i>' + '<audio src="' + audio + '"></audio>&nbsp&nbsp&nbsp&nbsp' + '</span>';
+        var n = '<span class="pron">' + t + '&nbsp<i class="fa fa-volume-up sound"></i>' + '<audio src="' + audio + '"></audio>&nbsp&nbsp&nbsp&nbsp' + '</span>';
         jQuery('h4', d).append(n);
     });
 
