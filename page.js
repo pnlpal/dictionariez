@@ -105,7 +105,6 @@ function processDict() {
         }
         if (request.type === 'info') {
             if (!$('.littleDictWrapper .dict_item').length && request.dictList) {
-                console.log(request.dictList);
                 updateDictList(request.dictList, request.defaultDictName);
             }
         }

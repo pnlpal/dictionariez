@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "FairyDict",
     "description": "web dictionary",
-    "permissions": ["tabs", "<all_urls>"],
+    "permissions": ["tabs", "storage", "<all_urls>"],
     "background": {
         "persistent": true,
         "scripts": ["js/jquery-1.10.2.js", "settings.js", "dictManager.js", "windowManager.js", "core.js"]

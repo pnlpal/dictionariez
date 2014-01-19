@@ -36,7 +36,7 @@ function setBrowserIcon(enable) {
 function sendQueryResult(queryResult) {
     if (dictWindowManager.dictWindow && dictWindowManager.dictIsReady) {
         var tid = dictWindowManager.dictWindow.tabs[0].id;
-        console.info('[temp]queryResult.data: ' + queryResult.data);
+        console.info('[temp]sendQueryResult...');
         chrome.tabs.sendMessage(tid, {
             type: 'queryResult',
             data: queryResult.data,
@@ -56,12 +56,11 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 });
 
 chrome.runtime.onMessage.addListener(
-
     function(request, sender, sendResponse) {
         if (request.type === 'keySettings') {
             sendResponse({
-                specialKeys: 'ctrl,shift',
-                normalKey: 'X'
+                specialKeys: Settings.getValue('specialKeys'),
+                normalKey: Settings.getValue('normalKey')
             });
         } else if (request.type === 'dictReady') {
             console.info('dictReady...');
@@ -111,8 +110,7 @@ chrome.windows.onRemoved.addListener(function(wid) {
 
 (function Init() {
     console.info('[temp] core init...');
-    if (Settings.getValue('enableMinidict') === undefined) {
-        Settings.setValue('enableMinidict', true);
-    }
-    setBrowserIcon(Settings.getValue('enableMinidict'));
+    Settings.init(function(){
+        setBrowserIcon(Settings.getValue('enableMinidict'));
+    });
 }());
