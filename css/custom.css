@@ -31,6 +31,10 @@ body{
     vertical-align: middle;
 }
 
+.littleDictWrapper .caret{
+    margin-left: 5px;
+}
+
 .littleDictWrapper .form-group.pull-right{
     margin-right: 40px;
 }

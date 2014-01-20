@@ -82,7 +82,9 @@ function processDict() {
             });
         }
         if (dictionary && dictionary.dictName) {
+            var cld = $('.littleDictWrapper .dict_name').children().clone();
             $('.littleDictWrapper .dict_name').text(defaultName);
+            $('.littleDictWrapper .dict_name').append(cld);
             $('.littleDictWrapper .dict_name').get(0).dictionary = dictionary;
         }
     };
