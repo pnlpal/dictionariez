@@ -52,3 +52,11 @@ body{
     height: 350px;
     width: 100%;
 }
+
+.littleDictWrapper .default-page{
+    margin-right: 10px;
+}
+
+.littleDictWrapper .sound, .littleDictWrapper .default-page, .littleDictWrapper .dict_nav{
+    cursor: pointer;
+}

@@ -19,29 +19,7 @@
 //  URL: www.aguidetoshanghai.com
 
 function processContentPage() {
-    chrome.runtime.sendMessage({
-        type: 'keySettings',
-    }, function(datas) {
-        if (datas) {
-            console.log('getKeySettings...');
-            jQuery(document).bind('keydown', function(event) {
-                var b = true;
-                jQuery.each(datas.specialKeys.split(','), function(i, v) {
-                    if (!event[v + 'Key'])
-                        b = false;
-                });
-                if (event.keyCode !== datas.normalKey.charCodeAt(0))
-                    b = false;
-                if (b) {
-                    chrome.runtime.sendMessage({
-                        type: 'queryDict',
-                        means: 'keyboard',
-                        text: window.getSelection().toString()
-                    });
-                }
-            });
-        }
-    });
+    
 }
 
 function processDict() {
@@ -131,6 +109,30 @@ function processDict() {
                 type: 'queryDict',
                 means: 'mouse',
                 text: window.getSelection().toString()
+            });
+        }
+    });
+
+    chrome.runtime.sendMessage({
+        type: 'keySettings',
+    }, function(datas) {
+        if (datas) {
+            console.log('getKeySettings...');
+            jQuery(document).bind('keydown', function(event) {
+                var b = true;
+                jQuery.each(datas.specialKeys.split(','), function(i, v) {
+                    if (!event[v + 'Key'])
+                        b = false;
+                });
+                if (event.keyCode !== datas.normalKey.charCodeAt(0))
+                    b = false;
+                if (b) {
+                    chrome.runtime.sendMessage({
+                        type: 'queryDict',
+                        means: 'keyboard',
+                        text: window.getSelection().toString()
+                    });
+                }
             });
         }
     });
