@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="css/custom.css">
+    <style>
+    img.pull-left{
+        width: 100px;
+        margin-right: 30px;
+    }
+    #specialKeys-1{
+        margin-left: 40px;
+    }
+    </style>
+    <title>FairyDict 选项</title>
+</head>
+<body>
+    <div class="container">
+        <img src="images/tom.jpg" class="pull-left" width="75px">
+        <em>目前仅有一项设置... </em>
+        <br><br>
+        <p><b>呼出词典的快捷键：<b></p>
+        <div class="keys">
+            <select name="specialKeys" id="specialKeys-1">
+                <option value="ctrl">Ctrl</option>
+                <option value="shift">Shift</option>
+                <option value="alt">Alt</option>
+            </select>
+            <select name="specialKeys" id="specialKeys-2">
+                <option value="none">空</option>
+                <option value="ctrl">Ctrl</option>
+                <option value="shift">Shift</option>
+                <option value="alt">Alt</option>
+            </select>
+            <select name="normalKey" id="normalKey">
+            </select>
+        </div>
+    </div>
+
+<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<script type="text/javascript" src="settings.js"></script>
+<script type="text/javascript" src="options.js"></script>
+</body>
+</html>

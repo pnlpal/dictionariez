@@ -11,6 +11,7 @@
         "js": ["js/jquery-1.10.2.js", "page.js"],
         "matches": ["<all_urls>"]
     }],
+    "options_page": "options.html",
 
     "browser_action":{
         "default_icon": {
