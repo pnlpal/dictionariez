@@ -19,12 +19,12 @@
 //  URL: www.aguidetoshanghai.com
 
 function processContentPage() {
-    
+
 }
 
 function processDict() {
     jQuery(document).keydown(function(event) {
-        if(event.metaKey || event.keyCode === 27 || event.keyCode === 10){
+        if (event.metaKey || event.keyCode === 27 || event.keyCode === 10) {
             $('.littleDictWrapper .dict_input').focus();
             $('.littleDictWrapper .dict_input').select();
         }
@@ -66,7 +66,24 @@ function processDict() {
             $('.littleDictWrapper .dict_name').get(0).dictionary = dictionary;
         }
     };
+
+    var waitDict = function(showDefault, showWait, showResult) {
+        if (showWait)
+            $('.littleDictWrapper .dict_wait').removeClass('hide');
+        else
+            $('.littleDictWrapper .dict_wait').addClass('hide');
+        if (showResult)
+            $('.littleDictWrapper .dict_result').removeClass('hide');
+        else
+            $('.littleDictWrapper .dict_result').addClass('hide');
+        if (showDefault)
+            $('.littleDictWrapper .dict_default').removeClass('hide');
+        else
+            $('.littleDictWrapper .dict_default').addClass('hide');
+    };
+
     var queryDict = function() {
+        waitDict(false, true, false);
         chrome.runtime.sendMessage({
             type: 'queryDict',
             means: 'minidict',
@@ -76,14 +93,15 @@ function processDict() {
     };
 
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-        if (request.type === 'queryResult' && request.data) {
-            console.log(request.data);
+        if (request.type === 'waitResult') {
+            waitDict(false, true, false);
+        } else if (request.type === 'queryResult' && request.data) {
+            waitDict(false, false, true);
             $('.littleDictWrapper .dict_result').html(request.data);
             $('.littleDictWrapper .dict_input').val(request.text);
             $('.littleDictWrapper .dict_input').focus();
             $('.littleDictWrapper .dict_input').select();
-        }
-        if (request.type === 'info') {
+        } else if (request.type === 'info') {
             if (!$('.littleDictWrapper .dict_item').length && request.dictList) {
                 updateDictList(request.dictList, request.defaultDictName);
             }

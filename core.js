@@ -34,14 +34,7 @@ function setBrowserIcon(enable) {
 }
 
 function sendQueryResult(queryResult) {
-    if (dictWindowManager.dictWindow && dictWindowManager.dictIsReady) {
-        var tid = dictWindowManager.dictWindow.tabs[0].id;
-        console.info('[temp]sendQueryResult...');
-        chrome.tabs.sendMessage(tid, {
-            type: 'queryResult',
-            data: queryResult.data,
-            text: queryResult.text
-        });
+    if (dictWindowManager.sendMessage('queryResult', queryResult)) {
         queryResultCache = {};
     } else {
         queryResultCache = queryResult;
@@ -65,12 +58,11 @@ chrome.runtime.onMessage.addListener(
         } else if (request.type === 'dictReady') {
             console.info('dictReady...');
             dictWindowManager.dictIsReady = true;
-            var tid = dictWindowManager.dictWindow.tabs[0].id;
-            chrome.tabs.sendMessage(tid, {
-                type: 'info',
+            dictWindowManager.sendMessage('info', {
                 dictList: dictManager.allDicts,
                 defaultDictName: dictManager.defaultDict.dictName
             });
+
             if(queryResultCache.data)
                 sendQueryResult(queryResultCache);
 
@@ -95,8 +87,10 @@ chrome.runtime.onMessage.addListener(
 
             var dictionary = request.dictionary || dictManager.defaultDict;
             dictManager.defaultDict = dictionary;
-            if (request.text)
+            if (request.text){
+                dictWindowManager.sendMessage('waitResult');
                 dictManager.queryDict(request.text, dictionary, _onSuccess, _onFail);
+            }
         }
     }
 );

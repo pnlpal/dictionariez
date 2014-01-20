@@ -2,14 +2,18 @@ var dictWindowManager = {};
 dictWindowManager.dictIsReady = false;
 dictWindowManager.defaultWidth = 640;
 dictWindowManager.defaultHeight = 700;
-dictWindowManager.getWindow = function(){
-    if(dictWindowManager.dictWindow){
-        return dictWindowManager.dictWindow;
-    }
+dictWindowManager.sendMessage = function(type, data) {
+    if (dictWindowManager.dictWindow && dictWindowManager.dictIsReady) {
+        data = data || {};
+        var tid = dictWindowManager.dictWindow.tabs[0].id;
+        var obj = $.extend(true, {type: type}, data);
+        chrome.tabs.sendMessage(tid, obj);
+        return true;
+    } else
+        return false;
 };
-dictWindowManager.open = function(){
-    var win = dictWindowManager.getWindow();
-    if(!win){
+dictWindowManager.open = function() {
+    if (!dictWindowManager.dictWindow) {
         var left = (screen.width / 2) - (dictWindowManager.defaultWidth / 2);
         var top = (screen.height / 2) - (dictWindowManager.defaultHeight / 2);
 
@@ -20,10 +24,12 @@ dictWindowManager.open = function(){
             height: dictWindowManager.defaultHeight,
             left: left,
             top: top
-        }, function(win){
+        }, function(win) {
             dictWindowManager.dictWindow = win;
         });
     } else {
-        chrome.windows.update(win.id, {focused: true});
+        chrome.windows.update(dictWindowManager.dictWindow.id, {
+            focused: true
+        });
     }
 };
