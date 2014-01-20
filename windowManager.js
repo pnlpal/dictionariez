@@ -1,6 +1,6 @@
 var dictWindowManager = {};
 dictWindowManager.dictIsReady = false;
-dictWindowManager.defaultWidth = 640;
+dictWindowManager.defaultWidth = 620;
 dictWindowManager.defaultHeight = 700;
 dictWindowManager.sendMessage = function(type, data) {
     if (dictWindowManager.dictWindow && dictWindowManager.dictIsReady) {

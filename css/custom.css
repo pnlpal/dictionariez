@@ -35,16 +35,8 @@ body{
     margin-left: 5px;
 }
 
-.littleDictWrapper .form-group.pull-right{
-    margin-right: 40px;
-}
-
 .littleDictWrapper .form-inline input{
     margin-right: 15px;
-}
-
-.littleDictWrapper .dict_name {
-    width: 150px;
 }
 
 .littleDictWrapper iframe{
@@ -53,10 +45,18 @@ body{
     width: 100%;
 }
 
-.littleDictWrapper .default-page{
+.dict_collection{
+    margin-right: 40px;
+}
+
+.default-page{
     margin-right: 10px;
 }
 
-.littleDictWrapper .sound, .littleDictWrapper .default-page, .littleDictWrapper .dict_nav{
+.sound, .default-page, .dict_prev, .dict_next{
     cursor: pointer;
+}
+
+.dict_name {
+    width: 150px;
 }

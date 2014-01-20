@@ -35,12 +35,32 @@ function processDict() {
         if (node.is('.dict_item')) {
             updateDictList(node[0].dictionary, node.text());
             queryDict();
-        }
-        if (node.is('.dict_query')) {
+        } else if(node.is('.dict_nav')){
+            var dname = $('.littleDictWrapper .dict_name').get(0).dictionary.dictName;
+            var dcr = node.is('.dict_prev') ? -1: 1;
+            var desi = 0;
+            $('.dict_item').each(function(index, el) {
+                var dict = el.dictionary;
+                if(dict.dictName === dname){
+                    desi = index + dcr;
+                    return false;
+                }
+            });
+            if(desi >= $('.dict_item').length)
+                desi = 0;
+            else if(desi < 0)
+                desi = $('.dict_item').length - 1;
+
+            var tar = $('.dict_item').get(desi);
+            updateDictList(tar.dictionary, $(tar).text());
+            queryDict();
+
+        } else if(node.is('.dict_next')){
+
+        } else if (node.is('.dict_query')) {
             event.preventDefault();
             queryDict();
-        }
-        if (node.is('.sound')) {
+        } else if (node.is('.sound')) {
             var a = node.next('audio');
             if (a.length)
                 a[0].play();
