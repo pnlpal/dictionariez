@@ -15,10 +15,13 @@
 
     "browser_action":{
         "default_icon": {
-            "19": "images/icon-on19.png",    
-            "38": "images/icon-on38.png"  
+            "19": "images/dict-on24.png",    
+            "38": "images/dict-on32.png"  
         }
     },
+    "icons": {
+      "48": "images/dict-on48.png"
+    },   
     "minimum_chrome_version": "23",
     "version": "0.2",
     "update_url": "http://clients2.google.com/service/update2/crx"
