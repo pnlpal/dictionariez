@@ -55,6 +55,9 @@ chrome.runtime.onMessage.addListener(
                 specialKeys: Settings.getValue('specialKeys'),
                 normalKey: Settings.getValue('normalKey')
             });
+        } else if (request.type === 'saveKeySettings'){
+            Settings.setValue('specialKeys', request.specialKeys);
+            Settings.setValue('normalKey', request.normalKey);
         } else if (request.type === 'dictReady') {
             console.info('dictReady...');
             dictWindowManager.dictIsReady = true;
