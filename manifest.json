@@ -23,6 +23,6 @@
       "48": "images/dict-on48.png"
     },   
     "minimum_chrome_version": "23",
-    "version": "0.2",
+    "version": "1.0",
     "update_url": "http://clients2.google.com/service/update2/crx"
 }
