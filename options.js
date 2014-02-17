@@ -1,4 +1,4 @@
-for (var i = 'A'.charCodeAt(0); i < 'Z'.charCodeAt(0); i++) {
+for (var i = 'A'.charCodeAt(0); i <= 'Z'.charCodeAt(0); i++) {
     var k = String.fromCharCode(i);
     $('#normalKey').append('<option value="' + k + '">' + k + '</option>');
 }
