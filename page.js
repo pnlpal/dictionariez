@@ -137,6 +137,8 @@ function processDict() {
 (function main() {
     console.log('page.js init...');
     if (jQuery('.littleDictWrapper').length) {
+        $('.littleDictWrapper .dict_input').focus();
+        $('.littleDictWrapper .dict_input').select();
         processDict();
     } else {
         processContentPage();
