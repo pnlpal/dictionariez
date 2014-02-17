@@ -141,8 +141,8 @@ function processDict() {
     } else {
         processContentPage();
     }
-    jQuery(document).mouseup(function() {
-        if (window.getSelection().toString()) {
+    jQuery(document).mouseup(function(event) {
+        if (event.which === 1 && window.getSelection().toString()) {
             chrome.runtime.sendMessage({
                 type: 'queryDict',
                 means: 'mouse',

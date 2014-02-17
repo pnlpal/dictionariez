@@ -21,7 +21,17 @@ dictManager.allDicts = [{
         'dictId': 'wn'
     },
     'queryKey': 'word'
-}, {
+}, 
+// {
+//     'dictName': 'Merriam-Webster\'s Collegiate',
+//     'entry': 'Webster',
+//     'headerUrl': 'http://www.dictionaryapi.com/api/v1/references/collegiate/xml/',
+//     'queryType': 'get',
+//     'params': {
+//         'key': 'f5f640de-e484-4a9e-a629-db38f0fa4995'
+//     }
+// }, 
+{
     'dictName': 'The Collaborative International Dictionary of English',
     'entry': 'Aonaware',
     'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
@@ -45,7 +55,7 @@ dictManager.defaultDict = dictManager.allDicts[0];
 
 dictManager.parseAonaware = function(text) {
     var xml = $.parseXML(text);
-    return '<pre>'+$('Definitions WordDefinition', xml).text()+'</pre>';
+    return '<pre>' + $('Definitions WordDefinition', xml).text() + '</pre>';
 };
 
 dictManager.parseIciba = function(text) {
@@ -80,6 +90,60 @@ dictManager.parseDictCN = function(word) {
     return frameStr;
 };
 
+dictManager.parseWebster = function(text) {
+    var wrapper = $(document.createElement('div'));
+    wrapper.addClass('webster');
+    var xml = jQuery.parseXML(text);
+    jQuery('entry', xml).each(function(index, entry) {
+        var entryId = jQuery(entry).attr('id');
+        wrapper.append('<div entry="' + entryId + '"> </div>');
+        var d = jQuery('div[entry]', wrapper).last();
+
+        // var fl = jQuery('fl', entry).text();
+        var pro = jQuery('pr', entry).text();
+        // d.append('<h4></h4>');
+
+        var soundEl = jQuery('sound', entry);
+        var audio = jQuery('wav', soundEl).text();
+        var wpr = jQuery('wpr', soundEl).text();
+
+        //get the audio's url:
+        var baseUrl = 'http://media.merriam-webster.com/soundc11/';
+        var subp = audio[0];
+        var ms = audio.match(/^bix|^gg|^\d+/);
+        if (ms) {
+            subp = ms[0];
+        }
+        var url = baseUrl + subp + '/' + audio;
+
+
+        var n = '<h4><b>' +entryId+
+            '</b>' +
+            '<span class="pron">' + pro +
+            '&nbsp<i class="fa fa-volume-up sound"></i>' +
+            '<audio src="' + url + '"></audio>&nbsp' + wpr +
+            '&nbsp&nbsp&nbsp&nbsp</span></h4>';
+        d.append(n);
+
+        var et = jQuery('et', entry).html();
+        var n2 = '<p>'+et+'</p>';
+        d.append(n2);
+
+        jQuery(entry).children('def').each(function(j, defEl){
+            var vt = jQuery('vt', defEl).text();
+            var date = jQuery('date', defEl).text();
+            d.append('<p>'+vt+', '+date + '</p>');
+            jQuery('sn', defEl).each(function(k, snEl){
+                var sntext = jQuery(snEl).nextUtil('sn').text();
+                d.append('<p>'+sntext+'</p>');
+
+            });
+
+        });
+    });
+    return wrapper.htm();
+};
+
 dictManager.queryDict = function(word, dictionary, succeedCB, failedCB) {
     if (!word)
     //TODO： display sth
@@ -92,7 +156,13 @@ dictManager.queryDict = function(word, dictionary, succeedCB, failedCB) {
             succeedCB(ret);
         };
         var params = $.extend(true, {}, dictionary.params);
-        params[dictionary.queryKey] = word;
-        $[dictionary.queryType](dictionary.baseUrl, params, onSuccess, 'text').fail(failedCB).error(failedCB);
+        if (dictionary.queryKey)
+            params[dictionary.queryKey] = word;
+        var url = '';
+        if (dictionary.baseUrl)
+            url = dictionary.baseUrl;
+        else //webster dictionary
+            url = dictionary.headerUrl + encodeURI(word);
+        $[dictionary.queryType](url, params, onSuccess, 'text').fail(failedCB).error(failedCB);
     }
 };
