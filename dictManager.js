@@ -1,7 +1,7 @@
 var dictManager = {};
 dictManager.loadingHtml = '<i class="icon-spinner icon-spin icon-2x pull-left"></i>正在查询...';
 dictManager.allDicts = [{
-    'dictName': 'iciba.com',
+    'dictName': '金山词霸',
     'entry': 'Iciba',
     'baseUrl': 'http://dict-co.iciba.com/api/dictionary.php',
     'queryType': 'get',
@@ -10,7 +10,7 @@ dictManager.allDicts = [{
     },
     'queryKey': 'w'
 }, {
-    'dictName': 'dict.cn',
+    'dictName': '海词词典',
     'entry': 'DictCN'
 }, {
     'dictName': 'WordNet (r) 2.0',

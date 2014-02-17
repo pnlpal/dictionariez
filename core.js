@@ -41,6 +41,36 @@ function sendQueryResult(queryResult) {
     }
 }
 
+function _queryDict(text, dictionary){
+    var _onSuccess = function(data) {
+        var result = {
+            text: text,
+            data: data
+        };
+        sendQueryResult(result);
+    };
+    var _onFail = function() {
+        var result = {
+            text: text,
+            data: ''
+        };
+        sendQueryResult(result);
+    };
+    dictWindowManager.open();
+
+    dictionary = dictionary || dictManager.defaultDict;
+    dictManager.defaultDict = dictionary;
+    if (text){
+        dictWindowManager.sendMessage('waitResult');
+        dictManager.queryDict(text, dictionary, _onSuccess, _onFail);
+    }
+}
+
+function onClickedContextMenu(info, tab){
+    if(info.selectionText)
+        _queryDict(info.selectionText);
+}
+
 var queryResultCache = {};
 chrome.browserAction.onClicked.addListener(function(tab) {
     var b = !Settings.getValue('enableMinidict');
@@ -72,28 +102,7 @@ chrome.runtime.onMessage.addListener(
         } else if (request.type === 'queryDict') {
             if (request.means === 'mouse' && !Settings.getValue('enableMinidict'))
                 return;
-            var _onSuccess = function(data) {
-                var result = {
-                    text: request.text,
-                    data: data
-                };
-                sendQueryResult(result);
-            };
-            var _onFail = function() {
-                var result = {
-                    text: request.text,
-                    data: ''
-                };
-                sendQueryResult(result);
-            };
-            dictWindowManager.open();
-
-            var dictionary = request.dictionary || dictManager.defaultDict;
-            dictManager.defaultDict = dictionary;
-            if (request.text){
-                dictWindowManager.sendMessage('waitResult');
-                dictManager.queryDict(request.text, dictionary, _onSuccess, _onFail);
-            }
+            _queryDict(request.text, request.dictionary);
         }
     }
 );
@@ -109,5 +118,12 @@ chrome.windows.onRemoved.addListener(function(wid) {
     console.info('[temp] core init...');
     Settings.init(function(){
         setBrowserIcon(Settings.getValue('enableMinidict'));
+    });
+
+    //set contextMenu
+    chrome.contextMenus.create({
+        title: "使用 FairyDict 查询 '%s'",
+        contexts: ["selection"],
+        onclick: onClickedContextMenu
     });
 }());

@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "FairyDict",
     "description": "web dictionary",
-    "permissions": ["tabs", "storage", "<all_urls>"],
+    "permissions": ["tabs", "storage", "contextMenus", "<all_urls>"],
     "background": {
         "persistent": true,
         "scripts": ["js/jquery-1.10.2.js", "settings.js", "dictManager.js", "windowManager.js", "core.js"]
@@ -23,6 +23,6 @@
       "48": "images/dict-on48.png"
     },   
     "minimum_chrome_version": "23",
-    "version": "1.0",
+    "version": "1.1",
     "update_url": "http://clients2.google.com/service/update2/crx"
 }
