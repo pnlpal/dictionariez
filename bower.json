@@ -1,0 +1,30 @@
+{
+  "name": "FairyDict",
+  "homepage": "https://github.com/revir/FairyDict",
+  "authors": [
+    "Revir <revir.qing@gmail.com>"
+  ],
+  "description": "A fairy dictionary extension for chrome.",
+  "main": "",
+  "moduleType": [],
+  "keywords": [
+    "dictionary",
+    "chrome",
+    "extension"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "angular": "~1.4.8",
+    "angular-ui": "~0.4.0",
+    "angular-bootstrap": "~0.14.3",
+    "angular-ui-router": "ui-route#^0.3.1"
+  }
+}
