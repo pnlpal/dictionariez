@@ -10,22 +10,23 @@
   <link rel="stylesheet" type="text/css" href="../css/font-awesome.css">
   <link rel="stylesheet" type="text/css" href="../css/custom.css">
 
-  <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
-  <script type="text/javascript" src="../bower_components/angular-ui/build/angular-ui.min.js"></script>
-  <script type="text/javascript" src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script type="text/javascript" src="../bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="../bower_components/angular-ui/build/angular-ui.js"></script>
+  <script type="text/javascript" src="../bower_components/angular-route/angular-route.js"></script>
+  <script type="text/javascript" src="../bower_components/angular-sanitize/angular-sanitize.js"></script>
   <script type="text/javascript" src="../bower_components/angular-bootstrap/ui-bootstrap.js"></script>
   <script type="text/javascript" src="./dict.js"></script>
 </head>
 
 <body>
     <div class="dictWrapper" ng-controller="dictCtrl">
-        <form class="form-inline" role="form" onsubmit="return false;">
+        <form class="form-inline" role="form" ng-submit="query()">
           <!-- <i class="fa fa-laptop fa-2x default-page"></i> -->
           <div class="form-group">
-            <input type="text" class="form-control dict_input" placeholder="input word">
+            <input type="text" ng-model="word" class="form-control dict_input" placeholder="input word">
           </div>
 
-          <button class="btn btn-sm btn-primary dict_query">查询</button>
+          <input type="submit" id="submit" class="btn btn-sm btn-primary dict_query" value="查询"></input>
           <!-- <button type="submit" class="btn btn-sm btn-primary dict_translate">翻译</button> -->
 
           <div class="form-group pull-right dict_collection">
@@ -45,17 +46,17 @@
           </div>
 
         </form>
-        <div class="dict_wait container hide">
+        <div class="dict_wait container" ng-show="querying">
             <i class="fa fa-spinner fa-spin fa-4x pull-left"></i>
             <p>正在努力查询中</p>
             <p>请稍后...</p>
         </div>
-        <div class="dict_default container">
-            <h2>欢迎使用 FairyDict</h2>
-            <p>如发现 BUG, 请到 github 或 chrome webstore 上给我留言， 感谢！</p>
+        <div class="dict_default container" ng-show="initial">
+            <h2>欢迎使用 Fairy Dict</h2>
+            <p>如发现 BUG, 请到 github 或 chrome webstore 上留言， 感谢！</p>
             <p>项目地址：<a href="https://github.com/revir/FairyDict" target='_blank'>github</a></p>
         </div>
-        <div class="dict_result hide">
+        <div class="dict_result" ng-bind-html="queryResult" ng-hide="querying">
 
         </div>
     </div>
