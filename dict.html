@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" ng-app="fairyDictApp">
+
+<head>
+  <meta charset="UTF-8">
+  <title>FairyDict</title>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="bower_components/angular-ui/build/angular-ui.css">
+  <link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
+  <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
+  <link rel="stylesheet" type="text/css" href="css/custom.css">
+
+  <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="bower_components/angular-ui/build/angular-ui.js"></script>
+  <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+  <script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+  <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+  <script type="text/javascript" src="dict.js"></script>
+</head>
+
+<body>
+    <div class="dictWrapper" ng-controller="dictCtrl">
+        <form class="form-inline" ng-submit="query()">
+          <!-- <i class="fa fa-laptop fa-lg default-page"></i> -->
+          <div class="form-group">
+            <input type="text" ng-model="word" class="form-control dict_input" placeholder="input word">
+          </div>
+
+          <input type="submit" id="submit" class="btn btn-sm btn-primary dict_query" value="查询">
+          <!-- <button type="submit" class="btn btn-sm btn-primary dict_translate">翻译</button> -->
+
+          <div class="form-group pull-right dict_collection">
+          <i ng-click="changeDict('prev')" class="fa fa-arrow-circle-left fa-lg dict_prev dict_nav"></i>
+          <div class="form-group">
+            <div class="btn-group" uib-dropdown  uib-keyboard-nav>
+              <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default dict_name"
+              type="button" id="dropdownMenu1" title="{{currentDictionary.dictName}}">{{currentDictionary.dictName}}
+                  <span class="caret"></span>
+              </button>
+
+              <ul uib-dropdown-menu class="dropdown-menu dict_list" role="menu" aria-labelledby="dropdownMenu1">
+                <li role="menuitem" ng-repeat="dict in allDicts">
+                  <a ng-click="changeDict(dict)" title="{{dict.dictName}}">{{dict.dictName}}</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <i ng-click="changeDict('next')" class="fa fa-arrow-circle-right fa-lg dict_next dict_nav"></i>
+          </div>
+
+        </form>
+        <div class="dict_wait text-center" ng-show="querying">
+            <i class="fa fa-spinner fa-spin fa-4x" title="正在查询中..."></i>
+        </div>
+        <div class="dict_default container" ng-show="initial">
+            <h2>欢迎使用 Fairy Dict</h2>
+            <p>如发现 BUG, 请到 github 或 chrome webstore 上留言， 感谢！</p>
+            <p>项目地址：<a href="https://github.com/revir/FairyDict" target='_blank'>github</a></p>
+        </div>
+        <div class="dict_result" ng-bind-html="queryResult" ng-hide="querying || initial">
+
+        </div>
+    </div>
+</body>

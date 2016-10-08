@@ -1,47 +1,51 @@
 body{
     margin: 8px;
 }
-.littleDictWrapper .fa-arrow-circle-left {
+.dictWrapper .fa-arrow-circle-left {
 	margin-left: 30px;
 	margin-right: 5px;
 }
-.littleDictWrapper .fa-arrow-circle-right {
+.dictWrapper .fa-arrow-circle-right {
 	margin-left: 5px;
 }
 
-.littleDictWrapper .pron{
+.dictWrapper .pron{
     color: rgb(58, 120, 213);
 }
-.littleDictWrapper .example{
+.dictWrapper .example{
     color: rgb(162, 111, 20);
 }
-.littleDictWrapper .fa-coffee, .littleDictWrapper .fa-volume-up{
+.dictWrapper .fa-coffee, .dictWrapper .fa-volume-up{
     color: black;
 }
 
-.littleDictWrapper .modal-body{
+.dictWrapper .modal-body{
 	padding-top: 8px;
 }
 
-.littleDictWrapper .form-inline{
+.dictWrapper .form-inline{
     margin-bottom: 8px;
 }
 
-.littleDictWrapper .fa-2x{
+.dictWrapper .fa-2x{
     vertical-align: middle;
 }
 
-.littleDictWrapper .caret{
+.dictWrapper .caret{
     margin-left: 5px;
 }
 
-.littleDictWrapper .form-inline input{
+.dictWrapper .form-inline input{
     margin-right: 15px;
 }
 
-.littleDictWrapper iframe{
+.dictWrapper .form-inline .dropdown-toggle {
+    overflow: hidden;
+}
+
+.dictWrapper iframe{
     border: none;
-    height: 350px;
+    height: 620px;
     width: 100%;
 }
 

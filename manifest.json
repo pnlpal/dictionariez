@@ -5,10 +5,13 @@
     "permissions": ["tabs", "storage", "contextMenus", "<all_urls>"],
     "background": {
         "persistent": true,
-        "scripts": ["js/jquery-1.10.2.js", "settings.js", "dictManager.js", "windowManager.js", "core.js"]
+        "page": "background.html"
     },
     "content_scripts": [{
-        "js": ["js/jquery-1.10.2.js", "page.js"],
+        "js": [
+            "bower_components/jquery/dist/jquery.js",
+            "content/inject.js"
+        ],
         "matches": ["<all_urls>"]
     }],
     "options_page": "options.html",
@@ -23,6 +26,5 @@
       "48": "images/dict-on48.png"
     },
     "minimum_chrome_version": "23",
-    "version": "2.0",
-    "update_url": "http://clients2.google.com/service/update2/crx"
+    "version": "2.0"
 }

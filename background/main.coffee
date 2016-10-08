@@ -1,31 +1,48 @@
-dictWindowManager =
-    defaultWidth: 620
-    defaultHeight: 70
-    open: ()->
-        var left = (screen.width / 2) - (dictWindowManager.defaultWidth / 2)
-        var top = (screen.height / 2) - (dictWindowManager.defaultHeight / 2)
+require.config({
+    baseUrl: ""
+    paths:
+        "jquery": "bower_components/jquery/dist/jquery",
+        "utils": "utils"
+    shim:
+        utils:
+            "exports": "utils"
 
-        chrome.windows.create({
-            url: chrome.extension.getURL('dict.html'),
-            type: 'popup',
-            width: dictWindowManager.defaultWidth,
-            height: dictWindowManager.defaultHeight,
-            left: left,
-            top: top
-        }, function(win) {
-            dictWindowManager.dictWindow = win;
-        })
+})
 
-    sendMessage: (type, data)->
+require ["jquery",
+    "utils",
+    "background/setting",
+    "background/dictwindow.js",
+    "background/message.js"], ($, utils, setting, dictWindow, message)->
+        setBrowserIcon = (enable)->
+            title = '已打开鼠标取词功能'
+            imgPath = 'images/dict-on24.png'
+            if !enable
+                title = '已关闭鼠标取词功能'
+                imgPath = 'images/dict-off24.png'
 
+            chrome.browserAction.setTitle({
+                title: title
+            })
+            chrome.browserAction.setIcon({
+                path: imgPath
+            })
 
-query = (text, dictionary)->
-    dictWindowManager.open()
-    dictionary = dictionary || dictManager.defaultDict
-    dictManager.defaultDict = dictionary
-    dictWindowManager.sendMessage('waitResult')
-    dictManager.queryDict(text, dictionary, _onSuccess, _onFail)
+        onClickedContextMenu = (info, tab)->
+            if info.selectionText
+                dictWindow.lookup(info.selectionText)
 
-chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
-    if request.type == 'query'
-        query()
+        chrome.browserAction.onClicked.addListener (tab)->
+            b = !setting.getValue('enableMinidict')
+            setting.setValue('enableMinidict', b)
+            setBrowserIcon(b)
+
+        setting.init().done (c)->
+            setBrowserIcon(c.enableMinidict)
+
+        chrome.contextMenus.create {
+            title: "使用 FairyDict 查询 '%s'",
+            contexts: ["selection"],
+            onclick: onClickedContextMenu
+        }
+
