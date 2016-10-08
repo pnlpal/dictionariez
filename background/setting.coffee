@@ -4,8 +4,14 @@ define ["jquery",
     setting =
         configCache: {
             enableMinidict: true,
-            specialKeys: 'ctrl,shift',
-            normalKey: 'X',
+            openSK1: 'Ctrl',
+            openSK2: 'Shift'
+            openKey: 'X',
+            prevDictSK1: 'Ctrl',
+            prevDictKey: 'ArrowLeft',
+            nextDictSK1: 'Ctrl',
+            nextDictKey: 'ArrowRight',
+
             dictionary: ''
         }
 

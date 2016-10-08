@@ -1,10 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" ng-app="fairyDictApp">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-ui/build/angular-ui.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
     <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="css/custom.css">
+
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="bower_components/angular-ui/build/angular-ui.js"></script>
+    <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+    <script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+
+    <script type="text/javascript" src="utils.js"></script>
+    <script type="text/javascript" src="option/option.js"></script>
     <style>
     img.pull-left{
         width: 100px;
@@ -17,30 +29,124 @@
     <title>FairyDict 选项</title>
 </head>
 <body>
-    <div class="container">
-        <img src="images/tom.jpg" class="pull-left" width="75px">
-        <em>目前仅有一项设置... </em>
-        <br><br>
-        <p><b>呼出词典的快捷键：<b></p>
-        <div class="keys">
-            <select name="specialKeys" id="specialKeys-1">
-                <option value="ctrl">Ctrl</option>
-                <option value="shift">Shift</option>
-                <option value="alt">Alt</option>
-            </select>
-            <select name="specialKeys" id="specialKeys-2">
-                <option value="none">空</option>
-                <option value="ctrl">Ctrl</option>
-                <option value="shift">Shift</option>
-                <option value="alt">Alt</option>
-            </select>
-            <select name="normalKey" id="normalKey">
-            </select>
+    <div class="container" ng-controller="optionCtrl">
+        <div class="section function-setting">
+            <h1>功能设置</h1>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="setting.enableMinidict" ng-click="changeKey(setting.enableMinidict, 'enableMinidict')"> 开启鼠标取词功能
+              </label>
+            </div>
+        </div>
+
+        <div class="section shortcut-setting">
+            <h1>快捷键设置</h1>
+
+            <div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <span style="line-height: 2">呼出词典: </span>
+                    </div>
+                    <div class="btn-group" uib-dropdown  uib-keyboard-nav>
+                      <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default"
+                      type="button" id="btn-sk1">{{setting.openSK1}}
+                          <span class="caret"></span>
+                      </button>
+
+                      <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-sk1">
+                        <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
+                          <a ng-click="changeKey(item, 'openSK1')">{{item}}</a>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div class="btn-group" uib-dropdown  uib-keyboard-nav>
+                      <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default"
+                      type="button" id="btn-sk2">{{setting.openSK2}}
+                          <span class="caret"></span>
+                      </button>
+
+                      <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-sk2">
+                        <li role="menuitem" ng-repeat="item in allSK">
+                          <a ng-click="changeKey(item, 'openSK2')">{{item ? item : '空'}}</a>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div class="btn-group" uib-dropdown  uib-keyboard-nav>
+                      <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default"
+                      type="button" id="btn-open-key">{{setting.openKey}}
+                          <span class="caret"></span>
+                      </button>
+
+                      <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-open-key">
+                        <li role="menuitem" ng-repeat="item in allLetters">
+                          <a ng-click="changeKey(item, 'openKey')">{{item}}</a>
+                        </li>
+                      </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <span style="line-height: 2">查找上一个词典: </span>
+                    </div>
+                    <div class="btn-group" uib-dropdown  uib-keyboard-nav>
+                      <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default"
+                      type="button" id="btn-prev-dict-sk1">{{setting.prevDictSK1}}
+                          <span class="caret"></span>
+                      </button>
+
+                      <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-prev-dict-sk1">
+                        <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
+                          <a ng-click="changeKey(item, 'prevDictSK1')">{{item}}</a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="btn-group" uib-dropdown  uib-keyboard-nav>
+                      <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default"
+                      type="button" id="btn-prev-dict-key">{{setting.prevDictKey}}
+                          <span class="caret"></span>
+                      </button>
+
+                      <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-prev-dict-key">
+                        <li role="menuitem" ng-repeat="item in allKeys">
+                          <a ng-click="changeKey(item, 'prevDictKey')">{{item}}</a>
+                        </li>
+                      </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <span style="line-height: 2">查找下一个词典: </span>
+                    </div>
+                    <div class="btn-group" uib-dropdown  uib-keyboard-nav>
+                      <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default"
+                      type="button" id="btn-next-dict-sk1">{{setting.nextDictSK1}}
+                          <span class="caret"></span>
+                      </button>
+
+                      <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-next-dict-sk1">
+                        <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
+                          <a ng-click="changeKey(item, 'nextDictSK1')">{{item}}</a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="btn-group" uib-dropdown  uib-keyboard-nav>
+                      <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default"
+                      type="button" id="btn-next-dict-key">{{setting.nextDictKey}}
+                          <span class="caret"></span>
+                      </button>
+
+                      <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-next-dict-key">
+                        <li role="menuitem" ng-repeat="item in allKeys">
+                          <a ng-click="changeKey(item, 'nextDictKey')">{{item}}</a>
+                        </li>
+                      </ul>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
-
-<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
-<script type="text/javascript" src="js/bootstrap.js"></script>
-<script type="text/javascript" src="options.js"></script>
 </body>
 </html>

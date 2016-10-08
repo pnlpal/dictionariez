@@ -12,23 +12,8 @@ require.config({
   }
 });
 
-require(["jquery", "utils", "background/setting", "background/dictwindow.js", "background/message.js"], function($, utils, setting, dictWindow, message) {
-  var onClickedContextMenu, setBrowserIcon;
-  setBrowserIcon = function(enable) {
-    var imgPath, title;
-    title = '已打开鼠标取词功能';
-    imgPath = 'images/dict-on24.png';
-    if (!enable) {
-      title = '已关闭鼠标取词功能';
-      imgPath = 'images/dict-off24.png';
-    }
-    chrome.browserAction.setTitle({
-      title: title
-    });
-    return chrome.browserAction.setIcon({
-      path: imgPath
-    });
-  };
+require(["jquery", "utils", "background/setting", "background/ext", "background/dictwindow.js", "background/message.js"], function($, utils, setting, ext, dictWindow, message) {
+  var onClickedContextMenu;
   onClickedContextMenu = function(info, tab) {
     if (info.selectionText) {
       return dictWindow.lookup(info.selectionText);
@@ -38,10 +23,10 @@ require(["jquery", "utils", "background/setting", "background/dictwindow.js", "b
     var b;
     b = !setting.getValue('enableMinidict');
     setting.setValue('enableMinidict', b);
-    return setBrowserIcon(b);
+    return ext.setBrowserIcon(b);
   });
   setting.init().done(function(c) {
-    return setBrowserIcon(c.enableMinidict);
+    return ext.setBrowserIcon(c.enableMinidict);
   });
   return chrome.contextMenus.create({
     title: "使用 FairyDict 查询 '%s'",

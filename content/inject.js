@@ -10,20 +10,10 @@ jQuery(document).mouseup(function(event) {
 });
 
 chrome.runtime.sendMessage({
-  type: 'keySettings'
-}, function(datas) {
-  return jQuery(document).bind('keydown', function(event) {
-    var b;
-    b = true;
-    jQuery.each(datas.specialKeys.split(','), function(i, v) {
-      if (!event[v + 'Key']) {
-        return b = false;
-      }
-    });
-    if (event.keyCode !== datas.normalKey.charCodeAt(0)) {
-      b = false;
-    }
-    if (b) {
+  type: 'setting'
+}, function(setting) {
+  return jQuery(document).bind('keyup', function(event) {
+    if (utils.checkEventKey(event, setting.openSK1, setting.openSK2, setting.openKey)) {
       return chrome.runtime.sendMessage({
         type: 'look up',
         means: 'keyboard',

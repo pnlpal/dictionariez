@@ -25,6 +25,11 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
     }
     return $scope.$apply();
   });
+  chrome.runtime.sendMessage({
+    type: 'setting'
+  }, function(setting) {
+    return $scope.setting = setting;
+  });
   $scope.changeDict = function(dict) {
     var ci, idx;
     ci = $scope.allDicts.findIndex(function(d) {
@@ -93,12 +98,16 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
     }
   });
   $(document).keydown(function(evt) {
-    var code;
+    var code, nextKey, nextSK, prevKey, prevSK;
     code = evt.charCode || evt.keyCode;
-    if (evt.ctrlKey && evt.keyCode === 37) {
+    prevSK = $scope.setting.prevDictSK1;
+    nextSK = $scope.setting.nextDictSK1;
+    prevKey = $scope.setting.prevDictKey;
+    nextKey = $scope.setting.nextDictKey;
+    if (window.utils.checkEventKey(evt, prevSK, null, prevKey)) {
       $scope.changeDict('prev');
     }
-    if (evt.ctrlKey && evt.keyCode === 39) {
+    if (window.utils.checkEventKey(evt, nextSK, null, nextKey)) {
       return $scope.changeDict('next');
     }
   });

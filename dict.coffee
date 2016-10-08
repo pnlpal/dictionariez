@@ -17,6 +17,11 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         $scope.currentDictionary ?= allDicts[0]
         $scope.$apply()
 
+    chrome.runtime.sendMessage {
+        type: 'setting'
+    }, (setting)->
+        $scope.setting = setting
+
     $scope.changeDict = (dict)->
         ci = $scope.allDicts.findIndex (d)->
             d.dictName == $scope.currentDictionary.dictName
@@ -79,10 +84,15 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
 
     $(document).keydown (evt)->
         code = evt.charCode or evt.keyCode
-        if evt.ctrlKey && evt.keyCode == 37
+        prevSK = $scope.setting.prevDictSK1
+        nextSK = $scope.setting.nextDictSK1
+        prevKey = $scope.setting.prevDictKey
+        nextKey = $scope.setting.nextDictKey
+
+        if window.utils.checkEventKey evt, prevSK, null, prevKey
             $scope.changeDict('prev')
 
-        if evt.ctrlKey && evt.keyCode == 39
+        if window.utils.checkEventKey evt, nextSK, null, nextKey
             $scope.changeDict('next')
 
     return

@@ -1,4 +1,4 @@
-utils = {
+window.utils = {
     getRandomInt: (min, max)->
         min ?= 1
         max ?= 10
@@ -45,4 +45,32 @@ utils = {
 
         _get()
         return dfd
+
+    extraKeyMap: {
+        Enter: 13,
+        Space: 32,
+        Tab: 9,
+        End: 35,
+        Home: 36,
+        PageDown: 34,
+        PageUp: 33,
+        ArrowDown: 40,
+        ArrowLeft: 37,
+        ArrowRight: 39,
+        ArrowUp: 38,
+        Escape: 27,
+    }
+    checkEventKey: (event, sk1, sk2, key)->
+        if sk1 and not event[sk1.toLowerCase() + 'Key']
+            return false
+        if sk2 and not event[sk2.toLowerCase() + 'Key']
+            return false
+        if @extraKeyMap[key]
+            if event.keyCode != @extraKeyMap[key]
+                return false
+
+        else if event.keyCode != key.charCodeAt(0)
+            return false
+
+        return true
 }

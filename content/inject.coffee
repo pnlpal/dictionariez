@@ -6,19 +6,11 @@ jQuery(document).mouseup (event)->
             text: window.getSelection().toString()
         })
 
-
 chrome.runtime.sendMessage {
-    type: 'keySettings',
-}, (datas)->
-    jQuery(document).bind 'keydown', (event)->
-        b = true
-        jQuery.each datas.specialKeys.split(','), (i, v)->
-            if !event[v + 'Key']
-                b = false
-
-        if event.keyCode != datas.normalKey.charCodeAt(0)
-            b = false
-        if b
+    type: 'setting',
+}, (setting)->
+    jQuery(document).bind 'keyup', (event)->
+        if utils.checkEventKey event, setting.openSK1, setting.openSK2, setting.openKey
             chrome.runtime.sendMessage({
                 type: 'look up',
                 means: 'keyboard',

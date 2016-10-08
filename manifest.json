@@ -10,6 +10,7 @@
     "content_scripts": [{
         "js": [
             "bower_components/jquery/dist/jquery.js",
+            "utils.js",
             "content/inject.js"
         ],
         "matches": ["<all_urls>"]
