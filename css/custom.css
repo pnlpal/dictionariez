@@ -1,13 +1,6 @@
 body{
     margin: 8px;
 }
-.dictWrapper .fa-arrow-circle-left {
-	margin-left: 30px;
-	margin-right: 5px;
-}
-.dictWrapper .fa-arrow-circle-right {
-	margin-left: 5px;
-}
 
 .dictWrapper .pron{
     color: rgb(58, 120, 213);
@@ -35,10 +28,6 @@ body{
     margin-left: 5px;
 }
 
-.dictWrapper .form-inline input{
-    margin-right: 15px;
-}
-
 .dictWrapper .form-inline .dropdown-toggle {
     overflow: hidden;
 }
@@ -50,7 +39,7 @@ body{
 }
 
 .dict_collection{
-    margin-right: 40px;
+    margin-right: 10px;
 }
 
 .default-page{
@@ -63,4 +52,9 @@ body{
 
 .dict_name {
     width: 150px;
+}
+
+#history-btn {
+    max-width: 100px;
+    overflow: hidden;
 }

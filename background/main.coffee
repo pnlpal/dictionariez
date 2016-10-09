@@ -13,8 +13,9 @@ require ["jquery",
     "utils",
     "background/setting",
     "background/ext",
+    "background/storage",
     "background/dictwindow.js",
-    "background/message.js"], ($, utils, setting, ext, dictWindow, message)->
+    "background/message.js"], ($, utils, setting, ext, storage, dictWindow, message)->
 
         onClickedContextMenu = (info, tab)->
             if info.selectionText
@@ -27,6 +28,8 @@ require ["jquery",
 
         setting.init().done (c)->
             ext.setBrowserIcon(c.enableMinidict)
+
+        storage.init()
 
         chrome.contextMenus.create {
             title: "使用 FairyDict 查询 '%s'",

@@ -5,6 +5,7 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
     $scope.initial = true
     $scope.querying = false
     $scope.queryResult = null
+    $scope.historyIndex = -1
     queryId = null
 
     chrome.runtime.sendMessage {
@@ -22,6 +23,13 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
     }, (setting)->
         $scope.setting = setting
 
+    chrome.runtime.sendMessage {
+        type: 'getHistory'
+    }, (history)->
+        $scope.history = history.reverse()
+        $scope.lastHistoryWord = $scope.history[0]
+        $scope.$apply()
+
     $scope.changeDict = (dict)->
         ci = $scope.allDicts.findIndex (d)->
             d.dictName == $scope.currentDictionary.dictName
@@ -34,11 +42,27 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             $scope.currentDictionary = $scope.allDicts[idx]
         else
             $scope.currentDictionary = dict
-        $scope.query()
+        $scope.query(true)
 
-    $scope.query = ()->
+    $scope.selectHistory = (index)->
+        if index == $scope.historyIndex
+            return
+
+        $scope.historyIndex = index
+        $scope.word = $scope.history[index]
+        if index == $scope.history.length-1
+            $scope.lastHistoryWord = $scope.history[0]
+        else
+            $scope.lastHistoryWord = $scope.history[index+1]
+
+        $scope.query(true)
+
+    $scope.query = (inHistory)->
         if not $scope.word or not $scope.currentDictionary
             return
+
+        if $scope.lastHistoryWord == $scope.word or $scope.lastQueryWord == $scope.word
+            inHistory = true
 
         console.log "[dictCtrl] query `#{$scope.word}` from #{$scope.currentDictionary.dictName}"
         $scope.initial = false
@@ -49,7 +73,8 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             type: 'query',
             text: $scope.word,
             dictionary: $scope.currentDictionary.dictName,
-            queryId: queryId
+            queryId: queryId,
+            inHistory: inHistory
         })
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
@@ -64,6 +89,13 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             if queryId == request.queryId
                 $scope.querying = false
                 $scope.queryResult = $sce.trustAsHtml(request.result)
+                $scope.lastQueryWord = $scope.word
+
+        else if request.type == 'history'
+            console.log "history", request.history
+            $scope.history = request.history.reverse()
+            $scope.lastHistoryWord = $scope.history[0]
+            $scope.historyIndex = -1
 
         $scope.$apply()
 

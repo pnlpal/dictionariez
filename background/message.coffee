@@ -2,8 +2,9 @@ define ["jquery",
     "utils",
     "background/setting",
     "background/ext",
+    "background/storage",
     "background/dict.js",
-    "background/dictwindow.js"], ($, utils, setting, ext, dict, dictWindow)->
+    "background/dictwindow.js"], ($, utils, setting, ext, storage, dict, dictWindow)->
     console.log "[message] init"
 
     chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
@@ -21,7 +22,7 @@ define ["jquery",
 
         else if request.type == 'query'
             setting.setValue('dictionary', request.dictionary) if request.dictionary
-            dictWindow.queryDict(request.text, request.dictionary, request.queryId)
+            dictWindow.queryDict(request.text, request.dictionary, request.queryId, request.inHistory)
 
         else if request.type == 'dictionary'
             dictionary = setting.getValue('dictionary')
@@ -34,6 +35,9 @@ define ["jquery",
             setting.setValue(request.key, request.value)
             if request.key == 'enableMinidict'
                 ext.setBrowserIcon request.value
+
+        else if request.type == 'getHistory'
+            sendResponse storage.history
 
         # sendResponse becomes invalid when the event listener returns,
         # unless you return true from the event listener to indicate you wish to send a response asynchronously

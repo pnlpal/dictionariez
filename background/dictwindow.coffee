@@ -1,7 +1,8 @@
 define ["jquery",
     "utils",
     "background/setting",
-    "background/dict.js"], ($, utils, setting, dict)->
+    "background/dict.js",
+    "background/storage"], ($, utils, setting, dict, storage)->
     console.log "[dictwindow] init"
 
     dictWindowManager =
@@ -45,12 +46,25 @@ define ["jquery",
             dictName = setting.getValue('dictionary')
             queryId = Date.now()
             @open().done ()=>
-                @sendMessage({type: 'querying', text, queryId})
-                @queryDict(text, dictName, queryId)
+                if text
+                    @sendMessage({type: 'querying', text, queryId})
+                    inHistory = false
+                    if storage.history[storage.history.length-1] == text
+                        inHistory = true
+                    @queryDict(text, dictName, queryId, inHistory)
+                else
+                    @sendMessage({type: 'history', history: storage.history})
 
-        queryDict: (text, dictName, queryId)->
+        queryDict: (text, dictName, queryId, inHistory)->
+            if not inHistory
+                @sendMessage({type: 'history', history: storage.history})
+
             dict.query(text, dictName).then (res)=>
-                console.log "[dictwindow] query #{dictName} result: ", res
+                # if text is a long sentence, don't keep in history
+                if text.split(/\s+/).length <= 5 and not inHistory
+                    storage.appendHistory(text)
+
+                console.log "[dictwindow] query #{text} from #{dictName}"
                 @sendMessage({type: 'queryResult', result: res, queryId})
 
     chrome.windows.onRemoved.addListener (wid)->

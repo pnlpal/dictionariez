@@ -7,7 +7,8 @@
   <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="bower_components/angular-ui/build/angular-ui.css">
   <link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
-  <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
+  <link rel="stylesheet" type="text/css" href="bower_components/font-awesome/css/font-awesome.css">
+  <!-- <link rel="stylesheet" type="text/css" href="css/font-awesome.css"> -->
   <link rel="stylesheet" type="text/css" href="css/custom.css">
 
   <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
@@ -24,6 +25,27 @@
     <div class="dictWrapper" ng-controller="dictCtrl">
         <form class="form-inline" ng-submit="query()">
           <!-- <i class="fa fa-laptop fa-lg default-page"></i> -->
+          <div class="form-group" ng-show="history.length">
+            <!-- history -->
+            <div class="btn-group" uib-dropdown>
+              <button id="history-btn" type="button" class="btn btn-default" title="{{lastHistoryWord}}" ng-click="selectHistory(historyIndex+1)">
+                {{lastHistoryWord}}
+              </button>
+              <button type="button" class="btn btn-default" uib-dropdown-toggle>
+                <i class="fa fa-history fa-lg" aria-hidden="true"></i>
+                <span class="sr-only">History</span>
+              </button>
+              <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="history-btn">
+                <li role="menuitem" ng-repeat="item in history track by $index">
+                  <a ng-click="selectHistory($index)" title="{{item}}">
+                    <strong ng-if="historyIndex === $index">{{item}}</strong>
+                    <span ng-if="historyIndex !== $index">{{item}}</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
           <div class="form-group">
             <input type="text" ng-model="word" class="form-control dict_input" placeholder="input word">
           </div>

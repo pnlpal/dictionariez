@@ -12,7 +12,7 @@ require.config({
   }
 });
 
-require(["jquery", "utils", "background/setting", "background/ext", "background/dictwindow.js", "background/message.js"], function($, utils, setting, ext, dictWindow, message) {
+require(["jquery", "utils", "background/setting", "background/ext", "background/storage", "background/dictwindow.js", "background/message.js"], function($, utils, setting, ext, storage, dictWindow, message) {
   var onClickedContextMenu;
   onClickedContextMenu = function(info, tab) {
     if (info.selectionText) {
@@ -28,6 +28,7 @@ require(["jquery", "utils", "background/setting", "background/ext", "background/
   setting.init().done(function(c) {
     return ext.setBrowserIcon(c.enableMinidict);
   });
+  storage.init();
   return chrome.contextMenus.create({
     title: "使用 FairyDict 查询 '%s'",
     contexts: ["selection"],

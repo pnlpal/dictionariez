@@ -9,6 +9,7 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
   $scope.initial = true;
   $scope.querying = false;
   $scope.queryResult = null;
+  $scope.historyIndex = -1;
   queryId = null;
   chrome.runtime.sendMessage({
     type: 'dictionary'
@@ -30,6 +31,13 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
   }, function(setting) {
     return $scope.setting = setting;
   });
+  chrome.runtime.sendMessage({
+    type: 'getHistory'
+  }, function(history) {
+    $scope.history = history.reverse();
+    $scope.lastHistoryWord = $scope.history[0];
+    return $scope.$apply();
+  });
   $scope.changeDict = function(dict) {
     var ci, idx;
     ci = $scope.allDicts.findIndex(function(d) {
@@ -44,11 +52,27 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
     } else {
       $scope.currentDictionary = dict;
     }
-    return $scope.query();
+    return $scope.query(true);
   };
-  $scope.query = function() {
+  $scope.selectHistory = function(index) {
+    if (index === $scope.historyIndex) {
+      return;
+    }
+    $scope.historyIndex = index;
+    $scope.word = $scope.history[index];
+    if (index === $scope.history.length - 1) {
+      $scope.lastHistoryWord = $scope.history[0];
+    } else {
+      $scope.lastHistoryWord = $scope.history[index + 1];
+    }
+    return $scope.query(true);
+  };
+  $scope.query = function(inHistory) {
     if (!$scope.word || !$scope.currentDictionary) {
       return;
+    }
+    if ($scope.lastHistoryWord === $scope.word || $scope.lastQueryWord === $scope.word) {
+      inHistory = true;
     }
     console.log("[dictCtrl] query `" + $scope.word + "` from " + $scope.currentDictionary.dictName);
     $scope.initial = false;
@@ -58,7 +82,8 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
       type: 'query',
       text: $scope.word,
       dictionary: $scope.currentDictionary.dictName,
-      queryId: queryId
+      queryId: queryId,
+      inHistory: inHistory
     });
   };
   if ((ref = chrome.runtime.onMessage) != null) {
@@ -73,7 +98,13 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
         if (queryId === request.queryId) {
           $scope.querying = false;
           $scope.queryResult = $sce.trustAsHtml(request.result);
+          $scope.lastQueryWord = $scope.word;
         }
+      } else if (request.type === 'history') {
+        console.log("history", request.history);
+        $scope.history = request.history.reverse();
+        $scope.lastHistoryWord = $scope.history[0];
+        $scope.historyIndex = -1;
       }
       return $scope.$apply();
     });
