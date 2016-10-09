@@ -49,14 +49,23 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
     $scope.selectHistory = (index)->
         if index == $scope.historyIndex
             return
+        if index == 'prev'
+            if $scope.historyIndex == $scope.history.length-1
+                return
+            index = $scope.historyIndex + 1
+        else if index == 'next'
+            if $scope.historyIndex < 0
+                return
+            index = $scope.historyIndex - 1
+
         if index >= $scope.history.length
             index = 0
 
         $scope.historyIndex = index
-        $scope.word = _.keys($scope.history[index])[0]
-
-        $scope.rating = _.values($scope.history[index])[0]
-        updateRating($scope.rating)
+        if index > -1
+            $scope.word = _.keys($scope.history[index])[0]
+        else
+            $scope.word = $scope.lastQueryWord
 
         if index == $scope.history.length-1
             $scope.lastHistoryWord = $scope.history[0]
@@ -93,10 +102,12 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
 
         else if request.type == 'queryResult'
             if queryId == request.queryId
-                updateRating(request.rating)
                 $scope.querying = false
                 $scope.queryResult = $sce.trustAsHtml(request.result)
                 $scope.rating = request.rating
+                updateRating(request.rating)
+                if not request.inHistory
+                    $scope.lastQueryWord = $scope.word
 
         else if request.type == 'history'
             console.log "history", request.history
@@ -154,6 +165,12 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
 
         if window.utils.checkEventKey evt, nextSK, null, nextKey
             $scope.changeDict('next')
+
+        if window.utils.checkEventKey evt, $scope.setting.prevHistorySK1, null, $scope.setting.prevHistoryKey
+            $scope.selectHistory('prev')
+
+        if window.utils.checkEventKey evt, $scope.setting.nextHistorySK1, null, $scope.setting.nextHistoryKey
+            $scope.selectHistory('next')
 
     return
 

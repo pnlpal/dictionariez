@@ -11,7 +11,10 @@ define ["jquery",
             prevDictKey: 'ArrowLeft',
             nextDictSK1: 'Ctrl',
             nextDictKey: 'ArrowRight',
-
+            prevHistorySK1: 'Alt',
+            prevHistoryKey: 'ArrowLeft',
+            nextHistorySK1: 'Alt',
+            nextHistoryKey: 'ArrowRight'
             dictionary: ''
         }
 

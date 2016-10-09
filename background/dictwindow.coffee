@@ -67,6 +67,7 @@ define ["jquery",
                     type: 'queryResult',
                     result: res,
                     queryId: queryId,
+                    inHistory: inHistory,
                     rating: item?[text]})
 
     chrome.windows.onRemoved.addListener (wid)->

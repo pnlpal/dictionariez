@@ -81,6 +81,7 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
             type: 'queryResult',
             result: res,
             queryId: queryId,
+            inHistory: inHistory,
             rating: item != null ? item[text] : void 0
           });
         };
