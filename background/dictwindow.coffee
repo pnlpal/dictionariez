@@ -7,8 +7,8 @@ define ["jquery",
 
     dictWindowManager =
         w: null
-        defaultWidth: 620
-        defaultHeight: 700
+        defaultWidth: 700
+        defaultHeight: 800
         open: ()->
             dfd = $.Deferred()
             left = (screen.width / 2) - (dictWindowManager.defaultWidth / 2)
@@ -48,10 +48,7 @@ define ["jquery",
             @open().done ()=>
                 if text
                     @sendMessage({type: 'querying', text, queryId})
-                    inHistory = false
-                    if storage.history[storage.history.length-1] == text
-                        inHistory = true
-                    @queryDict(text, dictName, queryId, inHistory)
+                    @queryDict(text, dictName, queryId)
                 else
                     @sendMessage({type: 'history', history: storage.history})
 
@@ -62,10 +59,15 @@ define ["jquery",
             dict.query(text, dictName).then (res)=>
                 # if text is a long sentence, don't keep in history
                 if text.split(/\s+/).length <= 5 and not inHistory
-                    storage.appendHistory(text)
+                    storage.addHistory(text)
 
                 console.log "[dictwindow] query #{text} from #{dictName}"
-                @sendMessage({type: 'queryResult', result: res, queryId})
+                item = storage.isInHistory(text)
+                @sendMessage({
+                    type: 'queryResult',
+                    result: res,
+                    queryId: queryId,
+                    rating: item?[text]})
 
     chrome.windows.onRemoved.addListener (wid)->
         if dictWindowManager.w?.id == wid

@@ -39,6 +39,9 @@ define ["jquery",
         else if request.type == 'getHistory'
             sendResponse storage.history
 
+        else if request.type == 'rating'
+            storage.addRating request.text, request.value
+
         # sendResponse becomes invalid when the event listener returns,
         # unless you return true from the event listener to indicate you wish to send a response asynchronously
         return true

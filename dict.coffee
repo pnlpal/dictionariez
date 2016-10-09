@@ -1,4 +1,6 @@
 dictApp = angular.module('fairyDictApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize'])
+dictApp.run ($rootScope)->
+    $rootScope._ = _
 
 dictApp.controller 'dictCtrl', ($scope, $sce) ->
     console.log "[dictCtrl] init"
@@ -47,9 +49,15 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
     $scope.selectHistory = (index)->
         if index == $scope.historyIndex
             return
+        if index >= $scope.history.length
+            index = 0
 
         $scope.historyIndex = index
-        $scope.word = $scope.history[index]
+        $scope.word = _.keys($scope.history[index])[0]
+
+        $scope.rating = _.values($scope.history[index])[0]
+        updateRating($scope.rating)
+
         if index == $scope.history.length-1
             $scope.lastHistoryWord = $scope.history[0]
         else
@@ -59,10 +67,8 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
 
     $scope.query = (inHistory)->
         if not $scope.word or not $scope.currentDictionary
+            $scope.initial = true
             return
-
-        if $scope.lastHistoryWord == $scope.word or $scope.lastQueryWord == $scope.word
-            inHistory = true
 
         console.log "[dictCtrl] query `#{$scope.word}` from #{$scope.currentDictionary.dictName}"
         $scope.initial = false
@@ -87,9 +93,10 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
 
         else if request.type == 'queryResult'
             if queryId == request.queryId
+                updateRating(request.rating)
                 $scope.querying = false
                 $scope.queryResult = $sce.trustAsHtml(request.result)
-                $scope.lastQueryWord = $scope.word
+                $scope.rating = request.rating
 
         else if request.type == 'history'
             console.log "history", request.history
@@ -98,6 +105,27 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             $scope.historyIndex = -1
 
         $scope.$apply()
+
+    $('#stars').on 'starrr:change', (e, value)->
+        if $scope.word
+            value ?= 0
+            console.log "[dictCtrl] rating word: #{$scope.word} #{value}"
+            chrome.runtime.sendMessage {
+                type: 'rating',
+                value: value,
+                text: $scope.word
+            }
+            if $scope.historyIndex >= 0
+                item = $scope.history[$scope.historyIndex]
+                if item and item[$scope.word]?
+                    item[$scope.word] = value
+
+    $('.starrr').starrr({numStars: 3})
+
+    updateRating = (value)->
+        obj = $(".starrr").data('star-rating')
+        obj.options.rating = value
+        obj.syncRating()
 
     _handler = (evt)->
         node = $(event.target)

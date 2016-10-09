@@ -29,6 +29,7 @@
     "angular-route": "1.4.12",
     "jquery": "^3.1.1",
     "requirejs": "^2.3.2",
-    "font-awesome": "^4.6.3"
+    "font-awesome": "^4.6.3",
+    "underscore": "^1.8.3"
   }
 }

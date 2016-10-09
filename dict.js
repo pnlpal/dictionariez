@@ -3,8 +3,12 @@ var dictApp;
 
 dictApp = angular.module('fairyDictApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize']);
 
+dictApp.run(function($rootScope) {
+  return $rootScope._ = _;
+});
+
 dictApp.controller('dictCtrl', function($scope, $sce) {
-  var _handler, queryId, ref;
+  var _handler, queryId, ref, updateRating;
   console.log("[dictCtrl] init");
   $scope.initial = true;
   $scope.querying = false;
@@ -58,8 +62,13 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
     if (index === $scope.historyIndex) {
       return;
     }
+    if (index >= $scope.history.length) {
+      index = 0;
+    }
     $scope.historyIndex = index;
-    $scope.word = $scope.history[index];
+    $scope.word = _.keys($scope.history[index])[0];
+    $scope.rating = _.values($scope.history[index])[0];
+    updateRating($scope.rating);
     if (index === $scope.history.length - 1) {
       $scope.lastHistoryWord = $scope.history[0];
     } else {
@@ -69,10 +78,8 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
   };
   $scope.query = function(inHistory) {
     if (!$scope.word || !$scope.currentDictionary) {
+      $scope.initial = true;
       return;
-    }
-    if ($scope.lastHistoryWord === $scope.word || $scope.lastQueryWord === $scope.word) {
-      inHistory = true;
     }
     console.log("[dictCtrl] query `" + $scope.word + "` from " + $scope.currentDictionary.dictName);
     $scope.initial = false;
@@ -96,9 +103,10 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
         queryId = request.queryId;
       } else if (request.type === 'queryResult') {
         if (queryId === request.queryId) {
+          updateRating(request.rating);
           $scope.querying = false;
           $scope.queryResult = $sce.trustAsHtml(request.result);
-          $scope.lastQueryWord = $scope.word;
+          $scope.rating = request.rating;
         }
       } else if (request.type === 'history') {
         console.log("history", request.history);
@@ -109,6 +117,35 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
       return $scope.$apply();
     });
   }
+  $('#stars').on('starrr:change', function(e, value) {
+    var item;
+    if ($scope.word) {
+      if (value == null) {
+        value = 0;
+      }
+      console.log("[dictCtrl] rating word: " + $scope.word + " " + value);
+      chrome.runtime.sendMessage({
+        type: 'rating',
+        value: value,
+        text: $scope.word
+      });
+      if ($scope.historyIndex >= 0) {
+        item = $scope.history[$scope.historyIndex];
+        if (item && (item[$scope.word] != null)) {
+          return item[$scope.word] = value;
+        }
+      }
+    }
+  });
+  $('.starrr').starrr({
+    numStars: 3
+  });
+  updateRating = function(value) {
+    var obj;
+    obj = $(".starrr").data('star-rating');
+    obj.options.rating = value;
+    return obj.syncRating();
+  };
   _handler = function(evt) {
     var a, node;
     node = $(event.target);

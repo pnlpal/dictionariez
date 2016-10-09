@@ -4,8 +4,8 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
   console.log("[dictwindow] init");
   dictWindowManager = {
     w: null,
-    defaultWidth: 620,
-    defaultHeight: 700,
+    defaultWidth: 700,
+    defaultHeight: 800,
     open: function() {
       var dfd, left, top;
       dfd = $.Deferred();
@@ -46,18 +46,13 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
       queryId = Date.now();
       return this.open().done((function(_this) {
         return function() {
-          var inHistory;
           if (text) {
             _this.sendMessage({
               type: 'querying',
               text: text,
               queryId: queryId
             });
-            inHistory = false;
-            if (storage.history[storage.history.length - 1] === text) {
-              inHistory = true;
-            }
-            return _this.queryDict(text, dictName, queryId, inHistory);
+            return _this.queryDict(text, dictName, queryId);
           } else {
             return _this.sendMessage({
               type: 'history',
@@ -76,14 +71,17 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
       }
       return dict.query(text, dictName).then((function(_this) {
         return function(res) {
+          var item;
           if (text.split(/\s+/).length <= 5 && !inHistory) {
-            storage.appendHistory(text);
+            storage.addHistory(text);
           }
           console.log("[dictwindow] query " + text + " from " + dictName);
+          item = storage.isInHistory(text);
           return _this.sendMessage({
             type: 'queryResult',
             result: res,
-            queryId: queryId
+            queryId: queryId,
+            rating: item != null ? item[text] : void 0
           });
         };
       })(this));

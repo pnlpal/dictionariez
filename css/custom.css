@@ -54,6 +54,22 @@ body{
     width: 150px;
 }
 
+#stars {
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+#stars i.fa{
+    padding-left: 3px;
+    color: orange;
+}
+
+.dictWrapper .fa.fa-star {
+    color: orange;
+}
+
+
+
 #history-btn {
     max-width: 100px;
     overflow: hidden;

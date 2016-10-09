@@ -12,12 +12,14 @@
   <link rel="stylesheet" type="text/css" href="css/custom.css">
 
   <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
   <script type="text/javascript" src="bower_components/angular/angular.js"></script>
   <script type="text/javascript" src="bower_components/angular-ui/build/angular-ui.js"></script>
   <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
   <script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
   <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
   <script type="text/javascript" src="utils.js"></script>
+  <script type="text/javascript" src="js/starrr.js"></script>
   <script type="text/javascript" src="dict.js"></script>
 </head>
 
@@ -28,8 +30,8 @@
           <div class="form-group" ng-show="history.length">
             <!-- history -->
             <div class="btn-group" uib-dropdown>
-              <button id="history-btn" type="button" class="btn btn-default" title="{{lastHistoryWord}}" ng-click="selectHistory(historyIndex+1)">
-                {{lastHistoryWord}}
+              <button id="history-btn" type="button" class="btn btn-default" title="{{_.keys(lastHistoryWord)[0]}}" ng-click="selectHistory(historyIndex+1)">
+                {{_.keys(lastHistoryWord)[0]}}
               </button>
               <button type="button" class="btn btn-default" uib-dropdown-toggle>
                 <i class="fa fa-history fa-lg" aria-hidden="true"></i>
@@ -37,9 +39,13 @@
               </button>
               <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="history-btn">
                 <li role="menuitem" ng-repeat="item in history track by $index">
-                  <a ng-click="selectHistory($index)" title="{{item}}">
-                    <strong ng-if="historyIndex === $index">{{item}}</strong>
-                    <span ng-if="historyIndex !== $index">{{item}}</span>
+                  <a ng-click="selectHistory($index)" title="{{_.keys(item)[0]}}">
+                    <strong ng-if="historyIndex === $index">{{_.keys(item)[0]}}</strong>
+                    <span ng-if="historyIndex !== $index">{{_.keys(item)[0]}}</span>
+
+                    <span class="pull-right">
+                      <i class="fa fa-star" aria-hidden="true" ng-repeat="i in _.range(0,_.values(item)[0])"></i>
+                    </span>
                   </a>
                 </li>
               </ul>
@@ -52,6 +58,9 @@
 
           <input type="submit" id="submit" class="btn btn-sm btn-primary dict_query" value="查询">
           <!-- <button type="submit" class="btn btn-sm btn-primary dict_translate">翻译</button> -->
+          <div class="form-group">
+            <div id="stars" class="starrr" title="选择难度"></div>
+          </div>
 
           <div class="form-group pull-right dict_collection">
           <i ng-click="changeDict('prev')" class="fa fa-arrow-circle-left fa-lg dict_prev dict_nav"></i>
