@@ -2,6 +2,8 @@
 
 查词典的 chrome extension, 方便中国人阅读英文网站，我自己每天都依赖它，功能和使用体验上我尽量做得更好， 欢迎大家提供反馈。
 
+安装地址：[chrome web store](https://chrome.google.com/webstore/detail/fairydict/gpdpcfgfmgkmljmhhnedefdaadgehaah)
+
 # Feature
 
 * 支持多种词典，金山词霸、海词、WordNet等；
