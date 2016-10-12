@@ -43,6 +43,15 @@ define(["jquery", "utils"], function($, utils) {
           historyRating: this.history
         });
       }
+    },
+    deleteHistory: function(word) {
+      var idx;
+      idx = this.history.findIndex(function(item) {
+        return item[word] != null;
+      });
+      if (idx >= 0) {
+        return this.history.splice(idx, 1);
+      }
     }
   };
   return storage;

@@ -68,9 +68,18 @@ body{
     color: orange;
 }
 
+.history .dropdown-menu {
+    width: 220px;
+}
 
+.history .dropdown-menu li>a {
+    padding-right: 2px;
+}
 
 #history-btn {
     max-width: 100px;
     overflow: hidden;
+}
+.vhide {
+    visibility: hidden;
 }

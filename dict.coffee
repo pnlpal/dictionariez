@@ -74,6 +74,15 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
 
         $scope.query(true)
 
+    $scope.deleteHistory = (index)->
+        item = $scope.history.splice(index, 1)
+        chrome.runtime.sendMessage({
+            type: 'deleteHistory',
+            index: index,
+            text: _.keys(item[0])[0]
+        })
+        return false
+
     $scope.query = (inHistory)->
         if not $scope.word or not $scope.currentDictionary
             $scope.initial = true

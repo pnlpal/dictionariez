@@ -30,6 +30,12 @@ define ["jquery",
                 @history.push(item)
                 chrome.storage.sync.set({historyRating: @history})
 
+        deleteHistory: (word)->
+            idx = @history.findIndex (item)->
+                return item[word]?
+            if idx >= 0
+                @history.splice(idx, 1)
+
     }
 
     return storage

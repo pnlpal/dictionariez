@@ -89,6 +89,16 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
     }
     return $scope.query(true);
   };
+  $scope.deleteHistory = function(index) {
+    var item;
+    item = $scope.history.splice(index, 1);
+    chrome.runtime.sendMessage({
+      type: 'deleteHistory',
+      index: index,
+      text: _.keys(item[0])[0]
+    });
+    return false;
+  };
   $scope.query = function(inHistory) {
     if (!$scope.word || !$scope.currentDictionary) {
       $scope.initial = true;

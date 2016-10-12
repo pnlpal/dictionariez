@@ -29,7 +29,7 @@
           <!-- <i class="fa fa-laptop fa-lg default-page"></i> -->
           <div class="form-group" ng-show="history.length">
             <!-- history -->
-            <div class="btn-group" uib-dropdown>
+            <div class="btn-group history" uib-dropdown>
               <button id="history-btn" type="button" class="btn btn-default" title="{{_.keys(lastHistoryWord)[0]}}" ng-click="selectHistory(historyIndex+1)">
                 {{_.keys(lastHistoryWord)[0]}}
               </button>
@@ -39,12 +39,13 @@
               </button>
               <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="history-btn">
                 <li role="menuitem" ng-repeat="item in history track by $index">
-                  <a ng-click="selectHistory($index)" title="{{_.keys(item)[0]}}">
+                  <a ng-click="selectHistory($index)" title="{{_.keys(item)[0]}}" ng-init="hideDeleteBtn=1" ng-mouseenter="hideDeleteBtn=0" ng-mouseleave="hideDeleteBtn=1">
                     <strong ng-if="historyIndex === $index">{{_.keys(item)[0]}}</strong>
                     <span ng-if="historyIndex !== $index">{{_.keys(item)[0]}}</span>
 
                     <span class="pull-right">
                       <i class="fa fa-star" aria-hidden="true" ng-repeat="i in _.range(0,_.values(item)[0])"></i>
+                      <i class="fa fa-times text-danger" ng-class="{vhide: hideDeleteBtn}" ng-click="deleteHistory($index);$event.stopPropagation();$event.preventDefault();" aria-hidden="true"></i>
                     </span>
                   </a>
                 </li>

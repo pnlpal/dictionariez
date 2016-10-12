@@ -40,6 +40,8 @@ define(["jquery", "utils", "background/setting", "background/ext", "background/s
       sendResponse(storage.history);
     } else if (request.type === 'rating') {
       storage.addRating(request.text, request.value);
+    } else if (request.type === 'deleteHistory') {
+      storage.deleteHistory(request.text);
     }
     return true;
   });
