@@ -8,13 +8,12 @@ dictApp.run(function($rootScope) {
 });
 
 dictApp.controller('dictCtrl', function($scope, $sce) {
-  var _handler, queryId, ref, updateRating;
+  var _handler, ref, updateRating;
   console.log("[dictCtrl] init");
   $scope.initial = true;
   $scope.querying = false;
   $scope.queryResult = null;
   $scope.historyIndex = -1;
-  queryId = null;
   chrome.runtime.sendMessage({
     type: 'dictionary'
   }, function(arg) {
@@ -107,12 +106,10 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
     console.log("[dictCtrl] query `" + $scope.word + "` from " + $scope.currentDictionary.dictName);
     $scope.initial = false;
     $scope.querying = true;
-    queryId = Date.now();
     return chrome.runtime.sendMessage({
       type: 'query',
       text: $scope.word,
       dictionary: $scope.currentDictionary.dictName,
-      queryId: queryId,
       inHistory: inHistory
     });
   };
@@ -123,9 +120,8 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
         $scope.querying = true;
         $scope.queryResult = null;
         $scope.word = request.text;
-        queryId = request.queryId;
       } else if (request.type === 'queryResult') {
-        if (queryId === request.queryId) {
+        if ($scope.word === request.text) {
           $scope.querying = false;
           $scope.queryResult = $sce.trustAsHtml(request.result);
           $scope.rating = request.rating;

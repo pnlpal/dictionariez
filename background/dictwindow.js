@@ -41,18 +41,16 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
       }
     },
     lookup: function(text) {
-      var dictName, queryId;
+      var dictName;
       dictName = setting.getValue('dictionary');
-      queryId = Date.now();
       return this.open().done((function(_this) {
         return function() {
           if (text) {
             _this.sendMessage({
               type: 'querying',
-              text: text,
-              queryId: queryId
+              text: text
             });
-            return _this.queryDict(text, dictName, queryId);
+            return _this.queryDict(text, dictName);
           } else {
             return _this.sendMessage({
               type: 'history',
@@ -62,7 +60,7 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
         };
       })(this));
     },
-    queryDict: function(text, dictName, queryId, inHistory) {
+    queryDict: function(text, dictName, inHistory) {
       if (!inHistory) {
         this.sendMessage({
           type: 'history',
@@ -80,7 +78,7 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
           return _this.sendMessage({
             type: 'queryResult',
             result: res,
-            queryId: queryId,
+            text: text,
             inHistory: inHistory,
             rating: item != null ? item[text] : void 0
           });

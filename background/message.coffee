@@ -22,7 +22,7 @@ define ["jquery",
 
         else if request.type == 'query'
             setting.setValue('dictionary', request.dictionary) if request.dictionary
-            dictWindow.queryDict(request.text, request.dictionary, request.queryId, request.inHistory)
+            dictWindow.queryDict(request.text, request.dictionary, request.inHistory)
 
         else if request.type == 'dictionary'
             dictionary = setting.getValue('dictionary')

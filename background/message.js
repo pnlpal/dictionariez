@@ -22,7 +22,7 @@ define(["jquery", "utils", "background/setting", "background/ext", "background/s
       if (request.dictionary) {
         setting.setValue('dictionary', request.dictionary);
       }
-      dictWindow.queryDict(request.text, request.dictionary, request.queryId, request.inHistory);
+      dictWindow.queryDict(request.text, request.dictionary, request.inHistory);
     } else if (request.type === 'dictionary') {
       dictionary = setting.getValue('dictionary');
       sendResponse({

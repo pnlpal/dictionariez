@@ -8,7 +8,6 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
     $scope.querying = false
     $scope.queryResult = null
     $scope.historyIndex = -1
-    queryId = null
 
     chrome.runtime.sendMessage {
         type: 'dictionary'
@@ -91,13 +90,11 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         console.log "[dictCtrl] query `#{$scope.word}` from #{$scope.currentDictionary.dictName}"
         $scope.initial = false
         $scope.querying = true
-        queryId = Date.now()
 
         chrome.runtime.sendMessage({
             type: 'query',
             text: $scope.word,
             dictionary: $scope.currentDictionary.dictName,
-            queryId: queryId,
             inHistory: inHistory
         })
 
@@ -107,10 +104,9 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             $scope.querying = true
             $scope.queryResult = null
             $scope.word = request.text
-            queryId = request.queryId
 
         else if request.type == 'queryResult'
-            if queryId == request.queryId
+            if $scope.word == request.text
                 $scope.querying = false
                 $scope.queryResult = $sce.trustAsHtml(request.result)
                 $scope.rating = request.rating

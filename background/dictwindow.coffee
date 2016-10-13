@@ -16,6 +16,7 @@ define ["jquery",
             if !@w
                 chrome.windows.create({
                     url: chrome.extension.getURL('dict.html'),
+                    # url: 'http://cn.bing.com/dict/search?q=elephant',
                     type: 'popup',
                     width: dictWindowManager.defaultWidth,
                     height: dictWindowManager.defaultHeight,
@@ -44,15 +45,14 @@ define ["jquery",
 
         lookup: (text)->
             dictName = setting.getValue('dictionary')
-            queryId = Date.now()
             @open().done ()=>
                 if text
-                    @sendMessage({type: 'querying', text, queryId})
-                    @queryDict(text, dictName, queryId)
+                    @sendMessage({type: 'querying', text})
+                    @queryDict(text, dictName)
                 else
                     @sendMessage({type: 'history', history: storage.history})
 
-        queryDict: (text, dictName, queryId, inHistory)->
+        queryDict: (text, dictName, inHistory)->
             if not inHistory
                 @sendMessage({type: 'history', history: storage.history})
 
@@ -66,7 +66,7 @@ define ["jquery",
                 @sendMessage({
                     type: 'queryResult',
                     result: res,
-                    queryId: queryId,
+                    text: text,
                     inHistory: inHistory,
                     rating: item?[text]})
 
