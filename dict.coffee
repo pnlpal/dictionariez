@@ -1,6 +1,9 @@
-dictApp = angular.module('fairyDictApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize'])
+dictApp = angular.module('fairyDictApp', ['ui.bootstrap', 'ngSanitize'])
 dictApp.run ($rootScope)->
     $rootScope._ = _
+
+loader.loadTemplate().then ()->
+    angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])
 
 dictApp.controller 'dictCtrl', ($scope, $sce) ->
     console.log "[dictCtrl] init"
@@ -11,25 +14,20 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
 
     chrome.runtime.sendMessage {
         type: 'dictionary'
-    }, ({dictionary, allDicts})->
+    }, ({dictionary, allDicts, history})->
         console.log "[dict] all dicts: ", allDicts
         $scope.allDicts = allDicts
         $scope.currentDictionary = allDicts.find (d)->
             d.dictName == dictionary
         $scope.currentDictionary ?= allDicts[0]
+        $scope.history = history.reverse()
+        $scope.lastHistoryWord = $scope.history[0]
         $scope.$apply()
 
     chrome.runtime.sendMessage {
         type: 'setting'
     }, (setting)->
         $scope.setting = setting
-
-    chrome.runtime.sendMessage {
-        type: 'getHistory'
-    }, (history)->
-        $scope.history = history.reverse()
-        $scope.lastHistoryWord = $scope.history[0]
-        $scope.$apply()
 
     $scope.changeDict = (dict)->
         ci = $scope.allDicts.findIndex (d)->
@@ -106,9 +104,13 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             $scope.word = request.text
 
         else if request.type == 'queryResult'
-            if $scope.word == request.text
+            console.log "[dictCtrl] got query result for word: #{request.text}"
+            if $scope.word == request.text or !$scope.word
+                $scope.initial = false
+                $scope.word = request.text
                 $scope.querying = false
-                $scope.queryResult = $sce.trustAsHtml(request.result)
+                if request.result?.html?
+                    $scope.queryResult = $sce.trustAsHtml(request.result.html)
                 $scope.rating = request.rating
                 updateRating(request.rating)
                 if not request.inHistory
@@ -164,18 +166,22 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         nextSK = $scope.setting.nextDictSK1
         prevKey = $scope.setting.prevDictKey
         nextKey = $scope.setting.nextDictKey
+        stop = false
 
         if window.utils.checkEventKey evt, prevSK, null, prevKey
             $scope.changeDict('prev')
-
+            stop = true
         if window.utils.checkEventKey evt, nextSK, null, nextKey
             $scope.changeDict('next')
-
+            stop = true
         if window.utils.checkEventKey evt, $scope.setting.prevHistorySK1, null, $scope.setting.prevHistoryKey
             $scope.selectHistory('prev')
-
+            stop = true
         if window.utils.checkEventKey evt, $scope.setting.nextHistorySK1, null, $scope.setting.nextHistoryKey
             $scope.selectHistory('next')
-
+            stop = true
+        if stop
+            evt.preventDefault()
+            evt.stopPropagation()
     return
 

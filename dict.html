@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="fairyDictApp">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -7,99 +7,21 @@
   <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="bower_components/angular-ui/build/angular-ui.css">
   <link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
-  <link rel="stylesheet" type="text/css" href="bower_components/font-awesome/css/font-awesome.css">
-  <!-- <link rel="stylesheet" type="text/css" href="css/font-awesome.css"> -->
+  <!-- <link rel="stylesheet" type="text/css" href="bower_components/font-awesome/css/font-awesome.css"> -->
+  <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
   <link rel="stylesheet" type="text/css" href="css/custom.css">
 
   <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
   <script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
   <script type="text/javascript" src="bower_components/angular/angular.js"></script>
   <script type="text/javascript" src="bower_components/angular-ui/build/angular-ui.js"></script>
-  <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
   <script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
   <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
   <script type="text/javascript" src="utils.js"></script>
   <script type="text/javascript" src="js/starrr.js"></script>
+  <script type="text/javascript" src="loader.js"></script>
   <script type="text/javascript" src="dict.js"></script>
 </head>
 
 <body>
-    <div class="dictWrapper" ng-controller="dictCtrl">
-        <form class="form-inline" ng-submit="query()">
-          <!-- <i class="fa fa-laptop fa-lg default-page"></i> -->
-          <div class="form-group" ng-show="history.length">
-            <!-- history -->
-            <div class="btn-group history" uib-dropdown>
-              <button id="history-btn" type="button" class="btn btn-default" title="{{_.keys(lastHistoryWord)[0]}}" ng-click="selectHistory(historyIndex+1)">
-                {{_.keys(lastHistoryWord)[0]}}
-              </button>
-              <button type="button" class="btn btn-default" uib-dropdown-toggle>
-                <i class="fa fa-history fa-lg" aria-hidden="true"></i>
-                <span class="sr-only">History</span>
-              </button>
-              <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="history-btn">
-                <li role="menuitem" ng-repeat="item in history track by $index">
-                  <a ng-click="selectHistory($index)" title="{{_.keys(item)[0]}}" ng-init="hideDeleteBtn=1" ng-mouseenter="hideDeleteBtn=0" ng-mouseleave="hideDeleteBtn=1">
-                    <strong ng-if="historyIndex === $index">{{_.keys(item)[0]}}</strong>
-                    <span ng-if="historyIndex !== $index">{{_.keys(item)[0]}}</span>
-
-                    <span class="pull-right">
-                      <i class="fa fa-star" aria-hidden="true" ng-repeat="i in _.range(0,_.values(item)[0])"></i>
-                      <i class="fa fa-times text-danger" ng-class="{vhide: hideDeleteBtn}" ng-click="deleteHistory($index);$event.stopPropagation();$event.preventDefault();" aria-hidden="true"></i>
-                    </span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <input type="text" ng-model="word" class="form-control dict_input" placeholder="input word">
-          </div>
-
-          <input type="submit" id="submit" class="btn btn-sm btn-primary dict_query" value="查询">
-          <!-- <button type="submit" class="btn btn-sm btn-primary dict_translate">翻译</button> -->
-          <div class="form-group">
-            <div id="stars" class="starrr" title="选择难度"></div>
-          </div>
-
-          <div class="form-group pull-right dict_collection">
-          <i ng-click="changeDict('prev')" class="fa fa-arrow-circle-left fa-lg dict_prev dict_nav"></i>
-          <div class="form-group">
-            <div class="btn-group" uib-dropdown  uib-keyboard-nav>
-              <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default dict_name"
-              type="button" id="dropdownMenu1" title="{{currentDictionary.dictName}}">{{currentDictionary.dictName}}
-                  <span class="caret"></span>
-              </button>
-
-              <ul uib-dropdown-menu class="dropdown-menu dict_list" role="menu" aria-labelledby="dropdownMenu1">
-                <li role="menuitem" ng-repeat="dict in allDicts">
-                  <a ng-click="changeDict(dict)" title="{{dict.dictName}}">{{dict.dictName}}</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <i ng-click="changeDict('next')" class="fa fa-arrow-circle-right fa-lg dict_next dict_nav"></i>
-          </div>
-
-        </form>
-        <div class="dict_wait text-center" ng-show="querying">
-            <i class="fa fa-spinner fa-spin fa-4x" title="正在查询中..."></i>
-        </div>
-        <div class="dict_default container" ng-show="initial">
-            <h2>欢迎使用 Fairy Dict</h2>
-            <p>如发现 BUG, 请到
-              <a href="https://github.com/revir/FairyDict" target='_blank'>github</a>
-              或
-              <a href="https://chrome.google.com/webstore/detail/fairydict/gpdpcfgfmgkmljmhhnedefdaadgehaah/reviews" target="_blank">
-                chrome webstore
-              </a>
-              上留言， 感谢！</p>
-            <p>项目地址：<a href="https://github.com/revir/FairyDict" target='_blank'>github</a></p>
-            <p>我的博客：<a href="http://blog.riverrun.xyz" target='_blank'>River's blog</a></p>
-        </div>
-        <div class="dict_result" ng-bind-html="queryResult" ng-hide="querying || initial">
-
-        </div>
-    </div>
 </body>

@@ -2,7 +2,13 @@
     "manifest_version": 2,
     "name": "FairyDict",
     "description": "web dictionary",
-    "permissions": ["tabs", "storage", "contextMenus", "<all_urls>"],
+    "permissions": [
+        "activeTab",
+        "tabs",
+        "storage",
+        "contextMenus",
+        "<all_urls>"
+    ],
     "background": {
         "persistent": true,
         "page": "background.html"
@@ -13,10 +19,23 @@
             "utils.js",
             "content/inject.js"
         ],
-        "matches": ["<all_urls>"]
+        "matches": ["<all_urls>"],
+        "run_at": "document_start"
     }],
     "options_page": "options.html",
-
+    "web_accessible_resources": [
+        "template/header.html",
+        "fonts/FontAwesome.otf",
+        "fonts/fontawesome-webfont.svg",
+        "fonts/fontawesome-webfont.woff",
+        "fonts/glyphicons-halflings-regular.eot",
+        "fonts/glyphicons-halflings-regular.ttf",
+        "fonts/fontawesome-webfont.eot",
+        "fonts/fontawesome-webfont.ttf",
+        "fonts/fontawesome-webfont.woff2",
+        "fonts/glyphicons-halflings-regular.svg",
+        "fonts/glyphicons-halflings-regular.woff"
+    ],
     "browser_action":{
         "default_icon": {
             "19": "images/dict-on24.png",
@@ -27,5 +46,5 @@
       "48": "images/dict-on48.png"
     },
     "minimum_chrome_version": "23",
-    "version": "2.1"
+    "version": "2.2"
 }

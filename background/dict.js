@@ -42,18 +42,35 @@ define(["jquery", "utils"], function($, utils) {
         'dictId': 'easton'
       },
       'queryKey': 'word'
+    }, {
+      'dictName': "必应词典",
+      'windowUrl': 'http://cn.bing.com/dict/search?q=<word>'
     }
   ];
   dictManager = {
     allDicts: allDicts,
-    query: function(word, dictName) {
-      var dfd, dict, params, url;
+    getDict: function(dictName) {
+      var dict;
       dict = allDicts.find(function(d) {
         return d.dictName === dictName;
       });
-      if (dict == null) {
-        dict = allDicts[0];
+      return dict || allDicts[0];
+    },
+    getDictResources: function(dictName) {
+      var dict;
+      dict = this.getDict(dictName);
+      if (dict.windowUrl) {
+        return dict.resources;
+      } else {
+        return {
+          styles: ['css/apidict.css']
+        };
       }
+    },
+    query: function(word, dictName) {
+      var dfd, dict, params, url;
+      dfd = $.Deferred();
+      dict = this.getDict(dictName);
       params = $.extend(true, {}, dict.params);
       if (dict.queryKey) {
         params[dict.queryKey] = word;
@@ -67,12 +84,19 @@ define(["jquery", "utils"], function($, utils) {
       if (url) {
         return $[dict.queryType || 'get'](url, params, null, 'text').then((function(_this) {
           return function(res) {
-            return _this['parse' + dict.entry](res);
+            return {
+              html: _this['parse' + dict.entry](res)
+            };
           };
         })(this));
+      } else if (dict.windowUrl) {
+        return dfd.resolve({
+          windowUrl: dict.windowUrl.replace('<word>', word)
+        });
       } else {
-        dfd = $.Deferred();
-        return dfd.resolve(this['parse' + dict.entry](word));
+        return dfd.resolve({
+          html: this['parse' + dict.entry](word)
+        });
       }
     },
     parseAonaware: function(text) {

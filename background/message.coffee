@@ -26,7 +26,9 @@ define ["jquery",
 
         else if request.type == 'dictionary'
             dictionary = setting.getValue('dictionary')
-            sendResponse {allDicts: dict.allDicts, dictionary}
+            history = storage.history
+            sendResponse {allDicts: dict.allDicts, dictionary, history}
+            dictWindow.onDictInited()
 
         else if request.type == 'setting'
             sendResponse setting.configCache
@@ -36,14 +38,14 @@ define ["jquery",
             if request.key == 'enableMinidict'
                 ext.setBrowserIcon request.value
 
-        else if request.type == 'getHistory'
-            sendResponse storage.history
-
         else if request.type == 'rating'
             storage.addRating request.text, request.value
 
         else if request.type == 'deleteHistory'
             storage.deleteHistory(request.text)
+
+        else if request.type == 'injected'
+            dictWindow.onContentInjected(request.url)
 
         # sendResponse becomes invalid when the event listener returns,
         # unless you return true from the event listener to indicate you wish to send a response asynchronously

@@ -2,7 +2,7 @@
 define(["jquery", "utils", "background/setting", "background/ext", "background/storage", "background/dict.js", "background/dictwindow.js"], function($, utils, setting, ext, storage, dict, dictWindow) {
   console.log("[message] init");
   return chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    var dictionary;
+    var dictionary, history;
     if (request.type === 'getJson') {
       utils.getJson(request.url, request.data).then((function(res) {
         return sendResponse(res);
@@ -25,10 +25,13 @@ define(["jquery", "utils", "background/setting", "background/ext", "background/s
       dictWindow.queryDict(request.text, request.dictionary, request.inHistory);
     } else if (request.type === 'dictionary') {
       dictionary = setting.getValue('dictionary');
+      history = storage.history;
       sendResponse({
         allDicts: dict.allDicts,
-        dictionary: dictionary
+        dictionary: dictionary,
+        history: history
       });
+      dictWindow.onDictInited();
     } else if (request.type === 'setting') {
       sendResponse(setting.configCache);
     } else if (request.type === 'save setting') {
@@ -36,12 +39,12 @@ define(["jquery", "utils", "background/setting", "background/ext", "background/s
       if (request.key === 'enableMinidict') {
         ext.setBrowserIcon(request.value);
       }
-    } else if (request.type === 'getHistory') {
-      sendResponse(storage.history);
     } else if (request.type === 'rating') {
       storage.addRating(request.text, request.value);
     } else if (request.type === 'deleteHistory') {
       storage.deleteHistory(request.text);
+    } else if (request.type === 'injected') {
+      dictWindow.onContentInjected(request.url);
     }
     return true;
   });

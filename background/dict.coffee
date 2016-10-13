@@ -42,25 +42,41 @@ define ["jquery",
             'dictId': 'easton'
         },
         'queryKey': 'word'
-    }]
+    }, {
+        'dictName': "必应词典",
+        'windowUrl': 'http://cn.bing.com/dict/search?q=<word>'
+        }]
 
     dictManager =
         allDicts: allDicts,
-
-        query: (word, dictName)->
+        getDict: (dictName)->
             dict = allDicts.find (d)->
                 d.dictName == dictName
-            dict ?= allDicts[0]
+            return dict or allDicts[0]
+
+        getDictResources: (dictName)->
+            dict = @getDict(dictName)
+            if dict.windowUrl
+                # web dict
+                return dict.resources
+            else
+                # api dict
+                return {styles: ['css/apidict.css']}
+
+        query: (word, dictName)->
+            dfd = $.Deferred()
+            dict = @getDict(dictName)
             params = $.extend(true, {}, dict.params)
             params[dict.queryKey] = word if dict.queryKey
             url = dict.baseUrl if dict.baseUrl
             url = dict.headerUrl + encodeURI(word) if dict.headerUrl
             if url
                 return $[dict.queryType || 'get'](url, params, null, 'text').then (res)=>
-                    return @['parse' + dict.entry](res)
+                    return {html: @['parse' + dict.entry](res)}
+            else if dict.windowUrl
+                return dfd.resolve {windowUrl: dict.windowUrl.replace('<word>', word)}
             else
-                dfd = $.Deferred()
-                return dfd.resolve(@['parse' + dict.entry](word))
+                return dfd.resolve({html: @['parse' + dict.entry](word)})
 
         parseAonaware: (text)->
             xml = $.parseXML(text)

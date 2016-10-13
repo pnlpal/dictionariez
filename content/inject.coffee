@@ -1,3 +1,4 @@
+console.log "[inject] init"
 jQuery(document).mouseup (event)->
     if event.which == 1 and window.getSelection().toString()
         chrome.runtime.sendMessage({
@@ -17,3 +18,8 @@ chrome.runtime.sendMessage {
                 text: window.getSelection().toString()
             })
 
+
+chrome.runtime.sendMessage {
+    type: 'injected',
+    url: location.href
+}
