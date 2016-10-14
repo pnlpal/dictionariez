@@ -49,6 +49,9 @@
 #fairy-dict .history-group .dropdown-menu {
   width: 200px;
   text-align: left;
+  height: auto;
+  max-height: 600px;
+  overflow-y: auto;
 }
 #fairy-dict .history-group .dropdown-menu li > a {
   padding-right: 2px;

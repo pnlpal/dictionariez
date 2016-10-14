@@ -12,8 +12,9 @@ loader.loadTemplate().then(function() {
 });
 
 dictApp.controller('dictCtrl', function($scope, $sce) {
-  var _handler, ref, updateRating;
+  var _handler, applyHistory, baseNode, ref, updateRating;
   console.log("[dictCtrl] init");
+  baseNode = '#fairy-dict';
   $scope.initial = true;
   $scope.querying = false;
   $scope.queryResult = null;
@@ -56,6 +57,19 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
     }
     return $scope.query(true);
   };
+  applyHistory = function(index) {
+    $scope.historyIndex = index;
+    if (index > -1) {
+      $scope.word = _.keys($scope.history[index])[0];
+    } else {
+      $scope.word = $scope.lastQueryWord;
+    }
+    if (index === $scope.history.length - 1) {
+      return $scope.lastHistoryWord = $scope.history[0];
+    } else {
+      return $scope.lastHistoryWord = $scope.history[index + 1];
+    }
+  };
   $scope.selectHistory = function(index) {
     if (index === $scope.historyIndex) {
       return;
@@ -74,17 +88,7 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
     if (index >= $scope.history.length) {
       index = 0;
     }
-    $scope.historyIndex = index;
-    if (index > -1) {
-      $scope.word = _.keys($scope.history[index])[0];
-    } else {
-      $scope.word = $scope.lastQueryWord;
-    }
-    if (index === $scope.history.length - 1) {
-      $scope.lastHistoryWord = $scope.history[0];
-    } else {
-      $scope.lastHistoryWord = $scope.history[index + 1];
-    }
+    applyHistory(index);
     return $scope.query(true);
   };
   $scope.deleteHistory = function(index) {
@@ -133,6 +137,14 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
           updateRating(request.rating);
           if (!request.inHistory) {
             $scope.lastQueryWord = $scope.word;
+          } else {
+            $scope.history.forEach(function(item, idx) {
+              var itemText;
+              itemText = _.keys(item)[0];
+              if (itemText === $scope.word) {
+                return applyHistory(idx);
+              }
+            });
           }
         }
       } else if (request.type === 'history') {
@@ -144,7 +156,7 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
       return $scope.$apply();
     });
   }
-  $('#stars').on('starrr:change', function(e, value) {
+  $('#stars', baseNode).on('starrr:change', function(e, value) {
     var item;
     if ($scope.word) {
       if (value == null) {
@@ -164,12 +176,12 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
       }
     }
   });
-  $('.starrr').starrr({
+  $('.starrr', baseNode).starrr({
     numStars: 3
   });
   updateRating = function(value) {
     var obj;
-    obj = $(".starrr").data('star-rating');
+    obj = $(".starrr", baseNode).data('star-rating');
     obj.options.rating = value;
     return obj.syncRating();
   };
@@ -189,7 +201,7 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
     var code;
     code = evt.charCode || evt.keyCode;
     if (code === 27) {
-      return $('input.dict_input')[0].select();
+      return $('input.dict_input', baseNode)[0].select();
     }
   });
   $(document).keydown(function(evt) {

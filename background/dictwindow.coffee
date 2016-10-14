@@ -149,13 +149,13 @@ define ["jquery",
             updateWindowDfd = $.Deferred()
             return updateWindowDfd
 
-        onContentInjected: (url)->
+        onContentInjected: (url, tabId)->
             console.log "[dictwindow] manifest's content scripts injected from url: #{url}"
             if injectContentDfd?.state() == 'pending'
                 injectContentDfd.resolve()
 
             # page was reloaded.
-            else if url
+            else if url and tabId == @tid
                 d = setting.getValue('dictionary')
                 w = dict.getWordFromUrl(url, d)
                 @url = url

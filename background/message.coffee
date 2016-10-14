@@ -45,7 +45,7 @@ define ["jquery",
             storage.deleteHistory(request.text)
 
         else if request.type == 'injected'
-            dictWindow.onContentInjected(request.url)
+            dictWindow.onContentInjected(request.url, sender.tab.id)
 
         # sendResponse becomes invalid when the event listener returns,
         # unless you return true from the event listener to indicate you wish to send a response asynchronously

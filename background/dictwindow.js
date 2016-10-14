@@ -173,12 +173,12 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
       updateWindowDfd = $.Deferred();
       return updateWindowDfd;
     },
-    onContentInjected: function(url) {
+    onContentInjected: function(url, tabId) {
       var d, w;
       console.log("[dictwindow] manifest's content scripts injected from url: " + url);
       if ((injectContentDfd != null ? injectContentDfd.state() : void 0) === 'pending') {
         return injectContentDfd.resolve();
-      } else if (url) {
+      } else if (url && tabId === this.tid) {
         d = setting.getValue('dictionary');
         w = dict.getWordFromUrl(url, d);
         this.url = url;

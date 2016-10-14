@@ -44,7 +44,7 @@ define(["jquery", "utils", "background/setting", "background/ext", "background/s
     } else if (request.type === 'deleteHistory') {
       storage.deleteHistory(request.text);
     } else if (request.type === 'injected') {
-      dictWindow.onContentInjected(request.url);
+      dictWindow.onContentInjected(request.url, sender.tab.id);
     }
     return true;
   });

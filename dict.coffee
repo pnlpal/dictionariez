@@ -7,6 +7,7 @@ loader.loadTemplate().then ()->
 
 dictApp.controller 'dictCtrl', ($scope, $sce) ->
     console.log "[dictCtrl] init"
+    baseNode = '#fairy-dict'
     $scope.initial = true
     $scope.querying = false
     $scope.queryResult = null
@@ -43,6 +44,18 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             $scope.currentDictionary = dict
         $scope.query(true)
 
+    applyHistory = (index)->
+        $scope.historyIndex = index
+        if index > -1
+            $scope.word = _.keys($scope.history[index])[0]
+        else
+            $scope.word = $scope.lastQueryWord
+
+        if index == $scope.history.length-1
+            $scope.lastHistoryWord = $scope.history[0]
+        else
+            $scope.lastHistoryWord = $scope.history[index+1]
+
     $scope.selectHistory = (index)->
         if index == $scope.historyIndex
             return
@@ -58,16 +71,7 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         if index >= $scope.history.length
             index = 0
 
-        $scope.historyIndex = index
-        if index > -1
-            $scope.word = _.keys($scope.history[index])[0]
-        else
-            $scope.word = $scope.lastQueryWord
-
-        if index == $scope.history.length-1
-            $scope.lastHistoryWord = $scope.history[0]
-        else
-            $scope.lastHistoryWord = $scope.history[index+1]
+        applyHistory(index)
 
         $scope.query(true)
 
@@ -115,6 +119,11 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
                 updateRating(request.rating)
                 if not request.inHistory
                     $scope.lastQueryWord = $scope.word
+                else
+                    $scope.history.forEach (item, idx)->
+                        itemText = _.keys(item)[0]
+                        if itemText == $scope.word
+                            applyHistory(idx)
 
         else if request.type == 'history'
             console.log "history", request.history
@@ -124,7 +133,7 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
 
         $scope.$apply()
 
-    $('#stars').on 'starrr:change', (e, value)->
+    $('#stars', baseNode).on 'starrr:change', (e, value)->
         if $scope.word
             value ?= 0
             console.log "[dictCtrl] rating word: #{$scope.word} #{value}"
@@ -138,10 +147,10 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
                 if item and item[$scope.word]?
                     item[$scope.word] = value
 
-    $('.starrr').starrr({numStars: 3})
+    $('.starrr', baseNode).starrr({numStars: 3})
 
     updateRating = (value)->
-        obj = $(".starrr").data('star-rating')
+        obj = $(".starrr", baseNode).data('star-rating')
         obj.options.rating = value
         obj.syncRating()
 
@@ -158,7 +167,7 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
     $(document).keyup (evt)->
         code = evt.charCode or evt.keyCode
         if code == 27
-            $('input.dict_input')[0].select()
+            $('input.dict_input', baseNode)[0].select()
 
     $(document).keydown (evt)->
         code = evt.charCode or evt.keyCode
