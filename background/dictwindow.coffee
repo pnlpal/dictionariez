@@ -182,7 +182,10 @@ define ["jquery",
                 console.log "[dictwindow] reload #{w} url #{url}"
 
                 @injectResources().then ()=>
-                    @sendQueryResult()
+                    if @url == defaultWindowUrl
+                        dict.query(@word, d).then @sendQueryResult.bind(@)
+                    else
+                        @sendQueryResult()
                     updateWindowDfd.resolve()
 
         onDictInited: ()->

@@ -210,7 +210,11 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
         console.log("[dictwindow] reload " + w + " url " + url);
         return this.injectResources().then((function(_this) {
           return function() {
-            _this.sendQueryResult();
+            if (_this.url === defaultWindowUrl) {
+              dict.query(_this.word, d).then(_this.sendQueryResult.bind(_this));
+            } else {
+              _this.sendQueryResult();
+            }
             return updateWindowDfd.resolve();
           };
         })(this));
