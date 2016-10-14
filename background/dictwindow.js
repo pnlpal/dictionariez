@@ -2,7 +2,7 @@
 define(["jquery", "utils", "background/setting", "background/dict.js", "background/storage"], function($, utils, setting, dict, storage) {
   var defaultWindowUrl, dictInitedDfd, dictWindowManager, injectContentDfd, updateWindowDfd, windowType;
   console.log("[dictwindow] init");
-  defaultWindowUrl = 'http://blog.riverrun.xyz/fairydict.html';
+  defaultWindowUrl = chrome.extension.getURL('template/apidict.html');
   updateWindowDfd = null;
   injectContentDfd = null;
   dictInitedDfd = null;
@@ -127,7 +127,7 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
           }
           dfd = $.Deferred();
           file = files[index];
-          if (file) {
+          if (file && t) {
             console.log("[dictwindow] inject " + file);
             chrome.tabs[t](_this.tid, {
               file: file
@@ -143,6 +143,9 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
         };
       })(this);
       res = dict.getDictResources(setting.getValue('dictionary'));
+      if (this.url.indexOf('chrome-extension://') === 0) {
+        return inject(null);
+      }
       return inject('insertCSS', res != null ? res.styles : void 0).then((function(_this) {
         return function() {
           return inject('insertCSS', styles).then(function() {

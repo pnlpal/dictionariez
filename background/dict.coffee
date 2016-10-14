@@ -63,9 +63,6 @@ define ["jquery",
             if dict.windowUrl
                 # web dict
                 return dict.resources
-            else
-                # api dict
-                return {styles: ['css/apidict.css']}
 
         getWordFromUrl: (url, dictName)->
             dict = @getDict(dictName)

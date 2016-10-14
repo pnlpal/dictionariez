@@ -65,10 +65,6 @@ define(["jquery", "utils"], function($, utils) {
       dict = this.getDict(dictName);
       if (dict.windowUrl) {
         return dict.resources;
-      } else {
-        return {
-          styles: ['css/apidict.css']
-        };
       }
     },
     getWordFromUrl: function(url, dictName) {

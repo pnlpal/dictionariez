@@ -4,7 +4,7 @@ define ["jquery",
     "background/dict.js",
     "background/storage"], ($, utils, setting, dict, storage)->
     console.log "[dictwindow] init"
-    defaultWindowUrl = 'http://blog.riverrun.xyz/fairydict.html'
+    defaultWindowUrl = chrome.extension.getURL('template/apidict.html')
     updateWindowDfd = null
     injectContentDfd = null
     dictInitedDfd = null
@@ -39,10 +39,6 @@ define ["jquery",
                     @tid = @w.tabs[0].id
                     @url = defaultWindowUrl
                     dfd.resolve()
-                    # # wait 500 miniseconds for windows ready.
-                    # setTimeout((()->
-                    #     dfd.resolve()
-                    #     ), 500)
                 )
             else
                 chrome.windows.update(dictWindowManager.w.id, {
@@ -123,7 +119,7 @@ define ["jquery",
                 index ?= 0
                 dfd = $.Deferred()
                 file = files[index]
-                if file
+                if file and t
                     console.log "[dictwindow] inject #{file}"
                     chrome.tabs[t] @tid, {file: file}, ()=>
                         inject(t, files, index+1).then ()=>
@@ -133,6 +129,11 @@ define ["jquery",
                 return dfd
 
             res = dict.getDictResources(setting.getValue('dictionary'))
+
+            # chrome-extension:// can't inject files, permission denied.
+            if @url.indexOf('chrome-extension://') == 0
+                return inject(null)
+
             return inject('insertCSS', res?.styles).then ()=>
                 return inject('insertCSS', styles).then ()=>
                     return inject('executeScript', scripts).then ()=>
