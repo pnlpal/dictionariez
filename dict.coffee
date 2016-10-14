@@ -7,6 +7,9 @@ loader.loadTemplate().then ()->
 
 dictApp.controller 'dictCtrl', ($scope, $sce) ->
     console.log "[dictCtrl] init"
+
+    # change Bing dictionary's title
+    document.title = 'Fairy Dict'
     baseNode = '#fairy-dict'
     $scope.initial = true
     $scope.querying = false

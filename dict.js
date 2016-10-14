@@ -14,6 +14,7 @@ loader.loadTemplate().then(function() {
 dictApp.controller('dictCtrl', function($scope, $sce) {
   var _handler, applyHistory, baseNode, ref, updateRating;
   console.log("[dictCtrl] init");
+  document.title = 'Fairy Dict';
   baseNode = '#fairy-dict';
   $scope.initial = true;
   $scope.querying = false;
