@@ -13,8 +13,8 @@ define ["jquery",
         w: null
         tid: null
         lastUrl: null
-        defaultWidth: 700
-        defaultHeight: 800
+        defaultWidth: 600
+        defaultHeight: 700
         open: ()->
             dfd = $.Deferred()
             left = (screen.width / 2) - (dictWindowManager.defaultWidth / 2)
@@ -94,6 +94,7 @@ define ["jquery",
                 "bower_components/angular-ui/build/angular-ui.js",
                 "bower_components/angular-sanitize/angular-sanitize.js",
                 "bower_components/angular-bootstrap/ui-bootstrap.js",
+                "bower_components/less/dist/less.js",
                 "utils.js",
                 "js/starrr.js",
                 "loader.js",

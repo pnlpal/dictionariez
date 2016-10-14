@@ -10,8 +10,8 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
     w: null,
     tid: null,
     lastUrl: null,
-    defaultWidth: 700,
-    defaultHeight: 800,
+    defaultWidth: 600,
+    defaultHeight: 700,
     open: function() {
       var dfd, left, top, url;
       dfd = $.Deferred();
@@ -95,7 +95,7 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
     injectResources: function() {
       var inject, res, scripts, styles;
       styles = ["css/bootstrap.css", "bower_components/angular-ui/build/angular-ui.css", "bower_components/angular-bootstrap/ui-bootstrap-csp.css", "css/font-awesome.css", "css/dictheader.css"];
-      scripts = ['bower_components/jquery/dist/jquery.js', 'bower_components/underscore/underscore.js', "bower_components/angular/angular.js", "bower_components/angular-ui/build/angular-ui.js", "bower_components/angular-sanitize/angular-sanitize.js", "bower_components/angular-bootstrap/ui-bootstrap.js", "utils.js", "js/starrr.js", "loader.js", "dict.js"];
+      scripts = ['bower_components/jquery/dist/jquery.js', 'bower_components/underscore/underscore.js', "bower_components/angular/angular.js", "bower_components/angular-ui/build/angular-ui.js", "bower_components/angular-sanitize/angular-sanitize.js", "bower_components/angular-bootstrap/ui-bootstrap.js", "bower_components/less/dist/less.js", "utils.js", "js/starrr.js", "loader.js", "dict.js"];
       inject = (function(_this) {
         return function(t, files, index) {
           var dfd, file;

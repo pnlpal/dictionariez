@@ -1,10 +1,10 @@
 <div id="fairy-dict" class="dictWrapper" ng-controller="dictCtrl">
   <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-      <div class="collapse navbar-collapse">
-        <form class="navbar-form navbar-left" ng-submit="query()">
+    <!-- <div class="container">
+      <div class=""> -->
+        <form class="navbar-form form-inline" ng-submit="query()">
           <!-- <i class="fa fa-laptop fa-lg default-page"></i> -->
-          <div class="form-group" ng-show="history.length">
+          <div class="form-group history-group" ng-show="history.length">
             <!-- history -->
             <div class="btn-group history" uib-dropdown>
               <button id="history-btn" type="button" class="btn btn-default" title="{{_.keys(lastHistoryWord)[0]}}" ng-click="selectHistory(historyIndex+1)">
@@ -30,38 +30,38 @@
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group search-group">
             <input type="text" ng-model="word" class="form-control dict_input" placeholder="input word">
+            <i class="fa fa-search fa-lg" aria-hidden="true" ng-click="query()"></i>
           </div>
 
-          <input type="submit" id="submit" class="btn btn-sm btn-primary dict_query" value="查询">
           <!-- <button type="submit" class="btn btn-sm btn-primary dict_translate">翻译</button> -->
           <div class="form-group">
             <div id="stars" class="starrr" title="选择难度"></div>
           </div>
 
-          <div class="form-group pull-right dict_collection">
-          <i ng-click="changeDict('prev')" class="fa fa-arrow-circle-left fa-lg dict_prev dict_nav"></i>
-          <div class="form-group">
+          <!-- <div class="form-group dict-group"> -->
+          <!-- <i ng-click="changeDict('prev')" class="fa fa-arrow-circle-left fa-lg dict_prev dict_nav"></i> -->
+          <div class="form-group dict-group pull-right">
             <div class="btn-group" uib-dropdown  uib-keyboard-nav>
-              <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default dict_name"
+              <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default dict-name"
               type="button" id="dropdownMenu1" title="{{currentDictionary.dictName}}">{{currentDictionary.dictName}}
                   <span class="caret"></span>
               </button>
 
-              <ul uib-dropdown-menu class="dropdown-menu dict_list" role="menu" aria-labelledby="dropdownMenu1">
+              <ul uib-dropdown-menu class="dropdown-menu dict-list" role="menu" aria-labelledby="dropdownMenu1">
                 <li role="menuitem" ng-repeat="dict in allDicts">
                   <a ng-click="changeDict(dict)" title="{{dict.dictName}}">{{dict.dictName}}</a>
                 </li>
               </ul>
             </div>
           </div>
-          <i ng-click="changeDict('next')" class="fa fa-arrow-circle-right fa-lg dict_next dict_nav"></i>
-          </div>
+          <!-- <i ng-click="changeDict('next')" class="fa fa-arrow-circle-right fa-lg dict_next dict_nav"></i> -->
+          <!-- </div> -->
 
         </form>
-      </div>
-    </div>
+      <!-- </div>
+    </div> -->
   </nav>
 
   <div class="dict_wait text-center" ng-show="querying">
