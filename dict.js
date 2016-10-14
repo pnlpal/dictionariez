@@ -202,7 +202,7 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
     var code;
     code = evt.charCode || evt.keyCode;
     if (code === 27) {
-      return $('input.dict_input', baseNode)[0].select();
+      return $('input.dict-input', baseNode)[0].select();
     }
   });
   $(document).keydown(function(evt) {

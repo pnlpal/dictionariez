@@ -170,7 +170,7 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
     $(document).keyup (evt)->
         code = evt.charCode or evt.keyCode
         if code == 27
-            $('input.dict_input', baseNode)[0].select()
+            $('input.dict-input', baseNode)[0].select()
 
     $(document).keydown (evt)->
         code = evt.charCode or evt.keyCode
