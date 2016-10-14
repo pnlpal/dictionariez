@@ -37,8 +37,9 @@
 #fairy-dict .search-group {
   position: relative;
 }
-#fairy-dict .search-group .dict_input {
+#fairy-dict .search-group .dict-input {
   max-width: 200px;
+  margin: 0;
 }
 #fairy-dict .search-group .fa-search {
   position: absolute;

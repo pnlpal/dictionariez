@@ -15,25 +15,6 @@ define ["jquery",
         'dictName': '海词词典',
         'entry': 'DictCN'
     }, {
-        'dictName': 'WordNet (r) 2.0',
-        'entry': 'Aonaware',
-        'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
-        'queryType': 'post',
-        'params': {
-            'dictId': 'wn'
-        },
-        'queryKey': 'word'
-    },
-    {
-        'dictName': 'The Collaborative International Dictionary of English',
-        'entry': 'Aonaware',
-        'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
-        'queryType': 'post',
-        'params': {
-            'dictId': 'gcide'
-        },
-        'queryKey': 'word'
-    }, {
         'dictName': 'Easton\'s 1897 Bible Dictionary',
         'entry': 'Aonaware',
         'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
@@ -45,9 +26,16 @@ define ["jquery",
     }, {
         'dictName': "必应词典",
         'windowUrl': 'http://cn.bing.com/dict/search?q=<word>',
-        'windowUrlMatch': 'http://cn.bing.com/dict/search\\?q=([^&]+)',
+        'windowUrlMatch': '[^\\w]q=([^&]+)',
         "resources": {
             styles: ['css/bing.css']
+        }
+    }, {
+        'dictName': 'Urban Dictionary',
+        'windowUrl': 'http://zh.urbandictionary.com/define.php?term=<word>',
+        'windowUrlMatch': '[^\\w]term=([^&]+)',
+        "resources": {
+            styles: ['css/urban.css']
         }
     }]
 
@@ -68,7 +56,10 @@ define ["jquery",
             dict = @getDict(dictName)
             if dict.windowUrlMatch
                 m = new RegExp(dict.windowUrlMatch)
-                return url?.match(m)?[1]
+                s = url?.match(m)?[1]
+                if s
+                    s = s.replace(/\+/g, ' ')
+                    return decodeURI(s)
             return
 
         query: (word, dictName)->

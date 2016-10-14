@@ -16,24 +16,6 @@ define(["jquery", "utils"], function($, utils) {
       'dictName': '海词词典',
       'entry': 'DictCN'
     }, {
-      'dictName': 'WordNet (r) 2.0',
-      'entry': 'Aonaware',
-      'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
-      'queryType': 'post',
-      'params': {
-        'dictId': 'wn'
-      },
-      'queryKey': 'word'
-    }, {
-      'dictName': 'The Collaborative International Dictionary of English',
-      'entry': 'Aonaware',
-      'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
-      'queryType': 'post',
-      'params': {
-        'dictId': 'gcide'
-      },
-      'queryKey': 'word'
-    }, {
       'dictName': 'Easton\'s 1897 Bible Dictionary',
       'entry': 'Aonaware',
       'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
@@ -45,9 +27,16 @@ define(["jquery", "utils"], function($, utils) {
     }, {
       'dictName': "必应词典",
       'windowUrl': 'http://cn.bing.com/dict/search?q=<word>',
-      'windowUrlMatch': 'http://cn.bing.com/dict/search\\?q=([^&]+)',
+      'windowUrlMatch': '[^\\w]q=([^&]+)',
       "resources": {
         styles: ['css/bing.css']
+      }
+    }, {
+      'dictName': 'Urban Dictionary',
+      'windowUrl': 'http://zh.urbandictionary.com/define.php?term=<word>',
+      'windowUrlMatch': '[^\\w]term=([^&]+)',
+      "resources": {
+        styles: ['css/urban.css']
       }
     }
   ];
@@ -68,11 +57,15 @@ define(["jquery", "utils"], function($, utils) {
       }
     },
     getWordFromUrl: function(url, dictName) {
-      var dict, m, ref;
+      var dict, m, ref, s;
       dict = this.getDict(dictName);
       if (dict.windowUrlMatch) {
         m = new RegExp(dict.windowUrlMatch);
-        return url != null ? (ref = url.match(m)) != null ? ref[1] : void 0 : void 0;
+        s = url != null ? (ref = url.match(m)) != null ? ref[1] : void 0 : void 0;
+        if (s) {
+          s = s.replace(/\+/g, ' ');
+          return decodeURI(s);
+        }
       }
     },
     query: function(word, dictName) {
