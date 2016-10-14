@@ -13,7 +13,7 @@ define ["jquery",
         w: null
         tid: null
         lastUrl: null
-        defaultWidth: 600
+        defaultWidth: 630
         defaultHeight: 700
         open: ()->
             dfd = $.Deferred()
@@ -94,7 +94,6 @@ define ["jquery",
                 "bower_components/angular-ui/build/angular-ui.js",
                 "bower_components/angular-sanitize/angular-sanitize.js",
                 "bower_components/angular-bootstrap/ui-bootstrap.js",
-                "bower_components/less/dist/less.js",
                 "utils.js",
                 "js/starrr.js",
                 "loader.js",

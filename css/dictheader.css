@@ -1,3 +1,6 @@
+#fairy-dict .navbar {
+  background-color: rgba(248, 250, 251, 0.75);
+}
 #fairy-dict .pron {
   color: #3a78d5;
 }
@@ -44,7 +47,7 @@
   cursor: pointer;
 }
 #fairy-dict .history-group .dropdown-menu {
-  width: 220px;
+  width: 200px;
   text-align: left;
 }
 #fairy-dict .history-group .dropdown-menu li > a {
@@ -58,10 +61,12 @@
   visibility: hidden;
 }
 #fairy-dict .dict-group .dict-name {
-  width: 130px;
+  width: 150px;
 }
 #fairy-dict .dict-group .dict-list {
   text-align: left;
+  width: 150px;
+  overflow: hidden;
 }
 #fairy-dict .sound,
 #fairy-dict .default-page,
