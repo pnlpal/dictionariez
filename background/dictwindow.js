@@ -187,6 +187,7 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
         } else {
           w = this.word;
         }
+        dictInitedDfd = $.Deferred();
         updateWindowDfd = $.Deferred();
         console.log("[dictwindow] reload " + w + " url " + url);
         return this.injectResources().then((function(_this) {

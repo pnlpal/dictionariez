@@ -164,6 +164,7 @@ define ["jquery",
                 else
                     w = @word
 
+                dictInitedDfd = $.Deferred()
                 updateWindowDfd = $.Deferred()
                 console.log "[dictwindow] reload #{w} url #{url}"
 
