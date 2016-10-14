@@ -8,27 +8,30 @@ define ["jquery",
     updateWindowDfd = null
     injectContentDfd = null
     dictInitedDfd = null
+    windowType = 'popup'
 
     dictWindowManager =
         w: null
         tid: null
         url: null
         word: null
-        defaultWidth: 630
-        defaultHeight: 700
         open: ()->
             dfd = $.Deferred()
-            left = (screen.width / 2) - (dictWindowManager.defaultWidth / 2)
-            top = (screen.height / 2) - (dictWindowManager.defaultHeight / 2)
+
+            # bugfix: dont know how why, windowWidth and windowHeight are saved as number, need integer here.
+            width = parseInt(setting.getValue('windowWidth'))
+            height = parseInt(setting.getValue('windowHeight'))
+            left = Math.round((screen.width / 2) - (width / 2))
+            top = Math.round((screen.height / 2) - (height / 2))
             url = 'http://blog.riverrun.xyz/fairydict.html'
             if !@w
                 @beforeUpdateUrl()
                 chrome.windows.create({
                     url: defaultWindowUrl,
                     # url: 'http://cn.bing.com/dict/search?q=elephant',
-                    type: 'popup',
-                    width: dictWindowManager.defaultWidth,
-                    height: dictWindowManager.defaultHeight,
+                    type: windowType,
+                    width: width,
+                    height: height,
                     left: left,
                     top: top
                 }, (win)=>
@@ -67,7 +70,16 @@ define ["jquery",
             console.log "[dictwindow] query #{@word} from #{dictName}"
             dict.query(text, dictName).then @sendQueryResult.bind(this)
 
+        saveWindowSize: ()->
+            chrome.windows.get @w.id, null, (w)=>
+                if w?.width and w?.height
+                    if Math.abs(w.width-setting.getValue('windowWidth')) > 10 or Math.abs(w.height-setting.getValue('windowHeight')) > 10
+                        console.log "[dictwindow] update window size: #{w.width} * #{w.height}"
+                        setting.setValue 'windowWidth', w.width
+                        setting.setValue 'windowHeight', w.height
+
         sendQueryResult: (result)->
+            @saveWindowSize()
             item = storage.isInHistory(@word)
             if result
                 udfd = @updateUrl(result.windowUrl or defaultWindowUrl)

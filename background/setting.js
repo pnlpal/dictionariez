@@ -3,6 +3,8 @@ define(["jquery", "utils"], function($, utils) {
   var setting;
   setting = {
     configCache: {
+      windowWidth: 630,
+      windowHeight: 700,
       enableMinidict: true,
       openSK1: 'Ctrl',
       openSK2: 'Shift',
