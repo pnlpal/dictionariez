@@ -45,6 +45,7 @@ define(["jquery", "utils"], function($, utils) {
     }, {
       'dictName': "必应词典",
       'windowUrl': 'http://cn.bing.com/dict/search?q=<word>',
+      'windowUrlMatch': 'http://cn.bing.com/dict/search\\?q=([^&]+)',
       "resources": {
         styles: ['css/bing.css']
       }
@@ -68,6 +69,14 @@ define(["jquery", "utils"], function($, utils) {
         return {
           styles: ['css/apidict.css']
         };
+      }
+    },
+    getWordFromUrl: function(url, dictName) {
+      var dict, m, ref;
+      dict = this.getDict(dictName);
+      if (dict.windowUrlMatch) {
+        m = new RegExp(dict.windowUrlMatch);
+        return url != null ? (ref = url.match(m)) != null ? ref[1] : void 0 : void 0;
       }
     },
     query: function(word, dictName) {

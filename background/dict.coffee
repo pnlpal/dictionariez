@@ -45,6 +45,7 @@ define ["jquery",
     }, {
         'dictName': "必应词典",
         'windowUrl': 'http://cn.bing.com/dict/search?q=<word>',
+        'windowUrlMatch': 'http://cn.bing.com/dict/search\\?q=([^&]+)',
         "resources": {
             styles: ['css/bing.css']
         }
@@ -65,6 +66,13 @@ define ["jquery",
             else
                 # api dict
                 return {styles: ['css/apidict.css']}
+
+        getWordFromUrl: (url, dictName)->
+            dict = @getDict(dictName)
+            if dict.windowUrlMatch
+                m = new RegExp(dict.windowUrlMatch)
+                return url?.match(m)?[1]
+            return
 
         query: (word, dictName)->
             dfd = $.Deferred()

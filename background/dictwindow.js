@@ -9,7 +9,8 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
   dictWindowManager = {
     w: null,
     tid: null,
-    lastUrl: null,
+    url: null,
+    word: null,
     defaultWidth: 630,
     defaultHeight: 700,
     open: function() {
@@ -31,7 +32,7 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
           return function(win) {
             _this.w = win;
             _this.tid = _this.w.tabs[0].id;
-            _this.lastUrl = defaultWindowUrl;
+            _this.url = defaultWindowUrl;
             return dfd.resolve();
           };
         })(this));
@@ -64,31 +65,35 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
       })(this));
     },
     queryDict: function(text, dictName, inHistory) {
+      this.word = text;
       if (!inHistory) {
         this.sendMessage({
           type: 'history',
           history: storage.history
         });
       }
-      return dict.query(text, dictName).then((function(_this) {
-        return function(res) {
-          var d1, item;
-          if (text.split(/\s+/).length <= 5 && !inHistory) {
-            storage.addHistory(text);
-          }
-          console.log("[dictwindow] query " + text + " from " + dictName);
-          item = storage.isInHistory(text);
-          d1 = _this.updateUrl(res.windowUrl || defaultWindowUrl);
-          return $.when(d1, updateWindowDfd, dictInitedDfd).then(function() {
-            console.log("[dictwindow] send query result");
-            return _this.sendMessage({
-              type: 'queryResult',
-              result: res,
-              text: text,
-              inHistory: inHistory,
-              rating: item != null ? item[text] : void 0
-            });
+      console.log("[dictwindow] query " + this.word + " from " + dictName);
+      return dict.query(text, dictName).then(this.sendQueryResult.bind(this));
+    },
+    sendQueryResult: function(result) {
+      var item, udfd;
+      item = storage.isInHistory(this.word);
+      if (result) {
+        udfd = this.updateUrl(result.windowUrl || defaultWindowUrl);
+      }
+      return $.when(updateWindowDfd, dictInitedDfd, udfd).then((function(_this) {
+        return function() {
+          console.log("[dictwindow] send query result");
+          _this.sendMessage({
+            type: 'queryResult',
+            result: result,
+            text: _this.word,
+            inHistory: item != null,
+            rating: item != null ? item[_this.word] : void 0
           });
+          if (!item && _this.word.split(/\s+/).length <= 5) {
+            return storage.addHistory(_this.word);
+          }
         };
       })(this));
     },
@@ -136,9 +141,9 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
     updateUrl: function(url) {
       var outDfd;
       outDfd = $.Deferred();
-      if (url && this.lastUrl !== url) {
+      if (url && this.url !== url) {
         console.log("[dictwindow] update url: " + url);
-        this.lastUrl = url;
+        this.url = url;
         this.beforeUpdateUrl().then((function(_this) {
           return function() {
             console.log("[dictwindow] updated url: " + url);
@@ -169,9 +174,27 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
       return updateWindowDfd;
     },
     onContentInjected: function(url) {
-      if (url === this.lastUrl) {
-        console.log("[dictwindow] manifest's content scripts injected from url: " + url);
-        return injectContentDfd != null ? injectContentDfd.resolve() : void 0;
+      var d, w;
+      console.log("[dictwindow] manifest's content scripts injected from url: " + url);
+      if ((injectContentDfd != null ? injectContentDfd.state() : void 0) === 'pending') {
+        return injectContentDfd.resolve();
+      } else if (url) {
+        d = setting.getValue('dictionary');
+        w = dict.getWordFromUrl(url, d);
+        this.url = url;
+        if (w) {
+          this.word = w;
+        } else {
+          w = this.word;
+        }
+        updateWindowDfd = $.Deferred();
+        console.log("[dictwindow] reload " + w + " url " + url);
+        return this.injectResources().then((function(_this) {
+          return function() {
+            _this.sendQueryResult();
+            return updateWindowDfd.resolve();
+          };
+        })(this));
       }
     },
     onDictInited: function() {
@@ -190,7 +213,6 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
     if (((ref = dictWindowManager.w) != null ? ref.id : void 0) === wid) {
       dictWindowManager.w = null;
       dictWindowManager.tid = null;
-      dictWindowManager.lastUrl = null;
       updateWindowDfd = null;
       injectContentDfd = null;
       return dictInitedDfd = null;

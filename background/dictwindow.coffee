@@ -12,7 +12,8 @@ define ["jquery",
     dictWindowManager =
         w: null
         tid: null
-        lastUrl: null
+        url: null
+        word: null
         defaultWidth: 630
         defaultHeight: 700
         open: ()->
@@ -33,7 +34,7 @@ define ["jquery",
                 }, (win)=>
                     @w = win
                     @tid = @w.tabs[0].id
-                    @lastUrl = defaultWindowUrl
+                    @url = defaultWindowUrl
                     dfd.resolve()
                     # # wait 500 miniseconds for windows ready.
                     # setTimeout((()->
@@ -59,25 +60,30 @@ define ["jquery",
                     @queryDict(text, dictName)
 
         queryDict: (text, dictName, inHistory)->
+            @word = text
             if not inHistory
                 @sendMessage({type: 'history', history: storage.history})
 
-            dict.query(text, dictName).then (res)=>
-                # if text is a long sentence, don't keep in history
-                if text.split(/\s+/).length <= 5 and not inHistory
-                    storage.addHistory(text)
+            console.log "[dictwindow] query #{@word} from #{dictName}"
+            dict.query(text, dictName).then @sendQueryResult.bind(this)
 
-                console.log "[dictwindow] query #{text} from #{dictName}"
-                item = storage.isInHistory(text)
-                d1 = @updateUrl(res.windowUrl or defaultWindowUrl)
-                $.when(d1, updateWindowDfd, dictInitedDfd).then ()=>
-                    console.log "[dictwindow] send query result"
-                    @sendMessage({
-                        type: 'queryResult',
-                        result: res,
-                        text: text,
-                        inHistory: inHistory,
-                        rating: item?[text]})
+        sendQueryResult: (result)->
+            item = storage.isInHistory(@word)
+            if result
+                udfd = @updateUrl(result.windowUrl or defaultWindowUrl)
+
+            $.when(updateWindowDfd, dictInitedDfd, udfd).then ()=>
+                console.log "[dictwindow] send query result"
+                @sendMessage({
+                    type: 'queryResult',
+                    result: result,
+                    text: @word,
+                    inHistory: item?,
+                    rating: item?[@word]})
+
+                # if @word is a long sentence, don't keep in history
+                if not item and @word.split(/\s+/).length <= 5
+                    storage.addHistory(@word)
 
         injectResources: ()->
             styles = [
@@ -122,9 +128,9 @@ define ["jquery",
 
         updateUrl: (url)->
             outDfd = $.Deferred()
-            if url and @lastUrl != url
+            if url and @url != url
                 console.log "[dictwindow] update url: #{url}"
-                @lastUrl = url
+                @url = url
                 @beforeUpdateUrl().then ()=>
                     console.log "[dictwindow] updated url: #{url}"
                     outDfd.resolve(true)
@@ -144,9 +150,26 @@ define ["jquery",
             return updateWindowDfd
 
         onContentInjected: (url)->
-            if url == @lastUrl
-                console.log "[dictwindow] manifest's content scripts injected from url: #{url}"
-                injectContentDfd?.resolve()
+            console.log "[dictwindow] manifest's content scripts injected from url: #{url}"
+            if injectContentDfd?.state() == 'pending'
+                injectContentDfd.resolve()
+
+            # page was reloaded.
+            else if url
+                d = setting.getValue('dictionary')
+                w = dict.getWordFromUrl(url, d)
+                @url = url
+                if w
+                    @word = w
+                else
+                    w = @word
+
+                updateWindowDfd = $.Deferred()
+                console.log "[dictwindow] reload #{w} url #{url}"
+
+                @injectResources().then ()=>
+                    @sendQueryResult()
+                    updateWindowDfd.resolve()
 
         onDictInited: ()->
             console.log "[dictwindow] dict inited"
@@ -158,9 +181,13 @@ define ["jquery",
         if dictWindowManager.w?.id == wid
             dictWindowManager.w = null
             dictWindowManager.tid = null
-            dictWindowManager.lastUrl = null
             updateWindowDfd = null
             injectContentDfd = null
             dictInitedDfd = null
+
+    # chrome.tabs.onUpdated.addListener (tabId, info)->
+    #     if dictWindowManager.tid == tabId
+    #         dictWindowManager.onReload(info.url)
+
 
     return dictWindowManager
