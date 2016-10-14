@@ -38,6 +38,13 @@ define(["jquery", "utils"], function($, utils) {
       "resources": {
         styles: ['css/urban.css']
       }
+    }, {
+      'dictName': 'dictionary.com',
+      'windowUrl': 'http://www.dictionary.com/browse/<word>',
+      'windowUrlMatch': 'browse/([^&?]+)',
+      "resources": {
+        styles: ['css/dictionary-com.css']
+      }
     }
   ];
   dictManager = {
