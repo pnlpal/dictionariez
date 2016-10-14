@@ -44,7 +44,10 @@ define(["jquery", "utils"], function($, utils) {
       'queryKey': 'word'
     }, {
       'dictName': "必应词典",
-      'windowUrl': 'http://cn.bing.com/dict/search?q=<word>'
+      'windowUrl': 'http://cn.bing.com/dict/search?q=<word>',
+      "resources": {
+        styles: ['css/bing.css']
+      }
     }
   ];
   dictManager = {
