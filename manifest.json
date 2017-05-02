@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "FairyDict",
-    "description": "web dictionary",
+    "description": "功能强大的查词软件, 包含几乎所有网络上常见的词典，支持鼠标取词、键盘取词的翻译查词典软件.",
     "permissions": [
         "activeTab",
         "tabs",
