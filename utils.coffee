@@ -69,7 +69,7 @@ window.utils = {
             if event.keyCode != @extraKeyMap[key]
                 return false
 
-        else if event.keyCode != key.charCodeAt(0)
+        else if key and event.keyCode != key.charCodeAt(0)
             return false
 
         return true

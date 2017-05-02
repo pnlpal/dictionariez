@@ -1,0 +1,7 @@
+body #header {
+  display: none;
+}
+body #main {
+  padding-top: 0 !important;
+  margin-top: 50px !important;
+}

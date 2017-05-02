@@ -3,6 +3,13 @@ define ["jquery",
     console.log "[dict] init"
 
     allDicts = [{
+        'dictName': "必应词典",
+        'windowUrl': 'http://cn.bing.com/dict/search?q=<word>',
+        'windowUrlMatch': '[^\\w]q=([^&]+)',
+        "resources": {
+            styles: ['css/bing.css']
+        }
+    }, {
         'dictName': '金山词霸',
         'entry': 'Iciba',
         'baseUrl': 'http://dict-co.iciba.com/api/dictionary.php',
@@ -12,23 +19,60 @@ define ["jquery",
         },
         'queryKey': 'w'
     }, {
-        'dictName': '海词词典',
-        'entry': 'DictCN'
-    }, {
-        'dictName': 'Easton\'s 1897 Bible Dictionary',
-        'entry': 'Aonaware',
-        'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
-        'queryType': 'post',
-        'params': {
-            'dictId': 'easton'
-        },
-        'queryKey': 'word'
-    }, {
-        'dictName': "必应词典",
-        'windowUrl': 'http://cn.bing.com/dict/search?q=<word>',
-        'windowUrlMatch': '[^\\w]q=([^&]+)',
+        'dictName': '有道词典',
+        'entry': 'youdao',
+        'windowUrl': 'http://dict.youdao.com/w/eng/<word>',
+        'windowUrlMatch': '/eng/([^&/?]+)'
         "resources": {
-            styles: ['css/bing.css']
+            styles: ['css/youdao.css']
+        }
+    }, {
+        'dictName': '海词词典',
+        'entry': 'dict-cn',
+        'windowUrl': 'http://dict.cn/<word>',
+        'windowUrlMatch': 'dict.cn/([^&/?]+)'
+        "resources": {
+            styles: ['css/dict-cn.css']
+        }
+    }, {
+        'dictName': '欧陆词典',
+        'entry': 'eudic',
+        'windowUrl': 'https://dict.eudic.net/dicts/en/<word>',
+        'windowUrlMatch': '/en/([^&/?]+)'
+        "resources": {
+            styles: ['css/eudic.css']
+        }
+    }, {
+        'dictName': 'Oxford Learner',
+        'entry': 'OxfordLearner',
+        'windowUrl': 'http://www.oxfordlearnersdictionaries.com/definition/english/<word>'
+        'windowUrlMatch': '/english/([^&/?]+)'
+        "resources": {
+            styles: ['css/oxfordlearner.css']
+        }
+    }, {
+        'dictName': 'Oxford Living Dictionaries',
+        'entry': 'Oxfordliving',
+        'windowUrl': 'https://en.oxforddictionaries.com/definition/<word>'
+        'windowUrlMatch': '/definition/([^&/?]+)'
+        "resources": {
+            styles: ['css/oxfordliving.css']
+        }
+    }, {
+        'dictName': 'Cambridge English'
+        'entry': 'CambridgeEnglish'
+        'windowUrl': 'http://dictionary.cambridge.org/dictionary/english/<word>'
+        'windowUrlMatch': '/english/([^&/?]+)',
+        "resources": {
+            styles: ['css/cambridgeenglish.css']
+        }
+    }, {
+        'dictName': 'Longman English'
+        'entry': 'LongmanEnglish'
+        'windowUrl': 'http://www.ldoceonline.com/dictionary/<word>'
+        'windowUrlMatch': '/dictionary/([^&/?]+)',
+        "resources": {
+            styles: ['css/longmanenglish.css']
         }
     }, {
         'dictName': 'Urban Dictionary',
@@ -38,12 +82,63 @@ define ["jquery",
             styles: ['css/urban.css']
         }
     }, {
-        'dictName': 'dictionary.com',
+        'dictName': 'Dictionary.com',
         'windowUrl': 'http://www.dictionary.com/browse/<word>',
-        'windowUrlMatch': 'browse/([^&?]+)',
+        'windowUrlMatch': '/browse/([^&/?]+)',
         "resources": {
             styles: ['css/dictionary-com.css']
         }
+    }, {
+        'dictName': 'Thesaurus.com',
+        'windowUrl': 'http://www.thesaurus.com/browse/<word>',
+        'windowUrlMatch': '/browse/([^&/?]+)',
+        "resources": {
+            styles: ['css/dictionary-com.css']
+        }
+    }, {
+        'dictName': 'Macmilland Dictionary',
+        'windowUrl': 'http://www.macmillandictionary.com/dictionary/british/<word>',
+        'windowUrlMatch': '/british/([^&/?]+)',
+        "resources": {
+            styles: ['css/macmilland.css']
+        }
+    }, {
+        'dictName': 'Merriam-webster Dictionary',
+        'windowUrl': 'https://www.merriam-webster.com/dictionary/<word>',
+        'windowUrlMatch': '/dictionary/([^&/?]+)',
+        "resources": {
+            styles: ['css/merriamwebster.css']
+        }
+    }, {
+        'dictName': 'Merriam-webster Thesaurus',
+        'windowUrl': 'https://www.merriam-webster.com/thesaurus/<word>',
+        'windowUrlMatch': '/thesaurus/([^&/?]+)',
+        "resources": {
+            styles: ['css/merriamwebster.css']
+        }
+    }, {
+        'dictName': 'Collins English Dictionary',
+        'windowUrl': 'https://www.collinsdictionary.com/dictionary/english/<word>',
+        'windowUrlMatch': '/english/([^&/?]+)',
+        "resources": {
+            styles: ['css/collins.css']
+        }
+    }, {
+        'dictName': 'Collins English Thesaurus',
+        'windowUrl': 'https://www.collinsdictionary.com/dictionary/english-thesaurus/<word>',
+        'windowUrlMatch': '/english-thesaurus/([^&/?]+)',
+        "resources": {
+            styles: ['css/collins.css']
+        }
+    }, {
+        'dictName': 'Easton\'s 1897 Bible Dictionary',
+        'entry': 'Aonaware',
+        'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
+        'queryType': 'post',
+        'params': {
+            'dictId': 'easton'
+        },
+        'queryKey': 'word'
     }]
 
     dictManager =
@@ -65,7 +160,7 @@ define ["jquery",
                 m = new RegExp(dict.windowUrlMatch)
                 s = url?.match(m)?[1]
                 if s
-                    s = s.replace(/\+/g, ' ')
+                    s = s.replace(/[+_]/g, ' ')
                     return decodeURI(s)
             return
 
@@ -110,11 +205,6 @@ define ["jquery",
                 d.append(s2)
 
             return d.html()
-
-        parseDictCN: (word)->
-            src = "http://dict.cn/mini.php?q=" + word
-            frameStr = '<iframe src="' + src + '"></iframe>'
-            return frameStr
 
         parseWebster: (text)->
             wrapper = $(document.createElement('div'))

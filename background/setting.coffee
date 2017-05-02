@@ -6,6 +6,8 @@ define ["jquery",
             windowWidth: 630,
             windowHeight: 700,
             enableMinidict: true,
+            enableMouseSK1: false,
+            mouseSK1: 'Ctrl',
             openSK1: 'Ctrl',
             openSK2: 'Shift'
             openKey: 'X',

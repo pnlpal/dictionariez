@@ -1,15 +1,10 @@
-body {
-  padding-top: 90px !important;
-}
 body .ham-nav,
 body .dicticon-hamburger-menu,
 body header,
-body #header-lb-container,
 body #fly-out,
 body iframe {
   display: none !important;
 }
-body #fairy-dict .navbar {
-  padding-left: 15px !important;
-  padding-right: 15px !important;
+body #header-lb-container {
+  padding-top: 100px;
 }

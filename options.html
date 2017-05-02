@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="bower_components/angular-ui/build/angular-ui.css">
     <link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
     <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
-    <link rel="stylesheet" type="text/css" href="css/custom.css">
+    <link rel="stylesheet" type="text/css" href="css/options.css">
 
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
@@ -33,9 +33,29 @@
         <div class="section function-setting">
             <h1>功能设置</h1>
             <div class="checkbox">
-              <label>
+                <label>
                 <input type="checkbox" ng-model="setting.enableMinidict" ng-click="changeKey(setting.enableMinidict, 'enableMinidict')"> 开启鼠标取词功能
+                </label>
+            </div>
+            <div class="checkbox enableMouseSK1">
+              <label>
+              <input type="checkbox" ng-model="setting.enableMouseSK1" ng-click="changeKey(setting.enableMouseSK1, 'enableMouseSK1')">
+              同时必须按住
               </label>
+
+              <div class="btn-group" uib-dropdown  uib-keyboard-nav>
+                <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default"
+                type="button" id="btn-mouseSK1">{{setting.mouseSK1}}
+                    <span class="caret"></span>
+                </button>
+
+                <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-mouseSK1">
+                  <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
+                    <a ng-click="changeKey(item, 'mouseSK1')">{{item}}</a>
+                  </li>
+                </ul>
+              </div>
+
             </div>
         </div>
 

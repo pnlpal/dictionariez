@@ -1,0 +1,6 @@
+body .header {
+  display: none !important;
+}
+body .content {
+  margin-top: 70px;
+}

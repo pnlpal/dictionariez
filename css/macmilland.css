@@ -1,0 +1,4 @@
+body #header,
+body #search_container {
+  display: none !important;
+}

@@ -1,11 +1,4 @@
 console.log "[inject] init"
-jQuery(document).mouseup (event)->
-    if event.which == 1 and window.getSelection().toString()
-        chrome.runtime.sendMessage({
-            type: 'look up',
-            means: 'mouse',
-            text: window.getSelection().toString()
-        })
 
 chrome.runtime.sendMessage {
     type: 'setting',
@@ -17,6 +10,15 @@ chrome.runtime.sendMessage {
                 means: 'keyboard',
                 text: window.getSelection().toString()
             })
+
+    jQuery(document).mouseup (event)->
+        if event.which == 1 and window.getSelection().toString()
+            if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
+                chrome.runtime.sendMessage({
+                    type: 'look up',
+                    means: 'mouse',
+                    text: window.getSelection().toString()
+                })
 
 
 chrome.runtime.sendMessage {

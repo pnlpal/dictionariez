@@ -96,7 +96,7 @@ window.utils = {
       if (event.keyCode !== this.extraKeyMap[key]) {
         return false;
       }
-    } else if (event.keyCode !== key.charCodeAt(0)) {
+    } else if (key && event.keyCode !== key.charCodeAt(0)) {
       return false;
     }
     return true;

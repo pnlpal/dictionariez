@@ -1,3 +1,6 @@
+#fairy-dict {
+  /*Fix button and input styles on some websites*/
+}
 #fairy-dict .navbar {
   background-color: rgba(248, 250, 251, 0.75);
 }
@@ -65,11 +68,11 @@
   visibility: hidden;
 }
 #fairy-dict .dict-group .dict-name {
-  width: 150px;
+  min-width: 180px;
 }
 #fairy-dict .dict-group .dict-list {
   text-align: left;
-  width: 150px;
+  min-width: 180px;
   overflow: hidden;
 }
 #fairy-dict .sound,
@@ -89,4 +92,18 @@
 }
 #fairy-dict .fa.fa-star {
   color: orange;
+}
+#fairy-dict .btn {
+  height: 34px;
+  margin: 0 0 0 -1px;
+  border: #cccccc solid 0.65px;
+  line-height: initial;
+  padding: 6px 12px;
+  box-shadow: none;
+}
+#fairy-dict input {
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  line-height: initial;
 }
