@@ -1,3 +1,5 @@
+*5月5日更新： 重新排好了Toolbar上的元素，布局更整洁了。金山词霸替换成了网页版。*
+
 *5月2日更新: 已添加大量常见的在线词典，包括欧陆词典, Longman, Oxford, Cambridge, Merriam-webster, Collins, Macmilland 等等。还增加了一个设置： 鼠标取词时可以选择必须按住一个按键(Ctrl, Shift, Alt 等)。*
 
 

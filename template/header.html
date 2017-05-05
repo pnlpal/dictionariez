@@ -68,17 +68,22 @@
   <div class="dict_wait text-center" ng-show="querying">
       <i class="fa fa-spinner fa-spin fa-4x" title="正在查询中..."></i>
   </div>
-  <div class="dict_default container" ng-show="initial">
-      <h2>欢迎使用 Fairy Dict</h2>
-      <p>如发现 BUG, 请到
-        <a href="https://github.com/revir/FairyDict" target='_blank'>github</a>
+  <div class="dict_default container text-center" ng-show="initial">
+      <h2>欢迎使用 Fairy Dict！</h2>
+
+      <p>向作者反馈请到
+        <a href="https://github.com/revir/FairyDict" target='_blank'>Github</a>
         或
-        <a href="https://chrome.google.com/webstore/detail/fairydict/gpdpcfgfmgkmljmhhnedefdaadgehaah/reviews" target="_blank">
-          chrome webstore
+        <a href="https://v2mm.tech" target="_blank">
+          V2MM
         </a>
-        上留言， 感谢！</p>
-      <p>项目地址：<a href="https://github.com/revir/FairyDict" target='_blank'>github</a></p>
-      <p>我的博客：<a href="http://blog.riverrun.xyz" target='_blank'>River's blog</a></p>
+        上留言， 感谢。</p>
+
+      <p>开源地址：
+        <a href="https://github.com/revir/FairyDict" target='_blank'>Github</a>
+        <em>你的点赞就是我前进的动力 :)</em>
+      </p>
+
   </div>
 
   <div class="dict_result" ng-bind-html="queryResult" ng-hide="querying || initial">

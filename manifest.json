@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "FairyDict",
-    "description": "功能强大的查词软件, 包含几乎所有网络上常见的词典，支持鼠标取词、键盘取词的翻译查词典软件.",
+    "description": "包含几乎所有网上常见的词典，支持鼠标取词、键盘取词和右键菜单的词典软件，各种快捷键设置，学习的好帮手，词典爱好者的福音",
     "permissions": [
         "activeTab",
         "tabs",
@@ -46,5 +46,5 @@
       "48": "images/dict-on48.png"
     },
     "minimum_chrome_version": "23",
-    "version": "2.4"
+    "version": "2.5"
 }
