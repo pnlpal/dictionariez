@@ -14,7 +14,13 @@ chrome.runtime.sendMessage({
     }
   });
   return jQuery(document).mouseup(function(event) {
-    if (event.which === 1 && window.getSelection().toString()) {
+    var including, selObj;
+    selObj = window.getSelection();
+    if (!selObj.toString()) {
+      return;
+    }
+    including = jQuery(event.target).has(selObj.focusNode).length || jQuery(event.target).is(selObj.focusNode);
+    if (event.which === 1 && including) {
       if (!setting.enableMouseSK1 || (setting.mouseSK1 && utils.checkEventKey(event, setting.mouseSK1))) {
         return chrome.runtime.sendMessage({
           type: 'look up',

@@ -12,7 +12,12 @@ chrome.runtime.sendMessage {
             })
 
     jQuery(document).mouseup (event)->
-        if event.which == 1 and window.getSelection().toString()
+        selObj = window.getSelection()
+        return unless selObj.toString()
+
+        # issue #4
+        including = jQuery(event.target).has(selObj.focusNode).length or jQuery(event.target).is(selObj.focusNode)
+        if event.which == 1 and including
             if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
                 chrome.runtime.sendMessage({
                     type: 'look up',
