@@ -11,13 +11,18 @@ define ["jquery",
         }
     }, {
         'dictName': '金山词霸',
-        'entry': 'Iciba',
-        'baseUrl': 'http://dict-co.iciba.com/api/dictionary.php',
-        'queryType': 'get',
-        'params': {
-            'key': '0AAE477DB66EC58D12E1451877045CA5'
-        },
-        'queryKey': 'w'
+        'windowUrl': 'http://www.iciba.com/<word>',
+        'windowUrlMatch': 'iciba.com/([^&]+)',
+        "resources": {
+            styles: ['css/iciba.css']
+        }
+        # 'entry': 'Iciba',
+        # 'baseUrl': 'http://dict-co.iciba.com/api/dictionary.php',
+        # 'queryType': 'get',
+        # 'params': {
+        #     'key': '0AAE477DB66EC58D12E1451877045CA5'
+        # },
+        # 'queryKey': 'w'
     }, {
         'dictName': '有道词典',
         'entry': 'youdao',

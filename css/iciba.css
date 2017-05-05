@@ -1,0 +1,7 @@
+body .search,
+body .common-top {
+  display: none;
+}
+body .screen {
+  padding-top: 80px;
+}
