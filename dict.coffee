@@ -136,7 +136,7 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
 
         $scope.$apply()
 
-    $('#stars', baseNode).on 'starrr:change', (e, value)->
+    $('#fairy-stars', baseNode).on 'starrr:change', (e, value)->
         if $scope.word
             value ?= 0
             console.log "[dictCtrl] rating word: #{$scope.word} #{value}"

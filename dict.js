@@ -157,7 +157,7 @@ dictApp.controller('dictCtrl', function($scope, $sce) {
       return $scope.$apply();
     });
   }
-  $('#stars', baseNode).on('starrr:change', function(e, value) {
+  $('#fairy-stars', baseNode).on('starrr:change', function(e, value) {
     var item;
     if ($scope.word) {
       if (value == null) {

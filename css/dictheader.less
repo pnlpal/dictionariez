@@ -1,4 +1,7 @@
 #fairy-dict {
+
+    line-height: initial;
+
     .navbar {
         background-color: rgba(248, 250, 251, 0.75);
     }
@@ -17,7 +20,7 @@
     }
 
     .navbar-form {
-        margin-bottom: 8px;
+        padding: 5px 10px;
     }
     .form-group {
         // height: 34px;
@@ -46,16 +49,30 @@
     }
 
     .search-group {
+        display: block;
         position: relative;
-        .dict-input {
-            max-width: 200px;
-            margin: 0;  // override urban dictionary's style
+        overflow: hidden;
+        .starrr {
+            position: relative;
+            left: -15px;
+            top: 5px;
         }
+
         .fa-search {
-            position: absolute;
-            right: 10px;
+            position: relative;
+            right: 30px;
             top: 10px;
             cursor: pointer;
+        }
+        .search-wrapper {
+            display: block;
+            overflow: hidden;
+            padding-left: 10px;
+            .dict-input {
+                width: 100%
+                margin: 0;  // override urban dictionary's style
+            }
+
         }
     }
 
@@ -95,13 +112,13 @@
         cursor: pointer;
     }
 
-    #stars {
+    #fairy-stars {
         font-size: 20px;
         /*margin-left: 10px;*/
         margin-right: 5px;
     }
 
-    #stars i.fa{
+    #fairy-stars i.fa{
         padding-left: 3px;
         color: orange;
     }
@@ -115,7 +132,7 @@
       height: 34px;
       margin: 0 0 0 -1px;
       border: rgb(204, 204, 204) solid 0.65px;
-      line-height: initial;
+
       padding: 6px 12px;
       box-shadow: none;
     }
@@ -124,7 +141,6 @@
       width: 100%;
       height: 34px;
       padding: 6px 12px;
-      line-height: initial;
     }
 
 }

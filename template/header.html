@@ -4,7 +4,7 @@
       <div class=""> -->
         <form class="navbar-form form-inline" ng-submit="query()">
           <!-- <i class="fa fa-laptop fa-lg default-page"></i> -->
-          <div class="form-group history-group" ng-show="history.length">
+          <div class="form-group history-group pull-left" ng-show="history.length">
             <!-- history -->
             <div class="btn-group history" uib-dropdown>
               <button id="history-btn" type="button" class="btn btn-default" title="{{_.keys(lastHistoryWord)[0]}}" ng-click="selectHistory(historyIndex+1)">
@@ -30,16 +30,6 @@
             </div>
           </div>
 
-          <div class="form-group search-group">
-            <input type="text" ng-model="word" class="form-control dict-input" placeholder="input word">
-            <i class="fa fa-search fa-lg" aria-hidden="true" ng-click="query()"></i>
-          </div>
-
-          <!-- <button type="submit" class="btn btn-sm btn-primary dict_translate">翻译</button> -->
-          <div class="form-group">
-            <div id="stars" class="starrr" title="选择难度"></div>
-          </div>
-
           <div class="form-group dict-group pull-right">
           <!-- <i ng-click="changeDict('prev')" class="fa fa-arrow-circle-left fa-lg dict_prev dict_nav"></i> -->
           <!-- <div class="form-group dict-group pull-right"> -->
@@ -58,6 +48,17 @@
           <!-- </div> -->
           <!-- <i ng-click="changeDict('next')" class="fa fa-arrow-circle-right fa-lg dict_next dict_nav"></i> -->
           </div>
+
+          <div class="form-group search-group">
+            <div id="fairy-stars" class="starrr pull-right" title="选择难度"></div>
+            <i class="fa fa-search fa-lg pull-right" aria-hidden="true" ng-click="query()"></i>
+
+            <div class="search-wrapper">
+              <input type="text" ng-model="word" class="form-control dict-input" placeholder="input word">
+            </div>
+          </div>
+
+
 
         </form>
       <!-- </div>

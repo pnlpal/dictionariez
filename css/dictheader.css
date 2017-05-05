@@ -1,4 +1,5 @@
 #fairy-dict {
+  line-height: initial;
   /*Fix button and input styles on some websites*/
 }
 #fairy-dict .navbar {
@@ -18,7 +19,7 @@
   padding-top: 8px;
 }
 #fairy-dict .navbar-form {
-  margin-bottom: 8px;
+  padding: 5px 10px;
 }
 #fairy-dict .fa-2x {
   vertical-align: middle;
@@ -38,17 +39,29 @@
   margin-right: 10px;
 }
 #fairy-dict .search-group {
+  display: block;
   position: relative;
+  overflow: hidden;
 }
-#fairy-dict .search-group .dict-input {
-  max-width: 200px;
-  margin: 0;
+#fairy-dict .search-group .starrr {
+  position: relative;
+  left: -15px;
+  top: 5px;
 }
 #fairy-dict .search-group .fa-search {
-  position: absolute;
-  right: 10px;
+  position: relative;
+  right: 30px;
   top: 10px;
   cursor: pointer;
+}
+#fairy-dict .search-group .search-wrapper {
+  display: block;
+  overflow: hidden;
+  padding-left: 10px;
+}
+#fairy-dict .search-group .search-wrapper .dict-input {
+  width: 100%
+                margin: 0;
 }
 #fairy-dict .history-group .dropdown-menu {
   width: 220px;
@@ -81,12 +94,12 @@
 #fairy-dict .dict_next {
   cursor: pointer;
 }
-#fairy-dict #stars {
+#fairy-dict #fairy-stars {
   font-size: 20px;
   /*margin-left: 10px;*/
   margin-right: 5px;
 }
-#fairy-dict #stars i.fa {
+#fairy-dict #fairy-stars i.fa {
   padding-left: 3px;
   color: orange;
 }
@@ -97,7 +110,6 @@
   height: 34px;
   margin: 0 0 0 -1px;
   border: #cccccc solid 0.65px;
-  line-height: initial;
   padding: 6px 12px;
   box-shadow: none;
 }
@@ -105,5 +117,4 @@
   width: 100%;
   height: 34px;
   padding: 6px 12px;
-  line-height: initial;
 }
