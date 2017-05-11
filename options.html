@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
     <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="css/options.css">
+    <link rel="stylesheet" type="text/css" href="needsharebutton.min.css">
 
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
@@ -17,6 +18,9 @@
 
     <script type="text/javascript" src="utils.js"></script>
     <script type="text/javascript" src="option/option.js"></script>
+    <script type="text/javascript" src="needsharebutton.min.js"></script>
+
+
     <style>
     img.pull-left{
         width: 100px;
@@ -30,6 +34,20 @@
 </head>
 <body>
     <div class="container" ng-controller="optionCtrl">
+        <div class="section">
+            <h1>FairyDict</h1>
+            <p>努力做最好用的词典扩展！</p>
+
+            <p>
+            此软件是开源软件，喜欢请帮忙评价或点赞，有任何问题或建议请在
+            <a href="https://github.com/revir/FairyDict" target="_blank">Github</a>
+            或
+            <a href="https://v2mm.tech" target="_blank">V2MM</a>
+            上联系我 ;)
+            </p>
+
+        </div>
+
         <div class="section function-setting">
             <h1>功能设置</h1>
             <div class="checkbox">
@@ -60,6 +78,7 @@
         </div>
 
         <div class="section shortcut-setting">
+
             <h1>快捷键设置</h1>
 
             <div>
@@ -225,6 +244,31 @@
                 </div>
 
             </div>
+        </div>
+
+        <div class="section shortcut-setting">
+            <h1>好用就分享</h1>
+            <div class="row">
+                <ul>
+                    <li>
+                        <a href="" class="need-share-button"
+                            data-share-url="https://github.com/revir/FairyDict"
+                            data-share-title="FairyDict 是一个开源的 Chrome 扩展，包含几乎所有网上常见的词典，支持鼠标取词、快捷键取词和右键菜单的词典软件， 学习的好帮手，词典爱好者的福音。"
+                            data-share-image="https://github.com/revir/FairyDict/raw/master/readme_images/4.png">
+                        分享 Github 链接
+                        </a>
+                    </li>
+                    <li>
+                        <a href="" class="need-share-button"
+                        data-share-url="https://chrome.google.com/webstore/detail/fairydict/gpdpcfgfmgkmljmhhnedefdaadgehaah"
+                        data-share-title="FairyDict 是一个开源的 Chrome 扩展，包含几乎所有网上常见的词典，支持鼠标取词、快捷键取词和右键菜单的词典软件， 学习的好帮手，词典爱好者的福音。"
+                        data-share-image="https://github.com/revir/FairyDict/raw/master/readme_images/4.png">
+                            分享 chrome webstore 链接
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
         </div>
     </div>
 </body>
