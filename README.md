@@ -18,6 +18,7 @@
 
 * 支持多种词典，金山词霸、海词、必应，Urban, Dictionary.com, Longman, Oxford, Cambridge, Merriam-webster, Collins, Macmilland 等几乎所有的在线词典；理论上可以支持所有在线词典；
 * 支持鼠标取词、键盘快捷键查词、鼠标右键查词等查询方式；
+* 支持快速查词功能，选中单词后在鼠标附近显示词义；
 * 历史记录保存，自动同步；
 * 窗口大小可自动记忆；
 
