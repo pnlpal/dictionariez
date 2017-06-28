@@ -17,8 +17,13 @@ define ["jquery",
         else if request.type == 'look up'
             if request.means == 'mouse'
                 if not setting.getValue('enableMinidict')
-                    return
+                    return true
+
             dictWindow.lookup(request.text)
+
+        else if request.type == 'look up pain'
+            dict.queryWordPain(request.text).then (res)->
+                    sendResponse(res)
 
         else if request.type == 'query'
             setting.setValue('dictionary', request.dictionary) if request.dictionary

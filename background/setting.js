@@ -5,6 +5,7 @@ define(["jquery", "utils"], function($, utils) {
     configCache: {
       windowWidth: 630,
       windowHeight: 700,
+      enablePlainLookup: true,
       enableMinidict: true,
       enableMouseSK1: false,
       mouseSK1: 'Ctrl',

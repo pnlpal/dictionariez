@@ -50,6 +50,14 @@
 
         <div class="section function-setting">
             <h1>功能设置</h1>
+
+            <div class="checkbox">
+                <label>
+                <input type="checkbox" ng-model="setting.enablePlainLookup" ng-click="changeKey(setting.enablePlainLookup, 'enablePlainLookup')"> 开启鼠标快速查词功能！
+                <em style="color: red">New</em>
+                </label>
+            </div>
+
             <div class="checkbox">
                 <label>
                 <input type="checkbox" ng-model="setting.enableMinidict" ng-click="changeKey(setting.enableMinidict, 'enableMinidict')"> 开启鼠标取词功能

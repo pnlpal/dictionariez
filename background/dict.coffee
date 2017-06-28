@@ -184,6 +184,10 @@ define ["jquery",
             else
                 return dfd.resolve({html: @['parse' + dict.entry](word)})
 
+        queryWordPain: (word) ->
+            url = "http://xtk.azurewebsites.net/BingDictService.aspx?Word=#{word}&Samples=false"
+            return $.get(url)
+
         parseAonaware: (text)->
             xml = $.parseXML(text)
             return '<pre>' + $('Definitions WordDefinition', xml).text() + '</pre>'

@@ -200,6 +200,11 @@ define(["jquery", "utils"], function($, utils) {
         });
       }
     },
+    queryWordPain: function(word) {
+      var url;
+      url = "http://xtk.azurewebsites.net/BingDictService.aspx?Word=" + word + "&Samples=false";
+      return $.get(url);
+    },
     parseAonaware: function(text) {
       var xml;
       xml = $.parseXML(text);

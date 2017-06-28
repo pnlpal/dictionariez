@@ -14,10 +14,14 @@ define(["jquery", "utils", "background/setting", "background/ext", "background/s
     } else if (request.type === 'look up') {
       if (request.means === 'mouse') {
         if (!setting.getValue('enableMinidict')) {
-          return;
+          return true;
         }
       }
       dictWindow.lookup(request.text);
+    } else if (request.type === 'look up pain') {
+      dict.queryWordPain(request.text).then(function(res) {
+        return sendResponse(res);
+      });
     } else if (request.type === 'query') {
       if (request.dictionary) {
         setting.setValue('dictionary', request.dictionary);
