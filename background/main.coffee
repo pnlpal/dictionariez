@@ -22,6 +22,9 @@ require ["jquery",
                 dictWindow.lookup(info.selectionText)
 
         chrome.browserAction.onClicked.addListener (tab)->
+            if setting.getValue('browserActionType') == 'openDictWindow'
+                return dictWindow.lookup()
+
             b = !setting.getValue('enableMinidict')
             setting.setValue('enableMinidict', b)
             ext.setBrowserIcon(b)

@@ -21,6 +21,9 @@ require(["jquery", "utils", "background/setting", "background/ext", "background/
   };
   chrome.browserAction.onClicked.addListener(function(tab) {
     var b;
+    if (setting.getValue('browserActionType') === 'openDictWindow') {
+      return dictWindow.lookup();
+    }
     b = !setting.getValue('enableMinidict');
     setting.setValue('enableMinidict', b);
     return ext.setBrowserIcon(b);

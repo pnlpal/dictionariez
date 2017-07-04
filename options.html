@@ -63,7 +63,7 @@
                 <input type="checkbox" ng-model="setting.enableMinidict" ng-click="changeKey(setting.enableMinidict, 'enableMinidict')"> 开启鼠标取词功能
                 </label>
             </div>
-            <div class="checkbox enableMouseSK1">
+            <div class="checkbox indent">
               <label>
               <input type="checkbox" ng-model="setting.enableMouseSK1" ng-click="changeKey(setting.enableMouseSK1, 'enableMouseSK1')">
               同时必须按住
@@ -83,6 +83,20 @@
               </div>
 
             </div>
+
+            <div>
+              单击图标时的功能选择 <em style="color: red">New</em>
+              <div class="radio indent">
+                  <label>
+                  <input type="radio" value="enableMinidict" ng-model="setting.browserActionType" ng-click="changeKey(setting.browserActionType, 'browserActionType')"> 开/关鼠标取词功能
+                  </label>
+                  <br/>
+                  <label>
+                  <input type="radio" value="openDictWindow" ng-model="setting.browserActionType" ng-click="changeKey(setting.browserActionType, 'browserActionType')"> 打开查词窗口
+                  </label>
+              </div>
+            </div>
+
         </div>
 
         <div class="section shortcut-setting">

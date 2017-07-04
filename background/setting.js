@@ -6,6 +6,7 @@ define(["jquery", "utils"], function($, utils) {
       windowWidth: 630,
       windowHeight: 700,
       enablePlainLookup: true,
+      browserActionType: 'enableMinidict',
       enableMinidict: true,
       enableMouseSK1: false,
       mouseSK1: 'Ctrl',
