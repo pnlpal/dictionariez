@@ -8,7 +8,17 @@ chrome.runtime.sendMessage {
     # ), ()->
     #     $('.tooltip').remove()
     jQuery(document).ready ()->
-        jQuery('<div class="fairydict-tooltip"></div>').appendTo('body')
+        jQuery('''
+            <div class="fairydict-tooltip">
+                <div class="fairydict-spinner">
+                  <div class="fairydict-bounce1"></div>
+                  <div class="fairydict-bounce2"></div>
+                  <div class="fairydict-bounce3"></div>
+                </div>
+                <p class="fairydict-tooltip-content">
+                </p>
+            </div>
+                ''').appendTo('body')
 
     jQuery(document).mousemove (e)->
         mousex = e.pageX + 20
@@ -25,20 +35,25 @@ chrome.runtime.sendMessage {
 
     jQuery(document).mouseup (event)->
         selObj = window.getSelection()
-        unless selObj.toString()
-            jQuery('.fairydict-tooltip').fadeOut()
+        text = selObj.toString().trim()
+        unless text
+            jQuery('.fairydict-tooltip').fadeOut().hide()
             return
 
         # issue #4
         including = jQuery(event.target).has(selObj.focusNode).length or jQuery(event.target).is(selObj.focusNode)
 
         if event.which == 1 and including
+            jQuery('.fairydict-tooltip').fadeIn('slow')
+            jQuery('.fairydict-tooltip .fairydict-spinner').show()
+            jQuery('.fairydict-tooltip .fairydict-tooltip-content').empty()
+
 
             if setting.enablePlainLookup
                 chrome.runtime.sendMessage({
                     type: 'look up pain',
                     means: 'mouse',
-                    text: window.getSelection().toString()
+                    text: text
                 }, (res)->
                     if res.defs
                         definition = res.defs.reduce ((n, m)->
@@ -48,7 +63,8 @@ chrome.runtime.sendMessage {
                         ), ''
                         console.log "[FairyDict] plain definition: ", definition
                         # jQuery(event.target).attr('title', definition)
-                        jQuery('.fairydict-tooltip').html(definition).fadeIn('slow')
+                        jQuery('.fairydict-tooltip .fairydict-spinner').hide()
+                        jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(definition)
 
             )
 

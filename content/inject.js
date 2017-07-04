@@ -3,7 +3,7 @@ chrome.runtime.sendMessage({
   type: 'setting'
 }, function(setting) {
   jQuery(document).ready(function() {
-    return jQuery('<div class="fairydict-tooltip"></div>').appendTo('body');
+    return jQuery('<div class="fairydict-tooltip">\n    <div class="fairydict-spinner">\n      <div class="fairydict-bounce1"></div>\n      <div class="fairydict-bounce2"></div>\n      <div class="fairydict-bounce3"></div>\n    </div>\n    <p class="fairydict-tooltip-content">\n    </p>\n</div>').appendTo('body');
   });
   jQuery(document).mousemove(function(e) {
     var mousex, mousey;
@@ -24,19 +24,23 @@ chrome.runtime.sendMessage({
     }
   });
   return jQuery(document).mouseup(function(event) {
-    var including, selObj;
+    var including, selObj, text;
     selObj = window.getSelection();
-    if (!selObj.toString()) {
-      jQuery('.fairydict-tooltip').fadeOut();
+    text = selObj.toString().trim();
+    if (!text) {
+      jQuery('.fairydict-tooltip').fadeOut().hide();
       return;
     }
     including = jQuery(event.target).has(selObj.focusNode).length || jQuery(event.target).is(selObj.focusNode);
     if (event.which === 1 && including) {
+      jQuery('.fairydict-tooltip').fadeIn('slow');
+      jQuery('.fairydict-tooltip .fairydict-spinner').show();
+      jQuery('.fairydict-tooltip .fairydict-tooltip-content').empty();
       if (setting.enablePlainLookup) {
         chrome.runtime.sendMessage({
           type: 'look up pain',
           means: 'mouse',
-          text: window.getSelection().toString()
+          text: text
         }, function(res) {
           var definition;
           if (res.defs) {
@@ -48,7 +52,8 @@ chrome.runtime.sendMessage({
               return n;
             }), '');
             console.log("[FairyDict] plain definition: ", definition);
-            return jQuery('.fairydict-tooltip').html(definition).fadeIn('slow');
+            jQuery('.fairydict-tooltip .fairydict-spinner').hide();
+            return jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(definition);
           }
         });
       }
