@@ -54,8 +54,19 @@
             <div class="checkbox">
                 <label>
                 <input type="checkbox" ng-model="setting.enablePlainLookup" ng-click="changeKey(setting.enablePlainLookup, 'enablePlainLookup')"> 开启鼠标快速查词功能！
-                <em style="color: red">New</em>
                 </label>
+            </div>
+
+            <div class="checkbox indent">
+              <label>
+                <input type="checkbox" ng-model="setting.enableAmeAudio" ng-click="changeKey(setting.enableAmeAudio, 'enableAmeAudio')">
+                自动播放美式发音 <em style="color: red">New</em>
+              </label>
+              <br/>
+              <label>
+                <input type="checkbox" ng-model="setting.enableBreAudio" ng-click="changeKey(setting.enableBreAudio, 'enableBreAudio')">
+                自动播放英式发音 <em style="color: red">New</em>
+              </label>
             </div>
 
             <div class="checkbox">

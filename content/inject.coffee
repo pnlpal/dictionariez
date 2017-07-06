@@ -33,6 +33,37 @@ chrome.runtime.sendMessage {
                 text: window.getSelection().toString()
             })
 
+    playAudios = (urls) ->
+        return unless urls?.length
+        audios = urls.map (url)->
+            return new Audio(url)
+
+        _play = (audio, timeout)->
+            timeout ?= 0
+            return $.Deferred (dfd)->
+                _func = ()->
+                    setTimeout (()->
+                        # console.log "play: ", audio.duration, timeout
+                        audio.play()
+                        dfd.resolve(audio.duration or 1)
+                    ), timeout
+
+                if audio.duration
+                    _func()
+                else
+                    audio.addEventListener 'loadedmetadata', _func
+
+        __play = (idx, timeout)->
+            idx ?= 0
+            if audios[idx]
+                _play(audios[idx], timeout).then (duration)->
+                    __play(idx+1, duration*1000)
+
+        __play()
+
+
+
+
     handleMouseUp = (event)->
         selObj = window.getSelection()
         text = selObj.toString().trim()
@@ -55,15 +86,33 @@ chrome.runtime.sendMessage {
                     text: text
                 }, (res)->
                     if res?.defs
-                        definition = res.defs.reduce ((n, m)->
+                        content = ''
+                        if res.pronunciation
+                            audios = []
+                            if res.pronunciation.AmE
+                                content += res.pronunciation.AmE + '&nbsp;&nbsp;'
+
+                            if res.pronunciation.AmEmp3 and setting.enableAmeAudio
+                                audios.push res.pronunciation.AmEmp3
+
+                            if res.pronunciation.BrE
+                                content += res.pronunciation.BrE + '<br/>'
+
+                            if res.pronunciation.BrEmp3 and setting.enableBreAudio
+                                audios.push res.pronunciation.BrEmp3
+
+                            playAudios audios
+
+                        content = res.defs.reduce ((n, m)->
                             n += '<br/>' if n
                             n += m.pos + ' ' + m.def
                             return n
-                        ), ''
-                        console.log "[FairyDict] plain definition: ", definition
+                        ), content
+
+                        console.log "[FairyDict] plain definition: ", content
                         # jQuery(event.target).attr('title', definition)
                         jQuery('.fairydict-tooltip .fairydict-spinner').hide()
-                        jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(definition)
+                        jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(content)
                     else
                         jQuery('.fairydict-tooltip').fadeOut().hide()
 

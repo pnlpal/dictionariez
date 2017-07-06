@@ -2,7 +2,7 @@
 chrome.runtime.sendMessage({
   type: 'setting'
 }, function(setting) {
-  var handleMouseUp;
+  var handleMouseUp, playAudios;
   jQuery(document).ready(function() {
     return jQuery('<div class="fairydict-tooltip">\n    <div class="fairydict-spinner">\n      <div class="fairydict-bounce1"></div>\n      <div class="fairydict-bounce2"></div>\n      <div class="fairydict-bounce3"></div>\n    </div>\n    <p class="fairydict-tooltip-content">\n    </p>\n</div>').appendTo('body');
   });
@@ -24,6 +24,45 @@ chrome.runtime.sendMessage({
       });
     }
   });
+  playAudios = function(urls) {
+    var __play, _play, audios;
+    if (!(urls != null ? urls.length : void 0)) {
+      return;
+    }
+    audios = urls.map(function(url) {
+      return new Audio(url);
+    });
+    _play = function(audio, timeout) {
+      if (timeout == null) {
+        timeout = 0;
+      }
+      return $.Deferred(function(dfd) {
+        var _func;
+        _func = function() {
+          return setTimeout((function() {
+            audio.play();
+            return dfd.resolve(audio.duration || 1);
+          }), timeout);
+        };
+        if (audio.duration) {
+          return _func();
+        } else {
+          return audio.addEventListener('loadedmetadata', _func);
+        }
+      });
+    };
+    __play = function(idx, timeout) {
+      if (idx == null) {
+        idx = 0;
+      }
+      if (audios[idx]) {
+        return _play(audios[idx], timeout).then(function(duration) {
+          return __play(idx + 1, duration * 1000);
+        });
+      }
+    };
+    return __play();
+  };
   handleMouseUp = function(event) {
     var including, selObj, text;
     selObj = window.getSelection();
@@ -43,18 +82,35 @@ chrome.runtime.sendMessage({
           means: 'mouse',
           text: text
         }, function(res) {
-          var definition;
+          var audios, content;
           if (res != null ? res.defs : void 0) {
-            definition = res.defs.reduce((function(n, m) {
+            content = '';
+            if (res.pronunciation) {
+              audios = [];
+              if (res.pronunciation.AmE) {
+                content += res.pronunciation.AmE + '&nbsp;&nbsp;';
+              }
+              if (res.pronunciation.AmEmp3 && setting.enableAmeAudio) {
+                audios.push(res.pronunciation.AmEmp3);
+              }
+              if (res.pronunciation.BrE) {
+                content += res.pronunciation.BrE + '<br/>';
+              }
+              if (res.pronunciation.BrEmp3 && setting.enableBreAudio) {
+                audios.push(res.pronunciation.BrEmp3);
+              }
+              playAudios(audios);
+            }
+            content = res.defs.reduce((function(n, m) {
               if (n) {
                 n += '<br/>';
               }
               n += m.pos + ' ' + m.def;
               return n;
-            }), '');
-            console.log("[FairyDict] plain definition: ", definition);
+            }), content);
+            console.log("[FairyDict] plain definition: ", content);
             jQuery('.fairydict-tooltip .fairydict-spinner').hide();
-            return jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(definition);
+            return jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(content);
           } else {
             return jQuery('.fairydict-tooltip').fadeOut().hide();
           }
