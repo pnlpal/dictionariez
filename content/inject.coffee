@@ -33,7 +33,7 @@ chrome.runtime.sendMessage {
                 text: window.getSelection().toString()
             })
 
-    jQuery(document).mouseup (event)->
+    handleMouseUp = (event)->
         selObj = window.getSelection()
         text = selObj.toString().trim()
         unless text
@@ -55,7 +55,7 @@ chrome.runtime.sendMessage {
                     means: 'mouse',
                     text: text
                 }, (res)->
-                    if res.defs
+                    if res?.defs
                         definition = res.defs.reduce ((n, m)->
                             n += '<br/>' if n
                             n += m.pos + ' ' + m.def
@@ -65,6 +65,8 @@ chrome.runtime.sendMessage {
                         # jQuery(event.target).attr('title', definition)
                         jQuery('.fairydict-tooltip .fairydict-spinner').hide()
                         jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(definition)
+                    else
+                        jQuery('.fairydict-tooltip').fadeOut().hide()
 
             )
 
@@ -74,6 +76,11 @@ chrome.runtime.sendMessage {
                     means: 'mouse',
                     text: window.getSelection().toString()
                 })
+
+    jQuery(document).mouseup (e)->
+        # 对 mouseup 事件做一个延时处理，
+        # 以避免取消选中后getSelection依然能获得文字。
+        setTimeout (()->handleMouseUp(e)), 1
 
 
 chrome.runtime.sendMessage {

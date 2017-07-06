@@ -22,8 +22,7 @@ define ["jquery",
             dictWindow.lookup(request.text)
 
         else if request.type == 'look up pain'
-            dict.queryWordPain(request.text).then (res)->
-                    sendResponse(res)
+            dict.queryWordPain(request.text).then sendResponse, sendResponse
 
         else if request.type == 'query'
             setting.setValue('dictionary', request.dictionary) if request.dictionary

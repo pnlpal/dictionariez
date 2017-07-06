@@ -19,9 +19,7 @@ define(["jquery", "utils", "background/setting", "background/ext", "background/s
       }
       dictWindow.lookup(request.text);
     } else if (request.type === 'look up pain') {
-      dict.queryWordPain(request.text).then(function(res) {
-        return sendResponse(res);
-      });
+      dict.queryWordPain(request.text).then(sendResponse, sendResponse);
     } else if (request.type === 'query') {
       if (request.dictionary) {
         setting.setValue('dictionary', request.dictionary);

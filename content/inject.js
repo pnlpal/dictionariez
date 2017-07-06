@@ -2,6 +2,7 @@
 chrome.runtime.sendMessage({
   type: 'setting'
 }, function(setting) {
+  var handleMouseUp;
   jQuery(document).ready(function() {
     return jQuery('<div class="fairydict-tooltip">\n    <div class="fairydict-spinner">\n      <div class="fairydict-bounce1"></div>\n      <div class="fairydict-bounce2"></div>\n      <div class="fairydict-bounce3"></div>\n    </div>\n    <p class="fairydict-tooltip-content">\n    </p>\n</div>').appendTo('body');
   });
@@ -23,7 +24,7 @@ chrome.runtime.sendMessage({
       });
     }
   });
-  return jQuery(document).mouseup(function(event) {
+  handleMouseUp = function(event) {
     var including, selObj, text;
     selObj = window.getSelection();
     text = selObj.toString().trim();
@@ -43,7 +44,7 @@ chrome.runtime.sendMessage({
           text: text
         }, function(res) {
           var definition;
-          if (res.defs) {
+          if (res != null ? res.defs : void 0) {
             definition = res.defs.reduce((function(n, m) {
               if (n) {
                 n += '<br/>';
@@ -54,6 +55,8 @@ chrome.runtime.sendMessage({
             console.log("[FairyDict] plain definition: ", definition);
             jQuery('.fairydict-tooltip .fairydict-spinner').hide();
             return jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(definition);
+          } else {
+            return jQuery('.fairydict-tooltip').fadeOut().hide();
           }
         });
       }
@@ -65,6 +68,11 @@ chrome.runtime.sendMessage({
         });
       }
     }
+  };
+  return jQuery(document).mouseup(function(e) {
+    return setTimeout((function() {
+      return handleMouseUp(e);
+    }), 1);
   });
 });
 
