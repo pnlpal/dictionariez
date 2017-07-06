@@ -34,10 +34,10 @@ chrome.runtime.sendMessage({
     }
     including = jQuery(event.target).has(selObj.focusNode).length || jQuery(event.target).is(selObj.focusNode);
     if (event.which === 1 && including) {
-      jQuery('.fairydict-tooltip').fadeIn('slow');
-      jQuery('.fairydict-tooltip .fairydict-spinner').show();
-      jQuery('.fairydict-tooltip .fairydict-tooltip-content').empty();
       if (setting.enablePlainLookup) {
+        jQuery('.fairydict-tooltip').fadeIn('slow');
+        jQuery('.fairydict-tooltip .fairydict-spinner').show();
+        jQuery('.fairydict-tooltip .fairydict-tooltip-content').empty();
         chrome.runtime.sendMessage({
           type: 'look up pain',
           means: 'mouse',
