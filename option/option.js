@@ -6,7 +6,7 @@ dictApp = angular.module('fairyDictApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize
 dictApp.controller('optionCtrl', function($scope, $sce) {
   var code;
   console.log("[optionCtrl] init");
-  $scope.allSK = ['', 'Ctrl', 'Shift', 'Alt'];
+  $scope.allSK = ['', 'Ctrl', 'Shift', 'Alt', 'Meta'];
   $scope.allLetters = (function() {
     var i, ref, ref1, results;
     results = [];

@@ -20,7 +20,6 @@
     <script type="text/javascript" src="option/option.js"></script>
     <script type="text/javascript" src="needsharebutton.min.js"></script>
 
-
     <style>
     img.pull-left{
         width: 100px;
@@ -53,7 +52,40 @@
 
             <div class="checkbox">
                 <label>
-                <input type="checkbox" ng-model="setting.enablePlainLookup" ng-click="changeKey(setting.enablePlainLookup, 'enablePlainLookup')"> 开启鼠标快速查词功能！
+                <input type="checkbox" ng-model="setting.enableSelectionOnMouseMove" ng-click="changeKey(setting.enableSelectionOnMouseMove, 'enableSelectionOnMouseMove')"> 鼠标悬停自动选中单词
+                <em style="color: red">New</em>
+                </label>
+            </div>
+            <div class="checkbox indent">
+              <input type="checkbox" ng-model="setting.enableSelectionSK1" ng-click="changeKey(setting.enableSelectionSK1, 'enableSelectionSK1')">
+              同时必须按住
+
+              <div class="btn-group" uib-dropdown  uib-keyboard-nav>
+                <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default"
+                type="button" id="btn-selectionSK1">{{setting.selectionSK1}}
+                    <span class="caret"></span>
+                </button>
+
+                <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-selectionSK1">
+                  <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
+                    <a ng-click="changeKey(item, 'selectionSK1')">{{item}}</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="indent">
+                <span>悬停延时检测时间
+                <input type="number"
+                style="width: 50px"
+                ng-model="setting.selectionTimeout"
+                ng-blur="changeKey(setting.selectionTimeout, 'selectionTimeout')"> 毫秒
+                </span>
+            </div>
+            <br>
+
+            <div class="checkbox">
+                <label>
+                <input type="checkbox" ng-model="setting.enablePlainLookup" ng-click="changeKey(setting.enablePlainLookup, 'enablePlainLookup')"> 开启快速查词功能（快速查询选中的单词释义，跟着鼠标显示)
                 </label>
             </div>
 
@@ -68,10 +100,11 @@
                 自动播放英式发音 <em style="color: red">New</em>
               </label>
             </div>
+            <br>
 
             <div class="checkbox">
                 <label>
-                <input type="checkbox" ng-model="setting.enableMinidict" ng-click="changeKey(setting.enableMinidict, 'enableMinidict')"> 开启鼠标取词功能
+                <input type="checkbox" ng-model="setting.enableMinidict" ng-click="changeKey(setting.enableMinidict, 'enableMinidict')"> 开启鼠标取词功能（自动弹出词典界面，查询选中的单词）
                 </label>
             </div>
             <div class="checkbox indent">
@@ -92,11 +125,11 @@
                   </li>
                 </ul>
               </div>
-
             </div>
+            <br>
 
             <div>
-              单击图标时的功能选择 <em style="color: red">New</em>
+              单击图标时的功能选择
               <div class="radio indent">
                   <label>
                   <input type="radio" value="enableMinidict" ng-model="setting.browserActionType" ng-click="changeKey(setting.browserActionType, 'browserActionType')"> 开/关鼠标取词功能
