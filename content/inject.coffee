@@ -126,47 +126,46 @@ chrome.runtime.sendMessage {
         return unless text
 
         if setting.enablePlainLookup
-            jQuery('.fairydict-tooltip').fadeIn('slow')
-            jQuery('.fairydict-tooltip .fairydict-spinner').show()
-            jQuery('.fairydict-tooltip .fairydict-tooltip-content').empty()
+            if !setting.enablePlainSK1 or (setting.plainSK1 and utils.checkEventKey(event, setting.plainSK1))
+                jQuery('.fairydict-tooltip').fadeIn('slow')
+                jQuery('.fairydict-tooltip .fairydict-spinner').show()
+                jQuery('.fairydict-tooltip .fairydict-tooltip-content').empty()
 
-            chrome.runtime.sendMessage({
-                type: 'look up pain',
-                means: 'mouse',
-                text: text
-            }, (res)->
-                if res?.defs
-                    content = ''
-                    if res.pronunciation
-                        audios = []
-                        if res.pronunciation.AmE
-                            content += res.pronunciation.AmE + '&nbsp;&nbsp;'
+                chrome.runtime.sendMessage {
+                    type: 'look up pain',
+                    means: 'mouse',
+                    text: text
+                }, (res)->
+                    if res?.defs
+                        content = ''
+                        if res.pronunciation
+                            audios = []
+                            if res.pronunciation.AmE
+                                content += res.pronunciation.AmE + '&nbsp;&nbsp;'
 
-                        if res.pronunciation.AmEmp3 and setting.enableAmeAudio
-                            audios.push res.pronunciation.AmEmp3
+                            if res.pronunciation.AmEmp3 and setting.enableAmeAudio
+                                audios.push res.pronunciation.AmEmp3
 
-                        if res.pronunciation.BrE
-                            content += res.pronunciation.BrE + '<br/>'
+                            if res.pronunciation.BrE
+                                content += res.pronunciation.BrE + '<br/>'
 
-                        if res.pronunciation.BrEmp3 and setting.enableBreAudio
-                            audios.push res.pronunciation.BrEmp3
+                            if res.pronunciation.BrEmp3 and setting.enableBreAudio
+                                audios.push res.pronunciation.BrEmp3
 
-                        playAudios audios
+                            playAudios audios
 
-                    content = res.defs.reduce ((n, m)->
-                        n += '<br/>' if n
-                        n += m.pos + ' ' + m.def
-                        return n
-                    ), content
+                        content = res.defs.reduce ((n, m)->
+                            n += '<br/>' if n
+                            n += m.pos + ' ' + m.def
+                            return n
+                        ), content
 
-                    console.log "[FairyDict] plain definition: ", content
-                    # jQuery(event.target).attr('title', definition)
-                    jQuery('.fairydict-tooltip .fairydict-spinner').hide()
-                    jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(content)
-                else
-                    jQuery('.fairydict-tooltip').fadeOut().hide()
-
-        )
+                        console.log "[FairyDict] plain definition: ", content
+                        # jQuery(event.target).attr('title', definition)
+                        jQuery('.fairydict-tooltip .fairydict-spinner').hide()
+                        jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(content)
+                    else
+                        jQuery('.fairydict-tooltip').fadeOut().hide()
 
         if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
             chrome.runtime.sendMessage({

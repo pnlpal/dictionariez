@@ -145,47 +145,49 @@ chrome.runtime.sendMessage({
       return;
     }
     if (setting.enablePlainLookup) {
-      jQuery('.fairydict-tooltip').fadeIn('slow');
-      jQuery('.fairydict-tooltip .fairydict-spinner').show();
-      jQuery('.fairydict-tooltip .fairydict-tooltip-content').empty();
-      chrome.runtime.sendMessage({
-        type: 'look up pain',
-        means: 'mouse',
-        text: text
-      }, function(res) {
-        var audios, content;
-        if (res != null ? res.defs : void 0) {
-          content = '';
-          if (res.pronunciation) {
-            audios = [];
-            if (res.pronunciation.AmE) {
-              content += res.pronunciation.AmE + '&nbsp;&nbsp;';
+      if (!setting.enablePlainSK1 || (setting.plainSK1 && utils.checkEventKey(event, setting.plainSK1))) {
+        jQuery('.fairydict-tooltip').fadeIn('slow');
+        jQuery('.fairydict-tooltip .fairydict-spinner').show();
+        jQuery('.fairydict-tooltip .fairydict-tooltip-content').empty();
+        chrome.runtime.sendMessage({
+          type: 'look up pain',
+          means: 'mouse',
+          text: text
+        }, function(res) {
+          var audios, content;
+          if (res != null ? res.defs : void 0) {
+            content = '';
+            if (res.pronunciation) {
+              audios = [];
+              if (res.pronunciation.AmE) {
+                content += res.pronunciation.AmE + '&nbsp;&nbsp;';
+              }
+              if (res.pronunciation.AmEmp3 && setting.enableAmeAudio) {
+                audios.push(res.pronunciation.AmEmp3);
+              }
+              if (res.pronunciation.BrE) {
+                content += res.pronunciation.BrE + '<br/>';
+              }
+              if (res.pronunciation.BrEmp3 && setting.enableBreAudio) {
+                audios.push(res.pronunciation.BrEmp3);
+              }
+              playAudios(audios);
             }
-            if (res.pronunciation.AmEmp3 && setting.enableAmeAudio) {
-              audios.push(res.pronunciation.AmEmp3);
-            }
-            if (res.pronunciation.BrE) {
-              content += res.pronunciation.BrE + '<br/>';
-            }
-            if (res.pronunciation.BrEmp3 && setting.enableBreAudio) {
-              audios.push(res.pronunciation.BrEmp3);
-            }
-            playAudios(audios);
+            content = res.defs.reduce((function(n, m) {
+              if (n) {
+                n += '<br/>';
+              }
+              n += m.pos + ' ' + m.def;
+              return n;
+            }), content);
+            console.log("[FairyDict] plain definition: ", content);
+            jQuery('.fairydict-tooltip .fairydict-spinner').hide();
+            return jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(content);
+          } else {
+            return jQuery('.fairydict-tooltip').fadeOut().hide();
           }
-          content = res.defs.reduce((function(n, m) {
-            if (n) {
-              n += '<br/>';
-            }
-            n += m.pos + ' ' + m.def;
-            return n;
-          }), content);
-          console.log("[FairyDict] plain definition: ", content);
-          jQuery('.fairydict-tooltip .fairydict-spinner').hide();
-          return jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(content);
-        } else {
-          return jQuery('.fairydict-tooltip').fadeOut().hide();
-        }
-      });
+        });
+      }
     }
     if (!setting.enableMouseSK1 || (setting.mouseSK1 && utils.checkEventKey(event, setting.mouseSK1))) {
       return chrome.runtime.sendMessage({

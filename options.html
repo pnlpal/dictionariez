@@ -88,7 +88,6 @@
                 <input type="checkbox" ng-model="setting.enablePlainLookup" ng-click="changeKey(setting.enablePlainLookup, 'enablePlainLookup')"> 开启快速查词功能（快速查询选中的单词释义，跟着鼠标显示)
                 </label>
             </div>
-
             <div class="checkbox indent">
               <label>
                 <input type="checkbox" ng-model="setting.enableAmeAudio" ng-click="changeKey(setting.enableAmeAudio, 'enableAmeAudio')">
@@ -99,6 +98,25 @@
                 <input type="checkbox" ng-model="setting.enableBreAudio" ng-click="changeKey(setting.enableBreAudio, 'enableBreAudio')">
                 自动播放英式发音 <em style="color: red">New</em>
               </label>
+            </div>
+            <div class="checkbox indent">
+              <label>
+              <input type="checkbox" ng-model="setting.enablePlainSK1" ng-click="changeKey(setting.enablePlainSK1, 'enablePlainSK1')">
+              同时必须按住
+              </label>
+
+              <div class="btn-group" uib-dropdown  uib-keyboard-nav>
+                <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default"
+                type="button" id="btn-plainSK1">{{setting.plainSK1}}
+                    <span class="caret"></span>
+                </button>
+
+                <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-plainSK1">
+                  <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
+                    <a ng-click="changeKey(item, 'plainSK1')">{{item}}</a>
+                  </li>
+                </ul>
+              </div>
             </div>
             <br>
 

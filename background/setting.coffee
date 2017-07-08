@@ -5,22 +5,27 @@ define ["jquery",
         configCache: {
             windowWidth: 630,
             windowHeight: 700,
-            enablePlainLookup: true,
-            enableAmeAudio: false,
-            enableBreAudio: false,
-            browserActionType: 'enableMinidict',
-            enableMinidict: false,
 
             enableSelectionOnMouseMove: false,
             enableSelectionSK1: true,
             selectionSK1: 'Meta',
             selectionTimeout: 500,
 
+            enablePlainLookup: true,
+            enableAmeAudio: false,
+            enableBreAudio: false,
+            enablePlainSK1: false,
+            plainSK1: 'Meta',
+
+            enableMinidict: false,
             enableMouseSK1: false,
             mouseSK1: 'Ctrl',
             openSK1: 'Ctrl',
             openSK2: 'Shift'
             openKey: 'X',
+
+            browserActionType: 'enableMinidict',
+
             prevDictSK1: 'Ctrl',
             prevDictKey: 'ArrowLeft',
             nextDictSK1: 'Ctrl',
