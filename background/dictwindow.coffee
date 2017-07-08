@@ -119,7 +119,7 @@ define ["jquery",
                 index ?= 0
                 dfd = $.Deferred()
                 file = files[index]
-                if file and t
+                if file and t and @tid
                     console.log "[dictwindow] inject #{file}"
                     chrome.tabs[t] @tid, {file: file}, ()=>
                         inject(t, files, index+1).then ()=>
@@ -156,7 +156,7 @@ define ["jquery",
             injectContentDfd = $.Deferred((dfd)=>
                 dfd.then ()=>
                     return @injectResources().then ()=>
-                        updateWindowDfd.resolve()
+                        updateWindowDfd?.resolve()
                 )
             dictInitedDfd = $.Deferred()
             updateWindowDfd = $.Deferred()

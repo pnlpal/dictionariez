@@ -127,7 +127,7 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
           }
           dfd = $.Deferred();
           file = files[index];
-          if (file && t) {
+          if (file && t && _this.tid) {
             console.log("[dictwindow] inject " + file);
             chrome.tabs[t](_this.tid, {
               file: file
@@ -182,7 +182,7 @@ define(["jquery", "utils", "background/setting", "background/dict.js", "backgrou
         return function(dfd) {
           return dfd.then(function() {
             return _this.injectResources().then(function() {
-              return updateWindowDfd.resolve();
+              return updateWindowDfd != null ? updateWindowDfd.resolve() : void 0;
             });
           });
         };
