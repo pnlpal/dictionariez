@@ -2,6 +2,7 @@ chrome.runtime.sendMessage {
     type: 'setting',
 }, (setting)->
     mouseMoveTimer = null
+    plainQuerying = null
 
     jQuery(document).ready ()->
         jQuery('''
@@ -113,6 +114,7 @@ chrome.runtime.sendMessage {
         text = selObj.toString().trim()
         unless text
             jQuery('.fairydict-tooltip').fadeOut().hide()
+            plainQuerying = null
             return
 
         # issue #4
@@ -125,11 +127,12 @@ chrome.runtime.sendMessage {
         text = window.getSelection().toString().trim()
         return unless text
 
-        if setting.enablePlainLookup
+        if setting.enablePlainLookup && text != plainQuerying
             if !setting.enablePlainSK1 or (setting.plainSK1 and utils.checkEventKey(event, setting.plainSK1))
                 jQuery('.fairydict-tooltip').fadeIn('slow')
                 jQuery('.fairydict-tooltip .fairydict-spinner').show()
                 jQuery('.fairydict-tooltip .fairydict-tooltip-content').empty()
+                plainQuerying = text
 
                 chrome.runtime.sendMessage {
                     type: 'look up pain',
@@ -166,6 +169,7 @@ chrome.runtime.sendMessage {
                         jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(content)
                     else
                         jQuery('.fairydict-tooltip').fadeOut().hide()
+                        plainQuerying = null
 
         if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
             chrome.runtime.sendMessage({

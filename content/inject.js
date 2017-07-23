@@ -2,8 +2,9 @@
 chrome.runtime.sendMessage({
   type: 'setting'
 }, function(setting) {
-  var getWordAtPoint, handleLookupByMouse, handleMouseUp, handleSelectionWord, mouseMoveTimer, playAudios;
+  var getWordAtPoint, handleLookupByMouse, handleMouseUp, handleSelectionWord, mouseMoveTimer, plainQuerying, playAudios;
   mouseMoveTimer = null;
+  plainQuerying = null;
   jQuery(document).ready(function() {
     return jQuery('<div class="fairydict-tooltip">\n    <div class="fairydict-spinner">\n      <div class="fairydict-bounce1"></div>\n      <div class="fairydict-bounce2"></div>\n      <div class="fairydict-bounce3"></div>\n    </div>\n    <p class="fairydict-tooltip-content">\n    </p>\n</div>').appendTo('body');
   });
@@ -131,6 +132,7 @@ chrome.runtime.sendMessage({
     text = selObj.toString().trim();
     if (!text) {
       jQuery('.fairydict-tooltip').fadeOut().hide();
+      plainQuerying = null;
       return;
     }
     including = jQuery(event.target).has(selObj.focusNode).length || jQuery(event.target).is(selObj.focusNode);
@@ -144,11 +146,12 @@ chrome.runtime.sendMessage({
     if (!text) {
       return;
     }
-    if (setting.enablePlainLookup) {
+    if (setting.enablePlainLookup && text !== plainQuerying) {
       if (!setting.enablePlainSK1 || (setting.plainSK1 && utils.checkEventKey(event, setting.plainSK1))) {
         jQuery('.fairydict-tooltip').fadeIn('slow');
         jQuery('.fairydict-tooltip .fairydict-spinner').show();
         jQuery('.fairydict-tooltip .fairydict-tooltip-content').empty();
+        plainQuerying = text;
         chrome.runtime.sendMessage({
           type: 'look up pain',
           means: 'mouse',
@@ -184,7 +187,8 @@ chrome.runtime.sendMessage({
             jQuery('.fairydict-tooltip .fairydict-spinner').hide();
             return jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(content);
           } else {
-            return jQuery('.fairydict-tooltip').fadeOut().hide();
+            jQuery('.fairydict-tooltip').fadeOut().hide();
+            return plainQuerying = null;
           }
         });
       }
