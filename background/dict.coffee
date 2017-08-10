@@ -40,6 +40,22 @@ define ["jquery",
             styles: ['css/dict-cn.css']
         }
     }, {
+        'dictName': '沪江词典',
+        'entry': 'hjenglish',
+        'windowUrl': 'https://dict.hjenglish.com/w/<word>',
+        'windowUrlMatch': '/w/([^&/?]+)'
+        "resources": {
+            styles: ['css/hjenglish.css']
+        }
+    }, {
+        'dictName': '人人词典',
+        'entry': '91dict',
+        'windowUrl': 'http://www.91dict.com/words?w=<word>',
+        'windowUrlMatch': '[^\\w]w=([^&]+)'
+        "resources": {
+            styles: ['css/91dict.css']
+        }
+    }, {
         'dictName': '欧陆词典',
         'entry': 'eudic',
         'windowUrl': 'https://dict.eudic.net/dicts/en/<word>',
