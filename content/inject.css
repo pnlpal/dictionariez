@@ -5,8 +5,7 @@
     background-color:#161616;
     border-radius:5px;
     padding:10px;
-    color:#fff;
-    font-size:12px Arial;
+
     z-index: 99999;
 }
 
@@ -14,6 +13,11 @@
   margin: 10px auto 0;
   width: 70px;
   text-align: center;
+}
+
+.fairydict-tooltip p.fairydict-tooltip-content {
+  color:#fff;
+  font-size: 14px;
 }
 
 .fairydict-spinner > div {
