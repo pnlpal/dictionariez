@@ -2,20 +2,56 @@
 chrome.runtime.sendMessage({
   type: 'setting'
 }, function(setting) {
-  var getWordAtPoint, handleLookupByMouse, handleMouseUp, handleSelectionWord, mouseMoveTimer, plainQuerying, playAudios;
+  var getWordAtPoint, handleLookupByMouse, handleMouseUp, handleSelectionWord, mouseMoveTimer, plainQuerying, playAudios, setupPlainContentPosition;
   mouseMoveTimer = null;
   plainQuerying = null;
   jQuery(document).ready(function() {
     return jQuery('<div class="fairydict-tooltip">\n    <div class="fairydict-spinner">\n      <div class="fairydict-bounce1"></div>\n      <div class="fairydict-bounce2"></div>\n      <div class="fairydict-bounce3"></div>\n    </div>\n    <p class="fairydict-tooltip-content">\n    </p>\n</div>').appendTo('body');
   });
+  setupPlainContentPosition = function(e) {
+    var $el, left, mousex, mousey, top;
+    $el = jQuery('.fairydict-tooltip');
+    if ($el.length && e.pageX && e.pageY) {
+      mousex = e.pageX + 20;
+      mousey = e.pageY + 10;
+      top = mousey;
+      left = mousex;
+      if (setting.plainPosition.toLowerCase().indexOf('bottom') >= 0) {
+        top = mousey;
+      } else if (setting.plainPosition.toLowerCase().indexOf('middle') >= 0) {
+        top = mousey - $el[0].offsetHeight / 2;
+        if (top <= 0) {
+          top = mousey;
+        }
+      } else {
+        top = mousey - $el[0].offsetHeight - 20;
+        if (top <= 0) {
+          top = mousey;
+        }
+      }
+      if (setting.plainPosition.toLowerCase().indexOf('left') >= 0) {
+        left = mousex - $el[0].offsetWidth - 30;
+        if (left <= 0) {
+          left = mousex;
+        }
+      } else if (setting.plainPosition.toLowerCase().indexOf('center') >= 0) {
+        left = mousex - $el[0].offsetWidth / 2;
+        if (left <= 0) {
+          left = mousex;
+        }
+      } else {
+        left = mousex;
+      }
+      return $el.css({
+        top: top,
+        left: left
+      });
+    }
+  };
   jQuery(document).mousemove(function(e) {
-    var mousex, mousey;
-    mousex = e.pageX + 20;
-    mousey = e.pageY + 10;
-    jQuery('.fairydict-tooltip').css({
-      top: mousey,
-      left: mousex
-    });
+    if (setting.enablePlainPositionOnMouseMove) {
+      setupPlainContentPosition(e);
+    }
     if (setting.enableSelectionOnMouseMove) {
       if (!setting.enableSelectionSK1 || (setting.enableSelectionSK1 && utils.checkEventKey(e, setting.selectionSK1))) {
         return handleSelectionWord(e);
@@ -151,6 +187,7 @@ chrome.runtime.sendMessage({
         jQuery('.fairydict-tooltip').fadeIn('slow');
         jQuery('.fairydict-tooltip .fairydict-spinner').show();
         jQuery('.fairydict-tooltip .fairydict-tooltip-content').empty();
+        setupPlainContentPosition(event);
         plainQuerying = text;
         chrome.runtime.sendMessage({
           type: 'look up pain',
@@ -185,7 +222,8 @@ chrome.runtime.sendMessage({
             }), content);
             console.log("[FairyDict] plain definition: ", content);
             jQuery('.fairydict-tooltip .fairydict-spinner').hide();
-            return jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(content);
+            jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(content);
+            return setupPlainContentPosition(event);
           } else {
             jQuery('.fairydict-tooltip').fadeOut().hide();
             return plainQuerying = null;

@@ -17,6 +17,7 @@ dictApp.controller('optionCtrl', function($scope, $sce) {
   })();
   $scope.extraKeys = Object.keys(window.utils.extraKeyMap);
   $scope.allKeys = $scope.allLetters.concat($scope.extraKeys);
+  $scope.allPositions = ['topLeft', 'topCenter', 'topRight', 'middleLeft', 'middleCenter', 'middleRight', 'bottomLeft', 'bottomCenter', 'bottomRight'];
   $scope.changeKey = function(value, key) {
     $scope.setting[key] = value;
     return chrome.runtime.sendMessage({

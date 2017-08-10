@@ -17,10 +17,41 @@ chrome.runtime.sendMessage {
             </div>
                 ''').appendTo('body')
 
+    setupPlainContentPosition = (e) ->
+        $el = jQuery('.fairydict-tooltip');
+        if $el.length && e.pageX && e.pageY
+            mousex = e.pageX + 20
+            mousey = e.pageY + 10
+            top = mousey
+            left = mousex
+
+            if setting.plainPosition.toLowerCase().indexOf('bottom') >= 0
+                top = mousey
+            else if setting.plainPosition.toLowerCase().indexOf('middle') >= 0
+                top = mousey - $el[0].offsetHeight/2
+                if top <=0
+                    top = mousey
+            else
+                top = mousey - $el[0].offsetHeight - 20
+                if top <=0
+                    top = mousey
+
+            if setting.plainPosition.toLowerCase().indexOf('left') >= 0
+                left = mousex - $el[0].offsetWidth - 30
+                if left <= 0
+                    left = mousex
+            else if setting.plainPosition.toLowerCase().indexOf('center') >= 0
+                left = mousex - $el[0].offsetWidth/2
+                if left <= 0
+                    left = mousex
+            else
+                left = mousex
+
+            $el.css({ top, left })
+
     jQuery(document).mousemove (e)->
-        mousex = e.pageX + 20
-        mousey = e.pageY + 10
-        jQuery('.fairydict-tooltip').css({ top: mousey, left: mousex })
+        if setting.enablePlainPositionOnMouseMove
+            setupPlainContentPosition(e)
 
         if setting.enableSelectionOnMouseMove
             if !setting.enableSelectionSK1 or (setting.enableSelectionSK1 and utils.checkEventKey(e, setting.selectionSK1))
@@ -132,6 +163,7 @@ chrome.runtime.sendMessage {
                 jQuery('.fairydict-tooltip').fadeIn('slow')
                 jQuery('.fairydict-tooltip .fairydict-spinner').show()
                 jQuery('.fairydict-tooltip .fairydict-tooltip-content').empty()
+                setupPlainContentPosition(event)
                 plainQuerying = text
 
                 chrome.runtime.sendMessage {
@@ -167,6 +199,7 @@ chrome.runtime.sendMessage {
                         # jQuery(event.target).attr('title', definition)
                         jQuery('.fairydict-tooltip .fairydict-spinner').hide()
                         jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(content)
+                        setupPlainContentPosition(event)
                     else
                         jQuery('.fairydict-tooltip').fadeOut().hide()
                         plainQuerying = null

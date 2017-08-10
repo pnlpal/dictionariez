@@ -10,6 +10,10 @@ dictApp.controller 'optionCtrl', ($scope, $sce) ->
 
     $scope.allKeys = $scope.allLetters.concat($scope.extraKeys)
 
+    $scope.allPositions = ['topLeft', 'topCenter', 'topRight',
+                           'middleLeft', 'middleCenter', 'middleRight',
+                           'bottomLeft', 'bottomCenter', 'bottomRight']
+
     $scope.changeKey = (value, key)->
         $scope.setting[key] = value
         chrome.runtime.sendMessage {
