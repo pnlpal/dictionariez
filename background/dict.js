@@ -58,6 +58,14 @@ define(["jquery", "utils"], function($, utils) {
         styles: ['css/eudic.css']
       }
     }, {
+      'dictName': '汉典',
+      'entry': 'zdic',
+      'windowUrl': 'http://www.zdic.net/search/?c=3&q=<word>',
+      'windowUrlMatch': '[^\\w]q=([^&]+)',
+      "resources": {
+        styles: ['css/zdic.css']
+      }
+    }, {
       'dictName': 'Oxford Learner',
       'entry': 'OxfordLearner',
       'windowUrl': 'http://www.oxfordlearnersdictionaries.com/definition/english/<word>',
