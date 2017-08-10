@@ -66,6 +66,14 @@ define(["jquery", "utils"], function($, utils) {
         styles: ['css/zdic.css']
       }
     }, {
+      'dictName': '百度词典（汉语）',
+      'entry': 'baidu-dict',
+      'windowUrl': 'http://dict.baidu.com/s?wd=<word>',
+      'windowUrlMatch': '[^\\w]wd=([^&]+)',
+      "resources": {
+        styles: ['css/baidu-dict.css']
+      }
+    }, {
       'dictName': 'Oxford Learner',
       'entry': 'OxfordLearner',
       'windowUrl': 'http://www.oxfordlearnersdictionaries.com/definition/english/<word>',

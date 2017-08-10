@@ -1,0 +1,8 @@
+#search-bar, #update_tips_div {
+    display: none;
+}
+
+#header-detail label {
+    // fix a bug of baidu;
+    width: auto !important;
+}
