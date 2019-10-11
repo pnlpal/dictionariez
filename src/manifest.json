@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "FairyDict",
     "description": "包含几乎所有网上常见的词典，支持鼠标取词、键盘取词和右键菜单的词典软件，各种快捷键设置，学习的好帮手，词典爱好者的福音",
-    "version": "3.2",
+    "version": "4.0.0",
     "permissions": [
         "activeTab",
         "tabs",
@@ -14,18 +14,17 @@
         "persistent": true,
         "page": "background.html"
     },
-    "content_scripts": [{
-        "js": [
-            "bower_components/jquery/dist/jquery.js",
-            "utils.js",
-            "content/inject.js"
-        ],
-        "css": [
-            "content/inject.css"
-        ],
-        "matches": ["<all_urls>"],
-        "run_at": "document_start"
-    }],
+    "content_scripts": [
+        {
+            "js": [
+                "inject.bundle.js"
+            ],
+            "matches": [
+                "<all_urls>"
+            ],
+            "run_at": "document_start"
+        }
+    ],
     "options_page": "options.html",
     "web_accessible_resources": [
         "template/header.html",
@@ -40,14 +39,14 @@
         "fonts/glyphicons-halflings-regular.svg",
         "fonts/glyphicons-halflings-regular.woff"
     ],
-    "browser_action":{
+    "browser_action": {
         "default_icon": {
             "19": "images/fd-40.png",
             "38": "images/fd-40.png"
         }
     },
     "icons": {
-      "48": "images/fd-160.png"
+        "48": "images/fd-160.png"
     },
     "minimum_chrome_version": "23"
 }

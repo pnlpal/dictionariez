@@ -1,11 +1,15 @@
+import $ from 'jquery'
+import utils from "utils"
+import "./inject.css"
+
 chrome.runtime.sendMessage {
     type: 'setting',
 }, (setting)->
     mouseMoveTimer = null
     plainQuerying = null
 
-    jQuery(document).ready ()->
-        jQuery('''
+    $(document).ready ()->
+        $('''
             <div class="fairydict-tooltip">
                 <div class="fairydict-spinner">
                   <div class="fairydict-bounce1"></div>
@@ -18,7 +22,7 @@ chrome.runtime.sendMessage {
                 ''').appendTo('body')
 
     setupPlainContentPosition = (e) ->
-        $el = jQuery('.fairydict-tooltip');
+        $el = $('.fairydict-tooltip');
         if $el.length && e.pageX && e.pageY
             mousex = e.pageX + 20
             mousey = e.pageY + 10
@@ -49,7 +53,7 @@ chrome.runtime.sendMessage {
 
             $el.css({ top, left })
 
-    jQuery(document).mousemove (e)->
+    $(document).mousemove (e)->
         if setting.enablePlainPositionOnMouseMove
             setupPlainContentPosition(e)
 
@@ -57,12 +61,12 @@ chrome.runtime.sendMessage {
             if !setting.enableSelectionSK1 or (setting.enableSelectionSK1 and utils.checkEventKey(e, setting.selectionSK1))
                 handleSelectionWord(e)
 
-    jQuery(document).mouseup (e)->
+    $(document).mouseup (e)->
         # 对 mouseup 事件做一个延时处理，
         # 以避免取消选中后getSelection依然能获得文字。
         setTimeout (()->handleMouseUp(e)), 1
 
-    jQuery(document).bind 'keyup', (event)->
+    $(document).bind 'keyup', (event)->
         if utils.checkEventKey event, setting.openSK1, setting.openSK2, setting.openKey
             chrome.runtime.sendMessage({
                 type: 'look up',
@@ -144,12 +148,12 @@ chrome.runtime.sendMessage {
         selObj = window.getSelection()
         text = selObj.toString().trim()
         unless text
-            jQuery('.fairydict-tooltip').fadeOut().hide()
+            $('.fairydict-tooltip').fadeOut().hide()
             plainQuerying = null
             return
 
         # issue #4
-        including = jQuery(event.target).has(selObj.focusNode).length or jQuery(event.target).is(selObj.focusNode)
+        including = $(event.target).has(selObj.focusNode).length or $(event.target).is(selObj.focusNode)
 
         if event.which == 1 and including
             handleLookupByMouse(event)
@@ -160,9 +164,9 @@ chrome.runtime.sendMessage {
 
         if setting.enablePlainLookup && text != plainQuerying
             if !setting.enablePlainSK1 or (setting.plainSK1 and utils.checkEventKey(event, setting.plainSK1))
-                jQuery('.fairydict-tooltip').fadeIn('slow')
-                jQuery('.fairydict-tooltip .fairydict-spinner').show()
-                jQuery('.fairydict-tooltip .fairydict-tooltip-content').empty()
+                $('.fairydict-tooltip').fadeIn('slow')
+                $('.fairydict-tooltip .fairydict-spinner').show()
+                $('.fairydict-tooltip .fairydict-tooltip-content').empty()
                 setupPlainContentPosition(event)
                 plainQuerying = text
 
@@ -196,12 +200,12 @@ chrome.runtime.sendMessage {
                         ), content
 
                         console.log "[FairyDict] plain definition: ", content
-                        # jQuery(event.target).attr('title', definition)
-                        jQuery('.fairydict-tooltip .fairydict-spinner').hide()
-                        jQuery('.fairydict-tooltip .fairydict-tooltip-content').html(content)
+                        # $(event.target).attr('title', definition)
+                        $('.fairydict-tooltip .fairydict-spinner').hide()
+                        $('.fairydict-tooltip .fairydict-tooltip-content').html(content)
                         setupPlainContentPosition(event)
                     else
-                        jQuery('.fairydict-tooltip').fadeOut().hide()
+                        $('.fairydict-tooltip').fadeOut().hide()
                         plainQuerying = null
 
         if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))

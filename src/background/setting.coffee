@@ -1,7 +1,6 @@
-define ["jquery",
-    "utils"], ($, utils)->
+import $ from "jquery"
 
-    setting =
+export default {
         configCache: {
             windowWidth: 630,
             windowHeight: 700,
@@ -59,4 +58,4 @@ define ["jquery",
             v ?= defaultValue
             return v
 
-    return setting
+}

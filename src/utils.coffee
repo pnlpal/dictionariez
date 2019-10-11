@@ -1,4 +1,4 @@
-window.utils = {
+export default {
     getRandomInt: (min, max)->
         min ?= 1
         max ?= 10

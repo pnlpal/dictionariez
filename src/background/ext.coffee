@@ -1,9 +1,4 @@
-define ["jquery",
-    "utils",
-    "background/setting"], ($, utils, setting)->
-    console.log "[ext] init"
-
-    return {
+export default {
         setBrowserIcon: (enable)->
             title = '已打开鼠标取词功能'
             imgPath = 'images/fd-40.png'
