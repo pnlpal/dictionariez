@@ -4,7 +4,7 @@ import ext from "./ext.coffee"
 import storage from  "./storage.coffee"
 import dictwindow from "./dictwindow.coffee"
 import message from "./message.coffee"
-
+import "./hot-reload-content-scripts.js"
 
 onClickedContextMenu = (info, tab)->
     if info.selectionText

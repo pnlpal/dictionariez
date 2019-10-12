@@ -32,7 +32,7 @@ var options = {
         background: path.join(__dirname, "src", "background", "main.coffee")
     },
     chromeExtensionBoilerplate: {
-        notHotReload: ["inject"]
+        notHotReload: ["injectnnnn"]
     },
     output: {
         path: path.join(__dirname, "build"),
