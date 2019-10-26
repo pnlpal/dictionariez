@@ -50,6 +50,12 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
     }, (setting)->
         $scope.setting = setting
 
+    chrome.runtime.sendMessage {
+        type: 'dict init'
+    }, ({word})->
+        $scope.word = word
+        $scope.$apply()
+
     $scope.changeDict = (dict)->
         ci = $scope.allDicts.findIndex (d)->
             d.dictName == $scope.currentDictionary.dictName

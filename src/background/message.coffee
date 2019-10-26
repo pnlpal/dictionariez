@@ -53,7 +53,11 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
         # dictWindow.onContentInjected(request.url, sender.tab.id)
         sendResponse {
             isDict: dictWindow.tid == sender.tab.id
-
+        }
+    else if request.type == 'dict init'
+        # dictWindow.onContentInjected(request.url, sender.tab.id)
+        sendResponse {
+            word: dictWindow.word
         }
 
     # sendResponse becomes invalid when the event listener returns,
