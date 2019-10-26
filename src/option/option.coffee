@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../vendor/font-awesome.css'
-import '../css/options.css'
+import './options.less'
 # import '../needsharebutton.min.css'
 
 import angular from 'angular'

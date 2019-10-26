@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../vendor/font-awesome.css'
-import '../css/dictheader.less'
+import './dictheader.less'
 
 import $ from 'jquery'
 import angular from 'angular'

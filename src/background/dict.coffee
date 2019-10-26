@@ -5,14 +5,14 @@ allDicts = [{
     'windowUrl': 'http://cn.bing.com/dict/search?q=<word>',
     'windowUrlMatch': '[^\\w]q=([^&]+)',
     "resources": {
-        styles: ['css/bing.css']
+        styles: ['bing.less']
     }
 }, {
     'dictName': '金山词霸',
     'windowUrl': 'http://www.iciba.com/<word>',
     'windowUrlMatch': 'iciba.com/([^&]+)',
     "resources": {
-        styles: ['css/iciba.css']
+        styles: ['iciba.less']
     }
     # 'entry': 'Iciba',
     # 'baseUrl': 'http://dict-co.iciba.com/api/dictionary.php',
@@ -27,7 +27,7 @@ allDicts = [{
     'windowUrl': 'http://dict.youdao.com/w/eng/<word>',
     'windowUrlMatch': '/eng/([^&/?]+)'
     "resources": {
-        styles: ['css/youdao.css']
+        styles: ['youdao.less']
     }
 }, {
     'dictName': '海词词典',
@@ -35,7 +35,7 @@ allDicts = [{
     'windowUrl': 'http://dict.cn/<word>',
     'windowUrlMatch': 'dict.cn/([^&/?]+)'
     "resources": {
-        styles: ['css/dict-cn.css']
+        styles: ['dict-cn.less']
     }
 }, {
     'dictName': '沪江词典',
@@ -43,7 +43,7 @@ allDicts = [{
     'windowUrl': 'https://dict.hjenglish.com/w/<word>',
     'windowUrlMatch': '/w/([^&/?]+)'
     "resources": {
-        styles: ['css/hjenglish.css']
+        styles: ['hjenglish.less']
     }
 }, {
     'dictName': '人人词典',
@@ -51,7 +51,7 @@ allDicts = [{
     'windowUrl': 'http://www.91dict.com/words?w=<word>',
     'windowUrlMatch': '[^\\w]w=([^&]+)'
     "resources": {
-        styles: ['css/91dict.css']
+        styles: ['91dict.less']
     }
 }, {
     'dictName': '欧陆词典',
@@ -59,7 +59,7 @@ allDicts = [{
     'windowUrl': 'https://dict.eudic.net/dicts/en/<word>',
     'windowUrlMatch': '/en/([^&/?]+)'
     "resources": {
-        styles: ['css/eudic.css']
+        styles: ['eudic.less']
     }
 }, {
     'dictName': '汉典',
@@ -67,7 +67,7 @@ allDicts = [{
     'windowUrl': 'http://www.zdic.net/search/?c=3&q=<word>',
     'windowUrlMatch': '[^\\w]q=([^&]+)'
     "resources": {
-        styles: ['css/zdic.css']
+        styles: ['zdic.less']
     }
 }, {
     'dictName': '百度词典（汉语）',
@@ -75,7 +75,7 @@ allDicts = [{
     'windowUrl': 'http://dict.baidu.com/s?wd=<word>',
     'windowUrlMatch': '[^\\w]wd=([^&]+)'
     "resources": {
-        styles: ['css/baidu-dict.css']
+        styles: ['baidu-dict.less']
     }
 }, {
     'dictName': 'Oxford Learner',
@@ -83,7 +83,7 @@ allDicts = [{
     'windowUrl': 'http://www.oxfordlearnersdictionaries.com/definition/english/<word>'
     'windowUrlMatch': '/english/([^&/?]+)'
     "resources": {
-        styles: ['css/oxfordlearner.css']
+        styles: ['oxfordlearner.less']
     }
 }, {
     'dictName': 'Oxford Living Dictionaries',
@@ -91,7 +91,7 @@ allDicts = [{
     'windowUrl': 'https://en.oxforddictionaries.com/definition/<word>'
     'windowUrlMatch': '/definition/([^&/?]+)'
     "resources": {
-        styles: ['css/oxfordliving.css']
+        styles: ['oxfordliving.less']
     }
 }, {
     'dictName': 'Cambridge English'
@@ -99,7 +99,7 @@ allDicts = [{
     'windowUrl': 'http://dictionary.cambridge.org/dictionary/english/<word>'
     'windowUrlMatch': '/english/([^&/?]+)',
     "resources": {
-        styles: ['css/cambridgeenglish.css']
+        styles: ['cambridgeenglish.less']
     }
 }, {
     'dictName': 'Longman English'
@@ -107,63 +107,63 @@ allDicts = [{
     'windowUrl': 'http://www.ldoceonline.com/dictionary/<word>'
     'windowUrlMatch': '/dictionary/([^&/?]+)',
     "resources": {
-        styles: ['css/longmanenglish.css']
+        styles: ['longmanenglish.less']
     }
 }, {
     'dictName': 'Urban Dictionary',
     'windowUrl': 'http://zh.urbandictionary.com/define.php?term=<word>',
     'windowUrlMatch': '[^\\w]term=([^&]+)',
     "resources": {
-        styles: ['css/urban.css']
+        styles: ['urban.less']
     }
 }, {
     'dictName': 'Dictionary.com',
     'windowUrl': 'http://www.dictionary.com/browse/<word>',
     'windowUrlMatch': '/browse/([^&/?]+)',
     "resources": {
-        styles: ['css/dictionary-com.css']
+        styles: ['dictionary-com.less']
     }
 }, {
     'dictName': 'Thesaurus.com',
     'windowUrl': 'http://www.thesaurus.com/browse/<word>',
     'windowUrlMatch': '/browse/([^&/?]+)',
     "resources": {
-        styles: ['css/dictionary-com.css']
+        styles: ['dictionary-com.less']
     }
 }, {
     'dictName': 'Macmilland Dictionary',
     'windowUrl': 'http://www.macmillandictionary.com/dictionary/british/<word>',
     'windowUrlMatch': '/british/([^&/?]+)',
     "resources": {
-        styles: ['css/macmilland.css']
+        styles: ['macmilland.less']
     }
 }, {
     'dictName': 'Merriam-webster Dictionary',
     'windowUrl': 'https://www.merriam-webster.com/dictionary/<word>',
     'windowUrlMatch': '/dictionary/([^&/?]+)',
     "resources": {
-        styles: ['css/merriamwebster.css']
+        styles: ['merriamwebster.less']
     }
 }, {
     'dictName': 'Merriam-webster Thesaurus',
     'windowUrl': 'https://www.merriam-webster.com/thesaurus/<word>',
     'windowUrlMatch': '/thesaurus/([^&/?]+)',
     "resources": {
-        styles: ['css/merriamwebster.css']
+        styles: ['merriamwebster.less']
     }
 }, {
     'dictName': 'Collins English Dictionary',
     'windowUrl': 'https://www.collinsdictionary.com/dictionary/english/<word>',
     'windowUrlMatch': '/english/([^&/?]+)',
     "resources": {
-        styles: ['css/collins.css']
+        styles: ['collins.less']
     }
 }, {
     'dictName': 'Collins English Thesaurus',
     'windowUrl': 'https://www.collinsdictionary.com/dictionary/english-thesaurus/<word>',
     'windowUrlMatch': '/english-thesaurus/([^&/?]+)',
     "resources": {
-        styles: ['css/collins.css']
+        styles: ['collins.less']
     }
 }, {
     'dictName': 'Easton\'s 1897 Bible Dictionary',

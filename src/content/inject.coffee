@@ -21,9 +21,6 @@ chrome.runtime.sendMessage {
 		  </div>
 		     ''').appendTo('body')
 
-		if location.href.includes('bing') or location.href.includes('xiao84')
-			$("<iframe id='fairydict-iframe' src='#{setting.dictUrl}'> </iframe>").appendTo('body')
-
 	setupPlainContentPosition = (e) ->
 		$el = $('.fairydict-tooltip')
 		if $el.length && e.pageX && e.pageY
@@ -223,5 +220,10 @@ chrome.runtime.sendMessage {
 	type: 'injected',
 	url: location.href
 }, (res) ->
-	# if res.isDict
-		# import(### webpackChunkName: "dict" ### './dict.coffee')
+	if location.href.includes('bing') or location.href.includes('xiao84')
+			console.log(res)
+			if res.dict.resources?.styles?
+				for style in res.dict.resources.styles
+					require("./css/#{style}")
+			$("<iframe id='fairydict-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('body')
+

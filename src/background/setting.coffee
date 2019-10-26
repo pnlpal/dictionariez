@@ -2,7 +2,6 @@ import $ from "jquery"
 
 export default {
         configCache: {
-            dictUrl: chrome.extension.getURL('dict.html'),
             windowWidth: 630,
             windowHeight: 700,
 
@@ -51,7 +50,7 @@ export default {
         setValue: (key, value)->
             if @configCache[key] != value
                 @configCache[key] = value
-                chrome.storage.sync.set(@configCache);
+                chrome.storage.sync.set(@configCache)
             return value
 
         getValue: (key, defaultValue)->

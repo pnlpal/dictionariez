@@ -2,7 +2,7 @@
 # import '../needsharebutton.min.css'
 
 
-import './dict.coffee'
+import './dictheader.coffee'
 
 
 # chrome.runtime.sendMessage({

@@ -9,8 +9,7 @@
   "content_scripts": [
     {
       "js": ["inject.bundle.js"],
-      "matches": ["<all_urls>"],
-      "run_at": "document_end"
+      "matches": ["<all_urls>"]
     }
   ],
   "options_page": "options.html",

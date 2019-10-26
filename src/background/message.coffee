@@ -52,7 +52,9 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
     else if request.type == 'injected'
         # dictWindow.onContentInjected(request.url, sender.tab.id)
         sendResponse {
-            isDict: dictWindow.tid == sender.tab.id
+            isDict: dictWindow.tid == sender.tab.id,
+            dictUrl: chrome.extension.getURL('dict.html'),
+            dict: dict.getDict(setting.getValue('dictionary'))
         }
     else if request.type == 'dict init'
         # dictWindow.onContentInjected(request.url, sender.tab.id)
