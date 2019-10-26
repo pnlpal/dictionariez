@@ -1,52 +1,42 @@
 {
-    "manifest_version": 2,
-    "name": "FairyDict",
-    "description": "包含几乎所有网上常见的词典，支持鼠标取词、键盘取词和右键菜单的词典软件，各种快捷键设置，学习的好帮手，词典爱好者的福音",
-    "version": "4.0.0",
-    "permissions": [
-        "activeTab",
-        "tabs",
-        "storage",
-        "contextMenus",
-        "<all_urls>"
-    ],
-    "background": {
-        "persistent": true,
-        "page": "background.html"
-    },
-    "content_scripts": [
-        {
-            "js": [
-                "inject.bundle.js"
-            ],
-            "matches": [
-                "<all_urls>"
-            ],
-            "run_at": "document_start"
-        }
-    ],
-    "options_page": "options.html",
-    "web_accessible_resources": [
-        "template/header.html",
-        "fonts/FontAwesome.otf",
-        "fonts/fontawesome-webfont.svg",
-        "fonts/fontawesome-webfont.woff",
-        "fonts/glyphicons-halflings-regular.eot",
-        "fonts/glyphicons-halflings-regular.ttf",
-        "fonts/fontawesome-webfont.eot",
-        "fonts/fontawesome-webfont.ttf",
-        "fonts/fontawesome-webfont.woff2",
-        "fonts/glyphicons-halflings-regular.svg",
-        "fonts/glyphicons-halflings-regular.woff"
-    ],
-    "browser_action": {
-        "default_icon": {
-            "19": "images/fd-40.png",
-            "38": "images/fd-40.png"
-        }
-    },
-    "icons": {
-        "48": "images/fd-160.png"
-    },
-    "minimum_chrome_version": "23"
+  "manifest_version": 2,
+  "name": "FairyDict",
+  "permissions": ["activeTab", "tabs", "storage", "contextMenus", "<all_urls>"],
+  "background": {
+    "persistent": true,
+    "page": "background.html"
+  },
+  "content_scripts": [
+    {
+      "js": ["inject.bundle.js"],
+      "matches": ["<all_urls>"],
+      "run_at": "document_end"
+    }
+  ],
+  "options_page": "options.html",
+  "web_accessible_resources": [
+    "*.js",
+    "dict.html",
+    "template/header.html",
+    "fonts/FontAwesome.otf",
+    "fonts/fontawesome-webfont.svg",
+    "fonts/fontawesome-webfont.woff",
+    "fonts/glyphicons-halflings-regular.eot",
+    "fonts/glyphicons-halflings-regular.ttf",
+    "fonts/fontawesome-webfont.eot",
+    "fonts/fontawesome-webfont.ttf",
+    "fonts/fontawesome-webfont.woff2",
+    "fonts/glyphicons-halflings-regular.svg",
+    "fonts/glyphicons-halflings-regular.woff"
+  ],
+  "browser_action": {
+    "default_icon": {
+      "19": "images/fd-40.png",
+      "38": "images/fd-40.png"
+    }
+  },
+  "icons": {
+    "48": "images/fd-160.png"
+  },
+  "minimum_chrome_version": "23"
 }

@@ -1,12 +1,12 @@
 .fairydict-tooltip {
-    display:none;
-    position:absolute;
-    border:1px solid #333;
-    background-color:#161616;
-    border-radius:5px;
-    padding:10px;
+  display: none;
+  position: absolute;
+  border: 1px solid #333;
+  background-color: #161616;
+  border-radius: 5px;
+  padding: 10px;
 
-    z-index: 99999;
+  z-index: 99999;
 }
 
 .fairydict-spinner {
@@ -16,7 +16,7 @@
 }
 
 .fairydict-tooltip p.fairydict-tooltip-content {
-  color:#fff;
+  color: #fff;
   font-size: 14px;
 }
 
@@ -42,16 +42,35 @@
 }
 
 @-webkit-keyframes sk-bouncedelay {
-  0%, 80%, 100% { -webkit-transform: scale(0) }
-  40% { -webkit-transform: scale(1.0) }
+  0%,
+  80%,
+  100% {
+    -webkit-transform: scale(0);
+  }
+  40% {
+    -webkit-transform: scale(1);
+  }
 }
 
 @keyframes sk-bouncedelay {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     -webkit-transform: scale(0);
     transform: scale(0);
-  } 40% {
-    -webkit-transform: scale(1.0);
-    transform: scale(1.0);
   }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+#fairydict-iframe {
+  position: fixed;
+  top: 0;
+  width: 100%;
+
+  z-index: 99999;
+  border: none;
+  height: 50px;
 }

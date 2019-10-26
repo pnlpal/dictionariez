@@ -1,9 +1,25 @@
+import 'bootstrap/dist/css/bootstrap.min.css'
+import '../vendor/font-awesome.css'
+import '../css/dictheader.less'
+
+import $ from 'jquery'
+import angular from 'angular'
+import utils from "utils"
+
+import 'angular-route'
+import 'angular-sanitize'
+import 'angular-ui-bootstrap'
+# import '../needsharebutton.min.js'
+
+import _ from 'lodash'
+
+import './starrr.js'
+
+import headerDom from '../header.html'
+
 dictApp = angular.module('fairyDictApp', ['ui.bootstrap', 'ngSanitize'])
 dictApp.run ($rootScope)->
     $rootScope._ = _
-
-loader.loadTemplate().then ()->
-    angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])
 
 dictApp.controller 'dictCtrl', ($scope, $sce) ->
     console.log "[dictCtrl] init"
@@ -12,6 +28,7 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
     document.title = 'Fairy Dict'
     baseNode = '#fairy-dict'
     $scope.initial = true
+    $scope.inFrame = window.self != window.top
     $scope.querying = false
     $scope.queryResult = null
     $scope.historyIndex = -1
@@ -101,9 +118,13 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             text: $scope.word,
             dictionary: $scope.currentDictionary.dictName,
             inHistory: inHistory
-        })
+        }, ({ windowUrl }) ->
+            console.log(windowUrl)
+            window.top.location.href = windowUrl
+        )
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
+        console.log(request)
         if request.type == 'querying'
             $scope.initial = false
             $scope.querying = true
@@ -180,16 +201,16 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         nextKey = $scope.setting.nextDictKey
         stop = false
 
-        if window.utils.checkEventKey evt, prevSK, null, prevKey
+        if utils.checkEventKey evt, prevSK, null, prevKey
             $scope.changeDict('prev')
             stop = true
-        if window.utils.checkEventKey evt, nextSK, null, nextKey
+        if utils.checkEventKey evt, nextSK, null, nextKey
             $scope.changeDict('next')
             stop = true
-        if window.utils.checkEventKey evt, $scope.setting.prevHistorySK1, null, $scope.setting.prevHistoryKey
+        if utils.checkEventKey evt, $scope.setting.prevHistorySK1, null, $scope.setting.prevHistoryKey
             $scope.selectHistory('prev')
             stop = true
-        if window.utils.checkEventKey evt, $scope.setting.nextHistorySK1, null, $scope.setting.nextHistoryKey
+        if utils.checkEventKey evt, $scope.setting.nextHistorySK1, null, $scope.setting.nextHistoryKey
             $scope.selectHistory('next')
             stop = true
         if stop
@@ -197,3 +218,5 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             evt.stopPropagation()
     return
 
+$(document.body).append(headerDom)
+angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])

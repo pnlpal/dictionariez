@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
-import '../css/font-awesome.css'
+import '../vendor/font-awesome.css'
 import '../css/options.css'
 # import '../needsharebutton.min.css'
 

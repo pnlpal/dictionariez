@@ -6,7 +6,7 @@ import dict from "./dict.coffee"
 
 
 console.log "[dictwindow] init"
-defaultWindowUrl = chrome.extension.getURL('template/apidict.html')
+defaultWindowUrl = chrome.extension.getURL('dict.html')
 updateWindowDfd = null
 injectContentDfd = null
 dictInitedDfd = null
@@ -25,7 +25,6 @@ dictWindowManager =
         height = parseInt(setting.getValue('windowHeight'))
         left = Math.round((screen.width / 2) - (width / 2))
         top = Math.round((screen.height / 2) - (height / 2))
-        url = 'http://blog.riverrun.xyz/fairydict.html'
         if !@w
             @beforeUpdateUrl()
             chrome.windows.create({
@@ -57,6 +56,7 @@ dictWindowManager =
         dictName = setting.getValue('dictionary')
         @open().done ()=>
             if text
+                console.log('lookup...')
                 @sendMessage({type: 'querying', text})
                 @queryDict(text, dictName)
 
@@ -66,7 +66,7 @@ dictWindowManager =
             @sendMessage({type: 'history', history: storage.history})
 
         console.log "[dictwindow] query #{@word} from #{dictName}"
-        dict.query(text, dictName).then @sendQueryResult.bind(this)
+        return dict.query(text, dictName)
 
     saveWindowSize: ()->
         chrome.windows.get @w.id, null, (w)=>
@@ -96,6 +96,8 @@ dictWindowManager =
                 storage.addHistory(@word)
 
     injectResources: ()->
+        console.log('inject resources')
+        return Promise.resolve()
         styles = [
             "css/bootstrap.css",
             "bower_components/angular-ui/build/angular-ui.css",
@@ -146,13 +148,13 @@ dictWindowManager =
         if url and @url != url
             console.log "[dictwindow] update url: #{url}"
             @url = url
-            @beforeUpdateUrl().then ()=>
-                console.log "[dictwindow] updated url: #{url}"
-                outDfd.resolve(true)
+            # @beforeUpdateUrl().then ()=>
+            #     console.log "[dictwindow] updated url: #{url}"
+            #     outDfd.resolve(true)
             chrome.tabs.update @tid, {url, active: true}
-            return outDfd
-        else
-            return outDfd.resolve(false)
+            # return outDfd
+        # else
+            # return outDfd.resolve(false)
 
     beforeUpdateUrl: ()->
         injectContentDfd = $.Deferred((dfd)=>
@@ -164,31 +166,31 @@ dictWindowManager =
         updateWindowDfd = $.Deferred()
         return updateWindowDfd
 
-    onContentInjected: (url, tabId)->
-        console.log "[dictwindow] manifest's content scripts injected from url: #{url}"
-        if injectContentDfd?.state() == 'pending'
-            injectContentDfd.resolve()
+    # onContentInjected: (url, tabId)->
+    #     console.log "[dictwindow] manifest's content scripts injected from url: #{url}"
+    #     if injectContentDfd?.state() == 'pending'
+    #         injectContentDfd.resolve()
 
         # page was reloaded.
-        else if url and tabId == @tid
-            d = setting.getValue('dictionary')
-            w = dict.getWordFromUrl(url, d)
-            @url = url
-            if w
-                @word = w
-            else
-                w = @word
+        # else if url and tabId == @tid
+        #     d = setting.getValue('dictionary')
+        #     w = dict.getWordFromUrl(url, d)
+        #     @url = url
+        #     if w
+        #         @word = w
+        #     else
+        #         w = @word
 
-            dictInitedDfd = $.Deferred()
-            updateWindowDfd = $.Deferred()
-            console.log "[dictwindow] reload #{w} url #{url}"
+        #     dictInitedDfd = $.Deferred()
+        #     updateWindowDfd = $.Deferred()
+        #     console.log "[dictwindow] reload #{w} url #{url}"
 
-            @injectResources().then ()=>
-                if @url == defaultWindowUrl
-                    dict.query(@word, d).then @sendQueryResult.bind(@)
-                else
-                    @sendQueryResult()
-                updateWindowDfd.resolve()
+        #     @injectResources().then ()=>
+        #         if @url == defaultWindowUrl
+        #             dict.query(@word, d).then @sendQueryResult.bind(@)
+        #         else
+        #             @sendQueryResult()
+        #         updateWindowDfd.resolve()
 
     onDictInited: ()->
         console.log "[dictwindow] dict inited"

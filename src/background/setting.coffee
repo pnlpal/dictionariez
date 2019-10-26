@@ -2,6 +2,7 @@ import $ from "jquery"
 
 export default {
         configCache: {
+            dictUrl: chrome.extension.getURL('dict.html'),
             windowWidth: 630,
             windowHeight: 700,
 

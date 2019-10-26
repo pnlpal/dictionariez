@@ -3,7 +3,7 @@ import setting from "./setting.coffee"
 import ext from "./ext.coffee"
 import storage from  "./storage.coffee"
 import dict from "./dict.coffee"
-import dictwindow from "./dictwindow.coffee"
+import dictWindow from "./dictwindow.coffee"
 
 
 console.log "[message] init"
@@ -27,12 +27,12 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
 
     else if request.type == 'query'
         setting.setValue('dictionary', request.dictionary) if request.dictionary
-        dictWindow.queryDict(request.text, request.dictionary, request.inHistory)
+        dictWindow.queryDict(request.text, request.dictionary, request.inHistory).then sendResponse
 
     else if request.type == 'dictionary'
         dictionary = setting.getValue('dictionary')
         history = storage.history
-        sendResponse {allDicts: dict.allDicts, dictionary, history}
+        sendResponse { allDicts: dict.allDicts, dictionary, history }
         dictWindow.onDictInited()
 
     else if request.type == 'setting'
@@ -50,7 +50,11 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
         storage.deleteHistory(request.text)
 
     else if request.type == 'injected'
-        dictWindow.onContentInjected(request.url, sender.tab.id)
+        # dictWindow.onContentInjected(request.url, sender.tab.id)
+        sendResponse {
+            isDict: dictWindow.tid == sender.tab.id
+
+        }
 
     # sendResponse becomes invalid when the event listener returns,
     # unless you return true from the event listener to indicate you wish to send a response asynchronously
