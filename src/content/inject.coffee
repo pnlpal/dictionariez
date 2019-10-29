@@ -1,6 +1,6 @@
 import $ from 'jquery'
 import utils from "utils"
-import "./inject.css"
+import "./inject.less"
 
 chrome.runtime.sendMessage {
 	type: 'setting',
@@ -54,8 +54,8 @@ chrome.runtime.sendMessage {
 			$el.css({ top, left })
 
 	$(document).mousemove (e)->
-		if setting.enablePlainPositionOnMouseMove
-			setupPlainContentPosition(e)
+		# if setting.enablePlainPositionOnMouseMove
+		# 	setupPlainContentPosition(e)
 
 		if setting.enableSelectionOnMouseMove
 			if !setting.enableSelectionSK1 or (setting.enableSelectionSK1 and utils.checkEventKey(e, setting.selectionSK1))
@@ -158,6 +158,45 @@ chrome.runtime.sendMessage {
 		if event.which == 1 and including
 			handleLookupByMouse(event)
 
+
+	renderQueryResult = (res) ->
+		defTpl = (def) -> "<span class='fairydict-def'> #{def} </span>"
+		defsTpl = (defs) -> "<span class='fairydict-defs'> #{defs} </span>"
+		posTpl = (pos) -> "<span class='fairydict-pos'> #{pos} </span>"
+		contentTpl = (content) -> "<div class='fairydict-content'> #{content} </div>"
+		pronTpl = (pron) -> "<span class='fairydict-pron'> #{pron} </span>"
+		pronsTpl = (prons) -> "<div class='fairydict-prons'> #{prons} </div>"
+
+		html = ''
+		if res?.prons
+			pronHtml = ''
+			pronHtml += pronTpl res.prons.ame if res.prons.ame
+			pronHtml += pronTpl res.prons.bre if res.prons.bre
+			html += pronsTpl pronHtml if pronHtml
+
+
+		renderItem = (item) ->
+			posHtml = posTpl item.pos
+
+			defs = if Array.isArray(item.def) then item.def else [item.def]
+			defsHtmls = defs.map (def) -> defTpl def
+
+			defsHtml = defsTpl defsHtmls.join('<br>')
+
+			html += contentTpl posHtml+defsHtml if defsHtml
+
+		res.cn.forEach renderItem if res?.cn
+		res.en.forEach renderItem if res?.en
+
+		if html
+			$('.fairydict-tooltip .fairydict-spinner').hide()
+			$('.fairydict-tooltip .fairydict-tooltip-content').html(html)
+		else
+			$('.fairydict-tooltip').fadeOut().hide()
+
+		return html
+
+
 	handleLookupByMouse = (event)->
 		text = window.getSelection().toString().trim()
 		return unless text
@@ -171,42 +210,27 @@ chrome.runtime.sendMessage {
 				plainQuerying = text
 
 				chrome.runtime.sendMessage {
-					type: 'look up pain',
+					type: 'look up plain',
 					means: 'mouse',
 					text: text
 				}, (res)->
-					if res?.defs
-						content = ''
-						if res.pronunciation
-							audios = []
-							if res.pronunciation.AmE
-								content += res.pronunciation.AmE + '&nbsp;&nbsp;'
-
-							if res.pronunciation.AmEmp3 and setting.enableAmeAudio
-								audios.push res.pronunciation.AmEmp3
-
-							if res.pronunciation.BrE
-								content += res.pronunciation.BrE + '<br/>'
-
-							if res.pronunciation.BrEmp3 and setting.enableBreAudio
-								audios.push res.pronunciation.BrEmp3
-
-							playAudios audios
-
-						content = res.defs.reduce ((n, m)->
-							n += '<br/>' if n
-							n += m.pos + ' ' + m.def
-							return n
-						), content
-
-						console.log "[FairyDict] plain definition: ", content
-						# $(event.target).attr('title', definition)
-						$('.fairydict-tooltip .fairydict-spinner').hide()
-						$('.fairydict-tooltip .fairydict-tooltip-content').html(content)
-						setupPlainContentPosition(event)
-					else
-						$('.fairydict-tooltip').fadeOut().hide()
+					html = renderQueryResult res
+					if !html
 						plainQuerying = null
+
+					# setupPlainContentPosition(event)
+
+					if res.prons
+						audios = []
+
+						if res.prons.ameAudio and setting.enableAmeAudio
+							audios.push res.prons.ameAudio
+
+						if res.prons.breAudio and setting.enableBreAudio
+							audios.push res.prons.breAudio
+
+						if audios.length
+							playAudios audios
 
 		if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
 			chrome.runtime.sendMessage({

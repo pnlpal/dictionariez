@@ -15,8 +15,8 @@
   "options_page": "options.html",
   "web_accessible_resources": [
     "*.js",
-    "dict.html",
-    "template/header.html",
+    "*.json",
+    "*.html",
     "fonts/FontAwesome.otf",
     "fonts/fontawesome-webfont.svg",
     "fonts/fontawesome-webfont.woff",

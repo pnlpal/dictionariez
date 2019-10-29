@@ -8,6 +8,8 @@ import dictWindow from "./dictwindow.coffee"
 
 console.log "[message] init"
 
+listeners = {}
+
 chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
     if request.type == 'getJson'
         utils.getJson(request.url, request.data).then ((res)->
@@ -22,8 +24,8 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
 
         dictWindow.lookup(request.text)
 
-    else if request.type == 'look up pain'
-        dict.queryWordPain(request.text).then sendResponse, sendResponse
+    # else if request.type == 'look up pain'
+        # dict.queryWordPain(request.text).then sendResponse, sendResponse
 
     else if request.type == 'query'
         setting.setValue('dictionary', request.dictionary) if request.dictionary
@@ -62,6 +64,17 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
             word: dictWindow.word
         }
 
+    else if request.type in Object.keys(listeners)
+        ret = listeners[request.type](request, sendResponse)
+        if ret?.then
+            ret.then sendResponse
+
     # sendResponse becomes invalid when the event listener returns,
     # unless you return true from the event listener to indicate you wish to send a response asynchronously
     return true
+
+
+export default {
+    on: (type, callback) ->
+        listeners[type] = callback
+}

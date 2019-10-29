@@ -1,10 +1,11 @@
-import $ from "jquery"
 import setting from "./setting.coffee"
 import ext from "./ext.coffee"
 import storage from  "./storage.coffee"
-import dictwindow from "./dictwindow.coffee"
+import dictWindow from "./dictwindow.coffee"
 import message from "./message.coffee"
 import "./hot-reload-content-scripts.js"
+
+import './plain-lookup.coffee'
 
 onClickedContextMenu = (info, tab)->
     if info.selectionText

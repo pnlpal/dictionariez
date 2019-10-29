@@ -174,6 +174,10 @@ allDicts = [{
         'dictId': 'easton'
     },
     'queryKey': 'word'
+}, {
+    'dictName': "Lexico",
+    'windowUrl': 'https://www.lexico.com/en/definition/<word>',
+    'windowUrlMatch': '/definition/([^&/?]+)'
 }]
 
 dictManager =
