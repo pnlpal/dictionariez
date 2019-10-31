@@ -200,6 +200,7 @@ chrome.runtime.sendMessage {
 	handleLookupByMouse = (event)->
 		text = window.getSelection().toString().trim()
 		return unless text
+		return if text.split(/\s/).length > 1
 
 		if setting.enablePlainLookup && text != plainQuerying
 			if !setting.enablePlainSK1 or (setting.plainSK1 and utils.checkEventKey(event, setting.plainSK1))

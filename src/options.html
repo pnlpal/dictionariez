@@ -1,400 +1,659 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" ng-app="fairyDictApp">
-
-<head>
-  <meta charset="UTF-8">
-  <!-- <link rel="stylesheet" type="text/css" href="css/bootstrap.css"> -->
-  <!-- <link rel="stylesheet" type="text/css" href="bower_components/angular-ui/build/angular-ui.css"> -->
-  <!-- <link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css"> -->
-  <!-- <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
+	<head>
+		<meta charset="UTF-8" />
+		<!-- <link rel="stylesheet" type="text/css" href="css/bootstrap.css"> -->
+		<!-- <link rel="stylesheet" type="text/css" href="bower_components/angular-ui/build/angular-ui.css"> -->
+		<!-- <link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css"> -->
+		<!-- <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
   <link rel="stylesheet" type="text/css" href="css/options.css">
   <link rel="stylesheet" type="text/css" href="needsharebutton.min.css"> -->
 
-  <!-- <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+		<!-- <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
     <script type="text/javascript" src="bower_components/angular-ui/build/angular-ui.js"></script>
     <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
     <script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap.js"></script> -->
 
-  <!-- <script type="text/javascript" src="utils.js"></script>
+		<!-- <script type="text/javascript" src="utils.js"></script>
     <script type="text/javascript" src="option/option.js"></script> -->
-  <!-- <script type="text/javascript" src="needsharebutton.min.js"></script> -->
+		<!-- <script type="text/javascript" src="needsharebutton.min.js"></script> -->
 
-  <style>
-    img.pull-left {
-      width: 100px;
-      margin-right: 30px;
-    }
+		<style>
+			img.pull-left {
+				width: 100px;
+				margin-right: 30px;
+			}
 
-    #specialKeys-1 {
-      margin-left: 40px;
-    }
-  </style>
-  <title>FairyDict 选项</title>
-</head>
+			#specialKeys-1 {
+				margin-left: 40px;
+			}
+		</style>
+		<title>FairyDict 选项</title>
+	</head>
 
-<body>
-  <div class="container" ng-controller="optionCtrl">
-    <div class="section">
-      <h1>FairyDict</h1>
-      <p>努力做最好用的词典扩展！</p>
+	<body data-spy="scroll" data-target=".nav-wrapper">
+		<div class="container" ng-controller="optionCtrl">
+			<div class="row">
+				<div class="col-md-3 nav-wrapper">
+					<ul class="nav nav-pills nav-stacked">
+						<li role="presentation" class="active"><a href="#home">Home</a></li>
+						<li role="presentation" class="">
+							<a href="#function-setting">功能设置</a>
+						</li>
+						<li role="presentation" class="">
+							<a href="#shortcut-setting">快捷键设置</a>
+						</li>
+						<li role="presentation" class="">
+							<a href="#share-setting">分享</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-md-9">
+					<div id="home" class="section">
+						<h1>FairyDict</h1>
+						<p>努力做最好用的词典扩展！</p>
 
-      <p>
-        此软件是开源软件，喜欢请帮忙评价或点赞，有任何问题或建议请在
-        <a href="https://github.com/revir/FairyDict" target="_blank">Github</a>
-        或
-        <a href="https://v2mm.tech" target="_blank">V2MM</a>
-        上联系我 ;)
-      </p>
+						<p>
+							此软件是开源软件，喜欢请帮忙评价或点赞，有任何问题或建议请在
+							<a href="https://github.com/revir/FairyDict" target="_blank"
+								>Github</a
+							>
+							或
+							<a href="https://v2mm.tech" target="_blank">V2MM</a>
+							上联系我 ;)
+						</p>
+					</div>
 
-    </div>
+					<div id="function-setting" class="section function-setting">
+						<h1>功能设置</h1>
 
-    <div class="section function-setting">
-      <h1>功能设置</h1>
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enableSelectionOnMouseMove"
+									ng-click="changeKey(setting.enableSelectionOnMouseMove, 'enableSelectionOnMouseMove')"
+								/>
+								鼠标悬停自动选中单词
+								<em style="color: red">New</em>
+							</label>
+						</div>
+						<div class="checkbox indent">
+							<input
+								type="checkbox"
+								ng-model="setting.enableSelectionSK1"
+								ng-click="changeKey(setting.enableSelectionSK1, 'enableSelectionSK1')"
+							/>
+							同时必须按住
 
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" ng-model="setting.enableSelectionOnMouseMove"
-            ng-click="changeKey(setting.enableSelectionOnMouseMove, 'enableSelectionOnMouseMove')"> 鼠标悬停自动选中单词
-          <em style="color: red">New</em>
-        </label>
-      </div>
-      <div class="checkbox indent">
-        <input type="checkbox" ng-model="setting.enableSelectionSK1"
-          ng-click="changeKey(setting.enableSelectionSK1, 'enableSelectionSK1')">
-        同时必须按住
+							<div class="btn-group" uib-dropdown uib-keyboard-nav>
+								<button
+									uib-dropdown-toggle
+									class="form-control btn dropdown-toggle btn-default"
+									type="button"
+									id="btn-selectionSK1"
+								>
+									{{ setting.selectionSK1 }}
+									<span class="caret"></span>
+								</button>
 
-        <div class="btn-group" uib-dropdown uib-keyboard-nav>
-          <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-            id="btn-selectionSK1">{{setting.selectionSK1}}
-            <span class="caret"></span>
-          </button>
+								<ul
+									uib-dropdown-menu
+									class="dropdown-menu"
+									role="menu"
+									aria-labelledby="btn-selectionSK1"
+								>
+									<li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
+										<a ng-click="changeKey(item, 'selectionSK1')">{{ item }}</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="indent">
+							<span
+								>悬停延时检测时间
+								<input
+									type="number"
+									style="width: 50px"
+									ng-model="setting.selectionTimeout"
+									ng-blur="changeKey(setting.selectionTimeout, 'selectionTimeout')"
+								/>
+								毫秒
+							</span>
+						</div>
+						<br />
 
-          <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-selectionSK1">
-            <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
-              <a ng-click="changeKey(item, 'selectionSK1')">{{item}}</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="indent">
-        <span>悬停延时检测时间
-          <input type="number" style="width: 50px" ng-model="setting.selectionTimeout"
-            ng-blur="changeKey(setting.selectionTimeout, 'selectionTimeout')"> 毫秒
-        </span>
-      </div>
-      <br>
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enablePlainLookup"
+									ng-click="changeKey(setting.enablePlainLookup, 'enablePlainLookup')"
+								/>
+								开启快速查词功能（快速查询选中的单词释义，跟着鼠标显示)
+							</label>
+						</div>
+						<div class="checkbox indent">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enableAmeAudio"
+									ng-click="changeKey(setting.enableAmeAudio, 'enableAmeAudio')"
+								/>
+								自动播放美式发音
+							</label>
+							<br />
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enableBreAudio"
+									ng-click="changeKey(setting.enableBreAudio, 'enableBreAudio')"
+								/>
+								自动播放英式发音
+							</label>
+						</div>
+						<div class="checkbox indent">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enablePlainSK1"
+									ng-click="changeKey(setting.enablePlainSK1, 'enablePlainSK1')"
+								/>
+								同时必须按住
+							</label>
 
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" ng-model="setting.enablePlainLookup"
-            ng-click="changeKey(setting.enablePlainLookup, 'enablePlainLookup')"> 开启快速查词功能（快速查询选中的单词释义，跟着鼠标显示)
-        </label>
-      </div>
-      <div class="checkbox indent">
-        <label>
-          <input type="checkbox" ng-model="setting.enableAmeAudio"
-            ng-click="changeKey(setting.enableAmeAudio, 'enableAmeAudio')">
-          自动播放美式发音
-        </label>
-        <br />
-        <label>
-          <input type="checkbox" ng-model="setting.enableBreAudio"
-            ng-click="changeKey(setting.enableBreAudio, 'enableBreAudio')">
-          自动播放英式发音
-        </label>
-      </div>
-      <div class="checkbox indent">
-        <label>
-          <input type="checkbox" ng-model="setting.enablePlainSK1"
-            ng-click="changeKey(setting.enablePlainSK1, 'enablePlainSK1')">
-          同时必须按住
-        </label>
+							<div class="btn-group" uib-dropdown uib-keyboard-nav>
+								<button
+									uib-dropdown-toggle
+									class="form-control btn dropdown-toggle btn-default"
+									type="button"
+									id="btn-plainSK1"
+								>
+									{{ setting.plainSK1 }}
+									<span class="caret"></span>
+								</button>
 
-        <div class="btn-group" uib-dropdown uib-keyboard-nav>
-          <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-            id="btn-plainSK1">{{setting.plainSK1}}
-            <span class="caret"></span>
-          </button>
+								<ul
+									uib-dropdown-menu
+									class="dropdown-menu"
+									role="menu"
+									aria-labelledby="btn-plainSK1"
+								>
+									<li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
+										<a ng-click="changeKey(item, 'plainSK1')">{{ item }}</a>
+									</li>
+								</ul>
+							</div>
+						</div>
 
-          <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-plainSK1">
-            <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
-              <a ng-click="changeKey(item, 'plainSK1')">{{item}}</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+						<div class="checkbox indent">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enablePlainPositionOnMouseMove"
+									ng-click="changeKey(setting.enablePlainPositionOnMouseMove, 'enablePlainPositionOnMouseMove')"
+								/>
+								查询结果跟着鼠标移动 <em style="color: red">New</em>
+							</label>
+						</div>
 
-      <div class="checkbox indent">
-        <label>
-          <input type="checkbox" ng-model="setting.enablePlainPositionOnMouseMove"
-            ng-click="changeKey(setting.enablePlainPositionOnMouseMove, 'enablePlainPositionOnMouseMove')">
-          查询结果跟着鼠标移动 <em style="color: red">New</em>
-        </label>
-      </div>
+						<div class="indent">
+							<span>
+								相对鼠标显示位置
+							</span>
 
-      <div class="indent">
-        <span>
-          相对鼠标显示位置
-        </span>
+							<div class="btn-group" uib-dropdown uib-keyboard-nav>
+								<button
+									uib-dropdown-toggle
+									class="form-control btn dropdown-toggle btn-default"
+									type="button"
+									id="btn-plainPosition"
+								>
+									{{ setting.plainPosition }}
+									<span class="caret"></span>
+								</button>
 
-        <div class="btn-group" uib-dropdown uib-keyboard-nav>
-          <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-            id="btn-plainPosition">{{setting.plainPosition}}
-            <span class="caret"></span>
-          </button>
+								<ul
+									uib-dropdown-menu
+									class="dropdown-menu"
+									role="menu"
+									aria-labelledby="btn-plainPosition"
+								>
+									<li
+										role="menuitem"
+										ng-repeat="item in allPositions"
+										ng-hide="!item"
+									>
+										<a ng-click="changeKey(item, 'plainPosition')">{{
+											item
+										}}</a>
+									</li>
+								</ul>
+							</div>
+							<em style="color: red">New</em>
+						</div>
 
-          <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-plainPosition">
-            <li role="menuitem" ng-repeat="item in allPositions" ng-hide="!item">
-              <a ng-click="changeKey(item, 'plainPosition')">{{item}}</a>
-            </li>
-          </ul>
+						<br />
 
-        </div>
-        <em style="color: red">New</em>
-      </div>
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enableMinidict"
+									ng-click="changeKey(setting.enableMinidict, 'enableMinidict')"
+								/>
+								开启鼠标取词功能（自动弹出词典界面，查询选中的单词）
+							</label>
+						</div>
+						<div class="checkbox indent">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enableMouseSK1"
+									ng-click="changeKey(setting.enableMouseSK1, 'enableMouseSK1')"
+								/>
+								同时必须按住
+							</label>
 
-      <br>
+							<div class="btn-group" uib-dropdown uib-keyboard-nav>
+								<button
+									uib-dropdown-toggle
+									class="form-control btn dropdown-toggle btn-default"
+									type="button"
+									id="btn-mouseSK1"
+								>
+									{{ setting.mouseSK1 }}
+									<span class="caret"></span>
+								</button>
 
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" ng-model="setting.enableMinidict"
-            ng-click="changeKey(setting.enableMinidict, 'enableMinidict')"> 开启鼠标取词功能（自动弹出词典界面，查询选中的单词）
-        </label>
-      </div>
-      <div class="checkbox indent">
-        <label>
-          <input type="checkbox" ng-model="setting.enableMouseSK1"
-            ng-click="changeKey(setting.enableMouseSK1, 'enableMouseSK1')">
-          同时必须按住
-        </label>
+								<ul
+									uib-dropdown-menu
+									class="dropdown-menu"
+									role="menu"
+									aria-labelledby="btn-mouseSK1"
+								>
+									<li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
+										<a ng-click="changeKey(item, 'mouseSK1')">{{ item }}</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<br />
 
-        <div class="btn-group" uib-dropdown uib-keyboard-nav>
-          <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-            id="btn-mouseSK1">{{setting.mouseSK1}}
-            <span class="caret"></span>
-          </button>
+						<div>
+							单击图标时的功能选择
+							<div class="radio indent">
+								<label>
+									<input
+										type="radio"
+										value="enableMinidict"
+										ng-model="setting.browserActionType"
+										ng-click="changeKey(setting.browserActionType, 'browserActionType')"
+									/>
+									开/关鼠标取词功能
+								</label>
+								<br />
+								<label>
+									<input
+										type="radio"
+										value="openDictWindow"
+										ng-model="setting.browserActionType"
+										ng-click="changeKey(setting.browserActionType, 'browserActionType')"
+									/>
+									打开查词窗口
+								</label>
+							</div>
+						</div>
+					</div>
 
-          <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-mouseSK1">
-            <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
-              <a ng-click="changeKey(item, 'mouseSK1')">{{item}}</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <br>
+					<div id="shortcut-setting" class="section shortcut-setting">
+						<h1>快捷键设置</h1>
 
-      <div>
-        单击图标时的功能选择
-        <div class="radio indent">
-          <label>
-            <input type="radio" value="enableMinidict" ng-model="setting.browserActionType"
-              ng-click="changeKey(setting.browserActionType, 'browserActionType')"> 开/关鼠标取词功能
-          </label>
-          <br />
-          <label>
-            <input type="radio" value="openDictWindow" ng-model="setting.browserActionType"
-              ng-click="changeKey(setting.browserActionType, 'browserActionType')"> 打开查词窗口
-          </label>
-        </div>
-      </div>
+						<div>
+							<div class="row">
+								<div class="col-md-2">
+									<span style="line-height: 2">呼出词典: </span>
+								</div>
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-sk1"
+									>
+										{{ setting.openSK1 }}
+										<span class="caret"></span>
+									</button>
 
-    </div>
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-sk1"
+									>
+										<li
+											role="menuitem"
+											ng-repeat="item in allSK"
+											ng-hide="!item"
+										>
+											<a ng-click="changeKey(item, 'openSK1')">{{ item }}</a>
+										</li>
+									</ul>
+								</div>
 
-    <div class="section shortcut-setting">
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-sk2"
+									>
+										{{ setting.openSK2 }}
+										<span class="caret"></span>
+									</button>
 
-      <h1>快捷键设置</h1>
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-sk2"
+									>
+										<li role="menuitem" ng-repeat="item in allSK">
+											<a ng-click="changeKey(item, 'openSK2')">{{
+												item ? item : "空"
+											}}</a>
+										</li>
+									</ul>
+								</div>
 
-      <div>
-        <div class="row">
-          <div class="col-md-2">
-            <span style="line-height: 2">呼出词典: </span>
-          </div>
-          <div class="btn-group" uib-dropdown uib-keyboard-nav>
-            <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-              id="btn-sk1">{{setting.openSK1}}
-              <span class="caret"></span>
-            </button>
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-open-key"
+									>
+										{{ setting.openKey }}
+										<span class="caret"></span>
+									</button>
 
-            <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-sk1">
-              <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
-                <a ng-click="changeKey(item, 'openSK1')">{{item}}</a>
-              </li>
-            </ul>
-          </div>
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-open-key"
+									>
+										<li role="menuitem" ng-repeat="item in allLetters">
+											<a ng-click="changeKey(item, 'openKey')">{{ item }}</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<span style="line-height: 2">查找上一个词典: </span>
+								</div>
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-prev-dict-sk1"
+									>
+										{{ setting.prevDictSK1 }}
+										<span class="caret"></span>
+									</button>
 
-          <div class="btn-group" uib-dropdown uib-keyboard-nav>
-            <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-              id="btn-sk2">{{setting.openSK2}}
-              <span class="caret"></span>
-            </button>
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-prev-dict-sk1"
+									>
+										<li
+											role="menuitem"
+											ng-repeat="item in allSK"
+											ng-hide="!item"
+										>
+											<a ng-click="changeKey(item, 'prevDictSK1')">{{
+												item
+											}}</a>
+										</li>
+									</ul>
+								</div>
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-prev-dict-key"
+									>
+										{{ setting.prevDictKey }}
+										<span class="caret"></span>
+									</button>
 
-            <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-sk2">
-              <li role="menuitem" ng-repeat="item in allSK">
-                <a ng-click="changeKey(item, 'openSK2')">{{item ? item : '空'}}</a>
-              </li>
-            </ul>
-          </div>
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-prev-dict-key"
+									>
+										<li role="menuitem" ng-repeat="item in allKeys">
+											<a ng-click="changeKey(item, 'prevDictKey')">{{
+												item
+											}}</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<span style="line-height: 2">查找下一个词典: </span>
+								</div>
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-next-dict-sk1"
+									>
+										{{ setting.nextDictSK1 }}
+										<span class="caret"></span>
+									</button>
 
-          <div class="btn-group" uib-dropdown uib-keyboard-nav>
-            <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-              id="btn-open-key">{{setting.openKey}}
-              <span class="caret"></span>
-            </button>
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-next-dict-sk1"
+									>
+										<li
+											role="menuitem"
+											ng-repeat="item in allSK"
+											ng-hide="!item"
+										>
+											<a ng-click="changeKey(item, 'nextDictSK1')">{{
+												item
+											}}</a>
+										</li>
+									</ul>
+								</div>
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-next-dict-key"
+									>
+										{{ setting.nextDictKey }}
+										<span class="caret"></span>
+									</button>
 
-            <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-open-key">
-              <li role="menuitem" ng-repeat="item in allLetters">
-                <a ng-click="changeKey(item, 'openKey')">{{item}}</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-2">
-            <span style="line-height: 2">查找上一个词典: </span>
-          </div>
-          <div class="btn-group" uib-dropdown uib-keyboard-nav>
-            <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-              id="btn-prev-dict-sk1">{{setting.prevDictSK1}}
-              <span class="caret"></span>
-            </button>
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-next-dict-key"
+									>
+										<li role="menuitem" ng-repeat="item in allKeys">
+											<a ng-click="changeKey(item, 'nextDictKey')">{{
+												item
+											}}</a>
+										</li>
+									</ul>
+								</div>
+							</div>
 
-            <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-prev-dict-sk1">
-              <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
-                <a ng-click="changeKey(item, 'prevDictSK1')">{{item}}</a>
-              </li>
-            </ul>
-          </div>
-          <div class="btn-group" uib-dropdown uib-keyboard-nav>
-            <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-              id="btn-prev-dict-key">{{setting.prevDictKey}}
-              <span class="caret"></span>
-            </button>
+							<div class="row">
+								<div class="col-md-2">
+									<span style="line-height: 2">查找上一个历史记录: </span>
+								</div>
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-prev-history-sk1"
+									>
+										{{ setting.prevHistorySK1 }}
+										<span class="caret"></span>
+									</button>
 
-            <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-prev-dict-key">
-              <li role="menuitem" ng-repeat="item in allKeys">
-                <a ng-click="changeKey(item, 'prevDictKey')">{{item}}</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-2">
-            <span style="line-height: 2">查找下一个词典: </span>
-          </div>
-          <div class="btn-group" uib-dropdown uib-keyboard-nav>
-            <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-              id="btn-next-dict-sk1">{{setting.nextDictSK1}}
-              <span class="caret"></span>
-            </button>
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-prev-history-sk1"
+									>
+										<li
+											role="menuitem"
+											ng-repeat="item in allSK"
+											ng-hide="!item"
+										>
+											<a ng-click="changeKey(item, 'prevHistorySK1')">{{
+												item
+											}}</a>
+										</li>
+									</ul>
+								</div>
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-prev-history-key"
+									>
+										{{ setting.prevHistoryKey }}
+										<span class="caret"></span>
+									</button>
 
-            <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-next-dict-sk1">
-              <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
-                <a ng-click="changeKey(item, 'nextDictSK1')">{{item}}</a>
-              </li>
-            </ul>
-          </div>
-          <div class="btn-group" uib-dropdown uib-keyboard-nav>
-            <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-              id="btn-next-dict-key">{{setting.nextDictKey}}
-              <span class="caret"></span>
-            </button>
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-prev-history-key"
+									>
+										<li role="menuitem" ng-repeat="item in allKeys">
+											<a ng-click="changeKey(item, 'prevHistoryKey')">{{
+												item
+											}}</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<span style="line-height: 2">查找下一个历史记录: </span>
+								</div>
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-next-history-sk1"
+									>
+										{{ setting.nextHistorySK1 }}
+										<span class="caret"></span>
+									</button>
 
-            <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-next-dict-key">
-              <li role="menuitem" ng-repeat="item in allKeys">
-                <a ng-click="changeKey(item, 'nextDictKey')">{{item}}</a>
-              </li>
-            </ul>
-          </div>
-        </div>
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-next-history-sk1"
+									>
+										<li
+											role="menuitem"
+											ng-repeat="item in allSK"
+											ng-hide="!item"
+										>
+											<a ng-click="changeKey(item, 'nextHistorySK1')">{{
+												item
+											}}</a>
+										</li>
+									</ul>
+								</div>
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-next-history-key"
+									>
+										{{ setting.nextHistoryKey }}
+										<span class="caret"></span>
+									</button>
 
-        <div class="row">
-          <div class="col-md-2">
-            <span style="line-height: 2">查找上一个历史记录: </span>
-          </div>
-          <div class="btn-group" uib-dropdown uib-keyboard-nav>
-            <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-              id="btn-prev-history-sk1">{{setting.prevHistorySK1}}
-              <span class="caret"></span>
-            </button>
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-next-history-key"
+									>
+										<li role="menuitem" ng-repeat="item in allKeys">
+											<a ng-click="changeKey(item, 'nextHistoryKey')">{{
+												item
+											}}</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
 
-            <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-prev-history-sk1">
-              <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
-                <a ng-click="changeKey(item, 'prevHistorySK1')">{{item}}</a>
-              </li>
-            </ul>
-          </div>
-          <div class="btn-group" uib-dropdown uib-keyboard-nav>
-            <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-              id="btn-prev-history-key">{{setting.prevHistoryKey}}
-              <span class="caret"></span>
-            </button>
-
-            <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-prev-history-key">
-              <li role="menuitem" ng-repeat="item in allKeys">
-                <a ng-click="changeKey(item, 'prevHistoryKey')">{{item}}</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-2">
-            <span style="line-height: 2">查找下一个历史记录: </span>
-          </div>
-          <div class="btn-group" uib-dropdown uib-keyboard-nav>
-            <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-              id="btn-next-history-sk1">{{setting.nextHistorySK1}}
-              <span class="caret"></span>
-            </button>
-
-            <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-next-history-sk1">
-              <li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
-                <a ng-click="changeKey(item, 'nextHistorySK1')">{{item}}</a>
-              </li>
-            </ul>
-          </div>
-          <div class="btn-group" uib-dropdown uib-keyboard-nav>
-            <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default" type="button"
-              id="btn-next-history-key">{{setting.nextHistoryKey}}
-              <span class="caret"></span>
-            </button>
-
-            <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-next-history-key">
-              <li role="menuitem" ng-repeat="item in allKeys">
-                <a ng-click="changeKey(item, 'nextHistoryKey')">{{item}}</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="section shortcut-setting">
-      <h1>好用就分享</h1>
-      <div class="row">
-        <ul>
-          <li>
-            <a href="" class="need-share-button" data-share-url="https://github.com/revir/FairyDict"
-              data-share-title="FairyDict —— 强大的词典是学习英语的好帮手！"
-              data-share-image="https://github.com/revir/FairyDict/raw/master/readme_images/4.png">
-              分享 Github 链接
-            </a>
-          </li>
-          <li>
-            <a href="" class="need-share-button"
-              data-share-url="https://chrome.google.com/webstore/detail/fairydict/gpdpcfgfmgkmljmhhnedefdaadgehaah"
-              data-share-title="FairyDict —— 强大的词典是学习英语的好帮手！"
-              data-share-image="https://github.com/revir/FairyDict/raw/master/readme_images/4.png">
-              分享 chrome webstore 链接
-            </a>
-          </li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
-</body>
-
+					<div id="share-setting" class="section share-setting">
+						<h1>好用就分享</h1>
+						<div class="row">
+							<ul>
+								<li>
+									<a
+										href=""
+										class="need-share-button"
+										data-share-url="https://github.com/revir/FairyDict"
+										data-share-title="FairyDict —— 强大的词典是学习英语的好帮手！"
+										data-share-image="https://github.com/revir/FairyDict/raw/master/readme_images/4.png"
+									>
+										分享 Github 链接
+									</a>
+								</li>
+								<li>
+									<a
+										href=""
+										class="need-share-button"
+										data-share-url="https://chrome.google.com/webstore/detail/fairydict/gpdpcfgfmgkmljmhhnedefdaadgehaah"
+										data-share-title="FairyDict —— 强大的词典是学习英语的好帮手！"
+										data-share-image="https://github.com/revir/FairyDict/raw/master/readme_images/4.png"
+									>
+										分享 chrome webstore 链接
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>

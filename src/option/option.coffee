@@ -9,7 +9,9 @@ import utils from "utils"
 import 'angular-route'
 import 'angular-sanitize'
 import 'angular-ui-bootstrap'
+
 # import '../needsharebutton.min.js'
+import 'bootstrap/js/scrollspy.js'
 
 
 dictApp = angular.module('fairyDictApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize'])
