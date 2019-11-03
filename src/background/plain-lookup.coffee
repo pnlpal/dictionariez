@@ -12,8 +12,10 @@ parseBing = (url) ->
     # console.log(nodes.find('.hd_prUS').text())
 
     prons = {
-        ame: nodes.find('.hd_prUS').text(),
-        bre: nodes.find('.hd_pr').text()
+        ame: nodes.find('.hd_area .hd_prUS').text(),
+        ameAudio: nodes.find('.hd_area .hd_prUS').next('.hd_tf').html().match(/https:.*?\.mp3/)[0]
+        bre: nodes.find('.hd_area .hd_pr').text(),
+        breAudio: nodes.find('.hd_area .hd_pr').next('.hd_tf').html().match(/https:.*?\.mp3/)[0]
     }
 
     enDefs = []
@@ -36,7 +38,7 @@ parseBing = (url) ->
             def: $(el).next().text()
         })
 
-    console.log enDefs, cnDefs
+    # console.log prons, enDefs, cnDefs
     return {en: enDefs, cn: cnDefs, prons}
 
 message.on 'look up plain', ({text})->

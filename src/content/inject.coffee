@@ -29,34 +29,21 @@ chrome.runtime.sendMessage {
 			top = mousey
 			left = mousex
 
-			if setting.plainPosition.toLowerCase().indexOf('bottom') >= 0
-				top = mousey
-			else if setting.plainPosition.toLowerCase().indexOf('middle') >= 0
-				top = mousey - $el[0].offsetHeight/2
-				if top <=0
-					top = mousey
-			else
-				top = mousey - $el[0].offsetHeight - 20
-				if top <=0
-					top = mousey
+			# console.log e
+			# console.log top, left, window.innerHeight, window.innerWidth
 
-			if setting.plainPosition.toLowerCase().indexOf('left') >= 0
-				left = mousex - $el[0].offsetWidth - 30
-				if left <= 0
-					left = mousex
-			else if setting.plainPosition.toLowerCase().indexOf('center') >= 0
-				left = mousex - $el[0].offsetWidth/2
-				if left <= 0
-					left = mousex
-			else
-				left = mousex
+			rect = window.document.body.getBoundingClientRect()
+			domW = window.innerWidth - rect.left
+			domH = window.innerHeight - rect.top
+
+			if domW - left < 300
+				left = domW - 300
+			if domH - top < 200
+				top = domH - 200
 
 			$el.css({ top, left })
 
 	$(document).mousemove (e)->
-		# if setting.enablePlainPositionOnMouseMove
-		# 	setupPlainContentPosition(e)
-
 		if setting.enableSelectionOnMouseMove
 			if !setting.enableSelectionSK1 or (setting.enableSelectionSK1 and utils.checkEventKey(e, setting.selectionSK1))
 				handleSelectionWord(e)
@@ -200,7 +187,7 @@ chrome.runtime.sendMessage {
 	handleLookupByMouse = (event)->
 		text = window.getSelection().toString().trim()
 		return unless text
-		return if text.split(/\s/).length > 1
+		return if text.split(/\s/).length > 4
 
 		if setting.enablePlainLookup && text != plainQuerying
 			if !setting.enablePlainSK1 or (setting.plainSK1 and utils.checkEventKey(event, setting.plainSK1))

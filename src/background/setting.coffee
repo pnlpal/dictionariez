@@ -15,8 +15,6 @@ export default {
             enableBreAudio: false,
             enablePlainSK1: false,
             plainSK1: 'Meta',
-            enablePlainPositionOnMouseMove: true,
-            plainPosition: 'rightBottom',
 
             enableMinidict: false,
             enableMouseSK1: false,
