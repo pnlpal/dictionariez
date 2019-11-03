@@ -4,6 +4,7 @@ import message from "./message.coffee"
 
 # most: 这个单词的 E-E 词典有 gl_none 这个 class；
 # 词组: 查询词组时没有音标，只有发音；
+# 网络词汇可能只有 web 释义，没有发音，如： https://cn.bing.com/dict/search?q=wantonly
 # 中文词： 查询结果上部是英文翻译，E-E 的地方却是 cn-cn, 如： https://cn.bing.com/dict/search?q=%E5%A4%A7%E5%8D%8A
 parseBing = (url) ->
     res = await $.get(url)
@@ -13,9 +14,9 @@ parseBing = (url) ->
 
     prons = {
         ame: nodes.find('.hd_area .hd_prUS').text(),
-        ameAudio: nodes.find('.hd_area .hd_prUS').next('.hd_tf').html().match(/https:.*?\.mp3/)[0]
+        ameAudio: nodes.find('.hd_area .hd_prUS').next('.hd_tf').html()?.match(/https:.*?\.mp3/)[0]
         bre: nodes.find('.hd_area .hd_pr').text(),
-        breAudio: nodes.find('.hd_area .hd_pr').next('.hd_tf').html().match(/https:.*?\.mp3/)[0]
+        breAudio: nodes.find('.hd_area .hd_pr').next('.hd_tf').html()?.match(/https:.*?\.mp3/)[0]
     }
 
     enDefs = []
@@ -46,4 +47,4 @@ message.on 'look up plain', ({text})->
     parseBing(res.windowUrl)
 
 
-parseBing('https://cn.bing.com/dict/search?q=most')
+# parseBing('https://cn.bing.com/dict/search?q=most')

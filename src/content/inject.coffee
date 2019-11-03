@@ -1,6 +1,8 @@
 import $ from 'jquery'
 import utils from "utils"
 import "./inject.less"
+# import "./inject-font-fontello.css"
+import "./inject-font-embedded-fontello.css"
 
 chrome.runtime.sendMessage {
 	type: 'setting',
@@ -60,13 +62,21 @@ chrome.runtime.sendMessage {
 				means: 'keyboard',
 				text: window.getSelection().toString().trim()
 			})
+		if event.key == "Escape"
+			$('.fairydict-tooltip').fadeOut().hide()
+			plainQuerying = null
+
+	$(document).on 'click', '.fairydict-pron-audio', (e) ->
+		e.stopPropagation()
+		playAudios [$(this).data('mp3')]
+		return false
+
 
 	handleSelectionWord = (e)->
 		clearTimeout(mouseMoveTimer) if mouseMoveTimer
 		mouseMoveTimer = setTimeout (()->
 			word = getWordAtPoint(e.target, e.clientX, e.clientY)
 			if word
-				console.log(word)
 				handleLookupByMouse(e)
 		), (setting.selectionTimeout or 500)
 
@@ -135,6 +145,10 @@ chrome.runtime.sendMessage {
 		selObj = window.getSelection()
 		text = selObj.toString().trim()
 		unless text
+			# click inside the dict
+			if $('.fairydict-tooltip').has(event.target).length
+				return
+
 			$('.fairydict-tooltip').fadeOut().hide()
 			plainQuerying = null
 			return
@@ -152,15 +166,17 @@ chrome.runtime.sendMessage {
 		posTpl = (pos) -> "<span class='fairydict-pos'> #{pos} </span>"
 		contentTpl = (content) -> "<div class='fairydict-content'> #{content} </div>"
 		pronTpl = (pron) -> "<span class='fairydict-pron'> #{pron} </span>"
+		pronAudioTpl = (src) -> "<a class='fairydict-pron-audio' href='' data-mp3='#{src}'><i class='icon-fairydict-volume'></i></a>"
 		pronsTpl = (prons) -> "<div class='fairydict-prons'> #{prons} </div>"
 
 		html = ''
 		if res?.prons
 			pronHtml = ''
 			pronHtml += pronTpl res.prons.ame if res.prons.ame
+			pronHtml += pronAudioTpl res.prons.ameAudio if res.prons.ameAudio
 			pronHtml += pronTpl res.prons.bre if res.prons.bre
+			pronHtml += pronAudioTpl res.prons.breAudio if res.prons.breAudio
 			html += pronsTpl pronHtml if pronHtml
-
 
 		renderItem = (item) ->
 			posHtml = posTpl item.pos
@@ -194,7 +210,10 @@ chrome.runtime.sendMessage {
 				$('.fairydict-tooltip').fadeIn('slow')
 				$('.fairydict-tooltip .fairydict-spinner').show()
 				$('.fairydict-tooltip .fairydict-tooltip-content').empty()
-				setupPlainContentPosition(event)
+
+				unless plainQuerying
+					setupPlainContentPosition(event)
+
 				plainQuerying = text
 
 				chrome.runtime.sendMessage {
@@ -205,8 +224,6 @@ chrome.runtime.sendMessage {
 					html = renderQueryResult res
 					if !html
 						plainQuerying = null
-
-					# setupPlainContentPosition(event)
 
 					if res.prons
 						audios = []
@@ -233,7 +250,6 @@ chrome.runtime.sendMessage {
 	url: location.href
 }, (res) ->
 	if location.href.includes('bing') or location.href.includes('xiao84')
-			console.log(res)
 			if res.dict.resources?.styles?
 				for style in res.dict.resources.styles
 					require("./css/#{style}")

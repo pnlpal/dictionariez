@@ -115,7 +115,7 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             $scope.initial = true
             return
 
-        console.log "[dictCtrl] query `#{$scope.word}` from #{$scope.currentDictionary.dictName}"
+        # console.log "[dictCtrl] query `#{$scope.word}` from #{$scope.currentDictionary.dictName}"
         $scope.initial = false
         $scope.querying = true
 
@@ -125,12 +125,12 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             dictionary: $scope.currentDictionary.dictName,
             inHistory: inHistory
         }, ({ windowUrl }) ->
-            console.log(windowUrl)
+            # console.log(windowUrl)
             window.top.location.href = windowUrl
         )
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
-        console.log(request)
+        # console.log(request)
         if request.type == 'querying'
             $scope.initial = false
             $scope.querying = true
