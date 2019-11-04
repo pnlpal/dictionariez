@@ -19,7 +19,7 @@ define(["jquery", "utils"], function($, utils) {
       openSK1: 'Ctrl',
       openSK2: 'Shift',
       openKey: 'X',
-      browserActionType: 'enableMinidict',
+      browserActionType: 'openDictWindow',
       prevDictSK1: 'Ctrl',
       prevDictKey: 'ArrowLeft',
       nextDictSK1: 'Ctrl',

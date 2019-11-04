@@ -24,7 +24,7 @@ define ["jquery",
             openSK2: 'Shift'
             openKey: 'X',
 
-            browserActionType: 'enableMinidict',
+            browserActionType: 'openDictWindow',
 
             prevDictSK1: 'Ctrl',
             prevDictKey: 'ArrowLeft',

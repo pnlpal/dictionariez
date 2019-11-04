@@ -73,6 +73,11 @@
 }
 #fairy-dict .history-group .dropdown-menu li > a {
   padding-right: 2px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 300px;
+  white-space: nowrap;
 }
 #fairy-dict .history-group #history-btn {
   max-width: 100px;
