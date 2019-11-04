@@ -37,12 +37,12 @@
 	],
 	"browser_action": {
 		"default_icon": {
-			"19": "images/fd-40.png",
-			"38": "images/fd-40.png"
+			"19": "images/books-48.png",
+			"38": "images/books-48.png"
 		}
 	},
 	"icons": {
-		"48": "images/fd-160.png"
+		"48": "images/books-96.png"
 	},
 	"minimum_chrome_version": "23"
 }

@@ -5,11 +5,11 @@ define ["jquery",
 
     return {
         setBrowserIcon: (enable)->
-            title = '已打开鼠标取词功能'
-            imgPath = 'images/fd-40.png'
+            title = 'FairyDict: 已打开鼠标取词功能'
+            imgPath = 'images/books-96.png'
             if !enable
-                title = '已关闭鼠标取词功能'
-                imgPath = 'images/fd-40-grey.png'
+                title = 'FairyDict: 已关闭鼠标取词功能'
+                imgPath = 'images/books-96.png'
 
             chrome.browserAction.setTitle({
                 title: title
