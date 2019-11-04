@@ -4,7 +4,8 @@ define ["jquery",
     "background/ext",
     "background/storage",
     "background/dict.js",
-    "background/dictwindow.js"], ($, utils, setting, ext, storage, dict, dictWindow)->
+    "background/plain-lookup.js",
+    "background/dictwindow.js"], ($, utils, setting, ext, storage, dict, plainLookup, dictWindow)->
     console.log "[message] init"
 
     chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
@@ -22,7 +23,9 @@ define ["jquery",
             dictWindow.lookup(request.text)
 
         else if request.type == 'look up pain'
-            dict.queryWordPain(request.text).then sendResponse, sendResponse
+            res = dict.getDict('必应词典')
+            url = res.windowUrl.replace('<word>', request.text)
+            plainLookup.parseBing(url).then sendResponse, sendResponse
 
         else if request.type == 'query'
             setting.setValue('dictionary', request.dictionary) if request.dictionary

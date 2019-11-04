@@ -119,34 +119,6 @@
               </div>
             </div>
 
-            <div class="checkbox indent">
-              <label>
-                <input type="checkbox" ng-model="setting.enablePlainPositionOnMouseMove" ng-click="changeKey(setting.enablePlainPositionOnMouseMove, 'enablePlainPositionOnMouseMove')">
-                查询结果跟着鼠标移动 <em style="color: red">New</em>
-              </label>
-            </div>
-
-            <div class="indent">
-              <span>
-              相对鼠标显示位置
-              </span>
-
-              <div class="btn-group" uib-dropdown  uib-keyboard-nav>
-                <button uib-dropdown-toggle class="form-control btn dropdown-toggle btn-default"
-                type="button" id="btn-plainPosition">{{setting.plainPosition}}
-                    <span class="caret"></span>
-                </button>
-
-                <ul uib-dropdown-menu class="dropdown-menu" role="menu" aria-labelledby="btn-plainPosition">
-                  <li role="menuitem" ng-repeat="item in allPositions" ng-hide="!item">
-                    <a ng-click="changeKey(item, 'plainPosition')">{{item}}</a>
-                  </li>
-                </ul>
-
-              </div>
-              <em style="color: red">New</em>
-            </div>
-
             <br>
 
             <div class="checkbox">

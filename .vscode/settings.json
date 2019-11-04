@@ -1,0 +1,6 @@
+{
+	"coffeescript.compile": {
+		"bare": true,
+		"sourceMap": false
+	}
+}
