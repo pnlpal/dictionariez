@@ -1,8 +1,11 @@
 import $ from 'jquery'
 import utils from "utils"
 import "./inject.less"
-# import "./inject-font-fontello.css"
-import "./inject-font-embedded-fontello.css"
+
+# Interesting: font url is embedded, for some websites' security setting font-src,
+# it might be forbidden to load the font url.
+# but after webpack build, it not a problem any more.
+import "./inject-fontello.css"
 
 chrome.runtime.sendMessage {
 	type: 'setting',
