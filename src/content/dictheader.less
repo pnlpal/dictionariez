@@ -1,163 +1,166 @@
 #fairy-dict {
-  line-height: initial;
-  box-sizing: border-box;
+	line-height: initial;
+	box-sizing: border-box;
 
-  .navbar {
-    background-color: rgba(248, 250, 251, 0.75);
+	.navbar {
+		background-color: rgba(248, 250, 251, 0.75);
 
-    margin-bottom: 0;
+		margin-bottom: 0;
+		padding-bottom: 0;
+		z-index: 9000000304;
 
-    &.in-frame {
-      border: 0;
-    }
-  }
+		&.in-frame {
+			border: 0;
+		}
+	}
 
-  .dict-body {
-    padding-top: 70px;
-  }
-  .pron {
-    color: rgb(58, 120, 213);
-  }
-  .example {
-    color: rgb(162, 111, 20);
-  }
-  .fa-coffee,
-  .fa-volume-up {
-    color: black;
-  }
+	.dict-body {
+		padding-top: 70px;
+	}
+	.pron {
+		color: rgb(58, 120, 213);
+	}
+	.example {
+		color: rgb(162, 111, 20);
+	}
+	.fa-coffee,
+	.fa-volume-up {
+		color: black;
+	}
 
-  .modal-body {
-    padding-top: 8px;
-  }
+	.modal-body {
+		padding-top: 8px;
+	}
 
-  .navbar-form {
-    padding: 0;
-    border: none;
+	.navbar-form {
+		padding: 0;
+		border: none;
 
-    margin-right: 0;
-    margin-left: 0;
-  }
-  .form-group {
-    // height: 34px;
-  }
+		margin-right: 0;
+		margin-left: 0;
+		margin: 0;
+	}
+	.form-group {
+		// height: 34px;
+	}
 
-  .fa-2x {
-    vertical-align: middle;
-  }
+	.fa-2x {
+		vertical-align: middle;
+	}
 
-  .caret {
-    margin-left: 5px;
-  }
+	.caret {
+		margin-left: 5px;
+	}
 
-  .navbar-form .dropdown-toggle {
-    overflow: hidden;
-  }
+	.navbar-form .dropdown-toggle {
+		overflow: hidden;
+	}
 
-  //   iframe {
-  //     border: none;
-  //     height: 620px;
-  //     width: 100%;
-  //   }
+	//   iframe {
+	//     border: none;
+	//     height: 620px;
+	//     width: 100%;
+	//   }
 
-  .default-page {
-    margin-right: 10px;
-  }
+	.default-page {
+		margin-right: 10px;
+	}
 
-  .search-group {
-    display: block;
-    position: relative;
-    overflow: hidden;
-    .starrr {
-      position: relative;
-      left: -15px;
-      top: 5px;
-    }
+	.search-group {
+		display: block;
+		position: relative;
+		overflow: hidden;
+		.starrr {
+			position: relative;
+			left: -15px;
+			top: 5px;
+		}
 
-    .fa-search {
-      position: relative;
-      right: 30px;
-      top: 10px;
-      cursor: pointer;
-    }
-    .search-wrapper {
-      display: block;
-      overflow: hidden;
-      padding-left: 10px;
-      .dict-input {
-        width: 100%;
-        margin: 0; // override urban dictionary's style
-      }
-    }
-  }
+		.fa-search {
+			position: relative;
+			right: 30px;
+			top: 10px;
+			cursor: pointer;
+		}
+		.search-wrapper {
+			display: block;
+			overflow: hidden;
+			padding-left: 10px;
+			.dict-input {
+				width: 100%;
+				margin: 0; // override urban dictionary's style
+			}
+		}
+	}
 
-  .history-group {
-    .dropdown-menu {
-      min-width: 220px;
-      text-align: left;
-      //   height: auto;
-      //   max-height: 600px;
-      overflow-y: auto;
-    }
+	.history-group {
+		.dropdown-menu {
+			min-width: 220px;
+			text-align: left;
+			//   height: auto;
+			//   max-height: 600px;
+			overflow-y: auto;
+		}
 
-    .dropdown-menu li > a {
-      padding-right: 2px;
-    }
-    #history-btn {
-      max-width: 100px;
-      overflow: hidden;
-    }
-    .vhide {
-      visibility: hidden;
-    }
-  }
+		.dropdown-menu li > a {
+			padding-right: 2px;
+		}
+		#history-btn {
+			max-width: 100px;
+			overflow: hidden;
+		}
+		.vhide {
+			visibility: hidden;
+		}
+	}
 
-  .dict-group {
-    .dict-name {
-      min-width: 180px;
-    }
-    .dict-list {
-      text-align: left;
-      min-width: 180px;
-      overflow: hidden;
-    }
-  }
+	.dict-group {
+		.dict-name {
+			min-width: 180px;
+		}
+		.dict-list {
+			text-align: left;
+			min-width: 180px;
+			overflow: hidden;
+		}
+	}
 
-  .sound,
-  .default-page,
-  .dict_prev,
-  .dict_next {
-    cursor: pointer;
-  }
+	.sound,
+	.default-page,
+	.dict_prev,
+	.dict_next {
+		cursor: pointer;
+	}
 
-  #fairy-stars {
-    font-size: 20px;
-    /*margin-left: 10px;*/
-    margin-right: 5px;
-  }
+	#fairy-stars {
+		font-size: 20px;
+		/*margin-left: 10px;*/
+		margin-right: 5px;
+	}
 
-  #fairy-stars i.fa {
-    padding-left: 3px;
-    color: orange;
-  }
+	#fairy-stars i.fa {
+		padding-left: 3px;
+		color: orange;
+	}
 
-  .fa.fa-star {
-    color: orange;
-  }
+	.fa.fa-star {
+		color: orange;
+	}
 
-  /*Fix button and input styles on some websites*/
-  .btn {
-    height: 34px;
-    margin: 0 0 0 -1px;
-    border: rgb(204, 204, 204) solid 0.65px;
+	/*Fix button and input styles on some websites*/
+	.btn {
+		height: 34px;
+		margin: 0 0 0 -1px;
+		border: rgb(204, 204, 204) solid 0.65px;
 
-    padding: 6px 12px;
-    box-shadow: none;
-  }
+		padding: 6px 12px;
+		box-shadow: none;
+	}
 
-  input {
-    width: 100%;
-    height: 34px;
-    padding: 6px 12px;
-    box-sizing: border-box; // fix on iciba.com
-  }
+	input {
+		width: 100%;
+		height: 34px;
+		padding: 6px 12px;
+		box-sizing: border-box; // fix on iciba.com
+	}
 }

@@ -21,8 +21,8 @@ chrome.runtime.sendMessage {
 		        <div class="fairydict-bounce2"></div>
 		        <div class="fairydict-bounce3"></div>
 		      </div>
-		      <p class="fairydict-tooltip-content">
-		      </p>
+		      <div class="fairydict-tooltip-content">
+		      </div>
 		  </div>
 		     ''').appendTo('body')
 
