@@ -210,11 +210,14 @@ chrome.runtime.sendMessage {
 
 		if setting.enablePlainLookup && text != plainQuerying
 			if !setting.enablePlainSK1 or (setting.plainSK1 and utils.checkEventKey(event, setting.plainSK1))
+
+				clickInside = $('.fairydict-tooltip').has(event.target).length
+
 				$('.fairydict-tooltip').fadeIn('slow')
 				$('.fairydict-tooltip .fairydict-spinner').show()
 				$('.fairydict-tooltip .fairydict-tooltip-content').empty()
 
-				unless plainQuerying
+				unless clickInside
 					setupPlainContentPosition(event)
 
 				plainQuerying = text
