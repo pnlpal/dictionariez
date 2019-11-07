@@ -28,6 +28,7 @@
     "angular-sanitize": "~1.5.7",
     "angular-ui-bootstrap": "^2.5.6",
     "bootstrap": "^3.4.1",
+    "datatables.net-dt": "^1.10.20",
     "font-awesome": "^4.6.3",
     "jquery": "^3.1.1",
     "less": "^2.7.1",

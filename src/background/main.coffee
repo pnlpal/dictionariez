@@ -23,6 +23,7 @@ setting.init().done (c)->
     ext.setBrowserIcon(c.enableMinidict)
 
 storage.init()
+window.storage = storage
 
 chrome.contextMenus.create {
     title: "使用 FairyDict 查询 '%s'",

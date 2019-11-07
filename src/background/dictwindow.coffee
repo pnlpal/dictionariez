@@ -78,7 +78,7 @@ dictWindowManager =
 
     sendQueryResult: (result)->
         @saveWindowSize()
-        item = storage.isInHistory(@word)
+        item = storage.getInHistory(@word)
         if result
             udfd = @updateUrl(result.windowUrl or defaultWindowUrl)
 
@@ -93,7 +93,7 @@ dictWindowManager =
 
             # if @word is a long sentence, don't keep in history
             if not item and @word.split(/\s+/).length <= 5
-                storage.addHistory(@word)
+                storage.addHistory({w: @word})
 
     injectResources: ()->
         console.log('inject resources')

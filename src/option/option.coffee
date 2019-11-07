@@ -5,6 +5,7 @@ import './options.less'
 
 import angular from 'angular'
 import utils from "utils"
+import $ from 'jquery'
 
 import 'angular-route'
 import 'angular-sanitize'
@@ -13,6 +14,36 @@ import 'angular-ui-bootstrap'
 # import '../needsharebutton.min.js'
 import 'bootstrap/js/scrollspy.js'
 
+dt = require( 'datatables.net-dt')
+
+window.t = $('#history').DataTable({
+    dom: 't',
+    columns: [
+        {
+            name: 'w',
+            title: 'Word',
+            data: 'w'
+        },
+        {
+            name: 'r',
+            title: 'Rate',
+            data: 'r'
+        },
+        {
+            name: 's',
+            title: 'Source',
+            data: 's'
+        },
+        {
+            name: 't',
+            title: 'Time',
+            data: 't'
+        },
+    ],
+    data: [
+        {w: 'test1', r: 1, s: 'baidu.com', t: 123123}
+    ]
+})
 
 dictApp = angular.module('fairyDictApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize'])
 

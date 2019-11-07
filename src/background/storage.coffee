@@ -1,41 +1,60 @@
-define ["jquery",
-    "utils"], ($, utils)->
+import utils from "utils"
 
-    storage = {
-        maxLength: 200,
-        history: [],
-        init: ()->
-            dfd = $.Deferred()
-            chrome.storage.sync.get 'historyRating', (data)=>
-                @history = data.historyRating or []
-                dfd.resolve(data)
-            return dfd
+class Item
+	constructor: ({ @w, @s, @r, @t = Date.now() }) ->
+	save: () ->
+		new Promise (resolve) =>
+			chrome.storage.sync.set({
+				"w-#{@w}": { @w, @s, @r, @t }
+			}, resolve)
+	update: ({w, s, r, t}) ->
+		@w = w if w?
+		@s = s if s?
+		@r = r if r?
+		@t = t if t?
+		@save()
 
-        isInHistory: (word)->
-            return @history.find (item)->
-                return item[word]?
+	@getByWord: (w) ->
+		new Promise (resolve) ->
+			chrome.storage.sync.get "w-#{w}", (data) ->
+				resolve(new Item(data["w-#{w}"]))
 
-        addRating: (word, rating)->
-            item = @isInHistory(word)
-            if item and rating?
-                item[word] = rating
-                chrome.storage.sync.set({historyRating: @history})
+	@getAll: () ->
+		new Promise (resolve) ->
+			chrome.storage.sync.get null, (data) ->
+				resolve Object.keys(data).filter((item) -> item.startsWith('w-')).map((k) -> new Item(data[k]))
 
-        addHistory: (word)->
-            if not @isInHistory(word)
-                if @history.length >= @maxLength
-                    @history.shift()
-                item = {}
-                item[word] = 0
-                @history.push(item)
-                chrome.storage.sync.set({historyRating: @history})
+	@delete: (w) ->
+		new Promise (resolve) ->
+			chrome.storage.sync.remove "w-#{w}", resolve
 
-        deleteHistory: (word)->
-            idx = @history.findIndex (item)->
-                return item[word]?
-            if idx >= 0
-                @history.splice(idx, 1)
+export default {
+	maxLength: 200,
+	history: [],
+	init: ()->
+		@history = await Item.getAll()
 
-    }
+	getInHistory: (word)->
+		return @history.find (item)->
+			return item.w == word
 
-    return storage
+	addRating: (word, rating)->
+		item = @getInHistory(word)
+		if item
+			await item.update {r: rating}
+
+	addHistory: ({w, s, r, t})->
+		if not @getInHistory(w)
+			if @history.length >= @maxLength
+				@history.shift()
+			item = new Item({w, s, r, t})
+			@history.push(item)
+			item.save()
+
+	deleteHistory: (word)->
+		idx = @history.findIndex (item)->
+			return item.w == word
+		if idx >= 0
+			@history.splice(idx, 1)
+			await Item.delete(word)
+}
