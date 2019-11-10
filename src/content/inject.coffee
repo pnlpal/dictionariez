@@ -58,7 +58,7 @@ chrome.runtime.sendMessage {
 		# 以避免取消选中后getSelection依然能获得文字。
 		setTimeout (()->handleMouseUp(e)), 1
 
-	$(document).bind 'keyup', (event)->
+	$(document).bind 'keydown', (event)->
 		if utils.checkEventKey event, setting.openSK1, setting.openSK2, setting.openKey
 			chrome.runtime.sendMessage({
 				type: 'look up',
@@ -68,6 +68,10 @@ chrome.runtime.sendMessage {
 		if event.key == "Escape"
 			$('.fairydict-tooltip').fadeOut().hide()
 			plainQuerying = null
+
+		if utils.checkEventKey event, 'ctrl', 'shift', 'D'
+			utils.send 'open options'
+			return false
 
 	$(document).on 'click', '.fairydict-pron-audio', (e) ->
 		e.stopPropagation()
@@ -225,7 +229,9 @@ chrome.runtime.sendMessage {
 				chrome.runtime.sendMessage {
 					type: 'look up plain',
 					means: 'mouse',
-					text: text
+					w: text,
+					s: location.href,
+					sc: document.title
 				}, (res)->
 					html = renderQueryResult res
 					if !html

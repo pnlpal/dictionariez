@@ -37,18 +37,16 @@ export default {
         }
 
         init: ()->
-            dfd = $.Deferred()
-            chrome.storage.sync.get @configCache, (obj)=>
-                @configCache = obj
-                chrome.storage.sync.set(obj)
-                dfd.resolve(obj)
-
-            return dfd
+            new Promise (resolve) =>
+                chrome.storage.sync.get 'config', (obj)=>
+                    if obj?.config
+                        @configCache = obj.config
+                    resolve(@configCache)
 
         setValue: (key, value)->
             if @configCache[key] != value
                 @configCache[key] = value
-                chrome.storage.sync.set(@configCache)
+                chrome.storage.sync.set({config: @configCache})
             return value
 
         getValue: (key, defaultValue)->

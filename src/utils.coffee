@@ -73,4 +73,9 @@ export default {
             return false
 
         return true
+
+    send: (data) ->
+        new Promise (resolve) ->
+            data = { type: data } if typeof data == 'string'
+            chrome.runtime.sendMessage data, resolve
 }

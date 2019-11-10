@@ -1,6 +1,7 @@
 import $ from "jquery"
 import dictWindow from "./dictwindow.coffee"
 import message from "./message.coffee"
+import storage from "./storage.coffee"
 
 # most: 这个单词的 E-E 词典有 gl_none 这个 class；
 # 词组: 查询词组时没有音标，只有发音；
@@ -42,8 +43,13 @@ parseBing = (url) ->
     # console.log prons, enDefs, cnDefs
     return {en: enDefs, cn: cnDefs, prons}
 
-message.on 'look up plain', ({text})->
-    res = await dictWindow.queryDict(text, '必应词典', false)
+message.on 'look up plain', ({w, s, sc})->
+    res = await dictWindow.queryDict(w, '必应词典')
+
+    storage.addHistory({
+        w, s, sc
+    })
+
     parseBing(res.windowUrl)
 
 

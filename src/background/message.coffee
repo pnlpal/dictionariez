@@ -64,10 +64,15 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
             word: dictWindow.word
         }
 
+    else if request.type == 'open options'
+        chrome.tabs.create({url: chrome.extension.getURL('options.html')})
+
     else if request.type in Object.keys(listeners)
         ret = listeners[request.type](request, sendResponse)
         if ret?.then
             ret.then sendResponse
+        else
+            sendResponse ret
 
     # sendResponse becomes invalid when the event listener returns,
     # unless you return true from the event listener to indicate you wish to send a response asynchronously

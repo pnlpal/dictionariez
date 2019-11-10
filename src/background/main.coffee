@@ -19,7 +19,7 @@ chrome.browserAction.onClicked.addListener (tab)->
     setting.setValue('enableMinidict', b)
     ext.setBrowserIcon(b)
 
-setting.init().done (c)->
+setting.init().then (c)->
     ext.setBrowserIcon(c.enableMinidict)
 
 storage.init()
@@ -29,5 +29,5 @@ chrome.contextMenus.create {
     title: "使用 FairyDict 查询 '%s'",
     contexts: ["selection"],
     onclick: onClickedContextMenu
-        }
+}
 

@@ -1,15 +1,17 @@
 import utils from "utils"
+import message from "./message.coffee"
 
 class Item
-	constructor: ({ @w, @s, @r, @t = Date.now() }) ->
+	constructor: ({ @w, @s, @sc, @r, @t = Date.now() }) ->
 	save: () ->
 		new Promise (resolve) =>
 			chrome.storage.sync.set({
-				"w-#{@w}": { @w, @s, @r, @t }
+				"w-#{@w}": { @w, @s, @sc, @r, @t }
 			}, resolve)
-	update: ({w, s, r, t}) ->
+	update: ({w, s, sc, r, t}) ->
 		@w = w if w?
 		@s = s if s?
+		@s = sc if sc?
 		@r = r if r?
 		@t = t if t?
 		@save()
@@ -28,7 +30,7 @@ class Item
 		new Promise (resolve) ->
 			chrome.storage.sync.remove "w-#{w}", resolve
 
-export default {
+manager = {
 	maxLength: 200,
 	history: [],
 	init: ()->
@@ -43,11 +45,11 @@ export default {
 		if item
 			await item.update {r: rating}
 
-	addHistory: ({w, s, r, t})->
+	addHistory: ({w, s, sc, r, t})->
 		if not @getInHistory(w)
 			if @history.length >= @maxLength
 				@history.shift()
-			item = new Item({w, s, r, t})
+			item = new Item({w, s, sc, r, t})
 			@history.push(item)
 			item.save()
 
@@ -57,4 +59,24 @@ export default {
 		if idx >= 0
 			@history.splice(idx, 1)
 			await Item.delete(word)
+
+	clearAll: () ->
+		new Promise (resolve) ->
+			chrome.storage.sync.clear resolve
+
+	set: (data) ->
+		new Promise (resolve) ->
+			chrome.storage.sync.set(data, resolve)
+	get: (k) ->
+		new Promise (resolve) ->
+			chrome.storage.sync.get k, (data) ->
+				resolve(data)
+	remove: (k) ->
+		new Promise (resolve) ->
+			chrome.storage.sync.remove k, resolve
 }
+
+message.on 'history', () ->
+	manager.history
+
+export default manager

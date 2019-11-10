@@ -6,6 +6,7 @@ import './options.less'
 import angular from 'angular'
 import utils from "utils"
 import $ from 'jquery'
+import moment from 'moment'
 
 import 'angular-route'
 import 'angular-sanitize'
@@ -14,36 +15,47 @@ import 'angular-ui-bootstrap'
 # import '../needsharebutton.min.js'
 import 'bootstrap/js/scrollspy.js'
 
-dt = require( 'datatables.net-dt')
+import 'datatables.net-dt'
 
-window.t = $('#history').DataTable({
-    dom: 't',
-    columns: [
-        {
-            name: 'w',
-            title: 'Word',
-            data: 'w'
-        },
-        {
-            name: 'r',
-            title: 'Rate',
-            data: 'r'
-        },
-        {
-            name: 's',
-            title: 'Source',
-            data: 's'
-        },
-        {
-            name: 't',
-            title: 'Time',
-            data: 't'
-        },
-    ],
-    data: [
-        {w: 'test1', r: 1, s: 'baidu.com', t: 123123}
-    ]
-})
+initHistory = () ->
+    history = await utils.send('history')
+
+    $('#history').DataTable({
+        dom: 't',
+        columns: [
+            {
+                name: 'w',
+                title: 'Word',
+                data: 'w'
+            },
+            {
+                name: 'r',
+                title: 'Rate',
+                data: 'r'
+                render: (data, type) ->
+                    data || 0
+            },
+            {
+                name: 's',
+                title: 'Source',
+                data: 's',
+                render: (data, type, row) ->
+                    return '' unless data
+                    return "<a class='column-s' target='_blank' href='#{data}'> #{row.sc || data} </a>"
+
+            },
+            {
+                name: 't',
+                title: 'Added Time',
+                data: 't',
+                render: (data, type) ->
+                    moment(data).format('YYYY-MM-DD HH:mm:ss')
+            },
+        ],
+        data: history
+    })
+
+initHistory()
 
 dictApp = angular.module('fairyDictApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize'])
 
