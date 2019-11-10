@@ -2,11 +2,11 @@ import utils from "utils"
 import message from "./message.coffee"
 
 class Item
-	constructor: ({ @w, @s, @sc, @r, @t = Date.now() }) ->
+	constructor: ({ @i, @w, @s, @sc, @r, @t = Date.now() }) ->
 	save: () ->
 		new Promise (resolve) =>
 			chrome.storage.sync.set({
-				"w-#{@w}": { @w, @s, @sc, @r, @t }
+				"w-#{@i}": { @i, @w, @s, @sc, @r, @t }
 			}, resolve)
 	update: ({w, s, sc, r, t}) ->
 		@w = w if w?
@@ -15,11 +15,6 @@ class Item
 		@r = r if r?
 		@t = t if t?
 		@save()
-
-	@getByWord: (w) ->
-		new Promise (resolve) ->
-			chrome.storage.sync.get "w-#{w}", (data) ->
-				resolve(new Item(data["w-#{w}"]))
 
 	@getAll: () ->
 		new Promise (resolve) ->
@@ -49,7 +44,9 @@ manager = {
 		if not @getInHistory(w)
 			if @history.length >= @maxLength
 				@history.shift()
-			item = new Item({w, s, sc, r, t})
+
+			i = @history.length
+			item = new Item({i, w, s, sc, r, t})
 			@history.push(item)
 			item.save()
 

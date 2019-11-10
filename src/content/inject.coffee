@@ -63,7 +63,9 @@ chrome.runtime.sendMessage {
 			chrome.runtime.sendMessage({
 				type: 'look up',
 				means: 'keyboard',
-				text: window.getSelection().toString().trim()
+				w: window.getSelection().toString().trim(),
+				s: location.href,
+				sc: document.title
 			})
 		if event.key == "Escape"
 			$('.fairydict-tooltip').fadeOut().hide()
