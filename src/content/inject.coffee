@@ -261,11 +261,11 @@ chrome.runtime.sendMessage {
 
 chrome.runtime.sendMessage {
 	type: 'injected',
+	origin: location.origin,
 	url: location.href
 }, (res) ->
-	if location.href.includes('bing') or location.href.includes('xiao84')
-			if res.dict.resources?.styles?
-				for style in res.dict.resources.styles
-					require("./css/#{style}")
-			$("<iframe id='fairydict-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('body')
+		if res.dict.resources?.styles?
+			for style in res.dict.resources.styles
+				require("./css/#{style}")
+		$("<iframe id='fairydict-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('body')
 

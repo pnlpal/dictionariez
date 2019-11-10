@@ -31,9 +31,16 @@ manager = {
 	init: ()->
 		@history = await Item.getAll()
 
-	getInHistory: (word)->
-		return @history.find (item)->
+	getInHistory: (word) ->
+		return @history.find (item) ->
 			return item.w == word
+
+	getPrevious: (w) ->
+		return @history[@history.length - 1] if not w
+		idx = @history.findIndex (item) ->
+			return item.w == w
+		return @history[idx - 1] if idx > 0
+
 
 	addRating: (word, rating)->
 		item = @getInHistory(word)
@@ -41,14 +48,16 @@ manager = {
 			await item.update {r: rating}
 
 	addHistory: ({w, s, sc, r, t})->
-		if not @getInHistory(w)
+		item = @getInHistory(w)
+		if not item
 			if @history.length >= @maxLength
 				@history.shift()
 
 			i = @history.length
 			item = new Item({i, w, s, sc, r, t})
 			@history.push(item)
-			item.save()
+			await item.save()
+		return item
 
 	deleteHistory: (word)->
 		idx = @history.findIndex (item)->

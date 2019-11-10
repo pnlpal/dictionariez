@@ -29,13 +29,16 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
 
     else if request.type == 'query'
         setting.setValue('dictionary', request.dictionary) if request.dictionary
-        dictWindow.queryDict(request.text, request.dictionary, request.inHistory).then sendResponse
+        dictWindow.queryDict(request.w, request.dictionary).then (result) ->
+            storage.addHistory {w: request.w, s: request.s, sc: request.sc}
+            previous = storage.getPrevious(request.w)
+            sendResponse { result, previous }
 
     else if request.type == 'dictionary'
-        dictionary = setting.getValue('dictionary')
-        history = storage.history
-        sendResponse { allDicts: dict.allDicts, dictionary, history }
-        dictWindow.onDictInited()
+        dictionary = dictWindow.dictName
+        w = dictWindow.word
+        previous = storage.getPrevious(w)
+        sendResponse { allDicts: dict.allDicts, dictionary, previous, w }
 
     else if request.type == 'setting'
         sendResponse setting.configCache
@@ -52,12 +55,21 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
         storage.deleteHistory(request.text)
 
     else if request.type == 'injected'
-        # dictWindow.onContentInjected(request.url, sender.tab.id)
-        sendResponse {
-            isDict: dictWindow.tid == sender.tab.id,
-            dictUrl: chrome.extension.getURL('dict.html'),
-            dict: dict.getDict(setting.getValue('dictionary'))
-        }
+        if dictWindow.tid == sender.tab.id or request.url.includes('bing.com/dict')
+            dictName = dict.getDictFromOrigin(request.origin)?.dictName
+            if dictName
+                dictWindow.dictName = dictName
+                word = dict.getWordFromUrl request.url, dictName
+                if word
+                    dictWindow.word = word
+                    console.log "Injected in #{word} of #{dictName}"
+
+            sendResponse {
+                isDict: dictWindow.tid == sender.tab.id,
+                dictUrl: chrome.extension.getURL('dict.html'),
+                dict: dict.getDict(setting.getValue('dictionary'))
+            }
+
     else if request.type == 'dict init'
         # dictWindow.onContentInjected(request.url, sender.tab.id)
         sendResponse {

@@ -2,7 +2,7 @@ import $ from 'jquery'
 
 allDicts = [{
     'dictName': "必应词典",
-    'windowUrl': 'http://cn.bing.com/dict/search?q=<word>',
+    'windowUrl': 'https://cn.bing.com/dict/search?q=<word>',
     'windowUrlMatch': '[^\\w]q=([^&]+)',
     "resources": {
         styles: ['bing.less']
@@ -193,9 +193,13 @@ dictManager =
             # web dict
             return dict.resources
 
+    getDictFromOrigin: (origin) ->
+        allDicts.find (d) ->
+            d.windowUrl?.includes(origin)
+
     getWordFromUrl: (url, dictName)->
-        dict = @getDict(dictName)
-        if dict.windowUrlMatch
+        dict = @getDict dictName
+        if dict?.windowUrlMatch
             m = new RegExp(dict.windowUrlMatch)
             s = url?.match(m)?[1]
             if s

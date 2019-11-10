@@ -30,31 +30,26 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
     $scope.initial = true
     $scope.inFrame = window.self != window.top
     $scope.querying = false
-    $scope.queryResult = null
-    $scope.historyIndex = -1
+    $scope.previous = null
 
     chrome.runtime.sendMessage {
-        type: 'dictionary'
-    }, ({dictionary, allDicts, history})->
+        type: 'dictionary',
+        # origin: window.top?.location?.origin,
+        # url: window.top?.location?.href
+    }, ({dictionary, allDicts, previous, w})->
         console.log "[dict] all dicts: ", allDicts
         $scope.allDicts = allDicts
         $scope.currentDictionary = allDicts.find (d)->
             d.dictName == dictionary
         $scope.currentDictionary ?= allDicts[0]
-        $scope.history = history.reverse()
-        $scope.lastHistoryWord = $scope.history[0]
+        $scope.previous = previous
+        $scope.word = w
         $scope.$apply()
 
     chrome.runtime.sendMessage {
         type: 'setting'
     }, (setting)->
         $scope.setting = setting
-
-    chrome.runtime.sendMessage {
-        type: 'dict init'
-    }, ({word})->
-        $scope.word = word
-        $scope.$apply()
 
     $scope.changeDict = (dict)->
         ci = $scope.allDicts.findIndex (d)->
@@ -70,47 +65,11 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             $scope.currentDictionary = dict
         $scope.query(true)
 
-    applyHistory = (index)->
-        $scope.historyIndex = index
-        if index > -1
-            $scope.word = _.keys($scope.history[index])[0]
-        else
-            $scope.word = $scope.lastQueryWord
-
-        if index == $scope.history.length-1
-            $scope.lastHistoryWord = $scope.history[0]
-        else
-            $scope.lastHistoryWord = $scope.history[index+1]
-
     $scope.selectHistory = (index)->
-        if index == $scope.historyIndex
-            return
-        if index == 'prev'
-            if $scope.historyIndex == $scope.history.length-1
-                return
-            index = $scope.historyIndex + 1
-        else if index == 'next'
-            if $scope.historyIndex < 0
-                return
-            index = $scope.historyIndex - 1
+        $scope.word = $scope.previous.w
+        $scope.query()
 
-        if index >= $scope.history.length
-            index = 0
-
-        applyHistory(index)
-
-        $scope.query(true)
-
-    $scope.deleteHistory = (index)->
-        item = $scope.history.splice(index, 1)
-        chrome.runtime.sendMessage({
-            type: 'deleteHistory',
-            index: index,
-            text: _.keys(item[0])[0]
-        })
-        return false
-
-    $scope.query = (inHistory)->
+    $scope.query = ()->
         if not $scope.word or not $scope.currentDictionary
             $scope.initial = true
             return
@@ -121,12 +80,12 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
 
         chrome.runtime.sendMessage({
             type: 'query',
-            text: $scope.word,
+            w: $scope.word,
             dictionary: $scope.currentDictionary.dictName,
-            inHistory: inHistory
-        }, ({ windowUrl }) ->
-            # console.log(windowUrl)
-            window.top.location.href = windowUrl
+        }, (data) ->
+            console.log data
+            result = data.result
+            window.top.location.href = result.windowUrl
         )
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
@@ -134,32 +93,7 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         if request.type == 'querying'
             $scope.initial = false
             $scope.querying = true
-            $scope.queryResult = null
             $scope.word = request.text
-
-        else if request.type == 'queryResult'
-            console.log "[dictCtrl] got query result for word: #{request.text}"
-            if $scope.word == request.text or !$scope.word
-                $scope.initial = false
-                $scope.word = request.text
-                $scope.querying = false
-                if request.result?.html?
-                    $scope.queryResult = $sce.trustAsHtml(request.result.html)
-                $scope.rating = request.rating
-                updateRating(request.rating)
-                if not request.inHistory
-                    $scope.lastQueryWord = $scope.word
-                else
-                    $scope.history.forEach (item, idx)->
-                        itemText = _.keys(item)[0]
-                        if itemText == $scope.word
-                            applyHistory(idx)
-
-        else if request.type == 'history'
-            console.log "history", request.history
-            $scope.history = request.history.reverse()
-            $scope.lastHistoryWord = $scope.history[0]
-            $scope.historyIndex = -1
 
         $scope.$apply()
 
