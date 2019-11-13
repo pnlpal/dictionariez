@@ -213,6 +213,7 @@ chrome.runtime.sendMessage {
 		text = window.getSelection().toString().trim()
 		return unless text
 		return if text.split(/\s/).length > 4
+		return if text.match /\d/  # 包含数字
 
 		if setting.enablePlainLookup && text != plainQuerying
 			if !setting.enablePlainSK1 or (setting.plainSK1 and utils.checkEventKey(event, setting.plainSK1))

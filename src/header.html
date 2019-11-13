@@ -30,30 +30,22 @@
 			<div class="form-group dict-group pull-right">
 				<!-- <i ng-click="changeDict('prev')" class="fa fa-arrow-circle-left fa-lg dict_prev dict_nav"></i> -->
 				<!-- <div class="form-group dict-group pull-right"> -->
-				<div class="btn-group" uib-dropdown uib-keyboard-nav>
+				<div class="btn-group dictionaries">
+					<button type="button" class="btn btn-default">
+						<i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
+						<span class="sr-only">Previous Dictionary</span>
+					</button>
 					<button
-						uib-dropdown-toggle
-						class="form-control btn dropdown-toggle btn-default dict-name"
+						class="form-control btn  btn-default dict-name"
 						type="button"
-						id="dropdownMenu1"
 						title="{{ currentDictionary.dictName }}"
 					>
 						{{ currentDictionary.dictName }}
-						<span class="caret"></span>
 					</button>
-
-					<ul
-						uib-dropdown-menu
-						class="dropdown-menu dict-list pull-right"
-						role="menu"
-						aria-labelledby="dropdownMenu1"
-					>
-						<li role="menuitem" ng-repeat="dict in allDicts">
-							<a ng-click="changeDict(dict)" title="{{ dict.dictName }}">{{
-								dict.dictName
-							}}</a>
-						</li>
-					</ul>
+					<button type="button" class="btn btn-default">
+						<i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+						<span class="sr-only">Next Dictionary</span>
+					</button>
 				</div>
 				<!-- </div> -->
 				<!-- <i ng-click="changeDict('next')" class="fa fa-arrow-circle-right fa-lg dict_next dict_nav"></i> -->
