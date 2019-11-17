@@ -74,8 +74,16 @@ export default {
 
         return true
 
-    send: (data) ->
-        new Promise (resolve) ->
-            data = { type: data } if typeof data == 'string'
+    send: (type, data = {}, callback) ->
+        if typeof data == 'function'
+            callback = data
+            data = {}
+
+        p = new Promise (resolve) ->
+            data.type = type
             chrome.runtime.sendMessage data, resolve
+
+        if callback
+            p.then callback
+        return p
 }

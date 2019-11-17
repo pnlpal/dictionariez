@@ -36,7 +36,7 @@
 	<body data-spy="scroll" data-target=".nav-wrapper">
 		<div class="container" ng-controller="optionCtrl">
 			<div class="row">
-				<div class="col-md-3 nav-wrapper">
+				<div class="nav-wrapper col-md-2">
 					<ul class="nav nav-pills nav-stacked">
 						<li role="presentation" class="active"><a href="#home">Home</a></li>
 						<li role="presentation" class="">
@@ -50,12 +50,11 @@
 						</li>
 					</ul>
 				</div>
-				<div class="col-md-9">
+
+				<div class="col-md-10">
 					<div id="home" class="section">
 						<h1>FairyDict</h1>
 						<p>努力做最好用的词典扩展！</p>
-						<table id="history" style="width: 100%"></table>
-
 						<p>
 							此软件是开源软件，喜欢请帮忙评价或点赞，有任何问题或建议请在
 							<a href="https://github.com/revir/FairyDict" target="_blank"
@@ -65,6 +64,21 @@
 							<a href="https://v2mm.tech" target="_blank">V2MM</a>
 							上联系我 ;)
 						</p>
+
+						<table
+							id="table-history"
+							class="table table-condensed table-bordered111"
+							style="width: 100%"
+						></table>
+					</div>
+
+					<div id="dictionaries" class="section">
+						<h1>词典列表</h1>
+						<table
+							id="table-dictionaries"
+							class="table table-condensed table-bordered111"
+							style="width: 100%"
+						></table>
 					</div>
 
 					<div id="function-setting" class="section function-setting">
@@ -315,9 +329,9 @@
 										aria-labelledby="btn-sk2"
 									>
 										<li role="menuitem" ng-repeat="item in allSK">
-											<a ng-click="changeKey(item, 'openSK2')">{{
-												item ? item : "空"
-											}}</a>
+											<a ng-click="changeKey(item, 'openSK2')"
+												>{{ item ? item : "空" }}</a
+											>
 										</li>
 									</ul>
 								</div>
@@ -371,9 +385,9 @@
 											ng-repeat="item in allSK"
 											ng-hide="!item"
 										>
-											<a ng-click="changeKey(item, 'prevDictSK1')">{{
-												item
-											}}</a>
+											<a ng-click="changeKey(item, 'prevDictSK1')"
+												>{{ item }}</a
+											>
 										</li>
 									</ul>
 								</div>
@@ -395,9 +409,9 @@
 										aria-labelledby="btn-prev-dict-key"
 									>
 										<li role="menuitem" ng-repeat="item in allKeys">
-											<a ng-click="changeKey(item, 'prevDictKey')">{{
-												item
-											}}</a>
+											<a ng-click="changeKey(item, 'prevDictKey')"
+												>{{ item }}</a
+											>
 										</li>
 									</ul>
 								</div>
@@ -428,9 +442,9 @@
 											ng-repeat="item in allSK"
 											ng-hide="!item"
 										>
-											<a ng-click="changeKey(item, 'nextDictSK1')">{{
-												item
-											}}</a>
+											<a ng-click="changeKey(item, 'nextDictSK1')"
+												>{{ item }}</a
+											>
 										</li>
 									</ul>
 								</div>
@@ -452,9 +466,9 @@
 										aria-labelledby="btn-next-dict-key"
 									>
 										<li role="menuitem" ng-repeat="item in allKeys">
-											<a ng-click="changeKey(item, 'nextDictKey')">{{
-												item
-											}}</a>
+											<a ng-click="changeKey(item, 'nextDictKey')"
+												>{{ item }}</a
+											>
 										</li>
 									</ul>
 								</div>
@@ -486,9 +500,9 @@
 											ng-repeat="item in allSK"
 											ng-hide="!item"
 										>
-											<a ng-click="changeKey(item, 'prevHistorySK1')">{{
-												item
-											}}</a>
+											<a ng-click="changeKey(item, 'prevHistorySK1')"
+												>{{ item }}</a
+											>
 										</li>
 									</ul>
 								</div>
@@ -510,9 +524,9 @@
 										aria-labelledby="btn-prev-history-key"
 									>
 										<li role="menuitem" ng-repeat="item in allKeys">
-											<a ng-click="changeKey(item, 'prevHistoryKey')">{{
-												item
-											}}</a>
+											<a ng-click="changeKey(item, 'prevHistoryKey')"
+												>{{ item }}</a
+											>
 										</li>
 									</ul>
 								</div>
@@ -543,9 +557,9 @@
 											ng-repeat="item in allSK"
 											ng-hide="!item"
 										>
-											<a ng-click="changeKey(item, 'nextHistorySK1')">{{
-												item
-											}}</a>
+											<a ng-click="changeKey(item, 'nextHistorySK1')"
+												>{{ item }}</a
+											>
 										</li>
 									</ul>
 								</div>
@@ -567,9 +581,9 @@
 										aria-labelledby="btn-next-history-key"
 									>
 										<li role="menuitem" ng-repeat="item in allKeys">
-											<a ng-click="changeKey(item, 'nextHistoryKey')">{{
-												item
-											}}</a>
+											<a ng-click="changeKey(item, 'nextHistoryKey')"
+												>{{ item }}</a
+											>
 										</li>
 									</ul>
 								</div>
@@ -609,5 +623,46 @@
 				</div>
 			</div>
 		</div>
+
+		<div
+			id="confirm-delete-modal"
+			class="modal fade"
+			tabindex="-1"
+			role="dialog"
+		>
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button
+							type="button"
+							class="close"
+							data-dismiss="modal"
+							aria-label="Close"
+						>
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">Caution</h4>
+					</div>
+					<div class="modal-body">
+						<p></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancel
+						</button>
+						<button
+							type="button"
+							class="btn btn-danger button-confirm"
+							data-dismiss="modal"
+						>
+							Confirm
+						</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
 	</body>
 </html>

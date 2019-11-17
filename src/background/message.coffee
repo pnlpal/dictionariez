@@ -51,9 +51,6 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
     else if request.type == 'rating'
         storage.addRating request.text, request.value
 
-    else if request.type == 'deleteHistory'
-        storage.deleteHistory(request.text)
-
     else if request.type == 'injected'
         if dictWindow.tid == sender.tab.id or request.url.includes('bing.com/dict')
             dictName = dict.getDictFromOrigin(request.origin)?.dictName

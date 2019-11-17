@@ -21,15 +21,18 @@ class Item
 			chrome.storage.sync.get null, (data) ->
 				resolve Object.keys(data).filter((item) -> item.startsWith('w-')).map((k) -> new Item(data[k]))
 
-	@delete: (w) ->
+	@remove: (i) ->
 		new Promise (resolve) ->
-			chrome.storage.sync.remove "w-#{w}", resolve
+			k = if Array.isArray(i) then i.map((x) -> "w-#{x}") else "w-#{i}"
+			chrome.storage.sync.remove k, resolve
 
 manager = {
-	maxLength: 200,
+	maxLength: 500,
 	history: [],
+	inext: 0,
 	init: ()->
 		@history = await Item.getAll()
+		@inext = @history[@history.length - 1].i + 1 if @history.length
 
 	getInHistory: (word) ->
 		return @history.find (item) ->
@@ -53,18 +56,25 @@ manager = {
 			if @history.length >= @maxLength
 				@history.shift()
 
-			i = @history.length
+			i = @inext
 			item = new Item({i, w, s, sc, r, t})
 			@history.push(item)
 			await item.save()
+			@inext += 1
 		return item
 
-	deleteHistory: (word)->
-		idx = @history.findIndex (item)->
-			return item.w == word
-		if idx >= 0
-			@history.splice(idx, 1)
-			await Item.delete(word)
+	removeHistory: (ids)->
+		unless Array.isArray(ids)
+			ids = [ids]
+
+		valids = []
+		ids.forEach (i) =>
+			idx = @history.findIndex (item) -> item.i == i
+			if idx >= 0
+				@history.splice(idx, 1)
+				valids.push(i)
+
+		await Item.remove(valids) if valids.length
 
 	clearAll: () ->
 		new Promise (resolve) ->
@@ -84,5 +94,8 @@ manager = {
 
 message.on 'history', () ->
 	manager.history
+
+message.on 'remove history', ({ i }) ->
+	manager.removeHistory i
 
 export default manager
