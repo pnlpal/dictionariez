@@ -25,12 +25,18 @@ import 'datatables.net-select'
 import 'datatables.net-buttons'
 import 'datatables.net-buttons/js/buttons.html5.js'
 
-confirmDelete = (content) ->
+confirmDelete = (content, twice) ->
     new Promise (resolve) ->
         $('#confirm-delete-modal').off('show.bs.modal').on 'show.bs.modal', () ->
             $('#confirm-delete-modal .modal-body p').text(content)
 
-        $('#confirm-delete-modal .modal-footer .button-confirm').off('click').on 'click', resolve
+        $('#confirm-delete-modal .modal-footer .button-confirm').off('click').on 'click', (e) ->
+            if twice
+                e.stopPropagation() # prevent closing the modal
+                confirmDelete('Are you really sure?').then resolve
+            else
+                resolve()
+
         $('#confirm-delete-modal').modal('show')
 
 buildActionIcon = (name) ->
@@ -45,7 +51,7 @@ buildActionIcon = (name) ->
 initHistory = () ->
     data = await utils.send 'history'
     table = $('#table-history').DataTable({
-        dom: '<"pull-left"f><"pull-right"B>tip',
+        dom: '<"pull-left"f><"pull-left"i><"pull-right"B>tp',
         paging: false,
         select: {
             style: 'os',
@@ -55,6 +61,7 @@ initHistory = () ->
             text: 'Delete',
             className: 'btn btn-danger',
             action: () ->
+                twice = false
                 rows = table.rows({ selected: true,  filter: 'applied' })
                 rowsData = rows.data()
                     .toArray()
@@ -62,9 +69,12 @@ initHistory = () ->
                     rows = table.rows({ filter: 'applied' })
                     rowsData = rows.data()
                         .toArray()
+                    if rowsData.length > 10
+                        twice = true
+
                 return if not rowsData.length
 
-                confirmDelete("Are you sure you want to delete all #{rowsData.length} records?").then ()->
+                confirmDelete("Are you sure you want to delete all #{rowsData.length} records?", twice).then ()->
                     utils.send 'remove history', { i: rowsData.map((item) -> item.i) }
                     rows.remove().draw()
 
