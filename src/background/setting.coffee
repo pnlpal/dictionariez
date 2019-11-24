@@ -32,7 +32,7 @@ export default {
             prevHistorySK1: 'Alt',
             prevHistoryKey: 'ArrowLeft',
             nextHistorySK1: 'Alt',
-            nextHistoryKey: 'ArrowRight'
+            nextHistoryKey: 'ArrowRight',
             dictionary: ''
         }
 

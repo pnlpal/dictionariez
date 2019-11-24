@@ -83,13 +83,17 @@ manager = {
 	set: (data) ->
 		new Promise (resolve) ->
 			chrome.storage.sync.set(data, resolve)
-	get: (k) ->
+	get: (k, defaultValue) ->
 		new Promise (resolve) ->
 			chrome.storage.sync.get k, (data) ->
-				resolve(data)
+				resolve(if data[k]? then data[k] else defaultValue)
 	remove: (k) ->
 		new Promise (resolve) ->
 			chrome.storage.sync.remove k, resolve
+
+	cget: (k, defaultValue) ->
+		res = await @get(k, defaultValue)
+		console.log res
 }
 
 message.on 'history', () ->
@@ -98,4 +102,8 @@ message.on 'history', () ->
 message.on 'remove history', ({ i }) ->
 	manager.removeHistory i
 
+message.on 'rating', ({ text, value }) ->
+	manager.addRating text, value
+
+window.storage = manager
 export default manager

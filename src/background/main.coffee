@@ -2,6 +2,7 @@ import setting from "./setting.coffee"
 import ext from "./ext.coffee"
 import storage from  "./storage.coffee"
 import dictWindow from "./dictwindow.coffee"
+import dict from "./dict.coffee"
 import message from "./message.coffee"
 import "./hot-reload-content-scripts.js"
 
@@ -22,8 +23,9 @@ chrome.browserAction.onClicked.addListener (tab)->
 setting.init().then (c)->
     ext.setBrowserIcon(c.enableMinidict)
 
-storage.init()
-window.storage = storage
+    await storage.init()
+    await dict.init()
+    await dictWindow.init()
 
 chrome.contextMenus.create {
     title: "使用 FairyDict 查询 '%s'",

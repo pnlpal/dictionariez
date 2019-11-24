@@ -1,4 +1,6 @@
 import $ from 'jquery'
+import storage from  "./storage.coffee"
+import message from "./message.coffee"
 
 allDicts = [{
     'dictName': "必应词典",
@@ -181,6 +183,22 @@ allDicts = [{
 }]
 
 dictManager =
+    setting: undefined,
+    currentDict: allDicts[0],
+    init: () ->
+        @setting ?= await storage.get('dictionary-setting', {})
+        allDicts.forEach (d, oi) =>
+            s = @setting[d.dictName]
+            d.sequence = oi
+            if s
+                d.sequence = s.sequence if s.sequence?
+                d.disabled = s.disabled if s.disabled?
+        @currentDict = @getDict @setting.current if @setting.current
+
+    saveSetting: ()->
+        @init()  # update allDicts list
+        storage.set {'dictionary-setting': @setting}
+
     allDicts: allDicts,
     getDict: (dictName)->
         dict = allDicts.find (d)->
@@ -300,4 +318,18 @@ dictManager =
         return wrapper.htm()
 
 
+message.on 'set-dictionary-reorder', ({ dicts }) ->
+    dicts.forEach (d) ->
+        dictManager.setting[d.dictName] ?= {}
+        dictManager.setting[d.dictName].sequence = d.sequence
+
+    dictManager.saveSetting()
+
+message.on 'set-dictionary-disable', ({ dictName, disabled }) ->
+    dictManager.setting[dictName] ?= {}
+    dictManager.setting[dictName].disabled = disabled
+
+    dictManager.saveSetting()
+
+window.dict = dictManager
 export default dictManager

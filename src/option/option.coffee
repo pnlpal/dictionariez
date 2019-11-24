@@ -25,6 +25,9 @@ import 'datatables.net-select'
 import 'datatables.net-buttons'
 import 'datatables.net-buttons/js/buttons.html5.js'
 
+import 'datatables.net-rowreorder-bs4'
+import 'datatables.net-rowreorder-bs4/css/rowReorder.bootstrap4.css'
+
 confirmDelete = (content, twice) ->
     new Promise (resolve) ->
         $('#confirm-delete-modal').off('show.bs.modal').on 'show.bs.modal', () ->
@@ -47,6 +50,9 @@ buildActionIcon = (name) ->
 
     iEl = "<i class='fa #{faIcon}' aria-hidden='true' data-action='#{name}'></i>"
     return "<a href='' class='action-button #{cls}' data-action='#{name}'> #{iEl} </a>"
+
+buildActionButton = ({ name, cls = '' }) ->
+    return "<a href='' class='action-button btn btn-xs #{cls}' data-action='#{name}'> #{name} </a>"
 
 initHistory = () ->
     data = await utils.send 'history'
@@ -149,30 +155,97 @@ initHistory = () ->
 
 initHistory()
 
-initDictionaries = () ->
-    $('#table-dictionaries').DataTable({
-        dom: 'ti',
+initDictionary = () ->
+    {dictionary, allDicts} = await utils.send 'dictionary'
+
+    table = $('#table-dictionary').DataTable({
+        dom: 't',
         paging: false,
-        sorting: false,
+        # ordering: false,
+        rowReorder: {
+            dataSrc: 'sequence'
+        },
         columns: [
+            {
+                name: 'sequence',
+                title: 'Sequence',
+                data: 'sequence',
+                visible: false,
+                orderable: true
+                # render: (data) -> data || 0
+
+            },
             {
                 name: 'name',
                 title: 'Name',
                 data: 'dictName',
+                className: 'reorder',
+                orderable: false,
+                render: (data, type, row) ->
+                    if type == 'display'
+                        if row.disabled
+                            data = "<span class='text-muted'>#{data}</span>"
+                        if dictionary == data
+                            data += "&nbsp; <span class='badge'> Current </span>"
+                    return data
             },
             {
                 name: 'action',
                 title: 'Action',
-                render: () -> ''
+                orderable: false,
+                render: (data, type, row) ->
+                    if type == 'display'
+                        el = ''
+                        if dictionary != row.dictName
+                            if row.disabled
+                                el += buildActionButton({name: "Enable", cls: "btn-info"})
+                            else
+                                el += buildActionButton({name: "Activate", cls: "btn-primary"}) + \
+                                ' ' + buildActionButton({name: "Disable", cls: "btn-default"})
+
+                        return el
+
+                    return ''
 
             }
         ],
-        ajax: (data, callback) ->
-            {dictionary, allDicts} = await utils.send 'dictionary'
-            callback { data: allDicts }
+        data: allDicts
     })
 
-initDictionaries()
+    table.on 'row-reorder', (e, diff) ->
+        dicts = diff.map (item) ->
+            console.log item, item.oldData, item.newData
+            rowData = table.row( item.node ).data()
+            rowData.sequence = item.newData
+            return rowData
+        utils.send 'set-dictionary-reorder', { dicts }
+
+    $('#table-dictionary tbody').on 'click', 'td', (e) ->
+        if $(e.currentTarget).has('.action-button').length
+            e.preventDefault()
+            e.stopPropagation()
+
+            row = table.row($(e.currentTarget).closest('tr'))
+            rowData = row.data()
+
+            switch $(e.target).data('action')
+                when 'Activate'
+                    dictionary = rowData.dictName
+                    await utils.send 'set-dictionary-current', rowData
+                    table.rows().invalidate().draw()
+
+                when 'Disable'
+                    rowData.disabled = true
+                    await utils.send 'set-dictionary-disable', rowData
+                    table.rows().invalidate().draw()
+
+                when 'Enable'
+                    rowData.disabled = false
+                    await utils.send 'set-dictionary-disable', rowData
+                    table.rows().invalidate().draw()
+
+
+initDictionary()
 
 dictApp = angular.module('fairyDictApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize'])
 
