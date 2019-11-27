@@ -21,7 +21,8 @@ class Item
 			chrome.storage.sync.get null, (data) ->
 				resolve Object.keys(data).filter((item) -> item.startsWith('w-')).
 				map((k) -> new Item(data[k])).
-				sort((item) -> item.t)
+				sort((x, y) -> x.t - y.t)
+
 
 	@remove: (w) ->
 		new Promise (resolve) ->
