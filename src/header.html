@@ -31,20 +31,26 @@
 				<!-- <i ng-click="changeDict('prev')" class="fa fa-arrow-circle-left fa-lg dict_prev dict_nav"></i> -->
 				<!-- <div class="form-group dict-group pull-right"> -->
 				<div class="btn-group dictionaries">
-					<button type="button" class="btn btn-default">
+					<button
+						type="button"
+						class="btn btn-default"
+						title="{{ previousDictName }}"
+						ng-click="query(false, true)"
+					>
 						<i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
-						<span class="sr-only">Previous Dictionary</span>
+						<span class="sr-only">Previous</span>
+					</button>
+					<button class="form-control btn  btn-default dict-name" type="button">
+						{{ currentDictName }}
 					</button>
 					<button
-						class="form-control btn  btn-default dict-name"
 						type="button"
-						title="{{ currentDictionary.dictName }}"
+						class="btn btn-default"
+						title="{{ nextDictName }}"
+						ng-click="query(true)"
 					>
-						{{ currentDictionary.dictName }}
-					</button>
-					<button type="button" class="btn btn-default">
 						<i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
-						<span class="sr-only">Next Dictionary</span>
+						<span class="sr-only">Next</span>
 					</button>
 				</div>
 				<!-- </div> -->

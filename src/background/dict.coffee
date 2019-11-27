@@ -66,7 +66,7 @@ allDicts = [{
 }, {
     'dictName': '汉典',
     'entry': 'zdic',
-    'windowUrl': 'http://www.zdic.net/search/?c=3&q=<word>',
+    'windowUrl': 'https://www.zdic.net/search/?c=3&q=<word>',
     'windowUrlMatch': '[^\\w]q=([^&]+)'
     "resources": {
         styles: ['zdic.less']
@@ -74,7 +74,7 @@ allDicts = [{
 }, {
     'dictName': '百度词典（汉语）',
     'entry': 'baidu-dict',
-    'windowUrl': 'http://dict.baidu.com/s?wd=<word>',
+    'windowUrl': 'https://dict.baidu.com/s?wd=<word>',
     'windowUrlMatch': '[^\\w]wd=([^&]+)'
     "resources": {
         styles: ['baidu-dict.less']
@@ -82,7 +82,7 @@ allDicts = [{
 }, {
     'dictName': 'Oxford Learner',
     'entry': 'OxfordLearner',
-    'windowUrl': 'http://www.oxfordlearnersdictionaries.com/definition/english/<word>'
+    'windowUrl': 'https://www.oxfordlearnersdictionaries.com/definition/english/<word>'
     'windowUrlMatch': '/english/([^&/?]+)'
     "resources": {
         styles: ['oxfordlearner.less']
@@ -98,7 +98,7 @@ allDicts = [{
 }, {
     'dictName': 'Cambridge English'
     'entry': 'CambridgeEnglish'
-    'windowUrl': 'http://dictionary.cambridge.org/dictionary/english/<word>'
+    'windowUrl': 'https://dictionary.cambridge.org/dictionary/english/<word>'
     'windowUrlMatch': '/english/([^&/?]+)',
     "resources": {
         styles: ['cambridgeenglish.less']
@@ -106,35 +106,35 @@ allDicts = [{
 }, {
     'dictName': 'Longman English'
     'entry': 'LongmanEnglish'
-    'windowUrl': 'http://www.ldoceonline.com/dictionary/<word>'
+    'windowUrl': 'https://www.ldoceonline.com/dictionary/<word>'
     'windowUrlMatch': '/dictionary/([^&/?]+)',
     "resources": {
         styles: ['longmanenglish.less']
     }
 }, {
     'dictName': 'Urban Dictionary',
-    'windowUrl': 'http://zh.urbandictionary.com/define.php?term=<word>',
+    'windowUrl': 'https://www.urbandictionary.com/define.php?term=<word>',
     'windowUrlMatch': '[^\\w]term=([^&]+)',
     "resources": {
         styles: ['urban.less']
     }
 }, {
     'dictName': 'Dictionary.com',
-    'windowUrl': 'http://www.dictionary.com/browse/<word>',
+    'windowUrl': 'https://www.dictionary.com/browse/<word>',
     'windowUrlMatch': '/browse/([^&/?]+)',
     "resources": {
         styles: ['dictionary-com.less']
     }
 }, {
     'dictName': 'Thesaurus.com',
-    'windowUrl': 'http://www.thesaurus.com/browse/<word>',
+    'windowUrl': 'https://www.thesaurus.com/browse/<word>',
     'windowUrlMatch': '/browse/([^&/?]+)',
     "resources": {
         styles: ['dictionary-com.less']
     }
 }, {
     'dictName': 'Macmilland Dictionary',
-    'windowUrl': 'http://www.macmillandictionary.com/dictionary/british/<word>',
+    'windowUrl': 'https://www.macmillandictionary.com/dictionary/british/<word>',
     'windowUrlMatch': '/british/([^&/?]+)',
     "resources": {
         styles: ['macmilland.less']
@@ -184,7 +184,6 @@ allDicts = [{
 
 dictManager =
     setting: undefined,
-    currentDict: allDicts[0],
     init: () ->
         @setting ?= await storage.get('dictionary-setting', {})
         allDicts.forEach (d, oi) =>
@@ -193,7 +192,6 @@ dictManager =
             if s
                 d.sequence = s.sequence if s.sequence?
                 d.disabled = s.disabled if s.disabled?
-        @currentDict = @getDict @setting.current if @setting.current
 
     saveSetting: ()->
         @init()  # update allDicts list
@@ -204,6 +202,22 @@ dictManager =
         dict = allDicts.find (d)->
             d.dictName == dictName
         return dict or allDicts[0]
+
+    getNextDict: (dictName) ->
+        dictEnabled = allDicts.filter (d) -> not d.disabled
+        i = dictEnabled.findIndex (d) -> d.dictName == dictName
+        if i >= 0 and i < dictEnabled.length - 1
+            return dictEnabled[i + 1]
+        else
+            return dictEnabled[0]
+
+    getPreviousDict: (dictName) ->
+        dictEnabled = allDicts.filter (d) -> not d.disabled
+        i = dictEnabled.findIndex (d) -> d.dictName == dictName
+        if i > 0 and i <= dictEnabled.length - 1
+            return dictEnabled[i - 1]
+        else
+            return dictEnabled[dictEnabled.length - 1]
 
     getDictResources: (dictName)->
         dict = @getDict(dictName)

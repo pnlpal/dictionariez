@@ -2,11 +2,11 @@ import utils from "utils"
 import message from "./message.coffee"
 
 class Item
-	constructor: ({ @i, @w, @s, @sc, @r, @t = Date.now() }) ->
+	constructor: ({ @w, @s, @sc, @r, @t = Date.now() }) ->
 	save: () ->
 		new Promise (resolve) =>
 			chrome.storage.sync.set({
-				"w-#{@i}": { @i, @w, @s, @sc, @r, @t }
+				"w-#{@w}": { @w, @s, @sc, @r, @t }
 			}, resolve)
 	update: ({w, s, sc, r, t}) ->
 		@w = w if w?
@@ -19,20 +19,20 @@ class Item
 	@getAll: () ->
 		new Promise (resolve) ->
 			chrome.storage.sync.get null, (data) ->
-				resolve Object.keys(data).filter((item) -> item.startsWith('w-')).map((k) -> new Item(data[k]))
+				resolve Object.keys(data).filter((item) -> item.startsWith('w-')).
+				map((k) -> new Item(data[k])).
+				sort((item) -> item.t)
 
-	@remove: (i) ->
+	@remove: (w) ->
 		new Promise (resolve) ->
-			k = if Array.isArray(i) then i.map((x) -> "w-#{x}") else "w-#{i}"
+			k = if Array.isArray(w) then w.map((x) -> "w-#{x}") else "w-#{w}"
 			chrome.storage.sync.remove k, resolve
 
 manager = {
 	maxLength: 500,
 	history: [],
-	inext: 0,
 	init: ()->
 		@history = await Item.getAll()
-		@inext = @history[@history.length - 1].i + 1 if @history.length
 
 	getInHistory: (word) ->
 		return @history.find (item) ->
@@ -43,6 +43,7 @@ manager = {
 		idx = @history.findIndex (item) ->
 			return item.w == w
 		return @history[idx - 1] if idx > 0
+		return @history[@history.length - 1] if idx == -1
 
 
 	addRating: (word, rating)->
@@ -56,23 +57,21 @@ manager = {
 			if @history.length >= @maxLength
 				@history.shift()
 
-			i = @inext
-			item = new Item({i, w, s, sc, r, t})
+			item = new Item({w, s, sc, r, t})
 			@history.push(item)
 			await item.save()
-			@inext += 1
 		return item
 
-	removeHistory: (ids)->
-		unless Array.isArray(ids)
-			ids = [ids]
+	removeHistory: (words)->
+		unless Array.isArray(words)
+			words = [words]
 
 		valids = []
-		ids.forEach (i) =>
-			idx = @history.findIndex (item) -> item.i == i
+		words.forEach (w) =>
+			idx = @history.findIndex (item) -> item.w == w
 			if idx >= 0
 				@history.splice(idx, 1)
-				valids.push(i)
+				valids.push(w)
 
 		await Item.remove(valids) if valids.length
 
@@ -99,8 +98,8 @@ manager = {
 message.on 'history', () ->
 	manager.history
 
-message.on 'remove history', ({ i }) ->
-	manager.removeHistory i
+message.on 'remove history', ({ w }) ->
+	manager.removeHistory w
 
 message.on 'rating', ({ text, value }) ->
 	manager.addRating text, value

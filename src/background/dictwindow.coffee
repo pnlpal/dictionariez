@@ -5,7 +5,7 @@ import storage from  "./storage.coffee"
 import dict from "./dict.coffee"
 import message from "./message.coffee"
 
-console.log "[dictwindow] init"
+console.log "[dictWindow] init"
 defaultWindowUrl = chrome.extension.getURL('dict.html')
 
 dictWindow =
@@ -64,16 +64,22 @@ dictWindow =
 
     queryDict: (text, dictName)->
         @word = text
-        console.log "[dictwindow] query #{@word} from #{dictName}"
+        console.log "[dictWindow] query #{@word} from #{dictName}"
         return dict.query(text, dictName)
 
     saveWindowSize: ()->
         chrome.windows.get @w.id, null, (w)=>
             if w?.width and w?.height
                 if Math.abs(w.width-setting.getValue('windowWidth')) > 10 or Math.abs(w.height-setting.getValue('windowHeight')) > 10
-                    console.log "[dictwindow] update window size: #{w.width} * #{w.height}"
+                    console.log "[dictWindow] update window size: #{w.width} * #{w.height}"
                     setting.setValue 'windowWidth', w.width
                     setting.setValue 'windowHeight', w.height
+
+    updateDict: (dictName) ->
+        if @dictName != dictName
+            @dictName = dictName
+            setting.setValue 'dictionary', dictName
+
 
 chrome.windows.onRemoved.addListener (wid)->
     if dictWindow.w?.id == wid
@@ -91,21 +97,29 @@ message.on 'look up', (request) ->
     dictWindow.lookup(request.text)
 
 message.on 'query', (request) ->
-    setting.setValue('dictionary', request.dictionary) if request.dictionary
-    dictWindow.queryDict(request.w, request.dictionary).then (result) ->
+    dictName = request.dictName
+    if request.next
+        dictName = dict.getNextDict(dictName).dictName
+        dictWindow.updateDict(dictName)
+    if request.previous
+        dictName = dict.getPreviousDict(dictName).dictName
+        dictWindow.updateDict(dictName)
+
+    dictWindow.queryDict(request.w, dictName).then (result) ->
         storage.addHistory {w: request.w, s: request.s, sc: request.sc}
-        previous = storage.getPrevious(request.w)
-        return { result, previous }
+        return result
 
 message.on 'dictionary', (request) ->
-    dictionary = dictWindow.dictName
     w = dictWindow.word
     previous = storage.getPrevious(w)
-    return { allDicts: dict.allDicts, dictionary, previous, w }
+    currentDictName = dictWindow.dictName
+    nextDictName = dict.getNextDict(currentDictName).dictName
+    previousDictName = dict.getPreviousDict(currentDictName).dictName
+    return { allDicts: dict.allDicts, currentDictName, nextDictName, previousDictName, previous, w }
 
 message.on 'injected', (request, sender) ->
-    if dictWindow.tid == sender.tab.id or request.url.includes('bing.com/dict')
-        dictName = dict.getDictFromOrigin(request.origin)?.dictName
+    dictName = dict.getDictFromOrigin(request.origin)?.dictName
+    if dictWindow.tid == sender.tab.id or dictName
         if dictName
             word = dict.getWordFromUrl request.url, dictName
             if word
@@ -119,8 +133,7 @@ message.on 'injected', (request, sender) ->
         }
 
 message.on 'set-dictionary-current', ({ dictName }) ->
-    dictWindow.dictName = dictName
-    setting.setValue 'dictionary', dictName
+    dictWindow.updateDict(dictName)
 
 window.dictWindow = dictWindow
 export default dictWindow

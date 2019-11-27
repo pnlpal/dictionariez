@@ -81,7 +81,7 @@ initHistory = () ->
                 return if not rowsData.length
 
                 confirmDelete("Are you sure you want to delete all #{rowsData.length} records?", twice).then ()->
-                    utils.send 'remove history', { i: rowsData.map((item) -> item.i) }
+                    utils.send 'remove history', { w: rowsData.map((item) -> item.w) }
                     rows.remove().draw()
 
         },{
@@ -96,6 +96,7 @@ initHistory = () ->
                 orthogonal: 'download'
             }
         }],
+        order: [[3, 'desc']],
         columns: [
             {
                 name: 'w',
@@ -124,7 +125,7 @@ initHistory = () ->
                 title: 'Time',
                 data: 't',
                 render: (data, type) ->
-                    moment(data).format('YYYY-MM-DD HH:mm:ss')
+                    return moment(data).format('YYYY-MM-DD HH:mm:ss')
             },
             {
                 name: 'action',
@@ -156,7 +157,7 @@ initHistory = () ->
 initHistory()
 
 initDictionary = () ->
-    {dictionary, allDicts} = await utils.send 'dictionary'
+    {currentDictName, allDicts} = await utils.send 'dictionary'
 
     table = $('#table-dictionary').DataTable({
         dom: 't',
@@ -185,7 +186,7 @@ initDictionary = () ->
                     if type == 'display'
                         if row.disabled
                             data = "<span class='text-muted'>#{data}</span>"
-                        if dictionary == data
+                        if currentDictName == data
                             data += "&nbsp; <span class='badge'> Current </span>"
                     return data
             },
@@ -196,7 +197,7 @@ initDictionary = () ->
                 render: (data, type, row) ->
                     if type == 'display'
                         el = ''
-                        if dictionary != row.dictName
+                        if currentDictName != row.dictName
                             if row.disabled
                                 el += buildActionButton({name: "Enable", cls: "btn-info"})
                             else
@@ -230,7 +231,7 @@ initDictionary = () ->
 
             switch $(e.target).data('action')
                 when 'Activate'
-                    dictionary = rowData.dictName
+                    currentDictName = rowData.dictName
                     await utils.send 'set-dictionary-current', rowData
                     table.rows().invalidate().draw()
 

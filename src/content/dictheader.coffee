@@ -36,12 +36,11 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         type: 'dictionary',
         # origin: window.top?.location?.origin,
         # url: window.top?.location?.href
-    }, ({dictionary, allDicts, previous, w})->
-        console.log "[dict] all dicts: ", allDicts
+    }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, w})->
         $scope.allDicts = allDicts
-        $scope.currentDictionary = allDicts.find (d)->
-            d.dictName == dictionary
-        $scope.currentDictionary ?= allDicts[0]
+        $scope.currentDictName = currentDictName
+        $scope.nextDictName = nextDictName
+        $scope.previousDictName = previousDictName
         $scope.previous = previous
         $scope.word = w
         $scope.$apply()
@@ -69,23 +68,23 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         $scope.word = $scope.previous.w
         $scope.query()
 
-    $scope.query = ()->
-        if not $scope.word or not $scope.currentDictionary
+    $scope.query = (next=false, previous=false)->
+        if not $scope.word
             $scope.initial = true
             return
 
-        # console.log "[dictCtrl] query `#{$scope.word}` from #{$scope.currentDictionary.dictName}"
         $scope.initial = false
         $scope.querying = true
 
         chrome.runtime.sendMessage({
             type: 'query',
             w: $scope.word,
-            dictionary: $scope.currentDictionary.dictName,
+            dictName: $scope.currentDictName,
+            next,
+            previous
         }, (data) ->
             console.log data
-            result = data.result
-            window.top.location.href = result.windowUrl
+            window.top.location.href = data.windowUrl
         )
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
