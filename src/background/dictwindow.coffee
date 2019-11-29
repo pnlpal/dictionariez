@@ -21,46 +21,47 @@ dictWindow =
         @word = null
         @dictName = setting.getValue('dictionary') || dict.allDicts[0].dictName
 
-    open: ()->
-        dfd = $.Deferred()
-
+    open: (url)->
         # bugfix: dont know how why, windowWidth and windowHeight are saved as number, need integer here.
         width = parseInt(setting.getValue('windowWidth'))
         height = parseInt(setting.getValue('windowHeight'))
         left = Math.round((screen.width / 2) - (width / 2))
         top = Math.round((screen.height / 2) - (height / 2))
-        if !@w
-            chrome.windows.create({
-                url: defaultWindowUrl,
-                # url: 'http://cn.bing.com/dict/search?q=elephant',
-                type: 'popup',
-                width: width,
-                height: height,
-                left: left,
-                top: top
-            }, (win)=>
-                @w = win
-                @tid = @w.tabs[0].id
-                @url = defaultWindowUrl
-                dfd.resolve()
-            )
-        else
-            chrome.windows.update(dictWindow.w.id, {
-                focused: true
-            })
-            dfd.resolve()
-
-        return dfd
+        return new Promise (resolve) =>
+            if !@w
+                chrome.windows.create({
+                    url: url or defaultWindowUrl,
+                    type: 'popup',
+                    width: width,
+                    height: height,
+                    left: left,
+                    top: top
+                }, (win)=>
+                    @w = win
+                    @tid = @w.tabs[0].id
+                    @url = url or defaultWindowUrl
+                    resolve()
+                )
+            else
+                chrome.tabs.update(@tid, {
+                    url: url
+                }) if url
+                chrome.windows.update(dictWindow.w.id, {
+                    focused: true
+                })
+                resolve()
 
     sendMessage: (msg)->
         chrome.tabs.sendMessage(@tid, msg) if @tid
 
     lookup: (text)->
-        @open().done ()=>
-            if text
-                console.log('lookup...')
-                @sendMessage({type: 'querying', text})
-                @queryDict(text, @dictName)
+        url = ''
+        if text
+            console.log('lookup...')
+            @sendMessage({type: 'querying', text})
+            result = await @queryDict(text, @dictName)
+            url = result.windowUrl
+        @open(url)
 
     queryDict: (text, dictName)->
         @word = text
@@ -94,7 +95,7 @@ message.on 'look up', (request) ->
         if not setting.getValue('enableMinidict')
             return true
 
-    dictWindow.lookup(request.text)
+    dictWindow.lookup(request.w)
 
 message.on 'query', (request) ->
     dictName = request.dictName
