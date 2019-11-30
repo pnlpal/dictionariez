@@ -8,6 +8,8 @@ import utils from "utils"
 import $ from 'jquery'
 import moment from 'moment'
 
+window.$ = $
+
 import 'angular-route'
 import 'angular-sanitize'
 import 'angular-ui-bootstrap'
@@ -153,6 +155,9 @@ initHistory = () ->
                     await utils.send 'remove history', rowData
                     row.remove().draw()
 
+    if (location.hash == '#history')
+        $('.nav li a[href="#history"]')[0].click()
+
 
 initHistory()
 
@@ -245,6 +250,8 @@ initDictionary = () ->
                     await utils.send 'set-dictionary-disable', rowData
                     table.rows().invalidate().draw()
 
+    if (location.hash == '#dictionary')
+        $('.nav li a[href="#dictionary"]')[0].click()
 
 initDictionary()
 

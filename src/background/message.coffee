@@ -23,7 +23,10 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
             ext.setBrowserIcon request.value
 
     else if request.type == 'open options'
-        chrome.tabs.create({url: chrome.extension.getURL('options.html')})
+        url = chrome.extension.getURL('options.html')
+        if request.to
+            url += "##{request.to}"
+        window.open url, 'dictionaries-options'
 
     else if request.type in Object.keys(listeners)
         ret = listeners[request.type](request, sender)

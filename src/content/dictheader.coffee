@@ -50,19 +50,8 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
     }, (setting)->
         $scope.setting = setting
 
-    $scope.changeDict = (dict)->
-        ci = $scope.allDicts.findIndex (d)->
-            d.dictName == $scope.currentDictionary.dictName
-
-        if dict == 'next'
-            idx = (ci+1) % $scope.allDicts.length
-            $scope.currentDictionary = $scope.allDicts[idx]
-        else if dict == 'prev'
-            idx = if ci > 0 then ci-1 else ($scope.allDicts.length-1)
-            $scope.currentDictionary = $scope.allDicts[idx]
-        else
-            $scope.currentDictionary = dict
-        $scope.query(true)
+    $scope.openOptions = (to) ->
+        utils.send 'open options', { to }
 
     $scope.selectHistory = (index)->
         $scope.word = $scope.previous.w
