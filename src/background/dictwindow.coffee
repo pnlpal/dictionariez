@@ -8,18 +8,20 @@ import message from "./message.coffee"
 console.log "[dictWindow] init"
 defaultWindowUrl = chrome.extension.getURL('dict.html')
 
-dictWindow =
+class DictWindow
     w: null
     tid: null
     url: null
     word: null
     dictName: null
-    init: ()->
+    constructor: ({ @w, @tid, @url, @word, dictName } = {}) ->
+        @dictName = dictName || setting.getValue('dictionary') || dict.allDicts[0].dictName
+
+    reset: ()->
         @w = null
         @tid = null
         @url = null
         @word = null
-        @dictName = setting.getValue('dictionary') || dict.allDicts[0].dictName
 
     open: (url)->
         # bugfix: dont know how why, windowWidth and windowHeight are saved as number, need integer here.
@@ -81,60 +83,80 @@ dictWindow =
             @dictName = dictName
             setting.setValue 'dictionary', dictName
 
+dictWindowMap = {}
 
-chrome.windows.onRemoved.addListener (wid)->
-    if dictWindow.w?.id == wid
-        dictWindow.init()
+export default {
+    init: () ->
+        dictWindow = new DictWindow()
+        window.dictWindow = dictWindow
+        window.dictWindowMap = dictWindowMap
 
-# chrome.tabs.onUpdated.addListener (tabId, info)->
-#     if dictWindow.tid == tabId
-#         dictWindow.onReload(info.url)
+        chrome.windows.onRemoved.addListener (wid)->
+            if dictWindow.w?.id == wid
+                dictWindow.reset()
 
-message.on 'look up', (request) ->
-    if request.means == 'mouse'
-        if not setting.getValue('enableMinidict')
-            return true
+        # chrome.tabs.onUpdated.addListener (tabId, info)->
+        #     if dictWindow.tid == tabId
+        #         dictWindow.onReload(info.url)
 
-    dictWindow.lookup(request.w)
+        message.on 'look up', (request) ->
+            if request.means == 'mouse'
+                if not setting.getValue('enableMinidict')
+                    return true
 
-message.on 'query', (request) ->
-    dictName = request.dictName
-    if request.next
-        dictName = dict.getNextDict(dictName).dictName
-        dictWindow.updateDict(dictName)
-    if request.previous
-        dictName = dict.getPreviousDict(dictName).dictName
-        dictWindow.updateDict(dictName)
+            dictWindow.lookup(request.w)
 
-    dictWindow.queryDict(request.w, dictName).then (result) ->
-        storage.addHistory {w: request.w, s: request.s, sc: request.sc}
-        return result
+        message.on 'query', (request) ->
+            dictName = request.dictName
+            if request.next
+                dictName = dict.getNextDict(dictName).dictName
+                dictWindow.updateDict(dictName)
+            if request.previous
+                dictName = dict.getPreviousDict(dictName).dictName
+                dictWindow.updateDict(dictName)
 
-message.on 'dictionary', (request) ->
-    w = dictWindow.word
-    previous = storage.getPrevious(w)
-    currentDictName = dictWindow.dictName
-    nextDictName = dict.getNextDict(currentDictName).dictName
-    previousDictName = dict.getPreviousDict(currentDictName).dictName
-    return { allDicts: dict.allDicts, currentDictName, nextDictName, previousDictName, previous, w }
+            dictWindow.queryDict(request.w, dictName).then (result) ->
+                storage.addHistory {w: request.w, s: request.s, sc: request.sc}
+                return result
 
-message.on 'injected', (request, sender) ->
-    dictName = dict.getDictFromOrigin(request.origin)?.dictName
-    if dictWindow.tid == sender.tab.id or dictName
-        if dictName
-            word = dict.getWordFromUrl request.url, dictName
-            if word
-                dictWindow.word = word
-                console.log "Injected in #{word} of #{dictName}"
+        message.on 'dictionary', (request, sender) ->
+            w = dictWindow.word
 
-        return {
-            isDict: dictWindow.tid == sender.tab.id,
-            dictUrl: chrome.extension.getURL('dict.html'),
-            dict: dict.getDict(dictName)
-        }
+            if sender.tab.id == dictWindow.tid
+                currentDictName = dictWindow.dictName
+            else
+                currentDictName = dictWindowMap[sender.tab.id].dictName
+                w = dictWindowMap[sender.tab.id].word
 
-message.on 'set-dictionary-current', ({ dictName }) ->
-    dictWindow.updateDict(dictName)
+            previous = storage.getPrevious(w)
+            nextDictName = dict.getNextDict(currentDictName).dictName
+            previousDictName = dict.getPreviousDict(currentDictName).dictName
+            return { allDicts: dict.allDicts, currentDictName, nextDictName, previousDictName, previous, w }
 
-window.dictWindow = dictWindow
-export default dictWindow
+        message.on 'injected', (request, sender) ->
+            dictName = dict.getDictFromOrigin(request.origin)?.dictName
+            if dictWindow.tid == sender.tab.id
+                return {
+                    dictUrl: chrome.extension.getURL('dict.html'),
+                    dict: dict.getDict(dictName)
+                }
+            else if dictName
+                newDictWindow = new DictWindow({
+                    dictName,
+                    tid: sender.tab.id
+                })
+                word = dict.getWordFromUrl request.url, dictName
+                newDictWindow.word = word if word
+
+                dictWindowMap[sender.tab.id] = newDictWindow
+
+                return {
+                    dictUrl: chrome.extension.getURL('dict.html'),
+                    dict: dict.getDict(dictName)
+                }
+
+
+        message.on 'set-dictionary-current', ({ dictName }) ->
+            dictWindow.updateDict(dictName)
+
+}

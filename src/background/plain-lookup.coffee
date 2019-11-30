@@ -1,5 +1,5 @@
 import $ from "jquery"
-import dictWindow from "./dictwindow.coffee"
+import dict from "./dict.coffee"
 import message from "./message.coffee"
 import storage from "./storage.coffee"
 
@@ -44,7 +44,7 @@ parseBing = (url) ->
     return {en: enDefs, cn: cnDefs, prons}
 
 message.on 'look up plain', ({w, s, sc})->
-    res = await dictWindow.queryDict(w, '必应词典')
+    res = await dict.query(w, '必应词典')
 
     storage.addHistory({
         w, s, sc
