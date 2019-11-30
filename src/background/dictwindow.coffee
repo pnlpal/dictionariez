@@ -122,7 +122,7 @@ export default {
         message.on 'dictionary', (request, sender) ->
             w = dictWindow.word
 
-            if sender.tab.id == dictWindow.tid
+            if sender.tab.id == dictWindow.tid or request.optionsPage
                 currentDictName = dictWindow.dictName
             else
                 currentDictName = dictWindowMap[sender.tab.id].dictName

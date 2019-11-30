@@ -157,7 +157,7 @@ initHistory = () ->
 initHistory()
 
 initDictionary = () ->
-    {currentDictName, allDicts} = await utils.send 'dictionary'
+    {currentDictName, allDicts} = await utils.send 'dictionary', { optionsPage: true }
 
     table = $('#table-dictionary').DataTable({
         dom: 't',
