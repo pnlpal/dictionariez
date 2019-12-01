@@ -144,6 +144,11 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         if stop
             evt.preventDefault()
             evt.stopPropagation()
+
+    $(window).on 'resize', _.debounce ((evt) ->
+        utils.send 'window resize'
+    ), 300
+
     return
 
 $(document.body).append(headerDom)

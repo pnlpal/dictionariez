@@ -2,7 +2,7 @@ import $ from "jquery"
 
 export default {
         configCache: {
-            windowWidth: 630,
+            windowWidth: 580,
             windowHeight: 700,
 
             enableSelectionOnMouseMove: false,

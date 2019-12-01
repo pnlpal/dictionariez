@@ -37,6 +37,7 @@ class DictWindow
                     width: width,
                     height: height,
                     left: left,
+                    state: 'normal',
                     top: top
                 }, (win)=>
                     @w = win
@@ -73,7 +74,8 @@ class DictWindow
     saveWindowSize: ()->
         chrome.windows.get @w.id, null, (w)=>
             if w?.width and w?.height
-                if Math.abs(w.width-setting.getValue('windowWidth')) > 10 or Math.abs(w.height-setting.getValue('windowHeight')) > 10
+                if Math.abs(w.width - setting.getValue('windowWidth')) > 10 \
+                or Math.abs(w.height - setting.getValue('windowHeight')) > 10
                     console.log "[dictWindow] update window size: #{w.width} * #{w.height}"
                     setting.setValue 'windowWidth', w.width
                     setting.setValue 'windowHeight', w.height
@@ -94,10 +96,6 @@ export default {
         chrome.windows.onRemoved.addListener (wid)->
             if dictWindow.w?.id == wid
                 dictWindow.reset()
-
-        # chrome.tabs.onUpdated.addListener (tabId, info)->
-        #     if dictWindow.tid == tabId
-        #         dictWindow.onReload(info.url)
 
         message.on 'look up', (request) ->
             if request.means == 'mouse'
@@ -158,5 +156,9 @@ export default {
 
         message.on 'set-dictionary-current', ({ dictName }) ->
             dictWindow.updateDict(dictName)
+
+        message.on 'window resize', (request, sender) ->
+            if sender.tab.id == dictWindow.tid
+                dictWindow.saveWindowSize()
 
 }
