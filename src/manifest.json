@@ -1,6 +1,6 @@
 {
 	"manifest_version": 2,
-	"name": "FairyDict",
+	"name": "Dictionaries",
 	"permissions": ["activeTab", "tabs", "storage", "contextMenus", "<all_urls>"],
 	"background": {
 		"persistent": true,

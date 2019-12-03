@@ -28,7 +28,7 @@ setting.init().then (c)->
     await dictWindow.init()
 
 chrome.contextMenus.create {
-    title: "使用 FairyDict 查询 '%s'",
+    title: "使用 Dictionaries 查询 '%s'",
     contexts: ["selection"],
     onclick: onClickedContextMenu
 }
