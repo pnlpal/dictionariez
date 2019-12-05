@@ -104,10 +104,7 @@ chrome.runtime.sendMessage {
 						dfd.resolve(audio.duration or 1)
 					), timeout
 
-				if audio.duration
-					_func()
-				else
-					audio.addEventListener 'loadedmetadata', _func
+				audio.addEventListener 'loadeddata', _func
 
 		__play = (idx, timeout)->
 			idx ?= 0
@@ -172,6 +169,8 @@ chrome.runtime.sendMessage {
 	renderQueryResult = (res) ->
 		defTpl = (def) -> "<span class='fairydict-def'> #{def} </span>"
 		defsTpl = (defs) -> "<span class='fairydict-defs'> #{defs} </span>"
+		labelsTpl = (labels) -> "<div class='fairydict-labels'> #{labels} </div>"
+		labelTpl = (label) -> "<span class='fairydict-label'> #{label} </span>"
 		posTpl = (pos) -> "<span class='fairydict-pos'> #{pos} </span>"
 		contentTpl = (content) -> "<div class='fairydict-content'> #{content} </div>"
 		pronTpl = (pron) -> "<span class='fairydict-pron'> #{pron} </span>"
@@ -185,17 +184,27 @@ chrome.runtime.sendMessage {
 			pronHtml += pronAudioTpl res.prons.ameAudio if res.prons.ameAudio
 			pronHtml += pronTpl res.prons.bre if res.prons.bre
 			pronHtml += pronAudioTpl res.prons.breAudio if res.prons.breAudio
+
+			pronHtml += pronTpl res.prons.pron if res.prons.pron
+			pronHtml += pronAudioTpl res.prons.pronAudio if res.prons.pronAudio
+
 			html += pronsTpl pronHtml if pronHtml
 
 		renderItem = (item) ->
-			posHtml = posTpl item.pos
+			_html = ''
+
+			if item.pos
+				_html = posTpl item.pos
+
+			else if item.labels
+				labels = item.labels.map (lbs) -> labelTpl lbs
+				_html = labelsTpl labels.join(' ')
 
 			defs = if Array.isArray(item.def) then item.def else [item.def]
 			defsHtmls = defs.map (def) -> defTpl def
-
 			defsHtml = defsTpl defsHtmls.join('<br>')
 
-			html += contentTpl posHtml+defsHtml if defsHtml
+			html += contentTpl _html + defsHtml if defsHtml
 
 		res.cn.forEach renderItem if res?.cn
 		res.en.forEach renderItem if res?.en
@@ -242,6 +251,9 @@ chrome.runtime.sendMessage {
 
 					if res.prons
 						audios = []
+
+						if res.prons.pronAudio and setting.enableAmeAudio
+							audios.push res.prons.pronAudio
 
 						if res.prons.ameAudio and setting.enableAmeAudio
 							audios.push res.prons.ameAudio

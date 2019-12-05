@@ -2,6 +2,7 @@ import $ from "jquery"
 import dict from "./dict.coffee"
 import message from "./message.coffee"
 import storage from "./storage.coffee"
+import utils from "utils"
 
 # most: 这个单词的 E-E 词典有 gl_none 这个 class；
 # 词组: 查询词组时没有音标，只有发音；
@@ -43,14 +44,64 @@ parseBing = (url) ->
     # console.log prons, enDefs, cnDefs
     return {en: enDefs, cn: cnDefs, prons}
 
-message.on 'look up plain', ({w, s, sc})->
-    res = await dict.query(w, '必应词典')
+parseJapanese = (w) ->
+    url = "https://www.japandict.com/#{w}"
+    res = await $.get(url)
+    nodes = $(res)
 
+    prons = {}
+    pronsNode = nodes.find('h2:contains("Pronunciation")').next().next().next()
+    list = pronsNode.find('.list-group-item')
+    list.each (i, listItem) ->
+        pron = $(listItem).find('.small').text()
+        data = $(listItem).find('.small').next().data('reading')
+
+        pronAudio = "https:#{data[0]}/read?text=#{data[1]}&outputFormat=ogg_vorbis&jwt=#{data[2]}"
+        prons = { pron, pronAudio }
+
+    results = []
+    labels = []
+    def = []
+
+    defsNode = nodes.find('.m-t-3:contains("Translation")').next().next()
+    list = defsNode.find('.list-group-item')
+    list.each (i, listItem) ->
+        items = $(listItem).children()
+        items.each (i, node) ->
+            if $(node).find('.label').length
+                if labels.length
+                    results.push { labels, def }
+                    labels = []
+                    def = []
+
+                $('.label', node).each (i, label) ->
+                    labels.push $(label).text()
+                    console.log $(label).text()
+
+            else if not $(node).hasClass('p-l-1')
+                text = $(node).text().trim()
+                def.push text if text
+
+    if labels.length
+        results.push { labels, def }
+
+    console.log "parse japanese: ", { en: results, prons }
+    return { en: results, prons }
+
+
+message.on 'look up plain', ({w, s, sc})->
     storage.addHistory({
         w, s, sc
     })
 
-    parseBing(res.windowUrl)
+    if utils.hasJapanese(w)
+        return parseJapanese(w)
+
+    res = await dict.query(w, '必应词典')
+    return parseBing(res.windowUrl)
 
 
 # parseBing('https://cn.bing.com/dict/search?q=most')
+# parseJapanese('です')
+# parseJapanese('も')
+# parseJapanese('怖がる')
