@@ -192,18 +192,19 @@ chrome.runtime.sendMessage {
 
 		renderItem = (item) ->
 			_html = ''
+			defsHtmls = []
 
 			if item.pos
 				_html = posTpl item.pos
+				defs = if Array.isArray(item.def) then item.def else [item.def]
+				defsHtmls = defs.map (def) -> defTpl def
 
 			else if item.labels
 				labels = item.labels.map (lbs) -> labelTpl lbs
 				_html = labelsTpl labels.join(' ')
+				defsHtmls = item.def.map (def, i) -> defTpl "#{i+1}. #{def}"
 
-			defs = if Array.isArray(item.def) then item.def else [item.def]
-			defsHtmls = defs.map (def) -> defTpl def
 			defsHtml = defsTpl defsHtmls.join('<br>')
-
 			html += contentTpl _html + defsHtml if defsHtml
 
 		res.cn.forEach renderItem if res?.cn

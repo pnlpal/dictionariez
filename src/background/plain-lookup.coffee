@@ -66,6 +66,8 @@ parseJapanese = (w) ->
     defsNode = nodes.find('.m-t-3:contains("Translation")').next().next()
     list = defsNode.find('.list-group-item')
     list.each (i, listItem) ->
+        # only english tab
+        return unless $(listItem).children('[lang="en"]').length
         items = $(listItem).children()
         items.each (i, node) ->
             if $(node).find('.label').length
