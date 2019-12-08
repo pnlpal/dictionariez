@@ -127,10 +127,11 @@ export default {
                 currentDictName = dictWindowMap[sender.tab.id].dictName
                 w = dictWindowMap[sender.tab.id].word
 
+            r = storage.getRating(w)
             previous = storage.getPrevious(w)
             nextDictName = dict.getNextDict(currentDictName).dictName
             previousDictName = dict.getPreviousDict(currentDictName).dictName
-            return { allDicts: dict.allDicts, currentDictName, nextDictName, previousDictName, previous, w }
+            return { allDicts: dict.allDicts, currentDictName, nextDictName, previousDictName, previous, w, r }
 
         message.on 'injected', (request, sender) ->
             dictName = dict.getDictFromOrigin(request.origin)?.dictName

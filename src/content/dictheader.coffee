@@ -36,7 +36,7 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         type: 'dictionary',
         # origin: window.top?.location?.origin,
         # url: window.top?.location?.href
-    }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, w})->
+    }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, w, r})->
         $scope.allDicts = allDicts
         $scope.currentDictName = currentDictName
         $scope.nextDictName = nextDictName
@@ -44,6 +44,8 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         $scope.previous = previous
         $scope.word = w
         $scope.$apply()
+
+        $('.starrr', baseNode).starrr({numStars: 3, rating: r})
 
     chrome.runtime.sendMessage {
         type: 'setting'
@@ -98,13 +100,6 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
                 item = $scope.history[$scope.historyIndex]
                 if item and item[$scope.word]?
                     item[$scope.word] = value
-
-    $('.starrr', baseNode).starrr({numStars: 3})
-
-    updateRating = (value)->
-        obj = $(".starrr", baseNode).data('star-rating')
-        obj.options.rating = value
-        obj.syncRating()
 
     _handler = (evt)->
         node = $(event.target)

@@ -46,6 +46,8 @@ manager = {
 		return @history[idx - 1] if idx > 0
 		return @history[@history.length - 1] if idx == -1
 
+	getRating: (word) ->
+		@getInHistory(word)?.r
 
 	addRating: (word, rating)->
 		item = @getInHistory(word)
