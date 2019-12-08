@@ -168,18 +168,22 @@ allDicts = [{
         styles: ['collins.less']
     }
 }, {
-    'dictName': 'Easton\'s 1897 Bible Dictionary',
-    'entry': 'Aonaware',
-    'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
-    'queryType': 'post',
-    'params': {
-        'dictId': 'easton'
-    },
-    'queryKey': 'word'
-}, {
+#     'dictName': 'Easton\'s 1897 Bible Dictionary',
+#     'entry': 'Aonaware',
+#     'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
+#     'queryType': 'post',
+#     'params': {
+#         'dictId': 'easton'
+#     },
+#     'queryKey': 'word'
+# }, {
     'dictName': "Lexico",
     'windowUrl': 'https://www.lexico.com/en/definition/<word>',
     'windowUrlMatch': '/definition/([^&/?]+)'
+}, {
+    'dictName': 'JapanDict',
+    'windowUrl': 'https://www.japandict.com/<word>',
+    'windowUrlMatch': '.com/([^&/?]+)'
 }]
 
 dictManager =

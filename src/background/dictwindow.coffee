@@ -5,6 +5,7 @@ import storage from  "./storage.coffee"
 import dict from "./dict.coffee"
 import message from "./message.coffee"
 
+window.utils = utils
 console.log "[dictWindow] init"
 defaultWindowUrl = chrome.extension.getURL('dict.html')
 
