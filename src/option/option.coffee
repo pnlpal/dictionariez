@@ -8,6 +8,8 @@ import utils from "utils"
 import $ from 'jquery'
 import moment from 'moment'
 
+import '../starrr.js'
+
 window.$ = $
 
 import 'angular-route'
@@ -17,6 +19,9 @@ import 'angular-ui-bootstrap'
 # import '../needsharebutton.min.js'
 import 'bootstrap/js/scrollspy.js'
 import 'bootstrap/js/modal.js'
+
+import 'bootoast/dist/bootoast.min.css'
+import bootoast from 'bootoast/dist/bootoast.min.js'
 
 import 'datatables.net-dt'
 import 'datatables.net-bs'
@@ -55,6 +60,15 @@ buildActionIcon = (name) ->
 
 buildActionButton = ({ name, cls = '' }) ->
     return "<a href='' class='action-button btn btn-xs #{cls}' data-action='#{name}'> #{name} </a>"
+
+bravo = () ->
+    bootoast.toast({
+        message: 'Bravo!',
+        type: 'success',
+        position: 'top',
+        timeout: 1,
+        dismissible: false
+    })
 
 initHistory = () ->
     data = await utils.send 'history'
@@ -110,7 +124,10 @@ initHistory = () ->
                 title: 'Rate',
                 data: 'r'
                 render: (data, type) ->
-                    data || 0
+                    if type == 'display'
+                        return "<div class='starrr' title='Change rating' data-rating='#{data || 0}'></div>"
+
+                    return data || 0
             },
             {
                 name: 's',
@@ -141,6 +158,16 @@ initHistory = () ->
         data
     })
 
+    $('#table-history .starrr').starrr({numStars: 3}).on 'starrr:change', (e, value) ->
+        row = table.row($(e.currentTarget).closest('tr'))
+        rowData = row.data()
+        await utils.send 'rating', {
+            value,
+            text: rowData.w
+        }
+        bravo()
+
+
     $('#table-history tbody').on 'click', 'td', (e) ->
         if $(e.currentTarget).has('.action-button').length
             e.preventDefault()
@@ -154,12 +181,14 @@ initHistory = () ->
                     console.log rowData
                     await utils.send 'remove history', rowData
                     row.remove().draw()
+                    bravo()
 
     if (location.hash == '#history')
         $('.nav li a[href="#history"]')[0].click()
 
 
 initHistory()
+
 
 initDictionary = () ->
     {currentDictName, allDicts} = await utils.send 'dictionary', { optionsPage: true }

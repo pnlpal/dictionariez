@@ -13,7 +13,7 @@ import 'angular-ui-bootstrap'
 
 import _ from 'lodash'
 
-import './starrr.js'
+import '../starrr.js'
 
 import headerDom from '../header.html'
 

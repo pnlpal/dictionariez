@@ -507,6 +507,11 @@ boom@2.x.x:
   dependencies:
     hoek "2.x.x"
 
+bootoast@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/bootoast/-/bootoast-1.0.1.tgz#3e1ebe5b38821ac52aa154797ade8d73b697fa12"
+  integrity sha512-/pP9f2/GdeFpp0xZNj2qTGi6pa9SJpGqMnQPEwq69r0TN6PPMejmC+iRfYjmqFpJlkI0vkoE0vM/6BO+19TWWQ==
+
 bootstrap@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-3.4.1.tgz#c3a347d419e289ad11f4033e3c4132b87c081d72"
