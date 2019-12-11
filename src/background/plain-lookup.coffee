@@ -94,7 +94,7 @@ parseJapanese = (w) ->
 message.on 'look up plain', ({w, s, sc})->
     storage.addHistory({
         w, s, sc
-    })
+    }) if s  # ignore lookup from options page
 
     if utils.hasJapanese(w)
         return parseJapanese(w)

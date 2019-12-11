@@ -8,7 +8,6 @@ export default {
             enableSelectionOnMouseMove: false,
             enableSelectionSK1: true,
             selectionSK1: 'Meta',
-            selectionTimeout: 500,
 
             enablePlainLookup: true,
             enableAmeAudio: false,

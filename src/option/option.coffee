@@ -10,6 +10,8 @@ import moment from 'moment'
 
 import '../starrr.js'
 
+import '../content/inject.coffee'
+
 window.$ = $
 
 import 'angular-route'
@@ -96,7 +98,7 @@ initHistory = () ->
 
                 return if not rowsData.length
 
-                confirmDelete("Are you sure you want to delete all #{rowsData.length} records?", twice).then ()->
+                confirmDelete("Are you sure to delete all #{rowsData.length} records?", twice).then ()->
                     utils.send 'remove history', { w: rowsData.map((item) -> item.w) }
                     rows.remove().draw()
 
@@ -117,7 +119,11 @@ initHistory = () ->
             {
                 name: 'w',
                 title: 'Word',
-                data: 'w'
+                data: 'w',
+                render: (data, type) ->
+                    if type == 'display'
+                        return "<a href='', class='dictionaries-history-word'> #{data} </a>"
+                    return data
             },
             {
                 name: 'r',
@@ -182,6 +188,16 @@ initHistory = () ->
                     await utils.send 'remove history', rowData
                     row.remove().draw()
                     bravo()
+
+        if $(e.target).hasClass('dictionaries-history-word')
+            e.preventDefault()
+            e.stopPropagation()
+
+            utils.send('look up', {
+                w: $(e.target).text().trim()
+            })
+
+
 
     if (location.hash == '#history')
         $('.nav li a[href="#history"]')[0].click()

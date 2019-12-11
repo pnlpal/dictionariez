@@ -7,6 +7,8 @@ import "./inject.less"
 # but after webpack build, it not a problem any more.
 import "./inject-fontello.css"
 
+import _ from 'lodash'
+
 chrome.runtime.sendMessage {
 	type: 'setting',
 }, (setting)->
@@ -48,10 +50,26 @@ chrome.runtime.sendMessage {
 
 			$el.css({ top, left })
 
-	$(document).mousemove (e)->
-		if setting.enableSelectionOnMouseMove
+	$(document).mousemove _.debounce ((e) ->
+		if $(e.target).hasClass('dictionaries-history-word')
+			w = $(e.target).text().trim()
+
+			$('.fairydict-tooltip').fadeIn('slow')
+			$('.fairydict-tooltip .fairydict-spinner').show()
+			$('.fairydict-tooltip .fairydict-tooltip-content').empty()
+
+			setupPlainContentPosition(e)
+
+			plainQuerying = w
+
+			utils.send 'look up plain', {
+				w
+			}, handlePlainResult
+
+		else if setting.enableSelectionOnMouseMove
 			if !setting.enableSelectionSK1 or (setting.enableSelectionSK1 and utils.checkEventKey(e, setting.selectionSK1))
 				handleSelectionWord(e)
+		), 200
 
 	$(document).mouseup (e)->
 		# 对 mouseup 事件做一个延时处理，
@@ -82,12 +100,9 @@ chrome.runtime.sendMessage {
 
 
 	handleSelectionWord = (e)->
-		clearTimeout(mouseMoveTimer) if mouseMoveTimer
-		mouseMoveTimer = setTimeout (()->
-			word = getWordAtPoint(e.target, e.clientX, e.clientY)
-			if word
-				handleLookupByMouse(e)
-		), (setting.selectionTimeout or 500)
+		word = getWordAtPoint(e.target, e.clientX, e.clientY)
+		if word
+			handleLookupByMouse(e)
 
 	playAudios = (urls) ->
 		return unless urls?.length
@@ -218,6 +233,25 @@ chrome.runtime.sendMessage {
 
 		return html
 
+	handlePlainResult = (res) ->
+		html = renderQueryResult res
+		if !html
+			plainQuerying = null
+
+		if res.prons
+			audios = []
+
+			if res.prons.pronAudio and setting.enableAmeAudio
+				audios.push res.prons.pronAudio
+
+			if res.prons.ameAudio and setting.enableAmeAudio
+				audios.push res.prons.ameAudio
+
+			if res.prons.breAudio and setting.enableBreAudio
+				audios.push res.prons.breAudio
+
+			if audios.length
+				playAudios audios
 
 	handleLookupByMouse = (event)->
 		text = window.getSelection().toString().trim()
@@ -245,25 +279,7 @@ chrome.runtime.sendMessage {
 					w: text,
 					s: location.href,
 					sc: document.title
-				}, (res)->
-					html = renderQueryResult res
-					if !html
-						plainQuerying = null
-
-					if res.prons
-						audios = []
-
-						if res.prons.pronAudio and setting.enableAmeAudio
-							audios.push res.prons.pronAudio
-
-						if res.prons.ameAudio and setting.enableAmeAudio
-							audios.push res.prons.ameAudio
-
-						if res.prons.breAudio and setting.enableBreAudio
-							audios.push res.prons.breAudio
-
-						if audios.length
-							playAudios audios
+				},  handlePlainResult
 
 		if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
 			chrome.runtime.sendMessage({
