@@ -159,8 +159,6 @@ export default {
                     dictUrl: chrome.extension.getURL('dict.html'),
                     dict: dict.getDict(dictName)
                 }
-            else
-                console.log 'sdfgsdfgsdf!!!!!'
 
 
         message.on 'set-dictionary-current', ({ dictName }) ->
