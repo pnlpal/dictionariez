@@ -18,7 +18,8 @@
 		"default_icon": {
 			"19": "images/books-96.png",
 			"38": "images/books-96.png"
-		}
+		},
+		"default_title": "Dictionaries: one dictionary to rule them all"
 	},
 	"icons": {
 		"48": "images/books-96.png"

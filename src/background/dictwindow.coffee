@@ -89,6 +89,9 @@ class DictWindow
 dictWindowMap = {}
 
 export default {
+    lookup: () ->
+        window.dictWindow?.lookup()
+
     init: () ->
         dictWindow = new DictWindow()
         window.dictWindow = dictWindow

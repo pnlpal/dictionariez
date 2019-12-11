@@ -1,6 +1,5 @@
 import utils from "utils"
 import setting from "./setting.coffee"
-import ext from "./ext.coffee"
 
 console.log "[message] init"
 
@@ -19,8 +18,6 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
 
     else if request.type == 'save setting'
         setting.setValue(request.key, request.value)
-        if request.key == 'enableMinidict'
-            ext.setBrowserIcon request.value
 
     else if request.type == 'open options'
         url = chrome.extension.getURL('options.html')

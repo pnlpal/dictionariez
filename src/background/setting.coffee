@@ -22,8 +22,6 @@ export default {
             openSK2: 'Shift'
             openKey: 'X',
 
-            browserActionType: 'openDictWindow',
-
             prevDictSK1: 'Ctrl',
             prevDictKey: 'ArrowLeft',
             nextDictSK1: 'Ctrl',
