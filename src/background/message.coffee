@@ -31,7 +31,10 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
     else if request.type in Object.keys(listeners)
         ret = listeners[request.type](request, sender)
         if ret?.then
-            ret.then sendResponse
+            ret.catch (err) ->
+                console.error "[message] #{request.type} failed: ", err, request
+            .then sendResponse
+
         else if ret?
             sendResponse ret
 

@@ -238,7 +238,7 @@ chrome.runtime.sendMessage {
 		if !html
 			plainQuerying = null
 
-		if res.prons
+		if res?.prons
 			audios = []
 
 			if res.prons.pronAudio and setting.enableAmeAudio
@@ -285,7 +285,9 @@ chrome.runtime.sendMessage {
 			chrome.runtime.sendMessage({
 				type: 'look up',
 				means: 'mouse',
-				text: text
+				w: text,
+				s: location.href,
+				sc: document.title
 			})
 
 

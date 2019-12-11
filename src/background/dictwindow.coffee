@@ -98,12 +98,15 @@ export default {
             if dictWindow.w?.id == wid
                 dictWindow.reset()
 
-        message.on 'look up', (request) ->
-            if request.means == 'mouse'
+        message.on 'look up', ({ w, s, sc, means }) ->
+            if means == 'mouse'
                 if not setting.getValue('enableMinidict')
-                    return true
+                    return
 
-            dictWindow.lookup(request.w)
+            w = w.trim()
+
+            storage.addHistory { w, s, sc } if w and s # ignore lookup from options page
+            dictWindow.lookup(w)
 
         message.on 'query', (request) ->
             dictName = request.dictName
@@ -114,9 +117,8 @@ export default {
                 dictName = dict.getPreviousDict(dictName).dictName
                 dictWindow.updateDict(dictName)
 
-            dictWindow.queryDict(request.w, dictName).then (result) ->
-                storage.addHistory {w: request.w, s: request.s, sc: request.sc}
-                return result
+            storage.addHistory { w: request.w }
+            dictWindow.queryDict(request.w, dictName)
 
         message.on 'dictionary', (request, sender) ->
             w = dictWindow.word

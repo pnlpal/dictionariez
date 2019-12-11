@@ -92,6 +92,8 @@ parseJapanese = (w) ->
 
 
 message.on 'look up plain', ({w, s, sc})->
+    w = w.trim()
+    return unless w
     storage.addHistory({
         w, s, sc
     }) if s  # ignore lookup from options page
