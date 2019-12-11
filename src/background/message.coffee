@@ -32,7 +32,7 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
                 console.error "[message] #{request.type} failed: ", err, request
             .then sendResponse
 
-        else if ret?
+        else
             sendResponse ret
 
     # sendResponse becomes invalid when the event listener returns,
