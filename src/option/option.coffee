@@ -197,12 +197,6 @@ initHistory = () ->
                 w: $(e.target).text().trim()
             })
 
-
-
-    if (location.hash == '#history')
-        $('.nav li a[href="#history"]')[0].click()
-
-
 initHistory()
 
 
@@ -295,9 +289,6 @@ initDictionary = () ->
                     await utils.send 'set-dictionary-disable', rowData
                     table.rows().invalidate().draw()
 
-    if (location.hash == '#dictionary')
-        $('.nav li a[href="#dictionary"]')[0].click()
-
 initDictionary()
 
 dictApp = angular.module('fairyDictApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize'])
@@ -330,4 +321,5 @@ dictApp.controller 'optionCtrl', ($scope, $sce) ->
         $scope.setting = config
         $scope.$apply()
 
-
+        if location.hash
+            $(".nav li a[href='#{location.hash}']")[0]?.click()

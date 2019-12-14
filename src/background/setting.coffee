@@ -5,19 +5,19 @@ export default {
             windowWidth: 580,
             windowHeight: 700,
 
-            enableSelectionOnMouseMove: false,
-            enableSelectionSK1: true,
-            selectionSK1: 'Meta',
+            enableSelectionOnMouseMove: true,
 
             enablePlainLookup: true,
             enableAmeAudio: false,
             enableBreAudio: false,
-            enablePlainSK1: false,
-            plainSK1: 'Meta',
+            enablePlainSK1: true,
+            plainSK1: 'Alt',
 
+            enableSelectionOnMouseMoveForDict: true,
             enableMinidict: false,
             enableMouseSK1: false,
-            mouseSK1: 'Ctrl',
+            mouseSK1: 'Alt',
+
             openSK1: 'Ctrl',
             openSK2: 'Shift'
             openKey: 'X',

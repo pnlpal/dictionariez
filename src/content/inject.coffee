@@ -67,8 +67,13 @@ chrome.runtime.sendMessage {
 			}, handlePlainResult
 
 		else if setting.enableSelectionOnMouseMove
-			if !setting.enableSelectionSK1 or (setting.enableSelectionSK1 and utils.checkEventKey(e, setting.selectionSK1))
+			if !setting.enablePlainSK1 or (setting.enablePlainSK1 and utils.checkEventKey(e, setting.plainSK1))
 				handleSelectionWord(e)
+
+		else if setting.enableSelectionOnMouseMoveForDict
+			if !setting.enableMouseSK1 or (setting.enableMouseSK1 and utils.checkEventKey(e, setting.mouseSK1))
+				handleSelectionWord(e)
+
 		), 200
 
 	$(document).mouseup (e)->
