@@ -14,6 +14,7 @@ chrome.runtime.sendMessage {
 }, (setting)->
 	mouseMoveTimer = null
 	plainQuerying = null
+	lastAutoSelection = ''
 
 	$(document).ready ()->
 		$('''
@@ -66,13 +67,14 @@ chrome.runtime.sendMessage {
 				w
 			}, handlePlainResult
 
-		else if setting.enableSelectionOnMouseMove
-			if !setting.enablePlainSK1 or (setting.enablePlainSK1 and utils.checkEventKey(e, setting.plainSK1))
-				handleSelectionWord(e)
+		else
+			if setting.enableSelectionOnMouseMove
+				if !setting.enablePlainSK1 or (setting.enablePlainSK1 and utils.checkEventKey(e, setting.plainSK1))
+					handleSelectionWord(e)
 
-		else if setting.enableSelectionOnMouseMoveForDict
-			if !setting.enableMouseSK1 or (setting.enableMouseSK1 and utils.checkEventKey(e, setting.mouseSK1))
-				handleSelectionWord(e)
+			if setting.enableSelectionOnMouseMoveForDict
+				if !setting.enableMouseSK1 or (setting.enableMouseSK1 and utils.checkEventKey(e, setting.mouseSK1))
+					handleSelectionWord(e)
 
 		), 200
 
@@ -105,7 +107,15 @@ chrome.runtime.sendMessage {
 
 
 	handleSelectionWord = (e)->
-		word = getWordAtPoint(e.target, e.clientX, e.clientY)
+		word = window.getSelection().toString().trim()
+
+		# filter last auto selection word, let choose another word.
+		if word == lastAutoSelection
+			word = getWordAtPoint(e.target, e.clientX, e.clientY)
+			lastAutoSelection = word
+		else
+			lastAutoSelection = ''
+
 		if word
 			handleLookupByMouse(e)
 

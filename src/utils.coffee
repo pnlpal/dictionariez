@@ -102,7 +102,7 @@ export default {
         str = str.replace(REGEX_JAPANESE, '')
         str = str.replace(REGEX_CHINESE, '')
 
-        str = str.replace(/[\w'-\s]/g, '')
+        str = str.replace(/[\w'.-\s]/g, '')
 
         /\W/.test(str)
 }
