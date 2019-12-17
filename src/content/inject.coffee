@@ -274,6 +274,21 @@ chrome.runtime.sendMessage {
 		return if text.split(/\s/).length > 4
 		return if utils.hasNonWord(text)  # 包含非法字符
 
+		return if !setting.enableLookupEnglish and utils.hasEnglish(text)
+
+		if !setting.enableLookupJapanese
+			if utils.hasJapanese(text)
+				if !utils.hasChinese(text)
+					return
+
+		if !setting.enableLookupChinese
+			if utils.hasChinese(text)
+				if !utils.hasJapanese(text)
+					return
+
+		if !setting.enableLookupJapanese and !setting.enableLookupChinese
+			return if utils.hasChinese(text) or utils.hasJapanese(text)
+
 		if setting.enablePlainLookup && text != plainQuerying
 			if !setting.enablePlainSK1 or (setting.plainSK1 and utils.checkEventKey(event, setting.plainSK1))
 

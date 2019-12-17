@@ -2,6 +2,7 @@ import $ from "jquery"
 import dict from "./dict.coffee"
 import message from "./message.coffee"
 import storage from "./storage.coffee"
+import setting from "./setting.coffee"
 import utils from "utils"
 
 # most: 这个单词的 E-E 词典有 gl_none 这个 class；
@@ -98,7 +99,7 @@ message.on 'look up plain', ({w, s, sc})->
         w, s, sc
     }) if s  # ignore lookup from options page
 
-    if utils.hasJapanese(w)
+    if utils.hasJapanese(w) and setting.getValue "enableLookupJapanese"
         return parseJapanese(w)
 
     res = await dict.query(w, '必应词典')

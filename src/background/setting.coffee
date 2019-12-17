@@ -1,4 +1,5 @@
 import $ from "jquery"
+import _ from 'lodash'
 
 export default {
         configCache: {
@@ -6,6 +7,10 @@ export default {
             windowHeight: 700,
 
             enableSelectionOnMouseMove: true,
+
+            enableLookupEnglish: true,
+            enableLookupChinese: true,
+            enableLookupJapanese: false,
 
             enablePlainLookup: true,
             enableAmeAudio: false,
@@ -37,7 +42,7 @@ export default {
             new Promise (resolve) =>
                 chrome.storage.sync.get 'config', (obj)=>
                     if obj?.config
-                        @configCache = obj.config
+                        @configCache = _.merge @configCache, obj.config
                     resolve(@configCache)
 
         setValue: (key, value)->

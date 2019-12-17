@@ -223,7 +223,42 @@
 							</div>
 						</div>
 						<br />
+
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enableLookupEnglish"
+									ng-click="changeKey(setting.enableLookupEnglish, 'enableLookupEnglish')"
+								/>
+								Enable lookup if select <strong>English</strong> words
+							</label>
+						</div>
+
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enableLookupChinese"
+									ng-click="changeKey(setting.enableLookupChinese, 'enableLookupChinese')"
+								/>
+								Enable lookup if select <strong>Chinese</strong> words
+							</label>
+						</div>
+
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enableLookupJapanese"
+									ng-click="changeKey(setting.enableLookupJapanese, 'enableLookupJapanese')"
+								/>
+								Enable lookup if select <strong>Japanese</strong> words
+							</label>
+						</div>
 					</div>
+
+					<br />
 
 					<div id="shortcut-setting" class="section shortcut-setting">
 						<h1>快捷键设置</h1>
