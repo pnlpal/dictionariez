@@ -24,8 +24,12 @@ export default {
             mouseSK1: 'Alt',
 
             openSK1: 'Ctrl',
-            openSK2: 'Shift'
+            openSK2: 'Shift',
             openKey: 'X',
+
+            openOptionSK1: 'Ctrl',
+            openOptionSK2: 'Shift',
+            openOptionKey: 'D',
 
             prevDictSK1: 'Ctrl',
             prevDictKey: 'ArrowLeft',

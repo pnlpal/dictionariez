@@ -96,7 +96,7 @@ chrome.runtime.sendMessage {
 			$('.fairydict-tooltip').fadeOut().hide()
 			plainQuerying = null
 
-		if utils.checkEventKey event, 'ctrl', 'shift', 'D'
+		if utils.checkEventKey event, setting.openOptionSK1, setting.openOptionSK2, setting.openOptionKey
 			utils.send 'open options'
 			return false
 
