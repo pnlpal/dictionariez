@@ -61,6 +61,8 @@ export default {
         Escape: 27,
     }
     checkEventKey: (event, sk1, sk2, key)->
+        if key == 'Disabled'
+            return false
         if sk1 and not event[sk1.toLowerCase() + 'Key']
             return false
         if sk2 and not event[sk2.toLowerCase() + 'Key']

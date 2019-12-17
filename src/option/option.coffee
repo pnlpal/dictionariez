@@ -301,6 +301,7 @@ dictApp.controller 'optionCtrl', ($scope, $sce) ->
 
     $scope.allSK = ['', 'Ctrl', 'Shift', 'Alt', 'Meta']
     $scope.allLetters = (String.fromCharCode(code) for code in ['A'.charCodeAt(0)..'Z'.charCodeAt(0)])
+    $scope.allLetters.unshift('Disabled')
 
     $scope.extraKeys = Object.keys(utils.extraKeyMap)
 
