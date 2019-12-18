@@ -39,12 +39,17 @@ manager = {
 		return @history.find (item) ->
 			return item.w == word
 
-	getPrevious: (w) ->
-		return @history[@history.length - 1] if not w
+	getPrevious: (w, circle = false) ->
 		idx = @history.findIndex (item) ->
 			return item.w == w
 		return @history[idx - 1] if idx > 0
-		return @history[@history.length - 1] if idx == -1
+		return @history[@history.length - 1] if circle or !w
+
+	getNext: (w, circle = false) ->
+		idx = @history.findIndex (item) ->
+			return item.w == w
+		return @history[idx + 1] if idx < @history.length - 1
+		return @history[0] if circle or !w
 
 	getRating: (word) ->
 		@getInHistory(word)?.r

@@ -64,10 +64,11 @@ class DictWindow
             console.log('lookup...')
             @sendMessage({type: 'querying', text})
             result = await @queryDict(text, @dictName)
-            url = result.windowUrl
+            url = result?.windowUrl
         @open(url)
 
     queryDict: (text, dictName)->
+        return if not text
         @word = text
         console.log "[dictWindow] query #{@word} from #{dictName}"
         return dict.query(text, dictName)
@@ -113,15 +114,22 @@ export default {
 
         message.on 'query', (request) ->
             dictName = request.dictName
-            if request.next
+            w = request.w
+            if request.nextDict
                 dictName = dict.getNextDict(dictName).dictName
                 dictWindow.updateDict(dictName)
-            if request.previous
+            if request.previousDict
                 dictName = dict.getPreviousDict(dictName).dictName
                 dictWindow.updateDict(dictName)
 
-            storage.addHistory { w: request.w }
-            dictWindow.queryDict(request.w, dictName)
+            if request.previousWord
+                w = storage.getPrevious(w, true)?.w
+            else if request.nextWord
+                w = storage.getNext(w, true)?.w
+            else if w
+                storage.addHistory { w }
+
+            dictWindow.queryDict(w, dictName)
 
         message.on 'dictionary', (request, sender) ->
             w = dictWindow.word
@@ -167,5 +175,8 @@ export default {
         message.on 'window resize', (request, sender) ->
             if sender.tab.id == dictWindow.tid
                 dictWindow.saveWindowSize()
+
+        message.on 'sendToDict', ( request ) ->
+            dictWindow.sendMessage request
 
 }

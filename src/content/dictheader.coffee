@@ -55,14 +55,14 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
     $scope.openOptions = (to) ->
         utils.send 'open options', { to }
 
-    $scope.selectHistory = (index)->
+    $scope.queryPreviousWord = ()->
         $scope.word = $scope.previous.w
         $scope.query()
 
-    $scope.query = (next=false, previous=false)->
-        if not $scope.word
-            $scope.initial = true
-            return
+    $scope.query = ({ nextDict, previousDict, nextWord, previousWord } = {}) ->
+        # if not $scope.word
+        #     $scope.initial = true
+        #     return
 
         $scope.initial = false
         $scope.querying = true
@@ -71,11 +71,17 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             type: 'query',
             w: $scope.word,
             dictName: $scope.currentDictName,
-            next,
-            previous
+            nextDict,
+            previousDict,
+            nextWord,
+            previousWord,
         }, (data) ->
-            console.log data
-            window.top.location.href = data.windowUrl
+            if data?.windowUrl
+                window.top.location.href = data.windowUrl
+            else
+                $scope.initial = true
+                $scope.querying = false
+                $scope.$apply()
         )
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
@@ -84,6 +90,19 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             $scope.initial = false
             $scope.querying = true
             $scope.word = request.text
+
+        if request.type == 'sendToDict'
+            if request.action == 'keypress focus'
+                $('input.dict-input', baseNode)[0].select()
+
+            if request.action == 'keypress history prev'
+                $scope.query({ previousWord: true })
+            if request.action == 'keypress history next'
+                $scope.query({ nextWord: true })
+            if request.action == 'keypress dict prev'
+                $scope.query({ previousDict: true })
+            if request.action == 'keypress dict next'
+                $scope.query({ nextDict: true })
 
         $scope.$apply()
 
@@ -125,16 +144,16 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         stop = false
 
         if utils.checkEventKey evt, prevSK, null, prevKey
-            $scope.changeDict('prev')
+            $scope.query({ previousDict: true })
             stop = true
         if utils.checkEventKey evt, nextSK, null, nextKey
-            $scope.changeDict('next')
+            $scope.query({ nextDict: true })
             stop = true
         if utils.checkEventKey evt, $scope.setting.prevHistorySK1, null, $scope.setting.prevHistoryKey
-            $scope.selectHistory('prev')
+            $scope.query({ previousWord: true })
             stop = true
         if utils.checkEventKey evt, $scope.setting.nextHistorySK1, null, $scope.setting.nextHistoryKey
-            $scope.selectHistory('next')
+            $scope.query({ nextWord: true })
             stop = true
         if stop
             evt.preventDefault()

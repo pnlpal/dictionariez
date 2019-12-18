@@ -9,6 +9,8 @@ import "./inject-fontello.css"
 
 import _ from 'lodash'
 
+isInDict = false
+
 chrome.runtime.sendMessage {
 	type: 'setting',
 }, (setting)->
@@ -96,9 +98,28 @@ chrome.runtime.sendMessage {
 			$('.fairydict-tooltip').fadeOut().hide()
 			plainQuerying = null
 
+			if isInDict
+				utils.sendToDict 'keypress focus'
+
 		if utils.checkEventKey event, setting.openOptionSK1, setting.openOptionSK2, setting.openOptionKey
 			utils.send 'open options'
 			return false
+
+		if isInDict
+			if utils.checkEventKey event, setting.prevHistorySK1, null, setting.prevHistoryKey
+				utils.sendToDict 'keypress history prev'
+				return false
+
+			if utils.checkEventKey event, setting.nextHistorySK1, null, setting.nextHistoryKey
+				utils.sendToDict 'keypress history next'
+				return false
+			if utils.checkEventKey event, setting.prevDictSK1, null, setting.prevDictKey
+				utils.sendToDict 'keypress dict prev'
+				return false
+			if utils.checkEventKey event, setting.nextDictSK1, null, setting.nextDictKey
+				utils.sendToDict 'keypress dict next'
+				return false
+
 
 	$(document).on 'click', '.fairydict-pron-audio', (e) ->
 		e.stopPropagation()
@@ -331,4 +352,5 @@ chrome.runtime.sendMessage {
 				for style in res.dict.resources.styles
 					require("./css/#{style}")
 			$("<iframe id='fairydict-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('body')
+			isInDict = true
 
