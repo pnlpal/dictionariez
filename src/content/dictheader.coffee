@@ -79,9 +79,8 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             if data?.windowUrl
                 window.top.location.href = data.windowUrl
             else
-                $scope.initial = true
-                $scope.querying = false
-                $scope.$apply()
+                # current dict might be changed
+                window.location.reload()
         )
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
