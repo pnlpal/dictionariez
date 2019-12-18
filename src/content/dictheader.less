@@ -75,10 +75,27 @@
 		display: block;
 		position: relative;
 		overflow: hidden;
-		.starrr {
+		.querying {
+			position: relative;
+			left: -15px;
+			top: 3px;
+			min-width: 70px;
+		}
+
+		#fairy-stars {
+			font-size: 20px;
 			position: relative;
 			left: -15px;
 			top: 5px;
+			min-width: 70px;
+
+			.fa.fa-star {
+				color: orange;
+			}
+			i.fa {
+				padding-left: 3px;
+				color: orange;
+			}
 		}
 
 		.fa-search {
@@ -135,21 +152,6 @@
 	.dict_prev,
 	.dict_next {
 		cursor: pointer;
-	}
-
-	#fairy-stars {
-		font-size: 20px;
-		/*margin-left: 10px;*/
-		margin-right: 5px;
-	}
-
-	#fairy-stars i.fa {
-		padding-left: 3px;
-		color: orange;
-	}
-
-	.fa.fa-star {
-		color: orange;
 	}
 
 	/*Fix button and input styles on some websites*/

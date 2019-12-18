@@ -62,7 +62,15 @@
 			</div>
 
 			<div class="form-group search-group">
-				<div id="fairy-stars" class="starrr pull-right" title="选择难度"></div>
+				<div class="pull-right querying text-center" ng-show="querying">
+					<i class="fa fa-spinner fa-spin fa-2x" title="Querying..."></i>
+				</div>
+				<div
+					id="fairy-stars"
+					class="starrr pull-right"
+					ng-hide="querying"
+					title="Rating"
+				></div>
 				<i
 					class="fa fa-search fa-lg pull-right"
 					aria-hidden="true"
@@ -86,7 +94,7 @@
 
 	<div class="dict-body" ng-hide="inFrame">
 		<div class="dict-wait text-center" ng-show="querying">
-			<i class="fa fa-spinner fa-spin fa-4x" title="Query..."></i>
+			<i class="fa fa-spinner fa-spin fa-4x" title="Querying..."></i>
 		</div>
 		<div class="dict_default text-center" ng-show="initial">
 			<h2>欢迎使用 Dictionaries！</h2>

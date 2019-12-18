@@ -157,6 +157,7 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         if stop
             evt.preventDefault()
             evt.stopPropagation()
+            $scope.$apply()
 
     $(window).on 'resize', _.debounce ((evt) ->
         utils.send 'window resize'
