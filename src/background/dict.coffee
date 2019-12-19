@@ -3,81 +3,11 @@ import storage from  "./storage.coffee"
 import message from "./message.coffee"
 
 allDicts = [{
-    'dictName': "必应词典",
+    'dictName': "Bing Dict (比应词典)",
     'windowUrl': 'https://cn.bing.com/dict/search?q=<word>',
     'windowUrlMatch': '[^\\w]q=([^&]+)',
     "resources": {
         styles: ['bing.less']
-    }
-}, {
-    'dictName': '金山词霸',
-    'windowUrl': 'http://www.iciba.com/<word>',
-    'windowUrlMatch': 'iciba.com/([^&]+)',
-    "resources": {
-        styles: ['iciba.less']
-    }
-    # 'entry': 'Iciba',
-    # 'baseUrl': 'http://dict-co.iciba.com/api/dictionary.php',
-    # 'queryType': 'get',
-    # 'params': {
-    #     'key': '0AAE477DB66EC58D12E1451877045CA5'
-    # },
-    # 'queryKey': 'w'
-}, {
-    'dictName': '有道词典',
-    'entry': 'youdao',
-    'windowUrl': 'http://dict.youdao.com/w/eng/<word>',
-    'windowUrlMatch': '/eng/([^&/?]+)'
-    "resources": {
-        styles: ['youdao.less']
-    }
-}, {
-    'dictName': '海词词典',
-    'entry': 'dict-cn',
-    'windowUrl': 'http://dict.cn/<word>',
-    'windowUrlMatch': 'dict.cn/([^&/?]+)'
-    "resources": {
-        styles: ['dict-cn.less']
-    }
-}, {
-    'dictName': '沪江词典',
-    'entry': 'hjenglish',
-    'windowUrl': 'https://dict.hjenglish.com/w/<word>',
-    'windowUrlMatch': '/w/([^&/?]+)'
-    "resources": {
-        styles: ['hjenglish.less']
-    }
-}, {
-    'dictName': '人人词典',
-    'entry': '91dict',
-    'windowUrl': 'http://www.91dict.com/words?w=<word>',
-    'windowUrlMatch': '[^\\w]w=([^&]+)'
-    "resources": {
-        styles: ['91dict.less']
-    }
-}, {
-    'dictName': '欧陆词典',
-    'entry': 'eudic',
-    'windowUrl': 'https://dict.eudic.net/dicts/en/<word>',
-    'windowUrlMatch': '/en/([^&/?]+)'
-    "resources": {
-        styles: ['eudic.less']
-    }
-}, {
-    'dictName': '汉典',
-    'entry': 'zdic',
-    'windowUrl': 'https://www.zdic.net/search/?c=3&q=<word>',
-    'windowUrlMatch': '[^\\w]q=([^&]+)'
-    "resources": {
-        styles: ['zdic.less']
-    }
-}, {
-    'dictName': '百度词典（汉语）',
-    'entry': 'baidu-dict',
-    'windowUrl': 'https://dict.baidu.com/s?wd=<word>',
-    'windowUrlMatch': '[^\\w]wd=([^&]+)'
-    "resources": {
-        styles: ['baidu-dict.less']
     }
 }, {
     'dictName': 'Oxford Learner',
@@ -181,6 +111,76 @@ allDicts = [{
     'windowUrl': 'https://www.lexico.com/en/definition/<word>',
     'windowUrlMatch': '/definition/([^&/?]+)'
 }, {
+    'dictName': '金山词霸',
+    'windowUrl': 'http://www.iciba.com/<word>',
+    'windowUrlMatch': 'iciba.com/([^&]+)',
+    "resources": {
+        styles: ['iciba.less']
+    }
+    # 'entry': 'Iciba',
+    # 'baseUrl': 'http://dict-co.iciba.com/api/dictionary.php',
+    # 'queryType': 'get',
+    # 'params': {
+    #     'key': '0AAE477DB66EC58D12E1451877045CA5'
+    # },
+    # 'queryKey': 'w'
+}, {
+    'dictName': '有道词典',
+    'entry': 'youdao',
+    'windowUrl': 'http://dict.youdao.com/w/eng/<word>',
+    'windowUrlMatch': '/eng/([^&/?]+)'
+    "resources": {
+        styles: ['youdao.less']
+    }
+}, {
+    'dictName': '海词词典',
+    'entry': 'dict-cn',
+    'windowUrl': 'http://dict.cn/<word>',
+    'windowUrlMatch': 'dict.cn/([^&/?]+)'
+    "resources": {
+        styles: ['dict-cn.less']
+    }
+}, {
+    'dictName': '沪江词典',
+    'entry': 'hjenglish',
+    'windowUrl': 'https://dict.hjenglish.com/w/<word>',
+    'windowUrlMatch': '/w/([^&/?]+)'
+    "resources": {
+        styles: ['hjenglish.less']
+    }
+}, {
+    'dictName': '人人词典',
+    'entry': '91dict',
+    'windowUrl': 'http://www.91dict.com/words?w=<word>',
+    'windowUrlMatch': '[^\\w]w=([^&]+)'
+    "resources": {
+        styles: ['91dict.less']
+    }
+}, {
+    'dictName': '欧陆词典',
+    'entry': 'eudic',
+    'windowUrl': 'https://dict.eudic.net/dicts/en/<word>',
+    'windowUrlMatch': '/en/([^&/?]+)'
+    "resources": {
+        styles: ['eudic.less']
+    }
+}, {
+    'dictName': '汉典',
+    'entry': 'zdic',
+    'windowUrl': 'https://www.zdic.net/search/?c=3&q=<word>',
+    'windowUrlMatch': '[^\\w]q=([^&]+)'
+    "resources": {
+        styles: ['zdic.less']
+    }
+}, {
+    'dictName': '百度词典（汉语）',
+    'entry': 'baidu-dict',
+    'windowUrl': 'https://dict.baidu.com/s?wd=<word>',
+    'windowUrlMatch': '[^\\w]wd=([^&]+)'
+    "resources": {
+        styles: ['baidu-dict.less']
+    }
+}, {
     'dictName': 'JapanDict',
     'windowUrl': 'https://www.japandict.com/<word>',
     'windowUrlMatch': '.com/([^&/?]+)'
@@ -202,7 +202,8 @@ dictManager =
         storage.set {'dictionary-setting': @setting}
 
     allDicts: allDicts,
-    getDict: (dictName)->
+
+    getDict: (dictName) ->
         dict = allDicts.find (d)->
             d.dictName == dictName
         return dict or allDicts[0]

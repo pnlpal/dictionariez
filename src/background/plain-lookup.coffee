@@ -102,7 +102,7 @@ message.on 'look up plain', ({w, s, sc})->
     if utils.hasJapanese(w) and setting.getValue "enableLookupJapanese"
         return parseJapanese(w)
 
-    res = await dict.query(w, '必应词典')
+    res = await dict.query(w, "Bing Dict (比应词典)")
     return parseBing(res.windowUrl)
 
 
