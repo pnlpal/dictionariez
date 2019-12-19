@@ -18,9 +18,9 @@ allDicts = [{
         styles: ['oxfordlearner.less']
     }
 }, {
-    'dictName': 'Oxford Living Dictionaries',
+    'dictName': 'Oxford Living',
     'entry': 'Oxfordliving',
-    'windowUrl': 'https://en.oxforddictionaries.com/definition/<word>'
+    'windowUrl': 'https://www.lexico.com/definition/<word>'
     'windowUrlMatch': '/definition/([^&/?]+)'
     "resources": {
         styles: ['oxfordliving.less']
