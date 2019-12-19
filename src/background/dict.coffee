@@ -3,7 +3,7 @@ import storage from  "./storage.coffee"
 import message from "./message.coffee"
 
 allDicts = [{
-    'dictName': "Bing Dict (比应词典)",
+    'dictName': "Bing Dict (必应词典)",
     'windowUrl': 'https://cn.bing.com/dict/search?q=<word>',
     'windowUrlMatch': '[^\\w]q=([^&]+)',
     "resources": {
