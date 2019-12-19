@@ -13,15 +13,15 @@ export default {
             enableLookupJapanese: false,
 
             enablePlainLookup: true,
-            enableAmeAudio: false,
-            enableBreAudio: false,
+            enableAmeAudio: true,
+            enableBreAudio: true,
             enablePlainSK1: true,
-            plainSK1: 'Alt',
+            plainSK1: 'Shift',
 
-            enableSelectionOnMouseMoveForDict: true,
+            enableSelectionOnMouseMoveForDict: false,
             enableMinidict: false,
             enableMouseSK1: false,
-            mouseSK1: 'Alt',
+            mouseSK1: 'Shift',
 
             openSK1: 'Ctrl',
             openSK2: 'Shift',

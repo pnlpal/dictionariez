@@ -70,11 +70,11 @@ chrome.runtime.sendMessage {
 			}, handlePlainResult
 
 		else
-			if setting.enableSelectionOnMouseMove
+			if setting.enableSelectionOnMouseMove and setting.enablePlainLookup
 				if !setting.enablePlainSK1 or (setting.enablePlainSK1 and utils.checkEventKey(e, setting.plainSK1))
 					handleSelectionWord(e)
 
-			if setting.enableSelectionOnMouseMoveForDict
+			if setting.enableSelectionOnMouseMoveForDict and setting.enableMinidict
 				if !setting.enableMouseSK1 or (setting.enableMouseSK1 and utils.checkEventKey(e, setting.mouseSK1))
 					handleSelectionWord(e)
 
@@ -311,8 +311,6 @@ chrome.runtime.sendMessage {
 			return if utils.hasChinese(text) or utils.hasJapanese(text)
 
 		if setting.enablePlainLookup && text != plainQuerying
-			if !setting.enablePlainSK1 or (setting.plainSK1 and utils.checkEventKey(event, setting.plainSK1))
-
 				clickInside = $('.fairydict-tooltip').has(event.target).length
 
 				$('.fairydict-tooltip').fadeIn('slow')
