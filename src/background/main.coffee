@@ -7,6 +7,8 @@ import "./hot-reload-content-scripts.js"
 
 import './plain-lookup.coffee'
 
+window.setting = setting
+
 onClickedContextMenu = (info, tab)->
     if info.selectionText
         dictWindow.lookup(info.selectionText)

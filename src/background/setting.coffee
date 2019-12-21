@@ -7,6 +7,8 @@ export default {
             windowHeight: 700,
 
             enableSelectionOnMouseMove: true,
+            enableSelectionSK1: true,
+            selectionSK1: 'Shift'
 
             enableLookupEnglish: true,
             enableLookupChinese: true,
@@ -15,13 +17,12 @@ export default {
             enablePlainLookup: true,
             enableAmeAudio: true,
             enableBreAudio: true,
-            enablePlainSK1: true,
-            plainSK1: 'Shift',
+            enablePlainSK1: false,
+            plainSK1: 'Ctrl',
 
-            enableSelectionOnMouseMoveForDict: false,
             enableMinidict: false,
             enableMouseSK1: false,
-            mouseSK1: 'Shift',
+            mouseSK1: 'Alt',
 
             openSK1: 'Ctrl',
             openSK2: 'Shift',
@@ -59,5 +60,9 @@ export default {
             v = @configCache[key]
             v ?= defaultValue
             return v
+
+        clear: () ->
+            new Promise (resolve) ->
+                chrome.storage.sync.remove 'config', resolve
 
 }

@@ -70,12 +70,8 @@ chrome.runtime.sendMessage {
 			}, handlePlainResult
 
 		else
-			if setting.enableSelectionOnMouseMove and setting.enablePlainLookup
-				if !setting.enablePlainSK1 or (setting.enablePlainSK1 and utils.checkEventKey(e, setting.plainSK1))
-					handleSelectionWord(e)
-
-			if setting.enableSelectionOnMouseMoveForDict and setting.enableMinidict
-				if !setting.enableMouseSK1 or (setting.enableMouseSK1 and utils.checkEventKey(e, setting.mouseSK1))
+			if setting.enableSelectionOnMouseMove
+				if !setting.enableSelectionSK1 or utils.checkEventKey(e, setting.selectionSK1)
 					handleSelectionWord(e)
 
 		), 200
@@ -311,24 +307,25 @@ chrome.runtime.sendMessage {
 			return if utils.hasChinese(text) or utils.hasJapanese(text)
 
 		if setting.enablePlainLookup && text != plainQuerying
-				clickInside = $('.fairydict-tooltip').has(event.target).length
+				if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
+					clickInside = $('.fairydict-tooltip').has(event.target).length
 
-				$('.fairydict-tooltip').fadeIn('slow')
-				$('.fairydict-tooltip .fairydict-spinner').show()
-				$('.fairydict-tooltip .fairydict-tooltip-content').empty()
+					$('.fairydict-tooltip').fadeIn('slow')
+					$('.fairydict-tooltip .fairydict-spinner').show()
+					$('.fairydict-tooltip .fairydict-tooltip-content').empty()
 
-				unless clickInside
-					setupPlainContentPosition(event)
+					unless clickInside
+						setupPlainContentPosition(event)
 
-				plainQuerying = text
+					plainQuerying = text
 
-				chrome.runtime.sendMessage {
-					type: 'look up plain',
-					means: 'mouse',
-					w: text,
-					s: location.href,
-					sc: document.title
-				},  handlePlainResult
+					chrome.runtime.sendMessage {
+						type: 'look up plain',
+						means: 'mouse',
+						w: text,
+						s: location.href,
+						sc: document.title
+					},  handlePlainResult
 
 		if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
 			chrome.runtime.sendMessage({
