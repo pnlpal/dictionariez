@@ -153,20 +153,20 @@ export default {
                     dictUrl: chrome.extension.getURL('dict.html'),
                     dict: dict.getDict(dictName)
                 }
-            else if dictName
-                newDictWindow = new DictWindow({
-                    dictName,
-                    tid: sender.tab.id
-                })
-                word = dict.getWordFromUrl request.url, dictName
-                newDictWindow.word = word if word
+            # else if dictName
+            #     newDictWindow = new DictWindow({
+            #         dictName,
+            #         tid: sender.tab.id
+            #     })
+            #     word = dict.getWordFromUrl request.url, dictName
+            #     newDictWindow.word = word if word
 
-                dictWindowMap[sender.tab.id] = newDictWindow
+            #     dictWindowMap[sender.tab.id] = newDictWindow
 
-                return {
-                    dictUrl: chrome.extension.getURL('dict.html'),
-                    dict: dict.getDict(dictName)
-                }
+            #     return {
+            #         dictUrl: chrome.extension.getURL('dict.html'),
+            #         dict: dict.getDict(dictName)
+            #     }
 
 
         message.on 'set-dictionary-current', ({ dictName }) ->
