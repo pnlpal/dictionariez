@@ -80,6 +80,7 @@ initHistory = () ->
     table = $('#table-history').DataTable({
         dom: '<"pull-left"f><"pull-left"i><"pull-right"B>tp',
         paging: false,
+        autoWidth: false,
         select: {
             style: 'os',
             className: 'active'
@@ -125,13 +126,14 @@ initHistory = () ->
                 data: 'w',
                 render: (data, type) ->
                     if type == 'display'
-                        return "<a href='', class='dictionaries-history-word'> #{data} </a>"
+                        return "<a href='', class='dictionaries-history-word ellipsis' data-w='#{data}'> #{data} </a>"
                     return data
             },
             {
                 name: 'r',
                 title: 'Rate',
-                data: 'r'
+                data: 'r',
+                width: '60px',
                 render: (data, type) ->
                     if type == 'display'
                         return "<div class='starrr' title='Change rating' data-rating='#{data || 0}'></div>"
@@ -141,17 +143,19 @@ initHistory = () ->
             {
                 name: 's',
                 title: 'Source',
+                className: 'column-s',
                 data: 's',
                 render: (data, type, row) ->
                     return '' unless data
                     return data if type == 'download'
-                    return "<a class='column-s' target='_blank' href='#{data}'> #{row.sc || data} </a>"
+                    return "<a class='link-s ellipsis' target='_blank' href='#{data}' title='#{row.sc || data}'> #{row.sc || data} </a>"
 
             },
             {
                 name: 't',
                 title: 'Time',
                 data: 't',
+                width: '150px',
                 render: (data, type) ->
                     return moment(data).format('YYYY-MM-DD HH:mm:ss')
             },
@@ -197,7 +201,7 @@ initHistory = () ->
             e.stopPropagation()
 
             utils.send('look up', {
-                w: $(e.target).text().trim()
+                w: $(e.target).data('w').trim()
             })
 
 initHistory()

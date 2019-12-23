@@ -55,7 +55,8 @@ chrome.runtime.sendMessage {
 
 	$(document).mousemove _.debounce ((e) ->
 		if $(e.target).hasClass('dictionaries-history-word')
-			w = $(e.target).text().trim()
+			w = $(e.target).data('w').trim()
+			return if w == plainQuerying
 
 			$('.fairydict-tooltip').fadeIn('slow')
 			$('.fairydict-tooltip .fairydict-spinner').show()
@@ -67,7 +68,8 @@ chrome.runtime.sendMessage {
 
 			utils.send 'look up plain', {
 				w
-			}, handlePlainResult
+			}, (res) ->
+				handlePlainResult(res, w)
 
 		else
 			if setting.enableSelectionOnMouseMove
@@ -213,7 +215,8 @@ chrome.runtime.sendMessage {
 			handleLookupByMouse(event)
 
 
-	renderQueryResult = (res) ->
+	renderQueryResult = (res, word) ->
+		wTpl = (w) -> "<div class='fairydict-w'> #{w} </div>"
 		defTpl = (def) -> "<span class='fairydict-def'> #{def} </span>"
 		defsTpl = (defs) -> "<span class='fairydict-defs'> #{defs} </span>"
 		labelsTpl = (labels) -> "<div class='fairydict-labels'> #{labels} </div>"
@@ -259,14 +262,17 @@ chrome.runtime.sendMessage {
 
 		if html
 			$('.fairydict-tooltip .fairydict-spinner').hide()
-			$('.fairydict-tooltip .fairydict-tooltip-content').html(html)
+			if word
+				$('.fairydict-tooltip .fairydict-tooltip-content').html(wTpl(word) + html)
+			else
+				$('.fairydict-tooltip .fairydict-tooltip-content').html(html)
 		else
 			$('.fairydict-tooltip').fadeOut().hide()
 
 		return html
 
-	handlePlainResult = (res) ->
-		html = renderQueryResult res
+	handlePlainResult = (res, word) ->
+		html = renderQueryResult res, word
 		if !html
 			plainQuerying = null
 
