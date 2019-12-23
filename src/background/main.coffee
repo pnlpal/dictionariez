@@ -11,7 +11,7 @@ window.setting = setting
 
 onClickedContextMenu = (info, tab)->
     if info.selectionText
-        dictWindow.lookup(info.selectionText)
+        dictWindow.lookup({ w: info.selectionText, s: tab.url, sc: tab.title })
 
 chrome.browserAction.onClicked.addListener (tab)->
     return dictWindow.lookup()

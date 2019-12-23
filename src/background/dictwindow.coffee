@@ -90,8 +90,9 @@ class DictWindow
 dictWindowMap = {}
 
 export default {
-    lookup: () ->
-        window.dictWindow?.lookup()
+    lookup: ({ w, s, sc } = {}) ->
+        storage.addHistory { w, s, sc } if w
+        window.dictWindow?.lookup(w)
 
     init: () ->
         dictWindow = new DictWindow()
