@@ -37,6 +37,8 @@ import 'datatables.net-buttons/js/buttons.html5.js'
 import 'datatables.net-rowreorder-bs4'
 import 'datatables.net-rowreorder-bs4/css/rowReorder.bootstrap4.css'
 
+import '../vendor/github-badge.js'
+
 # in order to display the page after css loaded.
 $('body').show()
 
