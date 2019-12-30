@@ -12,7 +12,10 @@
 			"matches": ["<all_urls>"]
 		}
 	],
-	"options_page": "options.html",
+	"options_ui": {
+		"page": "options.html",
+		"open_in_tab": true
+	},
 	"web_accessible_resources": ["*.js", "*.json", "*.html", "fonts/*"],
 	"browser_action": {
 		"default_title": "Dictionaries: one dictionary to rule them all"
