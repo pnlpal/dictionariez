@@ -26,5 +26,9 @@
 		"64": "images/library-64.png",
 		"128": "images/library-128.png"
 	},
-	"minimum_chrome_version": "23"
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "revir.qing@gmail.com"
+		}
+	}
 }
