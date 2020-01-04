@@ -331,5 +331,6 @@ dictApp.controller 'optionCtrl', ($scope, $sce) ->
         $scope.setting = config
         $scope.$apply()
 
-        if location.hash
-            $(".nav li a[href='#{location.hash}']")[0]?.click()
+        utils.send 'open options request to', ( { to } ) ->
+            if to
+                $(".nav li a[href='##{to}']")[0]?.click()

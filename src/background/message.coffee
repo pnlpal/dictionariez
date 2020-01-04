@@ -4,6 +4,7 @@ import setting from "./setting.coffee"
 console.log "[message] init"
 
 listeners = {}
+openOptionsTo = ''
 
 chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
     if request.type == 'getJson'
@@ -20,10 +21,11 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
         setting.setValue(request.key, request.value)
 
     else if request.type == 'open options'
-        url = chrome.extension.getURL('options.html')
-        if request.to
-            url += "##{request.to}"
-        window.open url, 'dictionaries-options'
+        chrome.runtime.openOptionsPage()
+        openOptionsTo = request.to
+    else if request.type == 'open options request to'
+        sendResponse { to: openOptionsTo }
+        openOptionsTo = ''
 
     else if request.type in Object.keys(listeners)
         ret = listeners[request.type](request, sender)
