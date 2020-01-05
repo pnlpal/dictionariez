@@ -39,7 +39,7 @@ var options = {
 	entry: {
 		// popup: path.join(__dirname, "src", "js", "popup.js"),
 		inject: path.join(__dirname, "src", "content", "inject.coffee"),
-		"dict-loader": path.join(__dirname, "src", "content", "dict-loader.coffee"),
+		dictheader: path.join(__dirname, "src", "content", "dictheader.coffee"),
 		options: path.join(__dirname, "src", "option", "option.coffee"),
 		background: path.join(__dirname, "src", "background", "main.coffee")
 	},
@@ -146,7 +146,7 @@ var options = {
 		new HtmlWebpackPlugin({
 			template: path.join(__dirname, "src", "dict.html"),
 			filename: "dict.html",
-			chunks: ["dict-loader"]
+			chunks: ["dictheader"]
 		}),
 
 		new webpack.ProvidePlugin({

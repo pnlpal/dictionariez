@@ -1,25 +1,14 @@
-import 'bootstrap/dist/css/bootstrap.min.css'
-import '../vendor/font-awesome.css'
-import './dictheader.less'
-
 import $ from 'jquery'
 import angular from 'angular'
 import utils from "utils"
 
-import 'angular-route'
-import 'angular-sanitize'
-import 'angular-ui-bootstrap'
 # import '../needsharebutton.min.js'
 
-import _ from 'lodash'
+import('bootstrap/dist/css/bootstrap.min.css')
+import('../vendor/font-awesome.css')
+import('./dictheader.less')
 
-import '../starrr.js'
-
-import headerDom from '../header.html'
-
-dictApp = angular.module('fairyDictApp', ['ui.bootstrap', 'ngSanitize'])
-dictApp.run ($rootScope)->
-    $rootScope._ = _
+dictApp = angular.module('fairyDictApp', [])
 
 dictApp.controller 'dictCtrl', ($scope, $sce) ->
     console.log "[dictCtrl] init"
@@ -45,6 +34,7 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
         $scope.word = w
         $scope.$apply()
 
+        await import('../starrr.js')
         $('.starrr', baseNode).starrr({numStars: 3, rating: r})
 
     chrome.runtime.sendMessage {
@@ -159,11 +149,13 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             evt.stopPropagation()
             $scope.$apply()
 
-    $(window).on 'resize', _.debounce ((evt) ->
-        utils.send 'window resize'
-    ), 300
-
     return
 
-$(document.body).append(headerDom)
-angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])
+import('../header.html').then ({ default: headerDom }) ->
+    $(document.body).append(headerDom)
+    angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])
+
+    { default: debounce } = await import('lodash/debounce')
+    $(window).on 'resize', debounce ((evt) ->
+        utils.send 'window resize'
+    ), 300
