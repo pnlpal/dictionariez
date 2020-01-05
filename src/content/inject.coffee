@@ -7,7 +7,7 @@ import "./inject.less"
 # but after webpack build, it not a problem any more.
 import "./inject-fontello.css"
 
-import _ from 'lodash'
+import debounce from 'lodash/debounce'
 
 isInDict = false
 
@@ -53,7 +53,7 @@ chrome.runtime.sendMessage {
 
 			$el.css({ top, left })
 
-	$(document).mousemove _.debounce ((e) ->
+	$(document).mousemove debounce ((e) ->
 		if $(e.target).hasClass('dictionaries-history-word')
 			w = $(e.target).data('w').trim()
 			return if w == plainQuerying
