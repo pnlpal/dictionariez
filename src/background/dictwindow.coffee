@@ -1,12 +1,8 @@
-import $ from "jquery"
-import utils from "utils"
 import setting from "./setting.coffee"
 import storage from  "./storage.coffee"
 import dict from "./dict.coffee"
 import message from "./message.coffee"
 
-window.utils = utils
-console.log "[dictWindow] init"
 defaultWindowUrl = chrome.extension.getURL('dict.html')
 
 class DictWindow
@@ -102,6 +98,17 @@ export default {
         chrome.windows.onRemoved.addListener (wid)->
             if dictWindow.w?.id == wid
                 dictWindow.reset()
+
+        chrome.browserAction.onClicked.addListener (tab) =>
+            return @lookup()
+
+        chrome.contextMenus.create {
+            title: "使用 Dictionaries 查询 '%s'",
+            contexts: ["selection"],
+            onclick: (info, tab) =>
+                if info.selectionText
+                    @lookup({ w: info.selectionText, s: tab.url, sc: tab.title })
+        }
 
         message.on 'look up', ({ w, s, sc, means }) ->
             if means == 'mouse'

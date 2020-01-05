@@ -49,6 +49,12 @@ var options = {
 	output: {
 		path: path.join(__dirname, "build"),
 		filename: "[name].bundle.js"
+		// filename: chunkData => {
+		// 	return chunkData.chunk.name === "inject"
+		// 		? "[name].bundle.js"
+		// 		: "[name].[hash].bundle.js";
+		// },
+		// chunkFilename: "[name].[hash].bundle.js"
 	},
 	module: {
 		rules: [

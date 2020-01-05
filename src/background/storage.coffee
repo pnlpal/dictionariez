@@ -1,4 +1,3 @@
-import utils from "utils"
 import message from "./message.coffee"
 
 class Item
@@ -29,11 +28,20 @@ class Item
 			k = if Array.isArray(w) then w.map((x) -> "w-#{x}") else "w-#{w}"
 			chrome.storage.sync.remove k, resolve
 
-manager = {
+export default {
 	maxLength: 500,
 	history: [],
 	init: ()->
 		@history = await Item.getAll()
+
+		message.on 'history', () =>
+			@history
+
+		message.on 'remove history', ({ w }) =>
+			@removeHistory w
+
+		message.on 'rating', ({ text, value }) =>
+			@addRating text, value
 
 	getInHistory: (word) ->
 		return @history.find (item) ->
@@ -102,15 +110,3 @@ manager = {
 		res = await @get(k, defaultValue)
 		console.log res
 }
-
-message.on 'history', () ->
-	manager.history
-
-message.on 'remove history', ({ w }) ->
-	manager.removeHistory w
-
-message.on 'rating', ({ text, value }) ->
-	manager.addRating text, value
-
-window.storage = manager
-export default manager

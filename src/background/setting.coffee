@@ -1,5 +1,4 @@
-import $ from "jquery"
-import _ from 'lodash'
+import message from "./message.coffee"
 
 export default {
         configCache: {
@@ -44,10 +43,15 @@ export default {
         }
 
         init: ()->
+            message.on 'setting', () =>
+                @configCache
+            message.on 'save setting', (request) =>
+                @setValue(request.key, request.value)
+
             new Promise (resolve) =>
                 chrome.storage.sync.get 'config', (obj)=>
                     if obj?.config
-                        @configCache = _.merge @configCache, obj.config
+                        Object.assign @configCache, obj.config
                     resolve(@configCache)
 
         setValue: (key, value)->

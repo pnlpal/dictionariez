@@ -1,26 +1,15 @@
-import utils from "utils"
-import setting from "./setting.coffee"
-
-console.log "[message] init"
-
 listeners = {}
 openOptionsTo = ''
 
 chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
-    if request.type == 'getJson'
-        utils.getJson(request.url, request.data).then ((res)->
-            sendResponse(res)), sendResponse
-    else if request.type == 'postJson'
-        utils.postJson(request.url, request.data).then ((res)->
-            sendResponse(res)), sendResponse
+    # if request.type == 'getJson'
+    #     utils.getJson(request.url, request.data).then ((res)->
+    #         sendResponse(res)), sendResponse
+    # else if request.type == 'postJson'
+    #     utils.postJson(request.url, request.data).then ((res)->
+    #         sendResponse(res)), sendResponse
 
-    else if request.type == 'setting'
-        sendResponse setting.configCache
-
-    else if request.type == 'save setting'
-        setting.setValue(request.key, request.value)
-
-    else if request.type == 'open options'
+    if request.type == 'open options'
         chrome.runtime.openOptionsPage()
         openOptionsTo = request.to
     else if request.type == 'open options request to'

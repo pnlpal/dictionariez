@@ -186,7 +186,7 @@ allDicts = [{
     'windowUrlMatch': '.com/([^&/?]+)'
 }]
 
-dictManager =
+export default {
     setting: undefined,
     init: () ->
         @setting ?= await storage.get('dictionary-setting', {})
@@ -196,6 +196,19 @@ dictManager =
             if s
                 d.sequence = s.sequence if s.sequence?
                 d.disabled = s.disabled if s.disabled?
+
+        message.on 'set-dictionary-reorder', ({ dicts }) =>
+            dicts.forEach (d) =>
+                @setting[d.dictName] ?= {}
+                @setting[d.dictName].sequence = d.sequence
+
+            @saveSetting()
+
+        message.on 'set-dictionary-disable', ({ dictName, disabled }) =>
+            @setting[dictName] ?= {}
+            @setting[dictName].disabled = disabled
+
+            @saveSetting()
 
     saveSetting: ()->
         @init()  # update allDicts list
@@ -335,20 +348,4 @@ dictManager =
                     d.append('<p>'+sntext+'</p>')
 
         return wrapper.htm()
-
-
-message.on 'set-dictionary-reorder', ({ dicts }) ->
-    dicts.forEach (d) ->
-        dictManager.setting[d.dictName] ?= {}
-        dictManager.setting[d.dictName].sequence = d.sequence
-
-    dictManager.saveSetting()
-
-message.on 'set-dictionary-disable', ({ dictName, disabled }) ->
-    dictManager.setting[dictName] ?= {}
-    dictManager.setting[dictName].disabled = disabled
-
-    dictManager.saveSetting()
-
-window.dict = dictManager
-export default dictManager
+}

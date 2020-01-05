@@ -1,29 +1,26 @@
-import setting from "./setting.coffee"
-import storage from  "./storage.coffee"
-import dictWindow from "./dictwindow.coffee"
-import dict from "./dict.coffee"
-import message from "./message.coffee"
-import "./hot-reload-content-scripts.js"
 
-import './plain-lookup.coffee'
+# import storage from  "./storage.coffee"
+# import dictWindow from "./dictwindow.coffee"
+# import dict from "./dict.coffee"
+# import message from "./message.coffee"
+# import "./hot-reload-content-scripts.js"
 
-window.setting = setting
+# import './plain-lookup.coffee'
+(() ->
+    { default: setting } = await import(### webpackChunkName: "setting"  ###"./setting.coffee")
+    await setting.init()
+    window.setting = setting
 
-onClickedContextMenu = (info, tab)->
-    if info.selectionText
-        dictWindow.lookup({ w: info.selectionText, s: tab.url, sc: tab.title })
-
-chrome.browserAction.onClicked.addListener (tab)->
-    return dictWindow.lookup()
-
-setting.init().then (c)->
+    { default: storage } = await import(### webpackChunkName: "storage"  ###"./storage.coffee")
     await storage.init()
+    window.storage = storage
+
+    { default: dict } = await import(### webpackChunkName: "dict"  ###"./dict.coffee")
     await dict.init()
+    window.dict = dict
+
+    { default: dictWindow } = await import(### webpackChunkName: "dictwindow"  ###"./dictwindow.coffee")
     await dictWindow.init()
 
-chrome.contextMenus.create {
-    title: "使用 Dictionaries 查询 '%s'",
-    contexts: ["selection"],
-    onclick: onClickedContextMenu
-}
-
+    await import(### webpackChunkName: "plain-lookup"  ###"./plain-lookup.coffee")
+)()
