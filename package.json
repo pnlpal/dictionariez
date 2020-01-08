@@ -7,7 +7,7 @@
 		"url": "git@github.com:revir/dictionaries.git"
 	},
 	"scripts": {
-		"build": "node utils/build.js",
+		"build": "NODE_ENV=production node utils/build.js",
 		"start": "node utils/webserver.js"
 	},
 	"author": "River Yang",

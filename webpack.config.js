@@ -160,7 +160,10 @@ var options = {
 if (env.NODE_ENV === "development") {
 	options.devtool = "cheap-module-eval-source-map";
 	// options.devtool = "eval-source-map"
-	// options.devtool = 'source-map'
+	// options.devtool = "source-map";
+} else {
+	options.devtool = "cheap-module-source-map";
+	// options.devtool = "source-map";
 }
 
 module.exports = options;

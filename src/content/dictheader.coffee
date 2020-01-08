@@ -10,7 +10,7 @@ import('./dictheader.less')
 
 dictApp = angular.module('fairyDictApp', [])
 
-dictApp.controller 'dictCtrl', ($scope, $sce) ->
+dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     console.log "[dictCtrl] init"
 
     # change Bing dictionary's title
@@ -150,6 +150,7 @@ dictApp.controller 'dictCtrl', ($scope, $sce) ->
             $scope.$apply()
 
     return
+]
 
 import('../header.html').then ({ default: headerDom }) ->
     $(document.body).append(headerDom)

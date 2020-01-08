@@ -17,7 +17,7 @@ import('./options.less')
 
 dictApp = angular.module('fairyDictApp', ['ui.bootstrap'])
 
-dictApp.controller 'optionCtrl', ($scope, $sce) ->
+dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
     console.log "[optionCtrl] init"
 
     $scope.allSK = ['', 'Ctrl', 'Shift', 'Alt', 'Meta']
@@ -46,3 +46,4 @@ dictApp.controller 'optionCtrl', ($scope, $sce) ->
         $scope.setting = config
         $scope.$apply()
 
+]
