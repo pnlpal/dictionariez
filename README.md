@@ -11,7 +11,7 @@ Some functions you might like:
 - Sort or disable dictionaries that you don't use, later I will add more dictionaries to support, any suggestions are welcome.
 - Currently support **English**, **Chinese** and **Japanese**, more languages will be supported if you like it.
 
-As you can see, I am a language learner, Chinese is my mother tongue, **English** and **Japanese** are what I am learning right now. I wish this little tool could helper the others like me. So if you have any suggestion please tell me, I am glad to hear feedbacks.
+As you can see, I am a language learner, Chinese is my mother tongue, **English** and **Japanese** are what I am learning right now. I wish this small tool could help the others like me. So if you have any suggestion please tell me, I am glad to hear feedbacks.
 And please correct me if you find any wrong expressions on context here or in the extension's page. Thank you.
 
 # Screenshot
