@@ -11,14 +11,16 @@
 		"start": "node utils/webserver.js"
 	},
 	"author": "River Yang",
-	"license": "MIT",
+	"license": "GPL2",
 	"bugs": {
 		"url": "https://github.com/revir/dictionaries/issues"
 	},
 	"homepage": "https://github.com/revir/dictionaries#readme",
 	"keywords": [
 		"dictionary",
-		"chrome extension"
+		"chrome extension",
+		"firefox addon",
+		"WebExtensions"
 	],
 	"dependencies": {
 		"angular": "~1.4.8",
