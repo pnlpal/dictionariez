@@ -15,6 +15,10 @@ class Item
 		@t = t if t?
 		@save()
 
+	remove: () ->
+		new Promise (resolve) =>
+			chrome.storage.sync.remove "w-#{@w}", resolve
+
 	@getAll: () ->
 		new Promise (resolve) ->
 			chrome.storage.sync.get null, (data) ->

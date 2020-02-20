@@ -100,7 +100,10 @@ export default {
                 dictWindow.reset()
 
         chrome.browserAction.onClicked.addListener (tab) =>
-            return @lookup()
+            chrome.tabs.executeScript {
+                code: "window.getSelection().toString();"
+            }, (selection) =>
+                @lookup({ w: selection?[0], s: tab.url, sc: tab.title })
 
         chrome.contextMenus.create {
             title: "使用 Dictionaries 查询 '%s'",
