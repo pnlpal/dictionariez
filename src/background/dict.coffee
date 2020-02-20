@@ -196,12 +196,14 @@ export default {
             if s
                 d.sequence = s.sequence if s.sequence?
                 d.disabled = s.disabled if s.disabled?
+        allDicts.sort (a, b) -> a.sequence - b.sequence
 
         message.on 'set-dictionary-reorder', ({ dicts }) =>
             dicts.forEach (d) =>
                 @setting[d.dictName] ?= {}
                 @setting[d.dictName].sequence = d.sequence
 
+            allDicts.sort (a, b) -> a.sequence - b.sequence
             @saveSetting()
 
         message.on 'set-dictionary-disable', ({ dictName, disabled }) =>
