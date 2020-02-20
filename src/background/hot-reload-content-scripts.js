@@ -4,7 +4,7 @@ const filesInDirectory = dir =>
 			//   console.log(entries.map(e => e.name).filter(n => n.includes("inject")));
 			return Promise.all(
 				entries
-					.filter(e => e.name === "inject.bundle.js123123123")
+					.filter(e => e.name.includes("inject.bundle.js"))
 					.map(e => {
 						return new Promise(resolve => e.file(resolve));
 					})

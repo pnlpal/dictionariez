@@ -1,5 +1,6 @@
 import $ from 'jquery'
 import utils from "utils"
+
 import "./inject.less"
 
 # Interesting: font url is embedded, for some websites' security setting font-src,
@@ -12,24 +13,38 @@ import debounce from 'lodash/debounce'
 isInDict = false
 
 chrome.runtime.sendMessage {
+	type: 'injected',
+	origin: location.origin,
+	url: location.href
+}, (res) ->
+	if res?.dictUrl
+		await utils.promisify($(document).ready)
+		if res.dict?.resources?.styles?
+			for style in res.dict.resources.styles
+				require("./css/#{style}")
+		$("<iframe id='fairydict-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('body')
+		isInDict = true
+
+chrome.runtime.sendMessage {
 	type: 'setting',
 }, (setting)->
 	mouseMoveTimer = null
 	plainQuerying = null
 	lastAutoSelection = ''
 
-	$(document).ready ()->
-		$('''
-		  <div class="fairydict-tooltip">
-		      <div class="fairydict-spinner">
-		        <div class="fairydict-bounce1"></div>
-		        <div class="fairydict-bounce2"></div>
-		        <div class="fairydict-bounce3"></div>
-		      </div>
-		      <div class="fairydict-tooltip-content">
-		      </div>
-		  </div>
-		     ''').appendTo('body')
+	await utils.promisify($(document).ready)
+
+	$('''
+		<div class="fairydict-tooltip">
+			<div class="fairydict-spinner">
+			<div class="fairydict-bounce1"></div>
+			<div class="fairydict-bounce2"></div>
+			<div class="fairydict-bounce3"></div>
+			</div>
+			<div class="fairydict-tooltip-content">
+			</div>
+		</div>
+			''').appendTo('body')
 
 	setupPlainContentPosition = (e) ->
 		$el = $('.fairydict-tooltip')
@@ -342,16 +357,4 @@ chrome.runtime.sendMessage {
 				sc: document.title
 			})
 
-
-chrome.runtime.sendMessage {
-	type: 'injected',
-	origin: location.origin,
-	url: location.href
-}, (res) ->
-		if res?.dictUrl
-			if res.dict?.resources?.styles?
-				for style in res.dict.resources.styles
-					require("./css/#{style}")
-			$("<iframe id='fairydict-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('body')
-			isInDict = true
 

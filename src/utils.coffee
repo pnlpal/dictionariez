@@ -76,6 +76,10 @@ export default {
 
         return true
 
+    promisify: (cb) ->
+        new Promise (resolve) ->
+            cb resolve
+
     send: (type, data = {}, callback) ->
         if typeof data == 'function'
             callback = data

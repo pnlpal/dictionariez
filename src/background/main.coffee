@@ -3,7 +3,7 @@
 # import dictWindow from "./dictwindow.coffee"
 # import dict from "./dict.coffee"
 # import message from "./message.coffee"
-# import "./hot-reload-content-scripts.js"
+import "./hot-reload-content-scripts.js"
 
 # import './plain-lookup.coffee'
 (() ->
