@@ -1,6 +1,6 @@
 {
 	"name": "dictionaries",
-	"version": "1.0.0",
+	"version": "1.0.2",
 	"description": "One dictionary extension to rule all the other dictionaries",
 	"repository": {
 		"type": "git",
