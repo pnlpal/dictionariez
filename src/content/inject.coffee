@@ -57,7 +57,10 @@ chrome.runtime.sendMessage {
 			# console.log e
 			# console.log top, left, window.innerHeight, window.innerWidth
 
-			rect = window.document.body.getBoundingClientRect()
+			# bugfix: here we can't use document.body.getBoundingClientRect()
+			# because some websites are not using body to scroll, thus there body rect is 0.
+			# for example: https://www.wired.com/story/russias-disinformation-war-is-just-getting-started/
+			rect = window.document.scrollingElement.getBoundingClientRect()
 			domW = window.innerWidth - rect.left
 			domH = window.innerHeight - rect.top
 
