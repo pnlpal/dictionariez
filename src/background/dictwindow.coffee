@@ -126,12 +126,13 @@ export default {
         message.on 'query', (request) ->
             dictName = request.dictName
             w = request.w
+            
             if request.nextDict
                 dictName = dict.getNextDict(dictName).dictName
-                dictWindow.updateDict(dictName)
             if request.previousDict
                 dictName = dict.getPreviousDict(dictName).dictName
-                dictWindow.updateDict(dictName)
+                
+            dictWindow.updateDict(dictName)
 
             if request.previousWord
                 w = storage.getPrevious(w, true)?.w

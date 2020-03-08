@@ -102,13 +102,18 @@
 	}
 }
 
-#fairydict-iframe {
+#dictionaries-iframe {
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
+	opacity: 0.95;
 
 	z-index: 99999;
 	border: none;
 	height: 50px;
+
+	&.dict-list-open {
+		height: 300px;
+	}
 }

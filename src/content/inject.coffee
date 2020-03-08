@@ -22,8 +22,14 @@ chrome.runtime.sendMessage {
 		if res.dict?.resources?.styles?
 			for style in res.dict.resources.styles
 				require("./css/#{style}")
-		$("<iframe id='fairydict-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('body')
+		$("<iframe id='dictionaries-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('body')
 		isInDict = true
+
+window.addEventListener "message", ((event) ->
+	if event.origin.startsWith('chrome-extension://') and event.data.type == 'toggleDictList'
+		$('#dictionaries-iframe').toggleClass('dict-list-open')
+
+), false
 
 chrome.runtime.sendMessage {
 	type: 'setting',
@@ -35,7 +41,7 @@ chrome.runtime.sendMessage {
 	await utils.promisify($(document).ready)
 
 	$('''
-		<div class="fairydict-tooltip">
+		<div class="fairydict-tooltip dictionaries-tooltip">
 			<div class="fairydict-spinner">
 			<div class="fairydict-bounce1"></div>
 			<div class="fairydict-bounce2"></div>
@@ -359,5 +365,3 @@ chrome.runtime.sendMessage {
 				s: location.href,
 				sc: document.title
 			})
-
-

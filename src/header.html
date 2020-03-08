@@ -42,13 +42,46 @@
 						<i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
 						<span class="sr-only">Previous</span>
 					</button>
-					<button
+					<!-- <button
 						class="form-control btn  btn-default dict-name"
 						type="button"
 						ng-click="openOptions('dictionary')"
 					>
 						{{ currentDictName }}
-					</button>
+					</button> -->
+					<div class="btn-group" uib-dropdown uib-keyboard-nav on-toggle="toggleDictList(open)">
+						<button
+							uib-dropdown-toggle
+							class="form-control btn dropdown-toggle btn-default dict-name"
+							type="button"
+							id="dropdownMenu1"
+							title="{{ currentDictName }}"
+						>
+						{{ currentDictName }}
+						<span class="caret"></span>
+						</button>
+
+						<ul
+							uib-dropdown-menu
+							class="dropdown-menu dict-list pull-right"
+							role="menu"
+							aria-labelledby="dropdownMenu1"
+						>
+							<li role="menuitem" ng-repeat="dict in manageDicts" ng-hide="dict.disabled">
+								<a ng-click="query({dictName: dict.dictName})" title="{{ dict.dictName }}" 
+									class="ellipsis" 
+									ng-class="{'text-bold': currentDictName == dict.dictName}">{{
+									dict.dictName
+								}}</a>
+							</li>
+							<li class="divider"></li>
+							<li role="menuitem">
+								<a ng-click="openOptions('dictionary')" href="" class="text-blue">
+									<em>More...</em>
+								</a>
+							</li>
+						</ul>
+					</div>
 					<button
 						type="button"
 						class="btn btn-default"

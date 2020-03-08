@@ -3,12 +3,14 @@ import angular from 'angular'
 import utils from "utils"
 
 # import '../needsharebutton.min.js'
+import 'angular-ui-bootstrap'
 
 import('bootstrap/dist/css/bootstrap.min.css')
 import('../vendor/font-awesome.css')
 import('./dictheader.less')
 
-dictApp = angular.module('fairyDictApp', [])
+# some ui need bootstrap, like dropdown.
+dictApp = angular.module('fairyDictApp', ['ui.bootstrap'])
 
 dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     console.log "[dictCtrl] init"
@@ -26,7 +28,11 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         # origin: window.top?.location?.origin,
         # url: window.top?.location?.href
     }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, w, r})->
-        $scope.allDicts = allDicts
+        $scope.manageDicts = allDicts.reduce(((prev, next) -> 
+            if prev.length < 5 and not next.disabled  # only shows at most 5 items in the list.
+                prev.push(next)
+            return prev
+        ), [])
         $scope.currentDictName = currentDictName
         $scope.nextDictName = nextDictName
         $scope.previousDictName = previousDictName
@@ -49,7 +55,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         $scope.word = $scope.previous.w
         $scope.query()
 
-    $scope.query = ({ nextDict, previousDict, nextWord, previousWord } = {}) ->
+    $scope.query = ({ nextDict, previousDict, nextWord, previousWord, dictName } = {}) ->
         # if not $scope.word
         #     $scope.initial = true
         #     return
@@ -60,7 +66,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         chrome.runtime.sendMessage({
             type: 'query',
             w: $scope.word,
-            dictName: $scope.currentDictName,
+            dictName: dictName or $scope.currentDictName,
             nextDict,
             previousDict,
             nextWord,
@@ -72,6 +78,11 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
                 # current dict might be changed
                 window.location.reload()
         )
+
+    $scope.toggleDictList = (open) ->
+        if $scope.inFrame
+            window.top.postMessage { type: 'toggleDictList', open }, '*'
+
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
         # console.log(request)
