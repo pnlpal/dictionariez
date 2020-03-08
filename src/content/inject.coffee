@@ -26,7 +26,8 @@ chrome.runtime.sendMessage {
 		isInDict = true
 
 window.addEventListener "message", ((event) ->
-	if event.origin.startsWith('chrome-extension://') and event.data.type == 'toggleDictList'
+	# chrome-extension or moz-extension
+	if event.origin.includes('extension://') and event.data.type == 'toggleDictList'
 		$('#dictionaries-iframe').toggleClass('dict-list-open')
 
 ), false
