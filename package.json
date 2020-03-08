@@ -23,7 +23,7 @@
 		"WebExtensions"
 	],
 	"dependencies": {
-		"angular": "~1.4.8",
+		"angular": "~1.7.9",
 		"angular-bootstrap": "^0.12.2",
 		"angular-ui-bootstrap": "^2.5.6",
 		"bootoast": "^1.0.1",
