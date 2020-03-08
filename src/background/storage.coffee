@@ -58,12 +58,14 @@ export default {
 		return @history[@history.length - 1] if circle or !w
 
 	getHistory: (w, length) ->
-		end = @history.findIndex (item) ->
-			return item.w == w
-		begin = 0
+		# end = @history.findIndex (item) ->
+		# 	return item.w == w
+		# begin = 0
 
-		if end == -1
-			end = @history.length
+		# if end == -1
+			# end = @history.length
+		
+		end = @history.length
 
 		if length
 			begin = end - length 
