@@ -140,8 +140,18 @@
 			overflow-y: auto;
 		}
 
-		.dropdown-menu li > a {
-			padding-right: 2px;
+		.dropdown-menu li {
+			
+
+			a {
+				width: max-content;
+				padding-right: 2px;
+				height: 26px;
+				.history-word {
+					display: inline-block;
+					width: 200px;
+				}
+			}
 		}
 		#history-btn {
 			max-width: 100px;
@@ -149,6 +159,9 @@
 		}
 		.vhide {
 			visibility: hidden;
+		}
+		.delete-word {
+			cursor: pointer;
 		}
 	}
 

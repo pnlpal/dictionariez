@@ -131,7 +131,7 @@ export default {
                 dictName = dict.getNextDict(dictName).dictName
             if request.previousDict
                 dictName = dict.getPreviousDict(dictName).dictName
-                
+
             dictWindow.updateDict(dictName)
 
             if request.previousWord
@@ -156,7 +156,12 @@ export default {
             previous = storage.getPrevious(w)
             nextDictName = dict.getNextDict(currentDictName).dictName
             previousDictName = dict.getPreviousDict(currentDictName).dictName
-            return { allDicts: dict.allDicts, currentDictName, nextDictName, previousDictName, previous, w, r }
+            history = storage.getHistory(w, 5) # at most show 5 words in the history list on dictionary header.
+            return { allDicts: dict.allDicts, history, currentDictName, nextDictName, previousDictName, previous, w, r }
+        
+        message.on 'dictionary history', (request, sender) ->
+            history = storage.getHistory(request.word, 5) # at most show 5 words in the history list on dictionary header.
+            return { history }
 
         message.on 'injected', (request, sender) ->
             dictName = dict.getDictFromOrigin(request.origin)?.dictName

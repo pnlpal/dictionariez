@@ -27,8 +27,8 @@ chrome.runtime.sendMessage {
 
 window.addEventListener "message", ((event) ->
 	# chrome-extension or moz-extension
-	if event.origin.includes('extension://') and event.data.type == 'toggleDictList'
-		$('#dictionaries-iframe').toggleClass('dict-list-open')
+	if event.origin.includes('extension://') and event.data.type == 'toggleDropdown'
+		$('#dictionaries-iframe').toggleClass('dropdown-open')
 
 ), false
 

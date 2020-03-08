@@ -27,7 +27,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         type: 'dictionary',
         # origin: window.top?.location?.origin,
         # url: window.top?.location?.href
-    }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, w, r})->
+    }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, history, w, r})->
         $scope.manageDicts = allDicts.reduce(((prev, next) -> 
             if prev.length < 5 and not next.disabled  # only shows at most 5 items in the list.
                 prev.push(next)
@@ -38,6 +38,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         $scope.previousDictName = previousDictName
         $scope.previous = previous
         $scope.word = w
+        $scope.history = history.reverse()
         $scope.$apply()
 
         await import('../starrr.js')
@@ -51,9 +52,15 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     $scope.openOptions = (to) ->
         utils.send 'open options', { to }
 
-    $scope.queryPreviousWord = ()->
-        $scope.word = $scope.previous.w
+    $scope.queryHistory = (w)->
+        $scope.word = w
         $scope.query()
+    
+    $scope.deleteHistory = (item, i) ->
+        await utils.send 'remove history', item
+        {history} = await utils.send 'dictionary history', { word: $scope.word }
+        $scope.history = history.reverse()
+        $scope.$apply()
 
     $scope.query = ({ nextDict, previousDict, nextWord, previousWord, dictName } = {}) ->
         # if not $scope.word
@@ -79,9 +86,9 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
                 window.location.reload()
         )
 
-    $scope.toggleDictList = (open) ->
+    $scope.toggleDropdown = (open) ->
         if $scope.inFrame
-            window.top.postMessage { type: 'toggleDictList', open }, '*'
+            window.top.postMessage { type: 'toggleDropdown', open }, '*'
 
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->

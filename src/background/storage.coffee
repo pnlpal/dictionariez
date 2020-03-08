@@ -57,6 +57,22 @@ export default {
 		return @history[idx - 1] if idx > 0
 		return @history[@history.length - 1] if circle or !w
 
+	getHistory: (w, length) ->
+		end = @history.findIndex (item) ->
+			return item.w == w
+		begin = 0
+
+		if end == -1
+			end = @history.length
+
+		if length
+			begin = end - length 
+			if begin < 0
+				begin = 0
+		
+		return @history.slice(begin, end)
+
+
 	getNext: (w, circle = false) ->
 		idx = @history.findIndex (item) ->
 			return item.w == w

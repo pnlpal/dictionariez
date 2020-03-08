@@ -10,24 +10,69 @@
 			<!-- <i class="fa fa-laptop fa-lg default-page"></i> -->
 			<div class="form-group history-group pull-left" ng-show="previous">
 				<!-- history -->
-				<div class="btn-group history">
+				<div class="btn-group history" uib-dropdown on-toggle="toggleDropdown(open)">
 					<button
 						id="history-btn"
 						type="button"
 						class="btn btn-default"
 						title="{{ previous.w }}"
-						ng-click="queryPreviousWord()"
+						ng-click="queryHistory(previous.w)"
 					>
 						{{ previous.w }}
 					</button>
-					<button
+					<button type="button" class="btn btn-default" uib-dropdown-toggle>
+						<i class="fa fa-history fa-lg" aria-hidden="true"></i>
+						<span class="sr-only">History</span>
+					</button>
+					<ul
+						class="dropdown-menu"
+						uib-dropdown-menu
+						role="menu"
+						aria-labelledby="history-btn"
+					>
+						<li role="menuitem" ng-repeat="item in history track by $index">
+						<a
+							ng-click="queryHistory(item.w)"
+							title="{{ item.w }}"
+							ng-init="hideDeleteBtn=1"
+							ng-mouseenter="hideDeleteBtn=0"
+							ng-mouseleave="hideDeleteBtn=1"
+						>
+							<span class="ellipsis history-word" ng-class="{'text-bold': item.w === word}">{{
+							item.w
+							}}</span>
+
+							<span class="pull-right">
+							<i
+								class="fa fa-star"
+								aria-hidden="true"
+								ng-repeat="i in _.range(0, item.r)"
+							></i>
+							<i
+								class="fa fa-times text-danger delete-word"
+								ng-class="{vhide: hideDeleteBtn}"
+								ng-click="deleteHistory(item, $index);$event.stopPropagation();$event.preventDefault();"
+								aria-hidden="true"
+							></i>
+							</span>
+						</a>
+						</li>
+
+						<li class="divider"></li>
+						<li role="menuitem">
+							<a ng-click="openOptions('history')" href="" class="text-blue">
+								<em>More...</em>
+							</a>
+						</li>
+					</ul>
+					<!-- <button
 						type="button"
 						class="btn btn-default"
 						ng-click="openOptions('history')"
 					>
 						<i class="fa fa-history fa-lg" aria-hidden="true"></i>
 						<span class="sr-only">History</span>
-					</button>
+					</button> -->
 				</div>
 			</div>
 
@@ -49,7 +94,7 @@
 					>
 						{{ currentDictName }}
 					</button> -->
-					<div class="btn-group" uib-dropdown uib-keyboard-nav on-toggle="toggleDictList(open)">
+					<div class="btn-group" uib-dropdown uib-keyboard-nav on-toggle="toggleDropdown(open)">
 						<button
 							uib-dropdown-toggle
 							class="form-control btn dropdown-toggle btn-default dict-name"
