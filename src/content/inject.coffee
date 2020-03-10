@@ -10,6 +10,8 @@ import "./inject-fontello.css"
 
 import debounce from 'lodash/debounce'
 
+import highlight from './editable-highlight'
+
 isInDict = false
 
 chrome.runtime.sendMessage {
@@ -316,6 +318,14 @@ chrome.runtime.sendMessage {
 			if audios.length
 				playAudios audios
 
+		return html
+
+	toggleHighlight = (el) ->
+		if el.nodeName == 'SPAN' and el.style.backgroundColor == 'yellow'
+			el.style.backgroundColor = 'transparent'
+		else
+			highlight('yellow')
+
 	handleLookupByMouse = (event)->
 		text = window.getSelection().toString().trim()
 		return unless text
@@ -350,13 +360,15 @@ chrome.runtime.sendMessage {
 
 					plainQuerying = text
 
-					chrome.runtime.sendMessage {
-						type: 'look up plain',
+					isOk = await utils.send 'look up plain', {
 						means: 'mouse',
 						w: text,
 						s: location.href,
 						sc: document.title
 					},  handlePlainResult
+
+					toggleHighlight(event.target) if isOk
+
 
 		if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
 			chrome.runtime.sendMessage({

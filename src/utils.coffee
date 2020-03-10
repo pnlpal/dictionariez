@@ -90,7 +90,7 @@ export default {
             chrome.runtime.sendMessage data, resolve
 
         if callback
-            p.then callback
+            return p.then callback
         return p
 
     sendToDict: (action, callback) ->
