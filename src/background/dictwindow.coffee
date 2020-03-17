@@ -106,7 +106,7 @@ export default {
                 @lookup({ w: selection?[0], s: tab.url, sc: tab.title })
 
         chrome.contextMenus.create {
-            title: "使用 Dictionaries 查询 '%s'",
+            title: "Look up '%s' in dictionaries",
             contexts: ["selection"],
             onclick: (info, tab) =>
                 if info.selectionText
