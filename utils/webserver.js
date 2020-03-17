@@ -22,6 +22,8 @@ config.plugins = [new webpack.HotModuleReplacementPlugin()].concat(
 
 delete config.chromeExtensionBoilerplate;
 
+config.devtool = "cheap-module-eval-source-map";
+
 var compiler = webpack(config);
 
 var server = new WebpackDevServer(compiler, {

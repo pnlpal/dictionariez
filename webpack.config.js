@@ -116,6 +116,11 @@ var options = {
 						...JSON.parse(content.toString())
 					};
 
+					if (options.devtool === "cheap-module-eval-source-map") {
+						json["content_security_policy"] =
+							"script-src 'self' 'unsafe-eval'; object-src 'self'";
+					}
+
 					return Buffer.from(JSON.stringify(json));
 				}
 			},
@@ -152,13 +157,5 @@ var options = {
 		new WriteFilePlugin()
 	]
 };
-
-if (env.NODE_ENV === "development") {
-	// options.devtool = "cheap-module-eval-source-map";
-	// options.devtool = "eval-source-map"
-	options.devtool = "source-map";
-} else {
-	options.devtool = "source-map";
-}
 
 module.exports = options;
