@@ -320,11 +320,11 @@ chrome.runtime.sendMessage {
 
 		return html
 
-	toggleHighlight = (el) ->
-		if el.nodeName == 'SPAN' and el.style.backgroundColor == 'yellow'
-			el.style.backgroundColor = 'transparent'
-		else
-			highlight('yellow')
+	# toggleHighlight = (el) ->
+	# 	if el.nodeName == 'SPAN' and el.style.backgroundColor == 'yellow'
+	# 		el.style.backgroundColor = 'transparent'
+	# 	else
+	# 		highlight('yellow')
 
 	handleLookupByMouse = (event)->
 		text = window.getSelection().toString().trim()
@@ -367,7 +367,7 @@ chrome.runtime.sendMessage {
 						sc: document.title
 					},  handlePlainResult
 
-					toggleHighlight(event.target) if isOk
+					highlight('yellow') if isOk
 
 
 		if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
