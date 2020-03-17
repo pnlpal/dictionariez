@@ -14,7 +14,7 @@
 					<button
 						id="history-btn"
 						type="button"
-						class="btn btn-default"
+						class="btn btn-default ellipsis"
 						title="{{ previous.w }}"
 						ng-click="queryHistory(previous.w)"
 					>
@@ -81,7 +81,7 @@
 				<div class="btn-group dictionaries">
 					<button
 						type="button"
-						class="btn btn-default"
+						class="btn btn-default btn-sm"
 						title="{{ previousDictName }}"
 						ng-click="query({ previousDict: true })"
 					>
@@ -103,7 +103,7 @@
 							id="dropdownMenu1"
 							title="{{ currentDictName }}"
 						>
-						{{ currentDictName }}
+						<span class="span-name ellipsis">{{ currentDictName }}</span>
 						<span class="caret"></span>
 						</button>
 
@@ -130,7 +130,7 @@
 					</div>
 					<button
 						type="button"
-						class="btn btn-default"
+						class="btn btn-default btn-sm"
 						title="{{ nextDictName }}"
 						ng-click="query({ nextDict: true })"
 					>
