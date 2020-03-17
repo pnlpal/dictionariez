@@ -110,6 +110,18 @@
 							<label>
 								<input
 									type="checkbox"
+									ng-model="setting.markWords"
+									ng-click="changeKey(!setting.markWords, 'markWords')"
+								/>
+								Mark the selected words on web pages
+							</label>
+						</div>
+						<br>
+
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
 									ng-model="setting.enableSelectionOnMouseMove"
 									ng-click="changeKey(!setting.enableSelectionOnMouseMove, 'enableSelectionOnMouseMove')"
 								/>

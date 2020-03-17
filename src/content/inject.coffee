@@ -367,7 +367,7 @@ chrome.runtime.sendMessage {
 						sc: document.title
 					},  handlePlainResult
 
-					highlight('yellow') if isOk
+					highlight('yellow') if isOk and setting.markWords
 
 
 		if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))

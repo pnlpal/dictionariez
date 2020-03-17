@@ -5,6 +5,8 @@ export default {
             windowWidth: 580,
             windowHeight: 700,
 
+            markWords: true,
+
             enableSelectionOnMouseMove: true,
             enableSelectionSK1: true,
             selectionSK1: 'Shift'
