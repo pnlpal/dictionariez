@@ -1,3 +1,7 @@
+**Important: 此扩展的升级版 [Dictionaries](github.com/revir/dictionaries) 已发布， 添加了管理单词表和词典列表的功能， 支持日语查询， 还有更多的功能和设置， 欢迎去下载使用 [Dictionaries](github.com/revir/dictionaries). FairyDict 将不再更新!**
+
+----
+
 *8月11日更新：新增百度、汉典等汉语词典；快速查词的显示框位置可以设置了！*
 
 *7月8日更新：期待的鼠标悬停取词的功能终于来了。*
