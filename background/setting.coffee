@@ -35,6 +35,8 @@ define ["jquery",
             nextHistorySK1: 'Alt',
             nextHistoryKey: 'ArrowRight'
             dictionary: ''
+
+            upgradeNotice: false
         }
 
         init: ()->
@@ -43,6 +45,9 @@ define ["jquery",
                 @configCache = obj
                 chrome.storage.sync.set(obj)
                 dfd.resolve(obj)
+
+                if not obj.upgradeNotice
+                    chrome.runtime.openOptionsPage()
 
             return dfd
 
