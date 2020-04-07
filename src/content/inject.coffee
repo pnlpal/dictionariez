@@ -44,19 +44,19 @@ chrome.runtime.sendMessage {
 	await utils.promisify($(document).ready)
 
 	$('''
-		<div class="fairydict-tooltip dictionaries-tooltip">
+		<div class="dictionaries-tooltip">
 			<div class="fairydict-spinner">
 			<div class="fairydict-bounce1"></div>
 			<div class="fairydict-bounce2"></div>
 			<div class="fairydict-bounce3"></div>
 			</div>
-			<div class="fairydict-tooltip-content">
+			<div class="dictionaries-tooltip-content">
 			</div>
 		</div>
 			''').appendTo('body')
 
 	setupPlainContentPosition = (e) ->
-		$el = $('.fairydict-tooltip')
+		$el = $('.dictionaries-tooltip')
 		if $el.length && e.pageX && e.pageY
 			mousex = e.pageX + 20
 			mousey = e.pageY + 10
@@ -85,9 +85,9 @@ chrome.runtime.sendMessage {
 			w = $(e.target).data('w').trim()
 			return if w == plainQuerying
 
-			$('.fairydict-tooltip').fadeIn('slow')
-			$('.fairydict-tooltip .fairydict-spinner').show()
-			$('.fairydict-tooltip .fairydict-tooltip-content').empty()
+			$('.dictionaries-tooltip').fadeIn('slow')
+			$('.dictionaries-tooltip .fairydict-spinner').show()
+			$('.dictionaries-tooltip .dictionaries-tooltip-content').empty()
 
 			setupPlainContentPosition(e)
 
@@ -120,7 +120,7 @@ chrome.runtime.sendMessage {
 				sc: document.title
 			})
 		if event.key == "Escape"
-			$('.fairydict-tooltip').fadeOut().hide()
+			$('.dictionaries-tooltip').fadeOut().hide()
 			plainQuerying = null
 
 			if isInDict
@@ -228,10 +228,10 @@ chrome.runtime.sendMessage {
 		text = selObj.toString().trim()
 		unless text
 			# click inside the dict
-			if $('.fairydict-tooltip').has(event.target).length
+			if $('.dictionaries-tooltip').has(event.target).length
 				return
 
-			$('.fairydict-tooltip').fadeOut().hide()
+			$('.dictionaries-tooltip').fadeOut().hide()
 			plainQuerying = null
 			return
 
@@ -288,13 +288,13 @@ chrome.runtime.sendMessage {
 		res.en.forEach renderItem if res?.en
 
 		if html
-			$('.fairydict-tooltip .fairydict-spinner').hide()
+			$('.dictionaries-tooltip .fairydict-spinner').hide()
 			if word
-				$('.fairydict-tooltip .fairydict-tooltip-content').html(wTpl(word) + html)
+				$('.dictionaries-tooltip .dictionaries-tooltip-content').html(wTpl(word) + html)
 			else
-				$('.fairydict-tooltip .fairydict-tooltip-content').html(html)
+				$('.dictionaries-tooltip .dictionaries-tooltip-content').html(html)
 		else
-			$('.fairydict-tooltip').fadeOut().hide()
+			$('.dictionaries-tooltip').fadeOut().hide()
 
 		return html
 
@@ -349,11 +349,11 @@ chrome.runtime.sendMessage {
 
 		if setting.enablePlainLookup && text != plainQuerying
 				if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
-					clickInside = $('.fairydict-tooltip').has(event.target).length
+					clickInside = $('.dictionaries-tooltip').has(event.target).length
 
-					$('.fairydict-tooltip').fadeIn('slow')
-					$('.fairydict-tooltip .fairydict-spinner').show()
-					$('.fairydict-tooltip .fairydict-tooltip-content').empty()
+					$('.dictionaries-tooltip').fadeIn('slow')
+					$('.dictionaries-tooltip .fairydict-spinner').show()
+					$('.dictionaries-tooltip .dictionaries-tooltip-content').empty()
 
 					unless clickInside
 						setupPlainContentPosition(event)
