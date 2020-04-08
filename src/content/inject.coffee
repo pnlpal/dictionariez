@@ -96,7 +96,7 @@ chrome.runtime.sendMessage {
 			utils.send 'look up plain', {
 				w
 			}, (res) ->
-				handlePlainResult(res, w)
+				handlePlainResult(res)
 
 		else
 			if setting.enableSelectionOnMouseMove
@@ -242,8 +242,8 @@ chrome.runtime.sendMessage {
 			handleLookupByMouse(event)
 
 
-	renderQueryResult = (res, word) ->
-		wTpl = (w) -> "<div class='fairydict-w'> #{w} </div>"
+	renderQueryResult = (res) ->
+		wTpl = (w) -> "<strong class='fairydict-w'> #{w} </strong>"
 		defTpl = (def) -> "<span class='fairydict-def'> #{def} </span>"
 		defsTpl = (defs) -> "<span class='fairydict-defs'> #{defs} </span>"
 		labelsTpl = (labels) -> "<div class='fairydict-labels'> #{labels} </div>"
@@ -252,7 +252,7 @@ chrome.runtime.sendMessage {
 		contentTpl = (content) -> "<div class='fairydict-content'> #{content} </div>"
 		pronTpl = (pron) -> "<span class='fairydict-pron'> #{pron} </span>"
 		pronAudioTpl = (src) -> "<a class='fairydict-pron-audio' href='' data-mp3='#{src}'><i class='icon-fairydict-volume'></i></a>"
-		pronsTpl = (prons) -> "<div class='fairydict-prons'> #{prons} </div>"
+		pronsTpl = (w, prons) -> "<div class='fairydict-prons'> #{w} #{prons} </div>"
 
 		html = ''
 		if res?.prons
@@ -265,7 +265,8 @@ chrome.runtime.sendMessage {
 			pronHtml += pronTpl res.prons.pron if res.prons.pron
 			pronHtml += pronAudioTpl res.prons.pronAudio if res.prons.pronAudio
 
-			html += pronsTpl pronHtml if pronHtml
+			wHtml = wTpl res.w if res.w
+			html += pronsTpl wHtml, pronHtml if pronHtml
 
 		renderItem = (item) ->
 			_html = ''
@@ -289,17 +290,14 @@ chrome.runtime.sendMessage {
 
 		if html
 			$('.dictionaries-tooltip .fairydict-spinner').hide()
-			if word
-				$('.dictionaries-tooltip .dictionaries-tooltip-content').html(wTpl(word) + html)
-			else
-				$('.dictionaries-tooltip .dictionaries-tooltip-content').html(html)
+			$('.dictionaries-tooltip .dictionaries-tooltip-content').html(html)
 		else
 			$('.dictionaries-tooltip').fadeOut().hide()
 
 		return html
 
-	handlePlainResult = (res, word) ->
-		html = renderQueryResult res, word
+	handlePlainResult = (res) ->
+		html = renderQueryResult res
 		if !html
 			plainQuerying = null
 

@@ -15,6 +15,8 @@ parseBing = (url) ->
     # console.log(nodes.find('.hd_pr').text())
     # console.log(nodes.find('.hd_prUS').text())
 
+    w = nodes.find('.hd_area #headword').text()
+
     prons = {
         ame: nodes.find('.hd_area .hd_prUS').text(),
         ameAudio: nodes.find('.hd_area .hd_prUS').next('.hd_tf').html()?.match(/https:.*?\.mp3/)[0]
@@ -43,7 +45,7 @@ parseBing = (url) ->
         })
 
     # console.log prons, enDefs, cnDefs
-    return {en: enDefs, cn: cnDefs, prons}
+    return {en: enDefs, cn: cnDefs, prons, w}
 
 parseJapanese = (w) ->
     url = "https://www.japandict.com/#{w}"
