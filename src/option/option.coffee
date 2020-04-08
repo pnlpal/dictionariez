@@ -6,7 +6,8 @@ import utils from "utils"
 
 import 'angular-ui-bootstrap'
 
-# import '../needsharebutton.min.js'
+import '../vendor/needsharebutton.min.js'
+import '../vendor/needsharebutton.min.css'
 import(### webpackChunkName: "tables"  ###'./tables.coffee')
 import(### webpackChunkName: "github-badge"  ###'../vendor/github-badge.js')
 import(### webpackChunkName: "inject-options"  ###'../content/inject.coffee')

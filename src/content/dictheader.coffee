@@ -9,8 +9,6 @@ import('bootstrap/dist/css/bootstrap.min.css')
 import('../vendor/font-awesome.css')
 import('./dictheader.less')
 
-import(### webpackChunkName: "github-badge"  ###'../vendor/github-badge.js')
-
 # some ui need bootstrap, like dropdown.
 dictApp = angular.module('fairyDictApp', ['ui.bootstrap'])
 
@@ -24,6 +22,11 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     $scope.inFrame = window.self != window.top
     $scope.querying = false
     $scope.previous = null
+
+    if not $scope.inFrame
+        import(### webpackChunkName: "github-badge"  ###'../vendor/github-badge.js')
+        import(### webpackChunkName: "needsharebutton-js"  ###'../vendor/needsharebutton.min.js')
+        import(### webpackChunkName: "needsharebutton-css"  ###'../vendor/needsharebutton.min.css')
 
     chrome.runtime.sendMessage {
         type: 'dictionary',
