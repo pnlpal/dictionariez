@@ -116,6 +116,13 @@ allDicts = [{
         styles: ['vocabulary.less']
     }
 }, {
+    'dictName': "thefreedictionary.com",
+    'windowUrl': 'https://www.thefreedictionary.com/<word>',
+    'windowUrlMatch': 'thefreedictionary.com/([^&/?]+)',
+    "resources": {
+        styles: ['thefreedictionary.less']
+    }
+}, {
     'dictName': '金山词霸',
     'windowUrl': 'http://www.iciba.com/<word>',
     'windowUrlMatch': 'iciba.com/([^&]+)',
