@@ -111,6 +111,13 @@ allDicts = [{
     'windowUrl': 'https://www.lexico.com/en/definition/<word>',
     'windowUrlMatch': '/definition/([^&/?]+)'
 }, {
+    'dictName': 'American Heritage Dictionary',
+    'windowUrl': 'https://ahdictionary.com/word/search.html?q=<word>',
+    'windowUrlMatch': '[^\\w]q=([^&]+)',
+    "resources": {
+        styles: ['ahdictionary.less']
+    }
+}, {
     'dictName': '金山词霸',
     'windowUrl': 'http://www.iciba.com/<word>',
     'windowUrlMatch': 'iciba.com/([^&]+)',
