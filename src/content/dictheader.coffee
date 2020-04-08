@@ -9,6 +9,8 @@ import('bootstrap/dist/css/bootstrap.min.css')
 import('../vendor/font-awesome.css')
 import('./dictheader.less')
 
+import(### webpackChunkName: "github-badge"  ###'../vendor/github-badge.js')
+
 # some ui need bootstrap, like dropdown.
 dictApp = angular.module('fairyDictApp', ['ui.bootstrap'])
 
