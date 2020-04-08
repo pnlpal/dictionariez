@@ -98,15 +98,6 @@ allDicts = [{
         styles: ['collins.less']
     }
 }, {
-#     'dictName': 'Easton\'s 1897 Bible Dictionary',
-#     'entry': 'Aonaware',
-#     'baseUrl': 'http://services.aonaware.com/DictService/DictService.asmx/DefineInDict',
-#     'queryType': 'post',
-#     'params': {
-#         'dictId': 'easton'
-#     },
-#     'queryKey': 'word'
-# }, {
     'dictName': "Lexico",
     'windowUrl': 'https://www.lexico.com/en/definition/<word>',
     'windowUrlMatch': '/definition/([^&/?]+)'
@@ -116,6 +107,13 @@ allDicts = [{
     'windowUrlMatch': '[^\\w]q=([^&]+)',
     "resources": {
         styles: ['ahdictionary.less']
+    }
+}, {
+    'dictName': "vocabulary.com",
+    'windowUrl': 'https://www.vocabulary.com/dictionary/<word>',
+    'windowUrlMatch': '/dictionary/([^&/?]+)',
+    "resources": {
+        styles: ['vocabulary.less']
     }
 }, {
     'dictName': '金山词霸',
