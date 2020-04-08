@@ -29,7 +29,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         # url: window.top?.location?.href
     }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, history, w, r})->
         $scope.manageDicts = allDicts.reduce(((prev, next) -> 
-            if prev.length < 5 and not next.disabled  # only shows at most 5 items in the list.
+            if prev.length < 8 and not next.disabled  # only shows at most 8 items in the list.
                 prev.push(next)
             return prev
         ), [])

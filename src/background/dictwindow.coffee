@@ -156,11 +156,11 @@ export default {
             previous = storage.getPrevious(w)
             nextDictName = dict.getNextDict(currentDictName).dictName
             previousDictName = dict.getPreviousDict(currentDictName).dictName
-            history = storage.getHistory(w, 5) # at most show 5 words in the history list on dictionary header.
+            history = storage.getHistory(w, 8) # at most show 8 words in the history list on dictionary header.
             return { allDicts: dict.allDicts, history, currentDictName, nextDictName, previousDictName, previous, w, r }
         
         message.on 'dictionary history', (request, sender) ->
-            history = storage.getHistory(request.word, 5) # at most show 5 words in the history list on dictionary header.
+            history = storage.getHistory(request.word, 8) # at most show 8 words in the history list on dictionary header.
             return { history }
 
         message.on 'injected', (request, sender) ->
