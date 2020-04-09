@@ -90,10 +90,6 @@ var options = {
 			{
 				test: /\.coffee$/,
 				loader: "coffee-loader"
-			},
-			{
-				test: /needsharebutton.min.js$/,
-				loader: "script-loader"
 			}
 		]
 	},
