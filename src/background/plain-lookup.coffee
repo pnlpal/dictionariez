@@ -44,6 +44,10 @@ parseBing = (word) ->
         prons.ameAudio = ameSrc if ameSrc
         prons.breAudio = breSrc if breSrc
 
+    if prons.ame
+        prons.ame = prons.ame.replace('美', 'Ame')
+        prons.bre = prons.bre.replace('英', 'Bre')
+
     enDefs = []
 
     eeNodes = nodes.find('#homoid tr.def_row')

@@ -250,7 +250,7 @@ chrome.runtime.sendMessage {
 		labelTpl = (label) -> "<span class='fairydict-label'> #{label} </span>"
 		posTpl = (pos) -> "<span class='fairydict-pos'> #{pos} </span>"
 		contentTpl = (content) -> "<div class='fairydict-content'> #{content} </div>"
-		pronTpl = (pron) -> "<span class='fairydict-pron'> #{pron} </span>"
+		pronTpl = (pron) -> "<span class='fairydict-pron'> <em> #{pron} </em> </span>"
 		pronAudioTpl = (src) -> "<a class='fairydict-pron-audio' href='' data-mp3='#{src}'><i class='icon-fairydict-volume'></i></a>"
 		pronsTpl = (w, prons) -> "<div class='fairydict-prons'> #{w} #{prons} </div>"
 
