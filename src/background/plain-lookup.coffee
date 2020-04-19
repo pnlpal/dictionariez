@@ -5,12 +5,26 @@ import storage from "./storage.coffee"
 import setting from "./setting.coffee"
 import utils from "utils"
 
+parseLdoceonlineAudios = (word) ->
+    dres = await dict.query(word, 'Longman English')
+    res = await $.get(dres.windowUrl)
+    nodes = $(res)
+
+    prons = {}
+    w = nodes.find('.ldoceEntry .Head .HYPHENATION').text()
+    ameSrc = nodes.find('.ldoceEntry .Head .amefile').attr('data-src-mp3')
+    breSrc = nodes.find('.ldoceEntry .Head .brefile').attr('data-src-mp3')
+    # console.log(w, ameSrc, breSrc)
+    return {ameSrc, breSrc}
+    
+
 # most: 这个单词的 E-E 词典有 gl_none 这个 class；
 # 词组: 查询词组时没有音标，只有发音；
 # 网络词汇可能只有 web 释义，没有发音，如： https://cn.bing.com/dict/search?q=wantonly
 # 中文词： 查询结果上部是英文翻译，E-E 的地方却是 cn-cn, 如： https://cn.bing.com/dict/search?q=%E5%A4%A7%E5%8D%8A
-parseBing = (url) ->
-    res = await $.get(url)
+parseBing = (word) ->
+    dres = await dict.query(word, "Bing Dict (必应词典)")
+    res = await $.get(dres.windowUrl)
     nodes = $(res)
     # console.log(nodes.find('.hd_pr').text())
     # console.log(nodes.find('.hd_prUS').text())
@@ -23,6 +37,12 @@ parseBing = (url) ->
         bre: nodes.find('.hd_area .hd_pr').text(),
         breAudio: nodes.find('.hd_area .hd_pr').next('.hd_tf').html()?.match(/https:.*?\.mp3/)[0]
     }
+
+    # replace audios with ldoceonline sources.
+    if w and prons.ame and not utils.hasChinese(w)
+        { ameSrc, breSrc } = await parseLdoceonlineAudios(w)
+        prons.ameAudio = ameSrc if ameSrc
+        prons.breAudio = breSrc if breSrc
 
     enDefs = []
 
@@ -93,7 +113,6 @@ parseJapanese = (w) ->
     console.log "parse japanese: ", { en: results, prons }
     return { en: results, prons }
 
-
 message.on 'look up plain', ({w, s, sc})->
     w = w.trim()
     return unless w
@@ -104,8 +123,8 @@ message.on 'look up plain', ({w, s, sc})->
     if utils.hasJapanese(w) and setting.getValue "enableLookupJapanese"
         return parseJapanese(w)
 
-    res = await dict.query(w, "Bing Dict (必应词典)")
-    return parseBing(res.windowUrl)
+    
+    return parseBing(w)
 
 
 # parseBing('https://cn.bing.com/dict/search?q=most')

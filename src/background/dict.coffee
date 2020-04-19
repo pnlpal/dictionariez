@@ -4,7 +4,7 @@ import message from "./message.coffee"
 
 allDicts = [{
     'dictName': "Bing Dict (必应词典)",
-    'windowUrl': 'https://cn.bing.com/dict/search?q=<word>',
+    'windowUrl': 'https://cn.bing.com/dict/search?mkt=zh-cn&q=<word>', # must has mkt 
     'windowUrlMatch': '[^\\w]q=([^&]+)',
     "resources": {
         styles: ['bing.less']
