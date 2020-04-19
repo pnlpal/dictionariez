@@ -189,6 +189,17 @@
 							<label>
 								<input
 									type="checkbox"
+									ng-model="setting.showChineseDefinition"
+									ng-click="changeKey(!setting.showChineseDefinition, 'showChineseDefinition')"
+								/>
+								Show Chinese definition. <em class="text-new">New!</em>
+							</label>
+						</div>
+
+						<div class="checkbox indent">
+							<label>
+								<input
+									type="checkbox"
 									ng-model="setting.enablePlainSK1"
 									ng-click="changeKey(!setting.enablePlainSK1, 'enablePlainSK1')"
 								/>

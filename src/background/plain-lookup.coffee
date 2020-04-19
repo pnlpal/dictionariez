@@ -57,12 +57,14 @@ parseBing = (word) ->
         })
 
     cnDefs = []
-    defsNodes = nodes.find('.qdef ul')
-    defsNodes.find('.pos').each (i, el) ->
-        cnDefs.push({
-            pos: $(el).text(),
-            def: $(el).next().text()
-        })
+
+    if setting.getValue 'showChineseDefinition'
+        defsNodes = nodes.find('.qdef ul')
+        defsNodes.find('.pos').each (i, el) ->
+            cnDefs.push({
+                pos: $(el).text(),
+                def: $(el).next().text()
+            })
 
     # console.log prons, enDefs, cnDefs
     return {en: enDefs, cn: cnDefs, prons, w}
