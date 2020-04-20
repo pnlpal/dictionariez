@@ -204,6 +204,13 @@ allDicts = [{
         styles: ['naver.less']
     }
 }, {
+    'dictName': 'Naver Dict (Korean to English)',
+    'windowUrl': 'https://en.dict.naver.com/#/search?range=all&query=<word>',
+    'windowUrlMatch': '[^\\w]query=([^&]+)',
+    "resources": {
+        styles: ['naver.less']
+    }
+}, {
     'dictName': 'Bab.la (Korean)',
     'windowUrl': 'https://en.bab.la/dictionary/korean-english/<word>',
     'windowUrlMatch': '/korean-english/([^&/?]+)',
