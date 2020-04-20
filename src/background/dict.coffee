@@ -196,7 +196,16 @@ allDicts = [{
     'dictName': 'JapanDict',
     'windowUrl': 'https://www.japandict.com/<word>',
     'windowUrlMatch': '.com/([^&/?]+)'
+}, {
+    'dictName': 'Naver Dict (Korean)',
+    'windowUrl': 'https://dict.naver.com/search.nhn?query=<word>&target=dic',
+    'windowUrlMatch': '[^\\w]query=([^&]+)',
+    "resources": {
+        styles: ['naver.less']
+    }
 }]
+
+
 
 export default {
     setting: undefined,
