@@ -24,7 +24,10 @@ chrome.runtime.sendMessage {
 		if res.dict?.resources?.styles?
 			for style in res.dict.resources.styles
 				require("./css/#{style}")
-		$("<iframe id='dictionaries-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('body')
+
+		# append to html rather than body.
+		# some websites such as naver dict, may clear body when reload to another page. 
+		$("<iframe id='dictionaries-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('html')
 		isInDict = true
 
 window.addEventListener "message", ((event) ->

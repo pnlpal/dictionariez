@@ -28,27 +28,32 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         import(### webpackChunkName: "needsharebutton-js"  ###'../vendor/needsharebutton.min.js')
         import(### webpackChunkName: "needsharebutton-css"  ###'../vendor/needsharebutton.min.css')
 
-    chrome.runtime.sendMessage {
-        type: 'dictionary',
-        # origin: window.top?.location?.origin,
-        # url: window.top?.location?.href
-    }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, history, w, r})->
-        $scope.manageDicts = allDicts.reduce(((prev, next) -> 
-            if prev.length < 8 and not next.disabled  # only shows at most 8 items in the list.
-                prev.push(next)
-            return prev
-        ), [])
-        $scope.currentDictName = currentDictName
-        $scope.nextDictName = nextDictName
-        $scope.previousDictName = previousDictName
-        $scope.previous = previous
-        $scope.word = w
-        $scope.history = history.reverse()
-        $scope.$apply()
+    initDict = () ->
+        chrome.runtime.sendMessage {
+            type: 'dictionary',
+            # origin: window.top?.location?.origin,
+            # url: window.top?.location?.href
+        }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, history, w, r})->
+            $scope.manageDicts = allDicts.reduce(((prev, next) -> 
+                if prev.length < 8 and not next.disabled  # only shows at most 8 items in the list.
+                    prev.push(next)
+                return prev
+            ), [])
+            $scope.currentDictName = currentDictName
+            $scope.nextDictName = nextDictName
+            $scope.previousDictName = previousDictName
+            $scope.previous = previous
+            $scope.word = w
+            $scope.history = history.reverse()
+            $scope.$apply()
 
-        await import('../starrr.js')
-        $('.starrr', baseNode).starrr({numStars: 3, rating: r})
+            await import('../starrr.js')
+            if $('.starrr', baseNode).data("star-rating")
+                $('.starrr', baseNode).data("star-rating").setRating(r)
+            else
+                $('.starrr', baseNode).starrr({numStars: 3, rating: r})
 
+    initDict()
     chrome.runtime.sendMessage {
         type: 'setting'
     }, (setting)->
@@ -86,9 +91,17 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         }, (data) ->
             if data?.windowUrl
                 window.top.location.href = data.windowUrl
+
+                # some website may not reload window, like naver dict.
+                setTimeout (() ->
+                    $scope.querying = false
+                    initDict()
+                ), 2000
+                
             else
                 # current dict might be changed
-                window.location.reload()
+                $scope.querying = false
+                initDict()
         )
 
     $scope.toggleDropdown = (open) ->
