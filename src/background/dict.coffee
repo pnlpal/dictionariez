@@ -203,6 +203,13 @@ allDicts = [{
     "resources": {
         styles: ['naver.less']
     }
+}, {
+    'dictName': 'Bab.la (Korean)',
+    'windowUrl': 'https://en.bab.la/dictionary/korean-english/<word>',
+    'windowUrlMatch': '/korean-english/([^&/?]+)',
+    "resources": {
+        styles: ['bab.la.less']
+    }
 }]
 
 
