@@ -88,14 +88,15 @@
 	}
 
 	.search-group {
-		display: block;
-		position: relative;
-		overflow: hidden;
+		display: flex;
+		// display: block;
+		// position: relative;
+		// overflow: hidden;
 		.querying {
 			position: relative;
 			left: -15px;
 			top: 3px;
-			min-width: 70px;
+			width: 60px;
 		}
 
 		#fairy-stars {
@@ -103,7 +104,8 @@
 			position: relative;
 			left: -15px;
 			top: 5px;
-			min-width: 50px;
+			width: 60px;
+			// margin-right: 10px;
 
 			.fa.fa-star {
 				color: orange;
@@ -121,12 +123,19 @@
 			cursor: pointer;
 		}
 		.search-wrapper {
-			display: block;
-			overflow: hidden;
-			padding-left: 10px;
+			// display: block;
+			// overflow: hidden;
+			flex: 2;
+			margin-left: 10px;
 			.dict-input {
 				width: 100%;
 				margin: 0; // override urban dictionary's style
+			}
+			ul.dropdown-menu {
+				right: -250px;
+				li>a {
+					padding: 0 13px;
+				}
 			}
 		}
 	}

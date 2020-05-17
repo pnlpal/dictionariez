@@ -1,6 +1,7 @@
 import $ from 'jquery'
 import angular from 'angular'
 import utils from "utils"
+import debounce from 'lodash/debounce'
 
 # import '../needsharebutton.min.js'
 import 'angular-ui-bootstrap'
@@ -22,6 +23,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     $scope.inFrame = window.self != window.top
     $scope.querying = false
     $scope.previous = null
+    # $scope.autocompletes = [{w: 'pilgrim', def: 'balbab, babla'}]
 
     if not $scope.inFrame
         import(### webpackChunkName: "github-badge"  ###'../vendor/github-badge.js')
@@ -72,13 +74,14 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         $scope.history = history.reverse()
         $scope.$apply()
 
-    $scope.query = ({ nextDict, previousDict, nextWord, previousWord, dictName } = {}) ->
+    $scope.query = ({ nextDict, previousDict, nextWord, previousWord, dictName, w } = {}) ->
         # if not $scope.word
         #     $scope.initial = true
         #     return
 
         $scope.initial = false
         $scope.querying = true
+        $scope.word = w if w
 
         chrome.runtime.sendMessage({
             type: 'query',
@@ -108,6 +111,16 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         if $scope.inFrame
             window.top.postMessage { type: 'toggleDropdown', open }, '*'
 
+    $scope.autocomplete = debounce (() ->
+        text = $scope.word.trim()
+        if text
+            $scope.autocompletes = await utils.send 'autocomplete', { text }
+        else
+            $scope.autocompletes = []
+
+        $scope.$apply()
+        $scope.toggleDropdown($scope.autocompletes.length > 0)
+    ), 500
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
         # console.log(request)
@@ -192,7 +205,6 @@ import('../header.html').then ({ default: headerDom }) ->
     $(document.body).append(headerDom)
     angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])
 
-    { default: debounce } = await import('lodash/debounce')
     $(window).on 'resize', debounce ((evt) ->
         utils.send 'window resize'
     ), 300

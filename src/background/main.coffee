@@ -23,4 +23,5 @@ import "./hot-reload-content-scripts.js"
     await dictWindow.init()
 
     await import(### webpackChunkName: "plain-lookup"  ###"./plain-lookup.coffee")
+    await import(### webpackChunkName: "auto-complete"  ###"./auto-complete.coffee")
 )()
