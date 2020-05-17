@@ -123,6 +123,13 @@ allDicts = [{
         styles: ['thefreedictionary.less']
     }
 }, {
+    'dictName': "Green’s Dictionary of Slang",
+    'windowUrl': 'https://greensdictofslang.com/search/basic?q=<word>',
+    'windowUrlMatch': '[^\\w]q=([^&]+)',
+    "resources": {
+        styles: ['greensdictofslang.less']
+    }
+}, {
     'dictName': '金山词霸',
     'windowUrl': 'http://www.iciba.com/<word>',
     'windowUrlMatch': 'iciba.com/([^&]+)',
