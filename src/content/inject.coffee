@@ -154,7 +154,7 @@ chrome.runtime.sendMessage {
 
 	$(document).on 'click', '.fairydict-pron-audio', (e) ->
 		e.stopPropagation()
-		utils.send 'play audios', { urls: [$(this).data('mp3')] }
+		utils.send 'play audios', { otherSrc: $(this).data('mp3') }
 
 		return false
 
@@ -284,19 +284,7 @@ chrome.runtime.sendMessage {
 			plainQuerying = null
 
 		if res?.prons
-			audios = []
-
-			if res.prons.pronAudio and setting.enableAmeAudio
-				audios.push res.prons.pronAudio
-
-			if res.prons.ameAudio and setting.enableAmeAudio
-				audios.push res.prons.ameAudio
-
-			if res.prons.breAudio and setting.enableBreAudio
-				audios.push res.prons.breAudio
-
-			if audios.length
-				utils.send 'play audios', { urls: audios }
+			utils.send 'play audios', { ameSrc: res.prons.ameAudio, breSrc: res.prons.breAudio, otherSrc: res.prons.pronAudio, checkSetting: true}
 
 		return html
 

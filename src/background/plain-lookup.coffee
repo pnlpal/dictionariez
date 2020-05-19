@@ -126,11 +126,13 @@ playAudios = (urls) ->
         if (audio.ended) 
             return true
         
-        await utils.promisifiedTimeout 100
+        await utils.promisifiedTimeout 200
         _checkEnd audio
 
     _play = (url) ->
         new Promise (resolve, reject) ->
+            return resolve() if not url
+
             audio = new Audio(url)
             audio.oncanplay = ()->
                 audio.play()
@@ -140,8 +142,6 @@ playAudios = (urls) ->
     
     for url in urls
         await _play(url)
-        await utils.promisifiedTimeout(200)
-
 
 message.on 'look up plain', ({w, s, sc})->
     w = w.trim()
@@ -156,8 +156,14 @@ message.on 'look up plain', ({w, s, sc})->
     
     return parseBing(w)
 
-message.on 'play audios', ({ urls }) ->
-    playAudios urls
+message.on 'play audios', ({ ameSrc, breSrc, otherSrc, checkSetting }) ->
+    if checkSetting
+        if not setting.getValue 'enableAmeAudio'
+            ameSrc = null
+        if not setting.getValue 'enableBreAudio'
+            breSrc = null
+
+    playAudios [ameSrc, breSrc, otherSrc]
 
 # parseBing('https://cn.bing.com/dict/search?q=most')
 # parseJapanese('です')
