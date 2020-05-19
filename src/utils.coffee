@@ -79,6 +79,10 @@ export default {
     promisify: (cb) ->
         new Promise (resolve) ->
             cb resolve
+    
+    promisifiedTimeout: (t) ->
+        new Promise (resolve) ->
+            setTimeout resolve, t
 
     send: (type, data = {}, callback) ->
         if typeof data == 'function'

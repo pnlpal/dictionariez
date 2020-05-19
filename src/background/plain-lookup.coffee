@@ -119,6 +119,30 @@ parseJapanese = (w) ->
     console.log "parse japanese: ", { en: results, prons }
     return { en: results, prons }
 
+playAudios = (urls) ->
+    return unless urls?.length
+    
+    _checkEnd = (audio) ->
+        if (audio.ended) 
+            return true
+        
+        await utils.promisifiedTimeout 100
+        _checkEnd audio
+
+    _play = (url) ->
+        new Promise (resolve, reject) ->
+            audio = new Audio(url)
+            audio.oncanplay = ()->
+                audio.play()
+                # console.log url
+
+            _checkEnd(audio).then resolve
+    
+    for url in urls
+        await _play(url)
+        await utils.promisifiedTimeout(200)
+
+
 message.on 'look up plain', ({w, s, sc})->
     w = w.trim()
     return unless w
@@ -132,6 +156,8 @@ message.on 'look up plain', ({w, s, sc})->
     
     return parseBing(w)
 
+message.on 'play audios', ({ urls }) ->
+    playAudios urls
 
 # parseBing('https://cn.bing.com/dict/search?q=most')
 # parseJapanese('です')

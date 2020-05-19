@@ -154,7 +154,8 @@ chrome.runtime.sendMessage {
 
 	$(document).on 'click', '.fairydict-pron-audio', (e) ->
 		e.stopPropagation()
-		playAudios [$(this).data('mp3')]
+		utils.send 'play audios', { urls: [$(this).data('mp3')] }
+
 		return false
 
 
@@ -170,31 +171,6 @@ chrome.runtime.sendMessage {
 
 		if word
 			handleLookupByMouse(e)
-
-	playAudios = (urls) ->
-		return unless urls?.length
-		audios = urls.map (url)->
-			return new Audio(url)
-
-		_play = (audio, timeout)->
-			timeout ?= 0
-			return $.Deferred (dfd)->
-				_func = ()->
-					setTimeout (()->
-						# console.log "play: ", audio.duration, timeout
-						audio.play()
-						dfd.resolve(audio.duration or 1)
-					), timeout
-
-				audio.addEventListener 'loadeddata', _func
-
-		__play = (idx, timeout)->
-			idx ?= 0
-			if audios[idx]
-				_play(audios[idx], timeout).then (duration)->
-					__play(idx+1, duration*1000)
-
-		__play()
 
 	getWordAtPoint = (elem, x, y)->
 		if elem.nodeType == elem.TEXT_NODE
@@ -320,7 +296,7 @@ chrome.runtime.sendMessage {
 				audios.push res.prons.breAudio
 
 			if audios.length
-				playAudios audios
+				utils.send 'play audios', { urls: audios }
 
 		return html
 
