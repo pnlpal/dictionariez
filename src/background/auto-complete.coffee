@@ -6,6 +6,8 @@ import setting from "./setting.coffee"
 import utils from "utils"
 
 parseVocabulary = (text) ->
+    return [] unless text and utils.hasOnlyEnglish(text)
+
     url = "https://www.vocabulary.com/dictionary/autocomplete?search=#{text}"
     res = await $.get url
     nodes = $(res)
@@ -19,8 +21,7 @@ parseVocabulary = (text) ->
     return list
 
 message.on 'autocomplete', ({ text })->
-    return {} unless text.trim()
-    return parseVocabulary(text)
+    return parseVocabulary(text.trim())
 
 
 parseVocabulary('pil')

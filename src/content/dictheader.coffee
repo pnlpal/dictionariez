@@ -23,7 +23,6 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     $scope.inFrame = window.self != window.top
     $scope.querying = false
     $scope.previous = null
-    # $scope.autocompletes = [{w: 'pilgrim', def: 'balbab, babla'}]
 
     if not $scope.inFrame
         import(### webpackChunkName: "github-badge"  ###'../vendor/github-badge.js')
@@ -117,9 +116,9 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             $scope.autocompletes = await utils.send 'autocomplete', { text }
         else
             $scope.autocompletes = []
-
+        $scope.hasAutocompletes = $scope.autocompletes.length > 0
         $scope.$apply()
-        $scope.toggleDropdown($scope.autocompletes.length > 0)
+        $scope.toggleDropdown($scope.hasAutocompletes)
     ), 500
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->

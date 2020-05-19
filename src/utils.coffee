@@ -110,11 +110,15 @@ export default {
     hasNonWord: (str) ->
         REGEX_JAPANESE = /[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]/g
         REGEX_CHINESE = /[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\u{20000}-\u{2a6df}]|[\u{2a700}-\u{2b73f}]|[\u{2b740}-\u{2b81f}]|[\u{2b820}-\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\u{2f800}-\u{2fa1f}]/ug
+        REGEX_ENG = /[\w'.-\s]/g
 
         str = str.replace(REGEX_JAPANESE, '')
         str = str.replace(REGEX_CHINESE, '')
-
-        str = str.replace(/[\w'.-\s]/g, '')
+        str = str.replace(REGEX_ENG, '')
 
         /\W/.test(str)
+
+    hasOnlyEnglish: (str)->
+        REGEX_ENG = /[\w'.-\s]/g
+        return str.replace(REGEX_ENG, '') == ''
 }
