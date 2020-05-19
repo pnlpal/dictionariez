@@ -324,6 +324,8 @@ chrome.runtime.sendMessage {
 		if !setting.enableLookupJapanese and !setting.enableLookupChinese
 			return if utils.hasChinese(text) or utils.hasJapanese(text)
 
+		highlight('yellow') if setting.markWords
+
 		if setting.enablePlainLookup && text != plainQuerying
 				if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
 					clickInside = $('.dictionaries-tooltip').has(event.target).length
@@ -343,9 +345,6 @@ chrome.runtime.sendMessage {
 						s: location.href,
 						sc: document.title
 					},  handlePlainResult
-
-					highlight('yellow') if isOk and setting.markWords
-
 
 		if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
 			chrome.runtime.sendMessage({
