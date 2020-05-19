@@ -233,19 +233,19 @@ chrome.runtime.sendMessage {
 		posTpl = (pos) -> "<span class='fairydict-pos'> #{pos} </span>"
 		contentTpl = (content) -> "<div class='fairydict-content'> #{content} </div>"
 		pronTpl = (pron) -> "<span class='fairydict-pron'> <em> #{pron} </em> </span>"
-		pronAudioTpl = (src) -> "<a class='fairydict-pron-audio' href='' data-mp3='#{src}'><i class='icon-fairydict-volume'></i></a>"
+		pronAudioTpl = (src, type) -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' href='' data-mp3='#{src}'><i class='icon-fairydict-volume'></i></a>"
 		pronsTpl = (w, prons) -> "<div class='fairydict-prons'> #{w} #{prons} </div>"
 
 		html = ''
 		if res?.prons
 			pronHtml = ''
 			pronHtml += pronTpl res.prons.ame if res.prons.ame
-			pronHtml += pronAudioTpl res.prons.ameAudio if res.prons.ameAudio
+			pronHtml += pronAudioTpl res.prons.ameAudio, 'ame' if res.prons.ameAudio
 			pronHtml += pronTpl res.prons.bre if res.prons.bre
-			pronHtml += pronAudioTpl res.prons.breAudio if res.prons.breAudio
+			pronHtml += pronAudioTpl res.prons.breAudio, 'bre' if res.prons.breAudio
 
 			pronHtml += pronTpl res.prons.pron if res.prons.pron
-			pronHtml += pronAudioTpl res.prons.pronAudio if res.prons.pronAudio
+			pronHtml += pronAudioTpl res.prons.pronAudio, 'other' if res.prons.pronAudio
 
 			wHtml = wTpl res.w if res.w
 			html += pronsTpl wHtml, pronHtml if pronHtml
@@ -284,6 +284,15 @@ chrome.runtime.sendMessage {
 			plainQuerying = null
 
 		if res?.prons
+			if res.prons.ameAudio or res.prons.breAudio
+				{ ameSrc, breSrc } = await utils.send 'get real person voice', { w: res.w }
+				if ameSrc
+					$('.dictionaries-tooltip .fairydict-pron-audio-ame').attr('data-mp3', ameSrc)
+					res.prons.ameAudio = ameSrc
+				if breSrc
+					$('.dictionaries-tooltip .fairydict-pron-audio-bre').attr('data-mp3', breSrc)
+					res.prons.breAudio = breSrc
+
 			utils.send 'play audios', { ameSrc: res.prons.ameAudio, breSrc: res.prons.breAudio, otherSrc: res.prons.pronAudio, checkSetting: true}
 
 		return html

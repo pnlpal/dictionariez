@@ -38,12 +38,6 @@ parseBing = (word) ->
         breAudio: nodes.find('.hd_area .hd_pr').next('.hd_tf').html()?.match(/https:.*?\.mp3/)[0]
     }
 
-    # replace audios with ldoceonline sources.
-    if w and prons.ame and not utils.hasChinese(w)
-        { ameSrc, breSrc } = await parseLdoceonlineAudios(w)
-        prons.ameAudio = ameSrc if ameSrc
-        prons.breAudio = breSrc if breSrc
-
     if prons.ame
         prons.ame = prons.ame.replace('美', 'Ame')
         prons.bre = prons.bre.replace('英', 'Bre')
@@ -157,13 +151,16 @@ message.on 'look up plain', ({w, s, sc})->
     return parseBing(w)
 
 message.on 'play audios', ({ ameSrc, breSrc, otherSrc, checkSetting }) ->
-    if checkSetting
+    if checkSetting 
         if not setting.getValue 'enableAmeAudio'
             ameSrc = null
         if not setting.getValue 'enableBreAudio'
             breSrc = null
 
     playAudios [ameSrc, breSrc, otherSrc]
+
+message.on 'get real person voice', ({ w }) ->
+    return parseLdoceonlineAudios(w)
 
 # parseBing('https://cn.bing.com/dict/search?q=most')
 # parseJapanese('です')
