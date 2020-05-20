@@ -166,6 +166,13 @@ allDicts = [{
         styles: ['wordreference.less']
     }
 }, {
+    'dictName': "Wikipedia",
+    'windowUrl': 'https://en.m.wikipedia.org/wiki/<word>',
+    'windowUrlMatch': 'wiki/([^&]+)',
+    "resources": {
+        styles: ['wikipedia.less']
+    }
+}, {
     'dictName': '金山词霸',
     'windowUrl': 'http://www.iciba.com/<word>',
     'windowUrlMatch': 'iciba.com/([^&]+)',
