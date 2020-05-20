@@ -38,9 +38,8 @@ parseBing = (word) ->
         breAudio: nodes.find('.hd_area .hd_pr').next('.hd_tf').html()?.match(/https:.*?\.mp3/)[0]
     }
 
-    if prons.ame
-        prons.ame = prons.ame.replace('美', 'Ame')
-        prons.bre = prons.bre.replace('英', 'Bre')
+    prons.ame = prons.ame.replace('美', '').trim() if prons.ame
+    prons.bre = prons.bre.replace('英', '').trim() if prons.bre
 
     enDefs = []
 
@@ -161,6 +160,12 @@ message.on 'play audios', ({ ameSrc, breSrc, otherSrc, checkSetting }) ->
 
 message.on 'get real person voice', ({ w }) ->
     return parseLdoceonlineAudios(w)
+
+message.on 'look up phonetic', ({ w, _counter }) ->
+    { prons } = await parseBing(w)
+
+    # console.log "[#{_counter}]", w, prons.ame 
+    return prons
 
 # parseBing('https://cn.bing.com/dict/search?q=most')
 # parseJapanese('です')

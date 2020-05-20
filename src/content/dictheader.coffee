@@ -119,6 +119,21 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         $scope.hasAutocompletes = $scope.autocompletes.length > 0
         $scope.$apply()
         $scope.toggleDropdown($scope.hasAutocompletes)
+
+        # get phonetic of word in autocompletes
+        $scope.autocompleteCounter ?= 0
+        $scope.autocompleteCounter += 1
+        $dropdown = $('.search-wrapper[uib-dropdown]')
+
+        _counter = $scope.autocompleteCounter
+        for item in $scope.autocompletes or []
+            if _counter == $scope.autocompleteCounter and item.w.match(/\w+/g)[0] == item.w and $dropdown.hasClass('open')
+                { ame } = await utils.send 'look up phonetic', { w: item.w, _counter }
+                item.ame = ame
+                $scope.$apply()
+                # console.log "[#{_counter}]", item.w, ame 
+                await utils.promisifiedTimeout 300
+
     ), 500
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->

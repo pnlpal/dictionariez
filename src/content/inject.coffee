@@ -232,16 +232,16 @@ chrome.runtime.sendMessage {
 		labelTpl = (label) -> "<span class='fairydict-label'> #{label} </span>"
 		posTpl = (pos) -> "<span class='fairydict-pos'> #{pos} </span>"
 		contentTpl = (content) -> "<div class='fairydict-content'> #{content} </div>"
-		pronTpl = (pron) -> "<span class='fairydict-pron'> <em> #{pron} </em> </span>"
+		pronTpl = (pron, type = '') -> "<span class='fairydict-pron'> <em> #{type} #{pron} </em> </span>"
 		pronAudioTpl = (src, type) -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' href='' data-mp3='#{src}'><i class='icon-fairydict-volume'></i></a>"
 		pronsTpl = (w, prons) -> "<div class='fairydict-prons'> #{w} #{prons} </div>"
 
 		html = ''
 		if res?.prons
 			pronHtml = ''
-			pronHtml += pronTpl res.prons.ame if res.prons.ame
+			pronHtml += pronTpl res.prons.ame, 'ame' if res.prons.ame
 			pronHtml += pronAudioTpl res.prons.ameAudio, 'ame' if res.prons.ameAudio
-			pronHtml += pronTpl res.prons.bre if res.prons.bre
+			pronHtml += pronTpl res.prons.bre, 'bre' if res.prons.bre
 			pronHtml += pronAudioTpl res.prons.breAudio, 'bre' if res.prons.breAudio
 
 			pronHtml += pronTpl res.prons.pron if res.prons.pron
