@@ -84,6 +84,13 @@ allDicts = [{
         styles: ['merriamwebster.less']
     }
 }, {
+    'dictName': 'Merriam-webster Learner',
+    'windowUrl': 'https://learnersdictionary.com/definition/<word>',
+    'windowUrlMatch': '/definition/([^&/?]+)',
+    "resources": {
+        styles: ['merriamwebster-learner.less']
+    }
+}, {
     'dictName': 'Collins English Dictionary',
     'windowUrl': 'https://www.collinsdictionary.com/dictionary/english/<word>',
     'windowUrlMatch': '/english/([^&/?]+)',
