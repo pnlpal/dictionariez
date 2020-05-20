@@ -105,6 +105,13 @@ allDicts = [{
         styles: ['collins.less']
     }
 }, {
+    'dictName': 'Collins English Dictionary (汉化版)',
+    'windowUrl': 'https://www.collinsdictionary.com/zh/dictionary/english/<word>',
+    'windowUrlMatch': '/english/([^&/?]+)',
+    "resources": {
+        styles: ['collins.less']
+    }
+}, {
     'dictName': "Lexico",
     'windowUrl': 'https://www.lexico.com/en/definition/<word>',
     'windowUrlMatch': '/definition/([^&/?]+)'
