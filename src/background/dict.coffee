@@ -130,6 +130,13 @@ allDicts = [{
         styles: ['greensdictofslang.less']
     }
 }, {
+    'dictName': "Wiktionary",
+    'windowUrl': 'https://en.m.wiktionary.org/wiki/<word>',
+    'windowUrlMatch': 'wiki/([^&]+)',
+    "resources": {
+        styles: ['wiktionary.less']
+    }
+}, {
     'dictName': '金山词霸',
     'windowUrl': 'http://www.iciba.com/<word>',
     'windowUrlMatch': 'iciba.com/([^&]+)',
