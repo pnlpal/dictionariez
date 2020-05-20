@@ -34,6 +34,14 @@ allDicts = [{
         styles: ['cambridgeenglish.less']
     }
 }, {
+    'dictName': 'Cambridge English (汉化版)'
+    'entry': 'CambridgeEnglish-zh'
+    'windowUrl': 'https://dictionary.cambridge.org/zhs/词典/英语-汉语-简体/<word>'
+    'windowUrlMatch': '/英语-汉语-简体/([^&/?]+)',
+    "resources": {
+        styles: ['cambridgeenglish.less']
+    }
+}, {
     'dictName': 'Longman English'
     'entry': 'LongmanEnglish'
     'windowUrl': 'https://www.ldoceonline.com/dictionary/<word>'
