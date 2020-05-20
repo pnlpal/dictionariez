@@ -137,6 +137,13 @@ allDicts = [{
         styles: ['wiktionary.less']
     }
 }, {
+    'dictName': "WordReference",
+    'windowUrl': 'https://www.wordreference.com/definition/<word>',
+    'windowUrlMatch': 'definition/([^&]+)',
+    "resources": {
+        styles: ['wordreference.less']
+    }
+}, {
     'dictName': '金山词霸',
     'windowUrl': 'http://www.iciba.com/<word>',
     'windowUrlMatch': 'iciba.com/([^&]+)',
