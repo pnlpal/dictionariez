@@ -1,6 +1,6 @@
 {
 	"manifest_version": 2,
-	"name": "Dictionaries",
+	"name": "Dictionaries: choose your favorite one",
 	"permissions": ["activeTab", "tabs", "storage", "contextMenus", "<all_urls>"],
 	"background": {
 		"persistent": true,
