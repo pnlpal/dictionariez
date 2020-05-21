@@ -10,6 +10,11 @@
 		{
 			"js": ["inject.bundle.js"],
 			"matches": ["<all_urls>"]
+		},
+		{
+			"js": ["preinject.bundle.js"],
+			"matches": ["<all_urls>"],
+			"run_at": "document_start"
 		}
 	],
 	"options_ui": {

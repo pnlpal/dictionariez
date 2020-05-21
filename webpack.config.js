@@ -39,6 +39,7 @@ var options = {
 	entry: {
 		// popup: path.join(__dirname, "src", "js", "popup.js"),
 		inject: path.join(__dirname, "src", "content", "inject.coffee"),
+		preinject: path.join(__dirname, "src", "content", "preinject.coffee"),
 		dictheader: path.join(__dirname, "src", "content", "dictheader.coffee"),
 		options: path.join(__dirname, "src", "option", "option.coffee"),
 		background: path.join(__dirname, "src", "background", "main.coffee")
