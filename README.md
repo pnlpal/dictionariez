@@ -1,26 +1,32 @@
 # Dictionaries
 
-One dictionary on your browser to rule all the other dictionaries, some examples include Urban dictionary, Oxford, Cambridge, Longman, Thesaurus, Merrian webster, Collins etc. You can use this one dictionary extension to manage all those free web dictionaries, you can choose your favorite dictionary to look up words, save your words in history, setup shortcuts to handle, just like an app on your browser. Isn't it cool?
+![Promo Banner](https://github.com/revir/dictionaries/raw/master/readme_images/all-in-one.jpg)
+
+One extension on your browser to rule all the dictionaries, some examples including Urban dictionary, Oxford, Cambridge, Longman, Thesaurus, Merrian webster, Collins etc. You can use this extension to manage all those free web dictionaries, choose your favorite dictionary to look up words, save your words in history, setup keyboard shortcuts, just like an app on your browser. Isn't it cool?
 
 Some functions you might like:
 
-- Look up quickly when you select any words on any web page, and pronounce in american and british accent.
+- Look up quickly when you select any words on any web page, and pronounce in American and British accent.
+- Native app like dictionary interface, auto suggestions when you input.
 - As default automatically select the word under cursor when you hold the `shift` key, useful on some hard to select websites.
 - Keep your words in history, and you can manage or export them.
 - Keyboard shortcuts to make life easier.
 - Sort or disable dictionaries that you don't use, later I will add more dictionaries to support, any suggestions are welcome.
-- Currently support **English**, **Chinese** and **Japanese**, more languages will be supported if you like it.
+- Currently support **English**, **Chinese**, **Japanese** and **Korean**, more languages will be supported if you like it.
 
 As you can see, I am a language learner, Chinese is my mother tongue, **English** and **Japanese** are what I am learning right now. I wish this small tool could help the others like me. So if you have any suggestion please tell me, I am glad to hear feedbacks.
 And please correct me if you find any wrong expressions on context here or in the extension's page. Thank you.
 
 # Screenshot
+![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/s1-final.jpg)
+![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/s2-final.jpg)
+![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/s3-final.jpg)
+![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/s4-final.jpg)
 
-![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/all-in-one.jpg)
+
 ![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/english.jpg)
 ![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/chinese.jpg)
 ![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/japanese.jpg)
-![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/dict.jpg)
 
 # Build
 
