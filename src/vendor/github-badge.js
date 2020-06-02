@@ -11,7 +11,7 @@ import $ from "jquery";
 
 (function() {
 	"use strict";
-	var gitLinks = $("a[href*='github.com']");
+	var gitLinks = $("a.link-github[href*='github.com']");
 
 	gitLinks.each(function() {
 		var a = $(this);
