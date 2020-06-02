@@ -41,3 +41,7 @@ And please correct me if you find any wrong expressions on context here or in th
 - [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/)
 
 - [Download crx](https://github.com/revir/dictionaries/raw/master/dictionaries.crx) in case you want to install from crx file.
+
+# Privacy Policy
+
+[Here](privacy.md)
