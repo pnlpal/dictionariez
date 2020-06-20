@@ -11,6 +11,8 @@ class DictWindow
     url: null
     word: null
     dictName: null
+    savePosInterval: null
+
     constructor: ({ @w, @tid, @url, @word, dictName } = {}) ->
         @dictName = dictName || setting.getValue('dictionary') || dict.allDicts[0].dictName
 
@@ -19,28 +21,34 @@ class DictWindow
         @tid = null
         @url = null
         @word = null
+        window.clearInterval(@savePosInterval) if @savePosInterval
+        @savePosInterval = null
 
     open: (url)->
         # bugfix: dont know how why, windowWidth and windowHeight are saved as number, need integer here.
         width = parseInt(setting.getValue('windowWidth'))
         height = parseInt(setting.getValue('windowHeight'))
-        left = Math.round((screen.width / 2) - (width / 2))
-        top = Math.round((screen.height / 2) - (height / 2))
+        left = setting.getValue('windowLeft', Math.round((screen.width / 2) - (width / 2)))
+        top = setting.getValue('windowTop', Math.round((screen.height / 2) - (height / 2)))
+
         return new Promise (resolve) =>
             if !@w
+                # console.log "[dictWindow] create window position: top: #{top}, left: #{left}, width: #{width}, height: #{height}"
                 chrome.windows.create({
                     url: url or defaultWindowUrl,
                     type: 'popup',
                     width: width,
                     height: height,
-                    left: left,
+                    top: top - screen.availTop, # fix top value, may be chrome's bug.
+                    left: left - screen.availLeft, # fix left value, may be chrome's bug.
                     state: 'normal',
-                    top: top
                 }, (win)=>
                     @w = win
                     @tid = @w.tabs[0].id
                     @url = url or defaultWindowUrl
                     resolve()
+
+                    @savePosInterval = window.setInterval @saveWindowPosition.bind(this), 3000
                 )
             else
                 chrome.tabs.update(@tid, {
@@ -73,14 +81,18 @@ class DictWindow
         console.log "[dictWindow] query #{@word} from #{dictName}"
         return dict.query(text, dictName)
 
-    saveWindowSize: ()->
-        chrome.windows.get @w.id, null, (w)=>
-            if w?.width and w?.height
-                if Math.abs(w.width - setting.getValue('windowWidth')) > 10 \
-                or Math.abs(w.height - setting.getValue('windowHeight')) > 10
-                    console.log "[dictWindow] update window size: #{w.width} * #{w.height}"
+    saveWindowPosition: ()->
+        # console.log 'saveWindowPosition...'
+        if @w
+            chrome.windows.get @w.id, null, (w)=>
+                if w?.width and w?.height
+                    # console.log "[dictWindow] update window position: top: #{w.top}, left: #{w.left}, width: #{w.width}, height: #{w.height}"
                     setting.setValue 'windowWidth', w.width
                     setting.setValue 'windowHeight', w.height
+                if w?.top? and w?.left?
+                    setting.setValue 'windowLeft', w.left
+                    setting.setValue 'windowTop', w.top
+
 
     updateDict: (dictName) ->
         if @dictName != dictName
@@ -192,7 +204,7 @@ export default {
 
         message.on 'window resize', (request, sender) ->
             if sender.tab.id == dictWindow.tid
-                dictWindow.saveWindowSize()
+                dictWindow.saveWindowPosition()
 
         message.on 'sendToDict', ( request ) ->
             dictWindow.sendMessage request

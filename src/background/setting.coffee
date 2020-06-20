@@ -2,6 +2,8 @@ import message from "./message.coffee"
 
 export default {
         configCache: {
+            windowLeft: undefined,
+            windowTop: undefined,
             windowWidth: 580,
             windowHeight: 700,
 
