@@ -56,15 +56,19 @@ class DictWindow
 
     lookup: (text)->
         url = ''
+        text = @word if not text
+
         if text
             console.log('lookup...')
             @sendMessage({type: 'querying', text})
             result = await @queryDict(text, @dictName)
             url = result?.windowUrl
+
         @open(url)
 
     queryDict: (text, dictName)->
-        return if not text
+        return unless text
+
         @word = text
         console.log "[dictWindow] query #{@word} from #{dictName}"
         return dict.query(text, dictName)
@@ -113,12 +117,13 @@ export default {
                     @lookup({ w: info.selectionText, s: tab.url, sc: tab.title })
         }
 
-        message.on 'look up', ({ w, s, sc, means }) ->
+        message.on 'look up', ({ dictName, w, s, sc, means }) ->
             if means == 'mouse'
                 if not setting.getValue('enableMinidict')
                     return
 
-            w = w.trim()
+            w = w.trim() if w
+            dictWindow.updateDict dictName if dictName
 
             storage.addHistory { w, s, sc } if w and s # ignore lookup from options page
             dictWindow.lookup(w)
@@ -184,10 +189,6 @@ export default {
             #         dictUrl: chrome.extension.getURL('dict.html'),
             #         dict: dict.getDict(dictName)
             #     }
-
-
-        message.on 'set-dictionary-current', ({ dictName }) ->
-            dictWindow.updateDict(dictName)
 
         message.on 'window resize', (request, sender) ->
             if sender.tab.id == dictWindow.tid

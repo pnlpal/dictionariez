@@ -218,9 +218,11 @@ initDictionary = () ->
                 render: (data, type, row) ->
                     if type == 'display'
                         if row.disabled
-                            data = "<span class='text-muted'>#{data}</span>"
-                        if currentDictName == data
-                            data += "&nbsp; <span class='badge'> Current </span>"
+                            return "<span class='text-muted'>#{data}</span>"
+                        else if currentDictName == data
+                            return data + "&nbsp; <span class='badge'> Current </span>"
+                        else 
+                            return "<a class='link-dict-name' href='' data-name='#{data}' title='#{data}'> #{data} </a>"
                     return data
             },
             {
@@ -234,8 +236,7 @@ initDictionary = () ->
                             if row.disabled
                                 el += buildActionButton({name: "Enable", cls: "btn-info"})
                             else
-                                el += buildActionButton({name: "Activate", cls: "btn-primary"}) + \
-                                ' ' + buildActionButton({name: "Disable", cls: "btn-default"})
+                                el += buildActionButton({name: "Disable", cls: "btn-default"})
 
                         return el
 
@@ -263,11 +264,6 @@ initDictionary = () ->
             rowData = row.data()
 
             switch $(e.target).data('action')
-                when 'Activate'
-                    currentDictName = rowData.dictName
-                    await utils.send 'set-dictionary-current', rowData
-                    table.rows().invalidate().draw()
-
                 when 'Disable'
                     rowData.disabled = true
                     await utils.send 'set-dictionary-disable', rowData
@@ -277,6 +273,17 @@ initDictionary = () ->
                     rowData.disabled = false
                     await utils.send 'set-dictionary-disable', rowData
                     table.rows().invalidate().draw()
+        if $(e.currentTarget).has('.link-dict-name').length 
+            e.preventDefault()
+            e.stopPropagation()
+
+            row = table.row($(e.currentTarget).closest('tr'))
+            rowData = row.data()
+
+            utils.send('look up', {
+                dictName: rowData.dictName
+            })
+
 
 initDictionary()
 
