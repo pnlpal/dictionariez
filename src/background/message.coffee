@@ -2,13 +2,6 @@ listeners = {}
 openOptionsTo = ''
 
 chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
-    # if request.type == 'getJson'
-    #     utils.getJson(request.url, request.data).then ((res)->
-    #         sendResponse(res)), sendResponse
-    # else if request.type == 'postJson'
-    #     utils.postJson(request.url, request.data).then ((res)->
-    #         sendResponse(res)), sendResponse
-
     if request.type == 'open options'
         chrome.runtime.openOptionsPage()
         openOptionsTo = request.to

@@ -2,6 +2,7 @@ import setting from "./setting.coffee"
 import storage from  "./storage.coffee"
 import dict from "./dict.coffee"
 import message from "./message.coffee"
+import utils from "utils"
 
 defaultWindowUrl = chrome.extension.getURL('dict.html')
 
@@ -39,8 +40,8 @@ class DictWindow
                     type: 'popup',
                     width: width,
                     height: height,
-                    top: top - screen.availTop, # fix top value, may be chrome's bug.
-                    left: left - screen.availLeft, # fix left value, may be chrome's bug.
+                    top: if utils.isLinux() then top - screen.availTop else top, # fix top value on Linux, may be chrome's bug.
+                    left: if utils.isLinux() then left - screen.availLeft else left, # fix left value on Linux, may be chrome's bug.
                     state: 'normal',
                 }, (win)=>
                     @w = win
