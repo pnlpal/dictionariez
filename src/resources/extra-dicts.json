@@ -1,0 +1,9 @@
+{
+  "extra": [
+    {
+      "dictName": "Bing Image",
+      "windowUrl": "https://www.bing.com/images/search?q=<word>",
+      "css": "header,#miniheader {display: none !important;} body {margin-top: 50px !important;}"
+    }
+  ]
+}

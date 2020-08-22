@@ -182,26 +182,19 @@ export default {
             return { history }
 
         message.on 'injected', (request, sender) ->
-            dictName = dict.getDictFromOrigin(request.origin)?.dictName
             if dictWindow.tid == sender.tab.id
+                d = dict.getDict(dictWindow.dictName)
+                if d.css
+                    chrome.tabs.insertCSS dictWindow.tid, {
+                        runAt: "document_start",
+                        code: d.css
+                    }
+
                 return {
                     dictUrl: chrome.extension.getURL('dict.html'),
-                    dict: dict.getDict(dictName)
+                    dict: d
                 }
-            # else if dictName
-            #     newDictWindow = new DictWindow({
-            #         dictName,
-            #         tid: sender.tab.id
-            #     })
-            #     word = dict.getWordFromUrl request.url, dictName
-            #     newDictWindow.word = word if word
-
-            #     dictWindowMap[sender.tab.id] = newDictWindow
-
-            #     return {
-            #         dictUrl: chrome.extension.getURL('dict.html'),
-            #         dict: dict.getDict(dictName)
-            #     }
+           
 
         message.on 'window resize', (request, sender) ->
             if sender.tab.id == dictWindow.tid

@@ -269,8 +269,13 @@ allDicts = [{
 
 export default {
     setting: undefined,
+    allDicts: allDicts,
+
     init: () ->
+        @syncExtraDicts(true)
+
         @setting ?= await storage.get('dictionary-setting', {})
+
         allDicts.forEach (d, oi) =>
             s = @setting[d.dictName]
             d.sequence = oi
@@ -292,12 +297,34 @@ export default {
             @setting[dictName].disabled = disabled
 
             @saveSetting()
+    
+    syncExtraDicts: (fromCache) ->
+        extraDicts = []
+        if fromCache
+            extraDicts = await storage.get('extra-dicts', [])
+        else 
+            extraSrc = 'http://localhost:8000/src/resources/extra-dicts.json'
+            result = await $.get(extraSrc).catch (err)->
+                console.error "Get extra dicts remotely failed: ", err.status, err.statusText
+
+            if result?.extra
+                extraDicts = result.extra 
+                await storage.set {'extra-dicts': extraDicts}
+
+        extraDicts.forEach (d)=>
+            locDict = allDicts.find (d1) ->
+                d1.dictName == d.dictName 
+
+            if locDict
+                Object.assign locDict, d
+            else 
+                d.sequence = allDicts.length
+                allDicts.push d
+
 
     saveSetting: ()->
-        @init()  # update allDicts list
+        @init()  # update allDicts list ????
         storage.set {'dictionary-setting': @setting}
-
-    allDicts: allDicts,
 
     getDict: (dictName) ->
         dict = allDicts.find (d)->
@@ -354,81 +381,4 @@ export default {
             return dfd.resolve {windowUrl: dict.windowUrl.replace('<word>', word)}
         else
             return dfd.resolve({html: @['parse' + dict.entry](word)})
-
-    queryWordPain: (word) ->
-        url = "http://xtk.azurewebsites.net/BingDictService.aspx?Word=#{word}&Samples=false"
-        return $.get(url)
-
-    parseAonaware: (text)->
-        xml = $.parseXML(text)
-        return '<pre>' + $('Definitions WordDefinition', xml).text() + '</pre>'
-    parseIciba: (text)->
-        d = $(document.createElement('div'))
-        xml = $.parseXML(text)
-        d.append('<h4></h4>')
-        $('ps', xml).each (index, el)->
-            t = $(el).text()
-            audio = $(el).next('pron').text()
-            n = '<span class="pron">' + t + '&nbsp<i class="fa fa-volume-up sound"></i>' + '<audio src="' + audio + '"></audio>&nbsp&nbsp&nbsp&nbsp' + '</span>'
-            $('h4', d).append(n)
-
-        $('pos', xml).each (i, el)->
-            m = $(el).next('acceptation').text()
-            s = '<p>' + $(el).text() + '<b>' + m + '</b>' + '</p>'
-            d.append(s)
-
-        $('orig, fy', xml).each (i, el)->
-            m = $(el).next('trans').text()
-            s = '<p class="example"><i class="fa fa-coffee"></i>' + $(el).text() + '</p>'
-            s2 = '<p>' + m + '</p>'
-            d.append(s)
-            d.append(s2)
-
-        return d.html()
-
-    parseWebster: (text)->
-        wrapper = $(document.createElement('div'))
-        wrapper.addClass('webster')
-        xml = $.parseXML(text)
-        $('entry', xml).each (index, entry)->
-            entryId = $(entry).attr('id')
-            wrapper.append('<div entry="' + entryId + '"> </div>')
-            d = $('div[entry]', wrapper).last()
-
-            pro = $('pr', entry).text()
-
-            soundEl = $('sound', entry)
-            audio = $('wav', soundEl).text()
-            wpr = $('wpr', soundEl).text()
-
-            baseUrl = 'http://media.merriam-webster.com/soundc11/'
-            subp = audio[0]
-            ms = audio.match(/^bix|^gg|^\d+/)
-            if ms
-                subp = ms[0]
-
-            url = baseUrl + subp + '/' + audio
-
-
-            n = '<h4><b>' +entryId+
-                '</b>' +
-                '<span class="pron">' + pro +
-                '&nbsp<i class="fa fa-volume-up sound"></i>' +
-                '<audio src="' + url + '"></audio>&nbsp' + wpr +
-                '&nbsp&nbsp&nbsp&nbsp</span></h4>'
-            d.append(n)
-
-            et = $('et', entry).html()
-            n2 = '<p>'+et+'</p>'
-            d.append(n2)
-
-            $(entry).children('def').each (j, defEl)->
-                vt = $('vt', defEl).text()
-                date = $('date', defEl).text()
-                d.append('<p>'+vt+', '+date + '</p>')
-                $('sn', defEl).each (k, snEl)->
-                    sntext = $(snEl).nextUtil('sn').text()
-                    d.append('<p>'+sntext+'</p>')
-
-        return wrapper.htm()
 }

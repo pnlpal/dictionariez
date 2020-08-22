@@ -22,7 +22,3 @@ parseVocabulary = (text) ->
 
 message.on 'autocomplete', ({ text })->
     return parseVocabulary(text.trim())
-
-
-parseVocabulary('pil')
-
