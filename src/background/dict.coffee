@@ -272,9 +272,27 @@ export default {
     allDicts: allDicts,
 
     init: () ->
-        @syncExtraDicts(true)
+        await @syncExtraDicts(true)
+        await @applySetting()
+        
+        message.on 'set-dictionary-reorder', ({ dicts }) =>
+            dicts.forEach (d) =>
+                @setting[d.dictName] ?= {}
+                @setting[d.dictName].sequence = d.sequence
 
-        @setting ?= await storage.get('dictionary-setting', {})
+            @applySetting()
+
+        message.on 'set-dictionary-disable', ({ dictName, disabled }) =>
+            @setting[dictName] ?= {}
+            @setting[dictName].disabled = disabled
+
+            @applySetting()
+
+    applySetting: () ->
+        if @setting 
+            storage.set {'dictionary-setting': @setting}
+        else
+            @setting = await storage.get('dictionary-setting', {})
 
         allDicts.forEach (d, oi) =>
             s = @setting[d.dictName]
@@ -284,20 +302,6 @@ export default {
                 d.disabled = s.disabled if s.disabled?
         allDicts.sort (a, b) -> a.sequence - b.sequence
 
-        message.on 'set-dictionary-reorder', ({ dicts }) =>
-            dicts.forEach (d) =>
-                @setting[d.dictName] ?= {}
-                @setting[d.dictName].sequence = d.sequence
-
-            allDicts.sort (a, b) -> a.sequence - b.sequence
-            @saveSetting()
-
-        message.on 'set-dictionary-disable', ({ dictName, disabled }) =>
-            @setting[dictName] ?= {}
-            @setting[dictName].disabled = disabled
-
-            @saveSetting()
-    
     syncExtraDicts: (fromCache) ->
         extraDicts = []
         if fromCache
@@ -320,11 +324,6 @@ export default {
             else 
                 d.sequence = allDicts.length
                 allDicts.push d
-
-
-    saveSetting: ()->
-        @init()  # update allDicts list ????
-        storage.set {'dictionary-setting': @setting}
 
     getDict: (dictName) ->
         dict = allDicts.find (d)->
