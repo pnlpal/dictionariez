@@ -28,6 +28,10 @@ And please correct me if you find any wrong expressions on context here or in th
 ![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/chinese.jpg)
 ![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/japanese.jpg)
 
+# More dictionaries are needed!  
+
+[See here.](more-dicts.md)
+
 # Build
 
 1. use `yarn` or `npm install` to install requirements.
