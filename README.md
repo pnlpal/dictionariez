@@ -17,7 +17,7 @@ Some functions you might like:
 As you can see, I am a language learner, Chinese is my mother tongue, **English** and **Japanese** are what I am learning right now. I wish this small tool could help the others like me. So if you have any suggestion please tell me, I am glad to hear feedbacks.
 And please correct me if you find any wrong expressions on context here or in the extension's page. Thank you.
 
-Join in me on [telegram](https://t.me/worldlanguagelearner).
+Join me on [telegram](https://t.me/worldlanguagelearner).
 
 # Screenshot
 ![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/s1-final.jpg)
