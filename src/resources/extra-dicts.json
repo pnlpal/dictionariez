@@ -4,6 +4,11 @@
       "dictName": "Bing Image",
       "windowUrl": "https://www.bing.com/images/search?q=<word>",
       "css": "header,#miniheader {display: none !important;} body {margin-top: 50px !important;}"
+    },
+    {
+      "dictName": "WordReference(英语-中文)",
+      "windowUrl": "https://www.wordreference.com/enzh/<word>",
+      "css": "header, #search { display: none;} .content { margin-top: 45px;}"
     }
   ]
 }
