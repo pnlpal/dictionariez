@@ -289,6 +289,7 @@ export default {
             @applySetting()
         
         message.on 'sync dicts', @syncExtraDicts.bind(this, false)
+        message.on 'add extra dict', @addExtraDict
 
     applySetting: () ->
         if @setting 
@@ -331,6 +332,16 @@ export default {
                 allDicts.push d
 
         return errorResult
+
+    addExtraDict: (d) ->
+        locDict = allDicts.find (d1) ->
+            d1.dictName == d.dictName 
+
+        if locDict
+            Object.assign locDict, d
+        else 
+            d.sequence = allDicts.length
+            allDicts.push d
 
     getDict: (dictName) ->
         dict = allDicts.find (d)->
