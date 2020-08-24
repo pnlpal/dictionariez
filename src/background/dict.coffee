@@ -287,6 +287,8 @@ export default {
             @setting[dictName].disabled = disabled
 
             @applySetting()
+        
+        message.on 'sync dicts', @syncExtraDicts.bind(this, false)
 
     applySetting: () ->
         if @setting 
@@ -304,12 +306,15 @@ export default {
 
     syncExtraDicts: (fromCache) ->
         extraDicts = []
+        errorResult = null
+
         if fromCache
             extraDicts = await storage.get('extra-dicts', [])
         else 
             extraSrc = 'http://localhost:8000/src/resources/extra-dicts.json'
             result = await $.get(extraSrc).catch (err)->
                 console.error "Get extra dicts remotely failed: ", err.status, err.statusText
+                errorResult = { message: err.statusText }
 
             if result?.extra
                 extraDicts = result.extra 
@@ -324,6 +329,8 @@ export default {
             else 
                 d.sequence = allDicts.length
                 allDicts.push d
+
+        return errorResult
 
     getDict: (dictName) ->
         dict = allDicts.find (d)->

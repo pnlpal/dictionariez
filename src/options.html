@@ -87,6 +87,14 @@
 
 					<div id="dictionary" class="section">
 						<h1>Dictionaries</h1>
+						<p>
+							<em class="text-new">Help: </em>
+							More dictionaries are needed, please send me pull request, or tell me on github issues!
+							<button class="btn btn-default btn-sm" ng-click="syncDicts()">
+								<i class="fa fa-spinner fa-spin" ng-show="syncing" title="Syncing..."></i>
+								<span ng-show="!syncing">Snyc!</span>
+							</button>
+						</p>
 						<table
 							id="table-dictionary"
 							class="table table-condensed table-bordered111"
