@@ -9,6 +9,11 @@
       "dictName": "WordReference(英语-中文)",
       "windowUrl": "https://www.wordreference.com/enzh/<word>",
       "css": "header, #search { display: none;} .content { margin-top: 45px;}"
+    },
+    {
+      "dictName": "Вожаҷӯ (Tajik)",
+      "windowUrl": "https://vazhaju.com/search/<word>",
+      "css": "#banner, .navbar-static-top { display: none;} .container {margin-top: 50px;}"
     }
   ]
 }
