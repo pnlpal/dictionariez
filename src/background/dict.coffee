@@ -7,6 +7,7 @@ allDicts = [{
     'entry': 'LongmanEnglish'
     'windowUrl': 'https://www.ldoceonline.com/dictionary/<word>'
     'windowUrlMatch': '/dictionary/([^&/?]+)',
+    'fixSpaceInWords': '-',
     "resources": {
         styles: ['longmanenglish.less']
     }
@@ -28,6 +29,7 @@ allDicts = [{
     'dictName': 'Macmilland Dictionary',
     'windowUrl': 'https://www.macmillandictionary.com/dictionary/british/<word>',
     'windowUrlMatch': '/british/([^&/?]+)',
+    'fixSpaceInWords': '-',
     "resources": {
         styles: ['macmilland.less']
     }
@@ -41,6 +43,7 @@ allDicts = [{
 }, {
     'dictName': 'Collins English Dictionary',
     'windowUrl': 'https://www.collinsdictionary.com/dictionary/english/<word>',
+    'fixSpaceInWords': '+',
     'windowUrlMatch': '/english/([^&/?]+)',
     "resources": {
         styles: ['collins.less']
@@ -63,6 +66,7 @@ allDicts = [{
 }, {
     'dictName': 'Oxford Learner',
     'entry': 'OxfordLearner',
+    'fixSpaceInWords': '-',
     'windowUrl': 'https://www.oxfordlearnersdictionaries.com/definition/english/<word>'
     'windowUrlMatch': '/english/([^&/?]+)'
     "resources": {
@@ -71,6 +75,7 @@ allDicts = [{
 }, {
     'dictName': 'Oxford Living',
     'entry': 'Oxfordliving',
+    'fixSpaceInWords': '-',
     'windowUrl': 'https://www.lexico.com/definition/<word>'
     'windowUrlMatch': '/definition/([^&/?]+)'
     "resources": {
@@ -116,6 +121,7 @@ allDicts = [{
 }, {
     'dictName': 'Collins English Dictionary (汉化版)',
     'windowUrl': 'https://www.collinsdictionary.com/zh/dictionary/english/<word>',
+    'fixSpaceInWords': '+',
     'windowUrlMatch': '/english/([^&/?]+)',
     "resources": {
         styles: ['collins.less']
@@ -123,6 +129,7 @@ allDicts = [{
 }, {
     'dictName': 'Collins English Thesaurus',
     'windowUrl': 'https://www.collinsdictionary.com/dictionary/english-thesaurus/<word>',
+    'fixSpaceInWords': '+',
     'windowUrlMatch': '/english-thesaurus/([^&/?]+)',
     "resources": {
         styles: ['collins.less']
@@ -387,15 +394,7 @@ export default {
     query: (word, dictName)->
         dfd = $.Deferred()
         dict = @getDict(dictName)
-        params = $.extend(true, {}, dict.params)
-        params[dict.queryKey] = word if dict.queryKey
-        url = dict.baseUrl if dict.baseUrl
-        url = dict.headerUrl + encodeURI(word) if dict.headerUrl
-        if url
-            return $[dict.queryType || 'get'](url, params, null, 'text').then (res)=>
-                return {html: @['parse' + dict.entry](res)}
-        else if dict.windowUrl
-            return dfd.resolve {windowUrl: dict.windowUrl.replace('<word>', word)}
-        else
-            return dfd.resolve({html: @['parse' + dict.entry](word)})
+        if dict.fixSpaceInWords
+            word = word.replace(/\s+/g, dict.fixSpaceInWords)
+        return dfd.resolve {windowUrl: dict.windowUrl.replace('<word>', word)}
 }
