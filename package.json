@@ -1,7 +1,7 @@
 {
 	"name": "dictionaries",
-	"version": "2.1.0",
-	"description": "One extension to rule all dictionaries",
+	"version": "2.1.1",
+	"description": "One app to rule all dictionaries",
 	"repository": {
 		"type": "git",
 		"url": "git@github.com:revir/dictionaries.git"
