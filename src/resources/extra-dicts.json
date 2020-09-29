@@ -14,6 +14,11 @@
       "dictName": "Вожаҷӯ (Tajik)",
       "windowUrl": "https://vazhaju.com/search/<word>",
       "css": "#banner, .navbar-static-top { display: none;} .container {margin-top: 50px;}"
+    },
+    {
+      "dictName": "linguee (英语-中文)",
+      "windowUrl": "https://www.linguee.com/english-chinese/translation/<word>.html",
+      "css": "#banner, .navbar-static-top { display: none;} .container {margin-top: 50px;}"
     }
   ]
 }
