@@ -42,16 +42,16 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
             key: key,
             value: value
         }
-    $scope.toggleOtherEnabledLanguages = (lang) ->
-        idx = $scope.setting.otherEnabledLanguages.indexOf lang 
+    $scope.toggleOtherDisabledLanguages = (lang) ->
+        idx = $scope.setting.otherDisabledLanguages.indexOf lang 
         if idx >= 0
-            $scope.setting.otherEnabledLanguages.splice idx, 1
+            $scope.setting.otherDisabledLanguages.splice idx, 1
         else 
-            $scope.setting.otherEnabledLanguages.push lang 
+            $scope.setting.otherDisabledLanguages.push lang 
         chrome.runtime.sendMessage {
             type: 'save setting'
-            key: 'otherEnabledLanguages',
-            value: $scope.setting.otherEnabledLanguages
+            key: 'otherDisabledLanguages',
+            value: $scope.setting.otherDisabledLanguages
         }
 
 

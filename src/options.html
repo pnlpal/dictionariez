@@ -222,8 +222,8 @@
 								<label>
 									<input
 										type="checkbox"
-										ng-checked="setting.otherEnabledLanguages.includes(lang)"
-										ng-click="toggleOtherEnabledLanguages(lang)"
+										ng-checked="!setting.otherDisabledLanguages.includes(lang)"
+										ng-click="toggleOtherDisabledLanguages(lang)"
 									/>
 									Look up <strong>{{ lang }}</strong> words
 								</label>

@@ -24,7 +24,7 @@ class LookupParser
                 return name if utils.isChinese(w) and setting.getValue "enableLookupChinese"
             if dictDesc.regex
                 if w.match(new RegExp(dictDesc.regex, 'g'))?.length == w.length \
-                    and dictDesc.language in setting.getValue("otherEnabledLanguages")
+                    and dictDesc.language not in setting.getValue("otherDisabledLanguages")
                     return name
 
     parse: (w) ->
@@ -79,7 +79,7 @@ class LookupParser
         return result 
 
     parseResultItem: ($node, desc) ->
-        value = ''
+        value = null
 
         $el = $node 
         if desc.selector
@@ -98,10 +98,14 @@ class LookupParser
         else
             value = $el.get(0)?.innerText?.trim()
         
-        if desc.func 
-            _f = new Function(desc.func)
-            value = _f.call(this, value)
-        
+        if desc.func and value?
+            try
+                _f = new Function(desc.func)
+                value = _f.call(this, value)
+            catch e 
+                console.warn "[Func] Parse lookup dict result item failed: ", desc, e 
+                value = null  
+
         return value
 
 playAudios = (urls) ->
