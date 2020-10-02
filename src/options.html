@@ -47,9 +47,9 @@
 							</pre
 							>
 						</h1>
-						<p>One app to rule all dictionaries.</p>
+						<p>One app to rule them all.</p>
 						<p>
-							Any suggestions or bug reports are welcome at:
+							Any suggestions are welcome at:
 							<a
 								href="https://github.com/revir/dictionaries"
 								target="_blank"
@@ -61,7 +61,7 @@
 							>.
 						</p>
 						<p>
-							And more dictionaries are needed, please see <a href="https://github.com/revir/dictionaries/blob/master/more-dicts.md" target="_blank">here</a>.
+							Right now more dictionaries are needed, please see <a href="https://github.com/revir/dictionaries/blob/master/more-dicts.md" target="_blank">how to add more</a>.
 						</p>
 						<p>
 							If you like this app, please 
@@ -123,7 +123,7 @@
 									ng-model="setting.enableSelectionOnMouseMove"
 									ng-click="changeKey(!setting.enableSelectionOnMouseMove, 'enableSelectionOnMouseMove')"
 								/>
-								Enable automatic words selection when moving mouse.
+								Automatically select the word underneath when moving mouse.
 							</label>
 						</div>
 
@@ -170,40 +170,9 @@
 									ng-model="setting.enablePlainLookup"
 									ng-click="changeKey(!setting.enablePlainLookup, 'enablePlainLookup')"
 								/>
-								Enable in-page definition, look up words in your slection.
+								Enable floating definition of seleted word, support multiple languages.
 							</label>
 						</div>
-						<div class="checkbox indent">
-							<label>
-								<input
-									type="checkbox"
-									ng-model="setting.enableAmeAudio"
-									ng-click="changeKey(!setting.enableAmeAudio, 'enableAmeAudio')"
-								/>
-								Automatically play U.S. pronunciation.
-							</label>
-							<br />
-							<label>
-								<input
-									type="checkbox"
-									ng-model="setting.enableBreAudio"
-									ng-click="changeKey(!setting.enableBreAudio, 'enableBreAudio')"
-								/>
-								Automatically play U.K. pronunciation.
-							</label>
-						</div>
-
-						<div class="checkbox indent">
-							<label>
-								<input
-									type="checkbox"
-									ng-model="setting.showChineseDefinition"
-									ng-click="changeKey(!setting.showChineseDefinition, 'showChineseDefinition')"
-								/>
-								Show Chinese definition. <em class="text-new">New!</em>
-							</label>
-						</div>
-
 						<div class="checkbox indent">
 							<label>
 								<input
@@ -237,9 +206,70 @@
 								</ul>
 							</div>
 						</div>
+						<div class="checkbox indent">
+							<div class="checkbox">
+								<label>
+									<input
+										type="checkbox"
+										ng-model="setting.enableLookupChinese"
+										ng-click="changeKey(!setting.enableLookupChinese, 'enableLookupChinese')"
+									/>
+									Look up <strong>Chinese</strong> words
+								</label>
+							</div>
+	
+							<div class="checkbox">
+								<label>
+									<input
+										type="checkbox"
+										ng-model="setting.enableLookupJapanese"
+										ng-click="changeKey(!setting.enableLookupJapanese, 'enableLookupJapanese')"
+									/>
+									Look up <strong>Japanese</strong> words
+								</label>
+							</div>
 
-						<br />
+							<div class="checkbox">
+								<label>
+									<input
+										type="checkbox"
+										ng-model="setting.enableLookupEnglish"
+										ng-click="changeKey(!setting.enableLookupEnglish, 'enableLookupEnglish')"
+									/>
+									Look up <strong>English</strong> words
+								</label>
+							</div>
 
+							<div class="checkbox indent">
+								<label>
+									<input
+										type="checkbox"
+										ng-model="setting.enableAmeAudio"
+										ng-click="changeKey(!setting.enableAmeAudio, 'enableAmeAudio')"
+									/>
+									Automatically play U.S. pronunciation.
+								</label>
+								<br />
+								<label>
+									<input
+										type="checkbox"
+										ng-model="setting.enableBreAudio"
+										ng-click="changeKey(!setting.enableBreAudio, 'enableBreAudio')"
+									/>
+									Automatically play U.K. pronunciation.
+								</label>
+								<br>
+								<label>
+									<input
+										type="checkbox"
+										ng-model="setting.showChineseDefinition"
+										ng-click="changeKey(!setting.showChineseDefinition, 'showChineseDefinition')"
+									/>
+									Show Chinese definition. <em class="text-new">New!</em>
+								</label>
+							</div>
+						</div>
+						<br>
 						<div class="checkbox">
 							<label>
 								<input
@@ -247,7 +277,7 @@
 									ng-model="setting.enableMinidict"
 									ng-click="changeKey(!setting.enableMinidict, 'enableMinidict')"
 								/>
-								Enable to open the dict to look up words in your selection.
+								Automatically open the popup window to look up the seleted word.
 							</label>
 						</div>
 
@@ -285,39 +315,6 @@
 							</div>
 						</div>
 						<br />
-
-						<div class="checkbox">
-							<label>
-								<input
-									type="checkbox"
-									ng-model="setting.enableLookupEnglish"
-									ng-click="changeKey(!setting.enableLookupEnglish, 'enableLookupEnglish')"
-								/>
-								Enable lookup if select <strong>English</strong> words
-							</label>
-						</div>
-
-						<div class="checkbox">
-							<label>
-								<input
-									type="checkbox"
-									ng-model="setting.enableLookupChinese"
-									ng-click="changeKey(!setting.enableLookupChinese, 'enableLookupChinese')"
-								/>
-								Enable lookup if select <strong>Chinese</strong> words
-							</label>
-						</div>
-
-						<div class="checkbox">
-							<label>
-								<input
-									type="checkbox"
-									ng-model="setting.enableLookupJapanese"
-									ng-click="changeKey(!setting.enableLookupJapanese, 'enableLookupJapanese')"
-								/>
-								Enable lookup if select <strong>Japanese</strong> words
-							</label>
-						</div>
 					</div>
 
 					<br />

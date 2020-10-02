@@ -35,6 +35,10 @@ class LookupParser
             if utils.isChinese(w) 
                 result.defs = result.defs2 
                 delete result.defs2
+            else # English 
+                if not setting.getValue 'showChineseDefinition'
+                    delete result.defs2
+
         return result
 
     parseByType: (w, type="ldoce") ->
@@ -125,7 +129,7 @@ test = () ->
     # parser.parse('あなた').then console.log 
 
 
-test()
+# test()
 
 export default {
     parser: new LookupParser(parsers),
@@ -158,7 +162,7 @@ export default {
                 if n.type == 'ame' and n.symbol
                     ame = n.symbol.replace('US', '').trim()
                     return { ame } 
-                    
+
         message.on 'play audios', ({ ameSrc, breSrc, otherSrc, srcs, checkSetting }) ->
             if checkSetting 
                 if not setting.getValue 'enableAmeAudio'
