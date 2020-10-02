@@ -23,6 +23,8 @@ import "./hot-reload-content-scripts.js"
     { default: dictWindow } = await import(### webpackChunkName: "dictwindow"  ###"./dictwindow.coffee")
     await dictWindow.init()
 
-    await import(### webpackChunkName: "plain-lookup"  ###"./plain-lookup.coffee")
     await import(### webpackChunkName: "auto-complete"  ###"./auto-complete.coffee")
+    
+    { default: lookupParser } = await import(### webpackChunkName: "lookup-parser"  ###"./lookup-parser.coffee")
+    lookupParser.init()
 )()

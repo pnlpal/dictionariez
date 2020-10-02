@@ -6,7 +6,7 @@ import setting from "./setting.coffee"
 import utils from "utils"
 
 parseVocabulary = (text) ->
-    return [] unless text and utils.hasOnlyEnglish(text)
+    return [] unless text and utils.isEnglish(text)
 
     url = "https://www.vocabulary.com/dictionary/autocomplete?search=#{text}"
     res = await $.get url

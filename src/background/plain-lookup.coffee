@@ -47,9 +47,9 @@ parseBing = (word) ->
     eeNodes.each (i, el) ->
         enDefs.push({
             pos: $(el).find('.pos').text(),
-            def: $(el).find('.def_fl .de_li1')
+            def: $(el).find('.def_fl>.de_li1')
                 # https://cn.bing.com/dict/search?q=most 这个单词有 gl_none 的特例;
-                .filter(() -> !$(this).parent().hasClass('gl_none'))
+                # .filter(() -> !$(this).parent().hasClass('gl_none'))
                 .toArray().map (item) -> item.innerText
         })
 
@@ -136,36 +136,34 @@ playAudios = (urls) ->
     for url in urls
         await _play(url)
 
-message.on 'look up plain', ({w, s, sc})->
-    w = w.trim()
-    return unless w
-    storage.addHistory({
-        w, s, sc
-    }) if s  # ignore lookup from options page
+# message.on 'look up plain', ({w, s, sc})->
+#     w = w.trim()
+#     return unless w
+#     storage.addHistory({
+#         w, s, sc
+#     }) if s  # ignore lookup from options page
 
-    if utils.hasJapanese(w) and setting.getValue "enableLookupJapanese"
-        return parseJapanese(w)
+#     if utils.hasJapanese(w) and setting.getValue "enableLookupJapanese"
+#         return parseJapanese(w)
 
     
-    return parseBing(w)
+#     return parseBing(w)
 
-message.on 'play audios', ({ ameSrc, breSrc, otherSrc, checkSetting }) ->
+message.on 'play audios', ({ ameSrc, breSrc, otherSrc, srcs, checkSetting }) ->
     if checkSetting 
         if not setting.getValue 'enableAmeAudio'
             ameSrc = null
         if not setting.getValue 'enableBreAudio'
             breSrc = null
 
-    playAudios [ameSrc, breSrc, otherSrc]
+        playAudios [ameSrc, breSrc ]
+    
+    if otherSrc
+        playAudios [otherSrc]
+    
+    if srcs 
+        playAudios srcs 
 
-message.on 'get real person voice', ({ w }) ->
-    return parseLdoceonlineAudios(w)
-
-message.on 'look up phonetic', ({ w, _counter }) ->
-    { prons } = await parseBing(w)
-
-    # console.log "[#{_counter}]", w, prons.ame 
-    return prons
 
 # parseBing('https://cn.bing.com/dict/search?q=most')
 # parseJapanese('です')

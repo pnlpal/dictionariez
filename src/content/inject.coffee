@@ -227,43 +227,50 @@ chrome.runtime.sendMessage {
 		labelTpl = (label) -> "<span class='fairydict-label'> #{label} </span>"
 		posTpl = (pos) -> "<span class='fairydict-pos'> #{pos} </span>"
 		contentTpl = (content) -> "<div class='fairydict-content'> #{content} </div>"
-		pronTpl = (pron, type = '') -> "<span class='fairydict-pron'> <em> #{type} #{pron} </em> </span>"
+		pronTpl = (pron, type = '') -> "<span class='fairydict-pron'> <em> #{pron} </em> </span>"
 		pronAudioTpl = (src, type) -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' href='' data-mp3='#{src}'><i class='icon-fairydict-volume'></i></a>"
 		pronsTpl = (w, prons) -> "<div class='fairydict-prons'> #{w} #{prons} </div>"
 
+		# console.log res 
+
 		html = ''
+
+		wHtml = ''
+		pronHtml = ''
+		if res?.w
+			wHtml = wTpl res.w
+
 		if res?.prons
-			pronHtml = ''
-			pronHtml += pronTpl res.prons.ame, 'ame' if res.prons.ame
-			pronHtml += pronAudioTpl res.prons.ameAudio, 'ame' if res.prons.ameAudio
-			pronHtml += pronTpl res.prons.bre, 'bre' if res.prons.bre
-			pronHtml += pronAudioTpl res.prons.breAudio, 'bre' if res.prons.breAudio
-
-			pronHtml += pronTpl res.prons.pron if res.prons.pron
-			pronHtml += pronAudioTpl res.prons.pronAudio, 'other' if res.prons.pronAudio
-
-			wHtml = wTpl res.w if res.w
-			html += pronsTpl wHtml, pronHtml if pronHtml
-
+			pronHtml = res.prons.reduce ((prev, cur)->
+				prev += pronTpl(cur.symbol, cur.type) if cur.symbol 
+				prev += pronAudioTpl(cur.audio, cur.type) if cur.audio
+				return prev
+			), ''
+		
+		html += pronsTpl wHtml, pronHtml if pronHtml or wHtml
+		
+		labelsCon = res?.labels?.map(({ name }) -> labelTpl name if name).reduce ((prev, cur) ->
+			prev += cur if cur 
+			return prev
+		), ''
+		
+		html += labelsTpl labelsCon if labelsCon
+		
 		renderItem = (item) ->
-			_html = ''
-			defsHtmls = []
+			posHtml = ''
+			defsHtml = ''
 
-			if item.pos
-				_html = posTpl item.pos
-				defs = if Array.isArray(item.def) then item.def else [item.def]
-				defsHtmls = defs.map (def) -> defTpl def
+			posHtml = posTpl item.pos if item.pos 
+			defs = if Array.isArray(item.def) then item.def else [item.def]
+			defsCon = defs.map((def) -> defTpl def if def).reduce (prev, next) ->
+				return prev + '<br>' + next if prev and next 
+				return prev 
+			defsHtml = defsTpl defsCon if defsCon
 
-			else if item.labels
-				labels = item.labels.map (lbs) -> labelTpl lbs
-				_html = labelsTpl labels.join(' ')
-				defsHtmls = item.def.map (def, i) -> defTpl "#{i+1}. #{def}"
+			html += contentTpl posHtml + defsHtml if defsHtml
 
-			defsHtml = defsTpl defsHtmls.join('<br>')
-			html += contentTpl _html + defsHtml if defsHtml
-
-		res.cn.forEach renderItem if res?.cn
-		res.en.forEach renderItem if res?.en
+		res.defs.forEach renderItem if res?.defs
+		res.defs2.forEach renderItem if res?.defs2
 
 		if html
 			$('.dictionaries-tooltip .fairydict-spinner').hide()
@@ -279,16 +286,28 @@ chrome.runtime.sendMessage {
 			plainQuerying = null
 
 		if res?.prons
-			if res.prons.ameAudio or res.prons.breAudio
-				{ ameSrc, breSrc } = await utils.send 'get real person voice', { w: res.w }
-				if ameSrc
-					$('.dictionaries-tooltip .fairydict-pron-audio-ame').attr('data-mp3', ameSrc)
-					res.prons.ameAudio = ameSrc
-				if breSrc
-					$('.dictionaries-tooltip .fairydict-pron-audio-bre').attr('data-mp3', breSrc)
-					res.prons.breAudio = breSrc
+			ameSrc = ''
+			breSrc = ''
+			for item in res.prons 
+				ameSrc = item.audio if item.type == 'ame' and item.audio 
+				breSrc = item.audio if item.type == 'bre' and item.audio 
 
-			utils.send 'play audios', { ameSrc: res.prons.ameAudio, breSrc: res.prons.breAudio, otherSrc: res.prons.pronAudio, checkSetting: true}
+			if ameSrc and breSrc 
+				{ prons } = await utils.send 'get real person voice', { w: res.w }
+
+				# console.log prons 
+
+				for item in prons 
+					if item.type == 'ame' and item.audio 
+						ameSrc = item.audio 
+						$('.dictionaries-tooltip .fairydict-pron-audio-ame').attr('data-mp3', ameSrc)
+					if item.type == 'bre' and item.audio
+						breSrc = item.audio
+						$('.dictionaries-tooltip .fairydict-pron-audio-bre').attr('data-mp3', breSrc)
+
+				utils.send 'play audios', { ameSrc, breSrc, checkSetting: true}
+			else 
+				utils.send 'play audios', { srcs: res.prons.map (n) -> n.audio }
 
 		return html
 

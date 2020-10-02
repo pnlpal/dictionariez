@@ -1,0 +1,115 @@
+{
+  "bing": {
+    "url": "https://cn.bing.com/dict/search?mkt=zh-cn&q=<word>",
+    "supportEnglish": true,
+    "supportChinese": true,
+    "result": {
+      "w": {
+        "selector": ".hd_area #headword"
+      },
+      "prons": [
+        {
+          "symbol": {
+            "selector": ".hd_area .hd_prUS"
+          },
+          "audio": {
+            "selector": ".hd_area .hd_prUS + .hd_tf",
+            "htmlRegex": "https:.*?\\.mp3"
+          },
+          "type": "ame"
+        },
+        {
+          "symbol": {
+            "selector": ".hd_area .hd_pr"
+          },
+          "audio": {
+            "selector": ".hd_area .hd_pr + .hd_tf",
+            "htmlRegex": "https:.*?\\.mp3"
+          },
+          "type": "bre"
+        }
+      ],
+      "defs": {
+        "groups": "#homoid tr.def_row",
+        "result": {
+          "pos": {
+            "selector": ".pos"
+          },
+          "def": {
+            "selector": ".def_fl>.de_li1",
+            "toArray": true
+          }
+        }
+      },
+      "defs2": {
+        "groups": ".qdef ul>li",
+        "result": {
+          "pos": {
+            "selector": ".pos"
+          },
+          "def": {
+            "selector": ".def"
+          }
+        }
+      }
+    }
+  },
+  "ldoce": {
+    "url": "https://www.ldoceonline.com/dictionary/<word>",
+    "result": {
+      "prons": [
+        {
+          "audio": {
+            "selector": ".ldoceEntry .Head .amefile",
+            "attr": "data-src-mp3"
+          },
+          "type": "ame"
+        },
+        {
+          "audio": {
+            "selector": ".ldoceEntry .Head .brefile",
+            "attr": "data-src-mp3"
+          },
+          "type": "bre"
+        }
+      ]
+    }
+  },
+  "japan": {
+    "url": "https://www.japandict.com/<word>",
+    "regex": "[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]",
+    "result": {
+      "w": {
+        "selector": "h1.display-1"
+      },
+      "prons": [
+        {
+          "symbol": {
+            "selector": ".d-inline-block span.small"
+          },
+          "audio": {
+            "selector": ".d-inline-block a.play-reading-btn",
+            "data": "reading",
+            "func": "return 'https:' + arguments[0][0] + '/read?text=' + arguments[0][1] + '&outputFormat=ogg_vorbis&jwt=' + arguments[0][2]"
+          }
+        }
+      ],
+      "labels": {
+        "container": ".tab-pane[id^='eng']",
+        "groups": "ul>li.list-group-item span.label",
+        "result": {
+          "name": {}
+        }
+      },
+      "defs": {
+        "container": ".tab-pane[id^='eng']",
+        "groups": "ul>li.list-group-item",
+        "result": {
+          "def": {
+            "selector": "div[lang='en']"
+          }
+        }
+      }
+    }
+  }
+}
