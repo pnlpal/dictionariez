@@ -9,6 +9,12 @@ import parsers from '../resources/dict-parsers.json'
 class LookupParser 
     constructor: (@data) ->
         @typeCount = Object.keys(@data).length
+
+        @otherSupportedLanguages = []
+        for dictDesc in Object.values(@data)
+            @otherSupportedLanguages.push dictDesc.language if dictDesc.language
+        
+        setting.configCache.otherSupportedLanguages = @otherSupportedLanguages
         
     checkType: (w) ->
         for name, dictDesc of @data
@@ -17,7 +23,9 @@ class LookupParser
             if dictDesc.supportChinese
                 return name if utils.isChinese(w) and setting.getValue "enableLookupChinese"
             if dictDesc.regex
-                return name if w.match(new RegExp(dictDesc.regex, 'g'))?.length == w.length
+                if w.match(new RegExp(dictDesc.regex, 'g'))?.length == w.length \
+                    and dictDesc.language in setting.getValue("otherEnabledLanguages")
+                    return name
 
     parse: (w) ->
         tname = @checkType(w)

@@ -320,45 +320,31 @@ chrome.runtime.sendMessage {
 	handleLookupByMouse = (event)->
 		text = window.getSelection().toString().trim()
 		return unless text
-		return if text.split(/\s/).length > 4
-		return if utils.hasNonWord(text)  # 包含非法字符
-
-		return if !setting.enableLookupEnglish and utils.hasEnglish(text)
-
-		if !setting.enableLookupJapanese
-			if utils.hasJapanese(text)
-				if !utils.hasChinese(text)
-					return
-
-		if !setting.enableLookupChinese
-			if utils.hasChinese(text)
-				if !utils.hasJapanese(text)
-					return
-
-		if !setting.enableLookupJapanese and !setting.enableLookupChinese
-			return if utils.hasChinese(text) or utils.hasJapanese(text)
-
-		highlight('yellow') if setting.markWords
+		return if text.split(/\s/).length > 5
 
 		if setting.enablePlainLookup && text != plainQuerying
-				if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
-					clickInside = $('.dictionaries-tooltip').has(event.target).length
+			if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
+				return unless await utils.send 'check text supported', { w: text }
 
-					$('.dictionaries-tooltip').fadeIn('slow')
-					$('.dictionaries-tooltip .fairydict-spinner').show()
-					$('.dictionaries-tooltip .dictionaries-tooltip-content').empty()
+				clickInside = $('.dictionaries-tooltip').has(event.target).length
 
-					unless clickInside
-						setupPlainContentPosition(event)
+				$('.dictionaries-tooltip').fadeIn('slow')
+				$('.dictionaries-tooltip .fairydict-spinner').show()
+				$('.dictionaries-tooltip .dictionaries-tooltip-content').empty()
 
-					plainQuerying = text
+				unless clickInside
+					setupPlainContentPosition(event)
 
-					isOk = await utils.send 'look up plain', {
-						means: 'mouse',
-						w: text,
-						s: location.href,
-						sc: document.title
-					},  handlePlainResult
+				plainQuerying = text
+
+				highlight('yellow') if setting.markWords
+
+				isOk = await utils.send 'look up plain', {
+					means: 'mouse',
+					w: text,
+					s: location.href,
+					sc: document.title
+				},  handlePlainResult
 
 		if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
 			chrome.runtime.sendMessage({

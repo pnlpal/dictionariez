@@ -218,14 +218,14 @@
 								</label>
 							</div>
 	
-							<div class="checkbox">
+							<div class="checkbox" ng-repeat="lang in setting.otherSupportedLanguages">
 								<label>
 									<input
 										type="checkbox"
-										ng-model="setting.enableLookupJapanese"
-										ng-click="changeKey(!setting.enableLookupJapanese, 'enableLookupJapanese')"
+										ng-checked="setting.otherEnabledLanguages.includes(lang)"
+										ng-click="toggleOtherEnabledLanguages(lang)"
 									/>
-									Look up <strong>Japanese</strong> words
+									Look up <strong>{{ lang }}</strong> words
 								</label>
 							</div>
 

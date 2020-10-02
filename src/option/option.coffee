@@ -42,6 +42,19 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
             key: key,
             value: value
         }
+    $scope.toggleOtherEnabledLanguages = (lang) ->
+        idx = $scope.setting.otherEnabledLanguages.indexOf lang 
+        if idx >= 0
+            $scope.setting.otherEnabledLanguages.splice idx, 1
+        else 
+            $scope.setting.otherEnabledLanguages.push lang 
+        chrome.runtime.sendMessage {
+            type: 'save setting'
+            key: 'otherEnabledLanguages',
+            value: $scope.setting.otherEnabledLanguages
+        }
+
+
     $scope.syncDicts = ()->
         $scope.syncing = true
         err = await utils.send 'sync dicts'
