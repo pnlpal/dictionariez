@@ -130,11 +130,12 @@ playAudios = (urls) ->
 
 test = () ->
     parser = new LookupParser(parsers)
-    parser.parse('most').then console.log 
+    # parser.parse('most').then console.log 
     # parser.parse('自由').then console.log 
     # parser.parse('請').then console.log 
     # parser.parse('請う').then console.log 
     # parser.parse('あなた').then console.log 
+    parser.parse('장소').then console.log 
 
 
 # test()

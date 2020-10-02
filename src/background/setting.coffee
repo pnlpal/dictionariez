@@ -15,7 +15,7 @@ export default {
 
             enableLookupEnglish: true,
             enableLookupChinese: true,
-            otherEnabledLanguages: ['Japanese'],
+            otherEnabledLanguages: ['Japanese', 'Korean'],
 
             enablePlainLookup: true,
             enableAmeAudio: true,

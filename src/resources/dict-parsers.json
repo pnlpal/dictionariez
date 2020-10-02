@@ -112,5 +112,33 @@
         }
       }
     }
+  },
+  "korean": {
+    "url": "https://en.bab.la/dictionary/korean-english/<word>",
+    "language": "Korean",
+    "regex": "[\uac00-\ud7af]|[\u1100-\u11ff]|[\u3130-\u318f]|[\ua960-\ua97f]|[\ud7b0-\ud7ff]",
+    "result": {
+      "w": {
+        "selector": ".quick-result-entry a.babQuickResult"
+      },
+      "prons": [
+        {
+          "audio": {
+            "selector": ".quick-result-entry .bab-quick-sound",
+            "attr": "href",
+            "func": "return 'https://en.bab.la/sound/korean/' + arguments[0].match(/'(\\d+)'/)[1] + '_enko.mp3'"
+          }
+        }
+      ],
+      "defs": {
+        "container": ".quick-result-entry",
+        "groups": "ul.sense-group-results>li",
+        "result": {
+          "def": {
+            "selector": "a"
+          }
+        }
+      }
+    }
   }
 }

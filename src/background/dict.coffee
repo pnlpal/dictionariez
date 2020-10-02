@@ -250,6 +250,13 @@ allDicts = [{
         styles: ['japandict.less']
     }
 }, {
+    'dictName': 'Bab.la (Korean)',
+    'windowUrl': 'https://en.bab.la/dictionary/korean-english/<word>',
+    'windowUrlMatch': '/korean-english/([^&/?]+)',
+    "resources": {
+        styles: ['bab.la.less']
+    }
+}, {
     'dictName': 'Naver Dict (Korean)',
     'windowUrl': 'https://dict.naver.com/search.nhn?query=<word>&target=dic',
     'windowUrlMatch': '[^\\w]query=([^&]+)',
@@ -262,13 +269,6 @@ allDicts = [{
     'windowUrlMatch': '[^\\w]query=([^&]+)',
     "resources": {
         styles: ['naver.less']
-    }
-}, {
-    'dictName': 'Bab.la (Korean)',
-    'windowUrl': 'https://en.bab.la/dictionary/korean-english/<word>',
-    'windowUrlMatch': '/korean-english/([^&/?]+)',
-    "resources": {
-        styles: ['bab.la.less']
     }
 }]
 
