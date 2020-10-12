@@ -140,5 +140,35 @@
         }
       }
     }
+  },
+  "Tajik": {
+    "url": "https://vazhaju.com/search/<word>",
+    "language": "Tajik",
+    "regex": "[\\u{0400}-\\u{04ff}]",
+    "result": {
+      "w": {
+        "selector": ".word .word-spelling>span"
+      },
+      "prons": [
+        {
+          "symbol": {
+            "selector": ".word .word-spelling [dir='rtl']"
+          }
+        }
+      ],
+      "defs": {
+        "container": ".panel>.panel-body>.word",
+        "groups": ".part-of-speech",
+        "result": {
+          "pos": {
+            "selector": "span.part-of-speech-name"
+          },
+          "def": {
+            "selector": ".part-of-speech-content .definition>span",
+            "toArray": true
+          }
+        }
+      }
+    }
   }
 }

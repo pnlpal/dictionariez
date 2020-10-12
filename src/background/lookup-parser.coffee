@@ -23,7 +23,7 @@ class LookupParser
             if dictDesc.supportChinese
                 return name if utils.isChinese(w) and setting.getValue "enableLookupChinese"
             if dictDesc.regex
-                if w.match(new RegExp(dictDesc.regex, 'g'))?.length == w.length \
+                if w.match(new RegExp(dictDesc.regex, 'ug'))?.length == w.length \
                     and dictDesc.language not in setting.getValue("otherDisabledLanguages")
                     return name
 
@@ -71,7 +71,10 @@ class LookupParser
                     result[key] = []
                     $nodes = $container.find desc.groups 
                     $nodes.each (i, el) =>
-                        result[key].push @parseResult($(el), desc.result)
+                        if not $(el).parents(desc.groups).length  # hack: ignore groups inside another group
+                            result[key].push @parseResult($(el), desc.result)
+                        else 
+                            console.log "Find the group inside another group, ignore: ", $(el).parents(desc.groups).length
                         
                 else
                     result[key] = @parseResultItem $container, desc
@@ -140,6 +143,8 @@ test = () ->
     # parser.parse('請う').then console.log 
     # parser.parse('あなた').then console.log 
     parser.parse('장소').then console.log 
+    parser.parse('бештар').then console.log 
+    parser.parse('фуқаро').then console.log 
 
 
 # test()
