@@ -164,8 +164,10 @@
             "selector": "span.part-of-speech-name"
           },
           "def": {
+            "singleParents": ".part-of-speech-content",
             "selector": ".part-of-speech-content .definition>span",
-            "toArray": true
+            "toArray": true,
+            "includeArrayIndex": true
           }
         }
       }

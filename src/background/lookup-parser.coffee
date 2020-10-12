@@ -87,11 +87,20 @@ class LookupParser
         $el = $node 
         if desc.selector
             $el = $node.find(desc.selector)
+            if desc.singleParents 
+                $el = $el.filter (idx, item)->
+                    return $(item).parents(desc.singleParents).length == 1
 
         if typeof desc == 'string'
             value = desc 
         else if desc.toArray 
-            value = $el.toArray().map (item) -> item.innerText?.trim()
+            value = $el.toArray().map (item, idx) -> 
+                text = item.innerText?.trim()
+                if desc.includeArrayIndex and text
+                    "#{idx+1}. " + item.innerText?.trim()
+                else 
+                    text
+
         else if desc.data
             value = $el.data(desc.data)
         else if desc.attr
@@ -144,7 +153,7 @@ test = () ->
     # parser.parse('あなた').then console.log 
     parser.parse('장소').then console.log 
     parser.parse('бештар').then console.log 
-    parser.parse('фуқаро').then console.log 
+    parser.parse('бо').then console.log 
 
 
 # test()
