@@ -2,20 +2,14 @@
 
 ![Promo Banner](https://github.com/revir/dictionaries/raw/master/readme_images/all-in-one.jpg)
 
-One extension on your browser to rule all the dictionaries, some examples including Urban dictionary, Oxford, Cambridge, Longman, Thesaurus, Merrian webster, Collins etc. You can use this extension to manage all those free web dictionaries, choose your favorite dictionary to look up words, save your words in history, setup keyboard shortcuts, just like an app on your browser. Isn't it cool?
+Do you have your favorite dictionary? Do you want to look up different words in different dictionaries, even in different languages? Even if you are not a linguist, dictionaries help you to break language barriers, to understand information, as **information is freedom.**   
 
-Some functions you might like:
+This app, which is currently supported on Chrome and Firefox, basically has two ways to look up words.   
+The first and simplest way is when you select any word on any webpage you will see the definition of the word just shows up right on the position. This is the fastest way to look up. In this case the app has builtin dictionaries to support English, Chinese, Japanese, Korean (aka CJK), and Tajik languages, more languages support can be added if you are interested.    
+The other way is to click on the app's icon, a popup window will shows to let you look up any words in a batch of your favorite dictionaries. This way you can look more deeply on the words. And it just looks like a traditional dictionary app. It has autocompletion function, word history, keyboard shortcuts, real human pronunciation and many more. Some example dictionaries include Urban dictionary, Oxford, Cambridge, Longman, Thesaurus, Merrian webster, Collins and Wikipedia etc.   
 
-- Look up quickly when you select any words on any web page, and pronounce in American and British accent.
-- Native app like dictionary interface, auto suggestions when you input.
-- As default automatically select the word under cursor when you hold the `shift` key, useful on some hard to select websites.
-- Keep your words in history, and you can manage or export them.
-- Keyboard shortcuts to make life easier.
-- Sort or disable dictionaries that you don't use, later I will add more dictionaries to support, any suggestions are welcome.
-- Currently support **English**, **Chinese**, **Japanese** and **Korean**, more languages will be supported if you like it.
-
-As you can see, I am a language learner, Chinese is my mother tongue, **English** and **Japanese** are what I am learning right now. I wish this small tool could help the others like me. So if you have any suggestion please tell me, I am glad to hear feedbacks.
-And please correct me if you find any wrong expressions on context here or in the extension's page. Thank you.
+My goal is providing a universal architecture to look up any word in any language, currently [more dictionaries are needed](more-dicts.md), and more user reviews are wanted to improve its usability.  
+As you can see, I am a language learner, Chinese is my mother tongue, English and Japanese are what I am learning right now. I wish this small tool could help the others like me. So if you have any suggestion please tell me, I am glad to hear feedbacks.  
 
 Join me on [telegram](https://t.me/worldlanguagelearner).
 
@@ -50,4 +44,4 @@ Join me on [telegram](https://t.me/worldlanguagelearner).
 
 # Privacy Policy
 
-[Here](privacy.md)
+[See here](privacy.md)
