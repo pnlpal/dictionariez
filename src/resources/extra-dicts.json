@@ -19,6 +19,11 @@
       "dictName": "linguee (英语-中文)",
       "windowUrl": "https://www.linguee.com/english-chinese/translation/<word>.html",
       "css": "#header, nav { display: none !important;} #lingueecontent {margin-top: 50px !important;} #mainlayout {padding-left: 0px !important;padding-right: 0px !important;}"
+    },
+    {
+      "dictName": "Treccani (Italiano)",
+      "windowUrl": "https://www.treccani.it/vocabolario/<word>/",
+      "css": ".module.module-header { display: none; } .module-search { display: none !important; }"
     }
   ]
 }
