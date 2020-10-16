@@ -24,6 +24,11 @@
       "dictName": "Treccani (Italiano)",
       "windowUrl": "https://www.treccani.it/vocabolario/<word>/",
       "css": ".module.module-header { display: none; } .module-search { display: none !important; }"
+    },
+    {
+      "dictName": "jisho (Japanese)",
+      "windowUrl": "https://jisho.org/search/<word>",
+      "css": ".row.collapse {display: none;} #page_container {margin-top:35px;}"
     }
   ]
 }
