@@ -21,6 +21,11 @@
       "css": ".headerFixer {display: none;} body {margin-top: 20px !important;}"
     },
     {
+      "dictName": "Etymonline",
+      "windowUrl": "https://www.etymonline.com/search?q=<word>",
+      "css": ".header,.adsbygoogle {display: none !important;}"
+    },
+    {
       "dictName": "Вожаҷӯ (Tajik)",
       "windowUrl": "https://vazhaju.com/search/<word>",
       "css": "#banner, .navbar-static-top { display: none;} .container {margin-top: 50px;}"
