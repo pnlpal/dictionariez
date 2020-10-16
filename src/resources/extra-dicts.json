@@ -29,6 +29,11 @@
       "dictName": "jisho (Japanese)",
       "windowUrl": "https://jisho.org/search/<word>",
       "css": ".row.collapse {display: none;} #page_container {margin-top:35px;}"
+    },
+    {
+      "dictName": "Longman (Japanese)",
+      "windowUrl": "https://www.ldoceonline.com/dictionary/japanese-english/<word>",
+      "css": ".header, #stickyslot_container, .topslot-container {display: none !important;} .content {margin-top: 50px;}"
     }
   ]
 }
