@@ -147,7 +147,7 @@ chrome.runtime.sendMessage {
 				return false
 
 
-	$(document).on 'click', '.fairydict-pron-audio', (e) ->
+	$(document).on 'click mouseover', '.fairydict-pron-audio', (e) ->
 		e.stopPropagation()
 		utils.send 'play audios', { otherSrc: $(this).data('mp3') }
 
@@ -226,7 +226,7 @@ chrome.runtime.sendMessage {
 				break
 			curNode = curNode.parentElement
 		return if isEditable 
-		
+
 		if event.which == 1
 			handleLookupByMouse(event)
 
