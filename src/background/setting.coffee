@@ -7,7 +7,7 @@ export default {
             windowWidth: 580,
             windowHeight: 700,
 
-            markWords: true,
+            markWords: false,
 
             enableSelectionOnMouseMove: true,
             enableSelectionSK1: true,
@@ -18,8 +18,8 @@ export default {
             otherDisabledLanguages: [],
 
             enablePlainLookup: true,
-            enableAmeAudio: true,
-            enableBreAudio: true,
+            enableAmeAudio: false,
+            enableBreAudio: false,
             showChineseDefinition: false,
             enablePlainSK1: false,
             plainSK1: 'Ctrl',
