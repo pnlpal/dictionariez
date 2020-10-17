@@ -213,9 +213,21 @@ chrome.runtime.sendMessage {
 			return
 
 		# issue #4
+		# check if mouse is at the same position of the selected text
 		including = $(event.target).has(selObj.focusNode).length or $(event.target).is(selObj.focusNode)
-
-		if event.which == 1 and including
+		return if not including
+		
+		# check if click in editable element
+		curNode = selObj.focusNode
+		isEditable = false 
+		while curNode 
+			if curNode.isContentEditable or ["input", "textarea"].includes(curNode.nodeName.toLowerCase())
+				isEditable = true 
+				break
+			curNode = curNode.parentElement
+		return if isEditable 
+		
+		if event.which == 1
 			handleLookupByMouse(event)
 
 
