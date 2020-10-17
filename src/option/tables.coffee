@@ -58,6 +58,7 @@ bravo = () ->
     })
 
 initHistory = () ->
+    return if not $('#table-history').length
     data = await utils.send 'history'
     table = $('#table-history').DataTable({
         dom: '<"pull-left"f><"pull-left"i><"pull-right"B>tp',

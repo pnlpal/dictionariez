@@ -48,17 +48,19 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             $scope.history = history.reverse()
             $scope.$apply()
 
-            await import('../starrr.js')
-            if $('.starrr', baseNode).data("star-rating")
-                $('.starrr', baseNode).data("star-rating").setRating(r)
-            else
-                $('.starrr', baseNode).starrr({numStars: 3, rating: r})
+            if !$scope.setting?.disableWordHistory
+                await import('../starrr.js')
+                if $('.starrr', baseNode).data("star-rating")
+                    $('.starrr', baseNode).data("star-rating").setRating(r)
+                else
+                    $('.starrr', baseNode).starrr({numStars: 3, rating: r})
 
     initDict()
     chrome.runtime.sendMessage {
         type: 'setting'
     }, (setting)->
         $scope.setting = setting
+        $scope.$apply()
 
     $scope.openOptions = (to) ->
         utils.send 'open options', { to }
@@ -158,7 +160,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
 
         $scope.$apply()
 
-    $('#fairy-stars', baseNode).on 'starrr:change', (e, value)->
+    $(baseNode).on 'starrr:change', (e, value)->
         if $scope.word
             value ?= 0
             console.log "[dictCtrl] rating word: #{$scope.word} #{value}"

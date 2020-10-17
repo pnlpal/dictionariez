@@ -181,7 +181,7 @@
 				<div class=" querying text-center" ng-show="querying">
 					<i class="fa fa-spinner fa-spin fa-2x" title="Querying..."></i>
 				</div>
-				<div
+				<div ng-if="!setting.disableWordHistory"
 					id="fairy-stars"
 					class="starrr "
 					ng-hide="querying"

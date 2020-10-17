@@ -1,4 +1,5 @@
 import message from "./message.coffee"
+import setting from "./setting.coffee"
 
 class Item
 	constructor: ({ @w, @s, @sc, @r, @t = Date.now() }) ->
@@ -52,19 +53,13 @@ export default {
 			return item.w == word
 
 	getPrevious: (w, circle = false) ->
+		return if setting.getValue "disableWordHistory"
 		idx = @history.findIndex (item) ->
 			return item.w == w
 		return @history[idx - 1] if idx > 0
 		return @history[@history.length - 1] if circle or !w
 
 	getHistory: (w, length) ->
-		# end = @history.findIndex (item) ->
-		# 	return item.w == w
-		# begin = 0
-
-		# if end == -1
-			# end = @history.length
-		
 		end = @history.length
 
 		if length
@@ -90,6 +85,7 @@ export default {
 			await item.update {r: rating}
 
 	addHistory: ({w, s, sc, r, t})->
+		return if setting.getValue "disableWordHistory"
 		item = @getInHistory(w)
 		if not item
 			if @history.length >= @maxLength

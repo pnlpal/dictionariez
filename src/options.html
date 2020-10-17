@@ -77,11 +77,12 @@
 
 					<div id="history" class="section">
 						<h1>History</h1>
-						<table
+						<table ng-if="!setting.disableWordHistory"
 							id="table-history"
 							class="table table-condensed table-bordered111"
 							style="width: 100%"
 						></table>
+						<p ng-if="setting.disableWordHistory">Word history is disabled!</p>
 					</div>
 
 					<div id="dictionary" class="section">
@@ -315,6 +316,16 @@
 							</div>
 						</div>
 						<br />
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.disableWordHistory"
+									ng-click="changeKey(!setting.disableWordHistory, 'disableWordHistory')"
+								/>
+								Disable word history!!
+							</label>
+						</div>
 					</div>
 
 					<br />

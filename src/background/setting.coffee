@@ -8,6 +8,7 @@ export default {
             windowHeight: 700,
 
             markWords: false,
+            disableWordHistory: false,
 
             enableSelectionOnMouseMove: true,
             enableSelectionSK1: true,
