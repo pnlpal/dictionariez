@@ -44,6 +44,11 @@
       "dictName": "Longman (Japanese)",
       "windowUrl": "https://www.ldoceonline.com/dictionary/japanese-english/<word>",
       "css": ".header, #stickyslot_container, .topslot-container {display: none !important;} .content {margin-top: 50px;}"
+    },
+    {
+      "dictName": "English Thai Dictionary",
+      "windowUrl": "https://english-thai-dictionary.com/index.php?q=<word>",
+      "css": "#bodyarea {position: absolute;top: 40px;left: 0; right: 0} #cse-search-box {display: none;}"
     }
   ]
 }
