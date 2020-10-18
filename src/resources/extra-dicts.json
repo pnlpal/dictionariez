@@ -49,6 +49,11 @@
       "dictName": "English Thai Dictionary",
       "windowUrl": "https://english-thai-dictionary.com/index.php?q=<word>",
       "css": "#bodyarea {position: absolute;top: 40px;left: 0; right: 0} #cse-search-box {display: none;}"
+    },
+    {
+      "dictName": "Oliver (Thai)",
+      "windowUrl": "https://www.learnwitholiver.com/thai/show-words-search-guest.php?search=<word>",
+      "css": ".top, .navMenu, input[value='Search']{display: none;}"
     }
   ]
 }
