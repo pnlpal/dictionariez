@@ -54,6 +54,11 @@
       "dictName": "Oliver (Thai)",
       "windowUrl": "https://www.learnwitholiver.com/thai/show-words-search-guest.php?search=<word>",
       "css": ".top, .navMenu, input[value='Search']{display: none;}"
+    },
+    {
+      "dictName": "Thaitux (Thai)",
+      "windowUrl": "https://www.thaitux.info/dict/?words=<word>",
+      "css": ".header, .search_box {display: none;} .head {margin-top: 10px}"
     }
   ]
 }
