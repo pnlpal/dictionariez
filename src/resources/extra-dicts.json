@@ -64,6 +64,11 @@
       "dictName": "LongDo (Thai)",
       "windowUrl": "https://dict.longdo.com/search/<word>",
       "css": "#top-nav, #logo-ads, #search-bar, td[width='90'] {display: none;} table.contents-container-placeholder {margin-top: 35px;}"
+    },
+    {
+      "dictName": "Bab.la (Thai)",
+      "windowUrl": "https://en.bab.la/dictionary/thai-english/<word>",
+      "css": "aside, nav {display: none !important;}"
     }
   ]
 }
