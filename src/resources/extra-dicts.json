@@ -58,7 +58,12 @@
     {
       "dictName": "Thaitux (Thai)",
       "windowUrl": "https://www.thaitux.info/dict/?words=<word>",
-      "css": ".header, .search_box {display: none;} .head {margin-top: 10px}"
+      "css": ".header, .search_box {display: none;} .head {margin-top: 10px;}"
+    },
+    {
+      "dictName": "LongDo (Thai)",
+      "windowUrl": "https://dict.longdo.com/search/<word>",
+      "css": "#top-nav, #logo-ads, #search-bar, td[width='90'] {display: none;} table.contents-container-placeholder {margin-top: 35px;}"
     }
   ]
 }
