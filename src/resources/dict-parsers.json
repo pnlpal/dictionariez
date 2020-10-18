@@ -172,5 +172,31 @@
         }
       }
     }
+  },
+  "Thai": {
+    "url": "https://en.bab.la/dictionary/thai-english/<word>",
+    "language": "Thai",
+    "regex": "[\\u{0e00}-\\u{0e7f}]",
+    "result": {
+      "w": {
+        "selector": ".quick-result-entry a.babQuickResult"
+      },
+      "defs": {
+        "container": ".quick-results",
+        "groups": ".quick-result-entry:has('.quick-result-overview')",
+        "filterRelatedWord": "a.babQuickResult",
+        "result": {
+          "pos": {
+            "selector": "span.suffix",
+            "strFilter": "[{}]"
+          },
+          "def": {
+            "selector": ".quick-result-overview ul.sense-group-results>li",
+            "toArray": true,
+            "includeArrayIndex": true
+          }
+        }
+      }
+    }
   }
 }

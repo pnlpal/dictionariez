@@ -70,6 +70,13 @@ class LookupParser
                 if desc.groups 
                     result[key] = []
                     $nodes = $container.find desc.groups 
+
+                    # Thai of Bab.la need to filter some related words
+                    if desc.filterRelatedWord
+                        firstWord = $nodes.find(desc.filterRelatedWord).get(0)?.innerText
+                        $nodes = $nodes.filter (i, el) =>
+                            $(el).find(desc.filterRelatedWord).text() == firstWord
+
                     $nodes.each (i, el) =>
                         if not $(el).parents(desc.groups).length  # hack: ignore groups inside another group
                             result[key].push @parseResult($(el), desc.result)
@@ -110,13 +117,15 @@ class LookupParser
         else
             value = $el.get(0)?.innerText?.trim()
         
-        if desc.func and value?
-            try
-                _f = new Function(desc.func)
-                value = _f.call(this, value)
-            catch e 
-                console.warn "[Func] Parse lookup dict result item failed: ", desc, e 
-                value = null  
+        if desc.strFilter and value 
+            value = value.replace new RegExp(desc.strFilter, 'g'), ''
+        # if desc.func and value?
+        #     try
+        #         _f = new Function(desc.func)
+        #         value = _f.call(this, value)
+        #     catch e 
+        #         console.warn "[Func] Parse lookup dict result item failed: ", desc, e 
+        #         value = null  
 
         return value
 
@@ -151,10 +160,10 @@ test = () ->
     # parser.parse('請').then console.log 
     # parser.parse('請う').then console.log 
     # parser.parse('あなた').then console.log 
-    parser.parse('장소').then console.log 
-    parser.parse('бештар').then console.log 
-    parser.parse('бо').then console.log 
-
+    # parser.parse('장소').then console.log 
+    # parser.parse('бештар').then console.log 
+    # parser.parse('бо').then console.log 
+    parser.parse('ไทย').then console.log 
 
 # test()
 
