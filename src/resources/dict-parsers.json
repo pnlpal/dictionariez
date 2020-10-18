@@ -88,11 +88,7 @@
           "symbol": {
             "selector": ".d-inline-block span.small"
           },
-          "audio": {
-            "selector": ".d-inline-block a.play-reading-btn",
-            "data": "reading",
-            "func": "return 'https:' + arguments[0][0] + '/read?text=' + arguments[0][1] + '&outputFormat=ogg_vorbis&jwt=' + arguments[0][2]"
-          }
+          "synthesis": "ja-JP"
         }
       ],
       "labels": {
@@ -123,11 +119,7 @@
       },
       "prons": [
         {
-          "audio": {
-            "selector": ".quick-result-entry .bab-quick-sound",
-            "attr": "href",
-            "func": "return 'https://en.bab.la/sound/korean/' + arguments[0].match(/'(\\d+)'/)[1] + '_enko.mp3'"
-          }
+          "synthesis": "ko-KR"
         }
       ],
       "defs": {
@@ -181,6 +173,9 @@
       "w": {
         "selector": ".quick-result-entry a.babQuickResult"
       },
+      "prons": [{
+        "synthesis": "th-TH"
+      }],
       "defs": {
         "container": ".quick-results",
         "groups": ".quick-result-entry:has('.quick-result-overview')",

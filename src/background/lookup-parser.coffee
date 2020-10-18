@@ -42,6 +42,7 @@ class LookupParser
         if tname == "bing"
             if utils.isChinese(w) 
                 result.defs = result.defs2 
+                result.prons = [{'synthesis': 'zh-CN'}]
                 delete result.defs2
             else # English 
                 if not setting.getValue 'showChineseDefinition'
@@ -119,39 +120,8 @@ class LookupParser
         
         if desc.strFilter and value 
             value = value.replace new RegExp(desc.strFilter, 'g'), ''
-        # if desc.func and value?
-        #     try
-        #         _f = new Function(desc.func)
-        #         value = _f.call(this, value)
-        #     catch e 
-        #         console.warn "[Func] Parse lookup dict result item failed: ", desc, e 
-        #         value = null  
-
-        return value
-
-playAudios = (urls) ->
-    return unless urls?.length
-    
-    _checkEnd = (audio) ->
-        if (audio.ended) 
-            return true
         
-        await utils.promisifiedTimeout 200
-        _checkEnd audio
-
-    _play = (url) ->
-        new Promise (resolve, reject) ->
-            return resolve() if not url
-
-            audio = new Audio(url)
-            audio.oncanplay = ()->
-                audio.play()
-                # console.log url
-
-            _checkEnd(audio).then resolve
-    
-    for url in urls
-        await _play(url)
+        return value
 
 test = () ->
     parser = new LookupParser(parsers)
@@ -165,7 +135,7 @@ test = () ->
     # parser.parse('бо').then console.log 
     parser.parse('ไทย').then console.log 
 
-# test()
+test()
 
 export default {
     parser: new LookupParser(parsers),
@@ -198,21 +168,6 @@ export default {
                 if n.type == 'ame' and n.symbol
                     ame = n.symbol.replace('US', '').trim()
                     return { ame } 
-
-        message.on 'play audios', ({ ameSrc, breSrc, otherSrc, srcs, checkSetting }) ->
-            if checkSetting 
-                if not setting.getValue 'enableAmeAudio'
-                    ameSrc = null
-                if not setting.getValue 'enableBreAudio'
-                    breSrc = null
-
-                playAudios [ameSrc, breSrc ]
-            
-            if otherSrc
-                playAudios [otherSrc]
-            
-            if srcs 
-                playAudios srcs 
 
     syncDictParsers: () ->
         errorResult = null 
