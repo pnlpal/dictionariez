@@ -27,4 +27,7 @@ import "./hot-reload-content-scripts.js"
     
     { default: lookupParser } = await import(### webpackChunkName: "lookup-parser"  ###"./lookup-parser.coffee")
     lookupParser.init()
+
+    { default: speak } = await import(### webpackChunkName: "speak"  ###"./speak.coffee")
+    speak.init()
 )()

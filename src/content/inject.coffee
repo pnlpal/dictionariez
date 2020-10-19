@@ -40,6 +40,8 @@ chrome.runtime.sendMessage {
 }, (setting)->
 	mouseMoveTimer = null
 	plainQuerying = null
+	returnWord = null 
+	synthesisObj = null
 	lastAutoSelection = ''
 
 	await utils.promisify($(document).ready)
@@ -123,6 +125,8 @@ chrome.runtime.sendMessage {
 		if event.key == "Escape"
 			$('.dictionaries-tooltip').fadeOut().hide()
 			plainQuerying = null
+			returnWord = null 
+			synthesisObj = null
 
 			if isInDict
 				utils.sendToDict 'keypress focus'
@@ -149,7 +153,7 @@ chrome.runtime.sendMessage {
 
 	$(document).on 'click mouseover', '.fairydict-pron-audio', (e) ->
 		e.stopPropagation()
-		utils.send 'play audios', { otherSrc: $(this).data('mp3') }
+		utils.send 'play audios', { otherSrc: $(this).data('mp3'), synthesisObj }
 
 		return false
 
@@ -210,6 +214,8 @@ chrome.runtime.sendMessage {
 
 			$('.dictionaries-tooltip').fadeOut().hide()
 			plainQuerying = null
+			returnWord = null
+			synthesisObj = null 
 			return
 
 		# issue #4
@@ -240,7 +246,8 @@ chrome.runtime.sendMessage {
 		posTpl = (pos) -> "<span class='fairydict-pos'> #{pos} </span>"
 		contentTpl = (content) -> "<div class='fairydict-content'> #{content} </div>"
 		pronTpl = (pron, type = '') -> "<span class='fairydict-pron'> <em> #{pron} </em> </span>"
-		pronAudioTpl = (src, type) -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' href='' data-mp3='#{src}'><i class='icon-fairydict-volume'></i></a>"
+		pronAudioTpl = (src, type='') -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' href='' data-mp3='#{src}'><i class='icon-fairydict-volume'></i></a>"
+		pronSynthesisTpl = () -> "<a class='fairydict-pron-audio' href=''><i class='icon-fairydict-volume'></i></a>"
 		pronsTpl = (w, prons) -> "<div class='fairydict-prons'> #{w} #{prons} </div>"
 
 		# console.log res 
@@ -251,11 +258,16 @@ chrome.runtime.sendMessage {
 		pronHtml = ''
 		if res?.w
 			wHtml = wTpl res.w
+			returnWord = res.w 
 
 		if res?.prons
 			pronHtml = res.prons.reduce ((prev, cur)->
 				prev += pronTpl(cur.symbol, cur.type) if cur.symbol 
 				prev += pronAudioTpl(cur.audio, cur.type) if cur.audio
+				if cur.synthesis and res.w
+					prev += pronSynthesisTpl()
+					synthesisObj = { text: res.w, lang: cur.synthesis }
+
 				return prev
 			), ''
 		
@@ -296,6 +308,8 @@ chrome.runtime.sendMessage {
 		html = renderQueryResult res
 		if !html
 			plainQuerying = null
+			returnWord = null 
+			synthesisObj = null 
 
 		if res?.prons
 			ameSrc = ''
@@ -318,8 +332,6 @@ chrome.runtime.sendMessage {
 						$('.dictionaries-tooltip .fairydict-pron-audio-bre').attr('data-mp3', breSrc)
 
 				utils.send 'play audios', { ameSrc, breSrc, checkSetting: true}
-			else 
-				utils.send 'play audios', { srcs: res.prons.map (n) -> n.audio }
 
 		return html
 
