@@ -69,6 +69,11 @@
       "dictName": "Bab.la (Thai)",
       "windowUrl": "https://en.bab.la/dictionary/thai-english/<word>",
       "css": "aside, nav {display: none !important;}"
+    },
+    {
+      "dictName": "El Diccionario (Spanish)",
+      "windowUrl": "https://dle.rae.es/<word>",
+      "css": ".region-header, #block-superfish, #patrocinio, article>header {display: none !important;} #resultados {margin-top: 50px !important;}"
     }
   ]
 }
