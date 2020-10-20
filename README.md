@@ -13,6 +13,12 @@ As you can see, I am a language learner, Chinese is my mother tongue, English an
 
 Join me on [telegram](https://t.me/worldlanguagelearner).
 
+# Install
+
+- [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc)
+
+- [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/)
+
 # Screenshot
 ![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/s1-final.jpg)
 ![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/s2-final.jpg)
@@ -33,14 +39,6 @@ Join me on [telegram](https://t.me/worldlanguagelearner).
 1. use `yarn` or `npm install` to install requirements.
 2. `npm start` to start a webpack dev-server, add the `build/` directory in your browser's extension page to load the extension.
 3. `npm run build` to build the release code. The dest path is `build/`.
-
-# Install
-
-- [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc)
-
-- [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/)
-
-- [Download crx](https://github.com/revir/dictionaries/raw/master/dictionaries.crx) in case you want to install from crx file.
 
 # Privacy Policy
 
