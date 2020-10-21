@@ -346,10 +346,25 @@ chrome.runtime.sendMessage {
 		return unless text
 		return if text.split(/\s/).length > 5
 
+		# popup window
+		if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
+			chrome.runtime.sendMessage({
+				type: 'look up',
+				means: 'mouse',
+				w: text,
+				s: location.href,
+				sc: document.title
+			})
+
+		# floating definition
+		return unless await utils.send 'check text supported', { w: text }
+
+		# highlight selected words is a special feature
+		# even if the floating definition is turned off, still highlight can be working.
+		highlight('yellow') if setting.markWords
+
 		if setting.enablePlainLookup && text != plainQuerying
 			if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
-				return unless await utils.send 'check text supported', { w: text }
-
 				clickInside = $('.dictionaries-tooltip').has(event.target).length
 
 				$('.dictionaries-tooltip').fadeIn('slow')
@@ -361,8 +376,6 @@ chrome.runtime.sendMessage {
 
 				plainQuerying = text
 
-				highlight('yellow') if setting.markWords
-
 				isOk = await utils.send 'look up plain', {
 					means: 'mouse',
 					w: text,
@@ -370,11 +383,4 @@ chrome.runtime.sendMessage {
 					sc: document.title
 				},  handlePlainResult
 
-		if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
-			chrome.runtime.sendMessage({
-				type: 'look up',
-				means: 'mouse',
-				w: text,
-				s: location.href,
-				sc: document.title
-			})
+		
