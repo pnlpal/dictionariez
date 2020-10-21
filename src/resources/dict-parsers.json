@@ -27,6 +27,12 @@
             "htmlRegex": "https:.*?\\.mp3"
           },
           "type": "bre"
+        },
+        {
+          "symbol": {
+            "selector": ".hd_area .hd_p1_1"
+          },
+          "type": "pinyin"
         }
       ],
       "defs": {

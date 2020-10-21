@@ -41,10 +41,9 @@ class LookupParser
         # special handle of bing when look up Chinese
         if tname == "bing"
             if utils.isChinese(w) 
-                result.defs = result.defs2 
-                result.prons = [{'synthesis': 'zh-CN'}]
-                delete result.defs2
+                result.prons.push({'synthesis': 'zh-CN'})
             else # English 
+                result.prons = result.prons.filter (n) -> n.type != 'pinyin'
                 if not setting.getValue 'showChineseDefinition'
                     delete result.defs2
 
