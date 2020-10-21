@@ -11,7 +11,7 @@ The other way is to click on the app's icon, a popup window will shows to let yo
 My goal is providing a universal architecture to look up any word in any language, currently [more dictionaries are needed](more-dicts.md), and more user reviews are wanted to improve its usability.  
 As you can see, I am a language learner, Chinese is my mother tongue, English and Japanese are what I am learning right now. I wish this small tool could help the others like me. So if you have any suggestion please tell me, I am glad to hear feedbacks.  
 
-Join me on [telegram](https://t.me/worldlanguagelearner).
+Join me on [telegram](https://t.me/worldlanguagelearner) to learn Languages together.
 
 # Install
 
