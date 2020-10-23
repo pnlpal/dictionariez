@@ -134,7 +134,7 @@ test = () ->
     # parser.parse('бо').then console.log 
     parser.parse('ไทย').then console.log 
 
-test()
+# test()
 
 export default {
     parser: new LookupParser(parsers),
@@ -148,12 +148,12 @@ export default {
 
             return @parser.checkType(w)
         
-        message.on 'look up plain', ({w, s, sc}) =>
+        message.on 'look up plain', ({w, s, sc, sentence}) =>
             w = w.trim()
             return unless w
 
             storage.addHistory({
-                w, s, sc
+                w, s, sc, sentence
             }) if s  # ignore lookup from options page
 
             return @parser.parse(w) 

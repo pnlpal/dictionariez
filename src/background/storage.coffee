@@ -2,18 +2,19 @@ import message from "./message.coffee"
 import setting from "./setting.coffee"
 
 class Item
-	constructor: ({ @w, @s, @sc, @r, @t = Date.now() }) ->
+	constructor: ({ @w, @s, @sc, @r, @t = Date.now(), @sentence}) ->
 	save: () ->
 		new Promise (resolve) =>
 			chrome.storage.sync.set({
-				"w-#{@w}": { @w, @s, @sc, @r, @t }
+				"w-#{@w}": { @w, @s, @sc, @r, @t, @sentence }
 			}, resolve)
-	update: ({w, s, sc, r, t}) ->
+	update: ({w, s, sc, r, t, sentence}) ->
 		@w = w if w?
 		@s = s if s?
 		@s = sc if sc?
 		@r = r if r?
 		@t = t if t?
+		@sentence = sentence if sentence?
 		@save()
 
 	remove: () ->
@@ -84,14 +85,14 @@ export default {
 		if item
 			await item.update {r: rating}
 
-	addHistory: ({w, s, sc, r, t})->
+	addHistory: ({w, s, sc, r, t, sentence})->
 		return if setting.getValue "disableWordHistory"
 		item = @getInHistory(w)
 		if not item
 			if @history.length >= @maxLength
 				@history.shift()
 
-			item = new Item({w, s, sc, r, t})
+			item = new Item({w, s, sc, r, t, sentence})
 			@history.push(item)
 			await item.save()
 		return item

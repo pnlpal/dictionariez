@@ -203,6 +203,23 @@ chrome.runtime.sendMessage {
 				else
 					range.detach()
 		return
+	
+	getSentenceOfSelection = () ->
+		selection = window.getSelection()
+		range = selection.getRangeAt(0)
+
+		range1 = range.cloneRange()
+		range1.detach()
+
+		selection.modify('move', 'backward', 'sentence')
+		selection.modify('extend', 'forward', 'sentence')
+
+		text = selection.toString().trim()
+
+		selection.removeAllRanges()
+		selection.addRange(range1)
+
+		return text
 
 	handleMouseUp = (event)->
 		selObj = window.getSelection()
@@ -346,11 +363,14 @@ chrome.runtime.sendMessage {
 		return unless text
 		return if text.split(/\s/).length > 5
 
+		sentence = getSentenceOfSelection()
+
 		# popup window
 		if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
 			chrome.runtime.sendMessage({
 				type: 'look up',
 				means: 'mouse',
+				sentence,
 				w: text,
 				s: location.href,
 				sc: document.title
@@ -378,6 +398,7 @@ chrome.runtime.sendMessage {
 
 				isOk = await utils.send 'look up plain', {
 					means: 'mouse',
+					sentence,
 					w: text,
 					s: location.href,
 					sc: document.title

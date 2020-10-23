@@ -101,7 +101,7 @@ initHistory = () ->
                 orthogonal: 'download'
             }
         }],
-        order: [[3, 'desc']],
+        order: [[4, 'desc']],
         columns: [
             {
                 name: 'w',
@@ -122,6 +122,19 @@ initHistory = () ->
                         return "<div class='starrr' title='Change rating' data-rating='#{data || 0}'></div>"
 
                     return data || 0
+            },
+            {
+                name: 'sentence',
+                title: 'Sentence',
+                className: 'column-sentence',
+                data: 'sentence',
+                render: (data, type, row) ->
+                    return '' unless data
+                    return data if type == 'download'
+
+                    text = utils.sanitizeHTML data
+                    return "<span class='ellipsis w-sentence' title='#{text}'> #{text} </span>"
+
             },
             {
                 name: 's',

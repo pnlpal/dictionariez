@@ -6,6 +6,29 @@ import utils from "utils"
 
 defaultWindowUrl = chrome.extension.getURL('dict.html')
 
+getInfoOfSelectionCode = '''
+var getSentence = function() {
+	var selection = window.getSelection();
+    var range = selection.getRangeAt(0);
+    if (!selection.toString()) return;
+
+    var range1 = range.cloneRange();
+    range1.detach();
+
+    selection.modify('move', 'backward', 'sentence');
+    selection.modify('extend', 'forward', 'sentence');
+
+    var text = selection.toString().trim();
+
+    selection.removeAllRanges();
+    selection.addRange(range1);
+
+    return text;
+};
+
+[window.getSelection().toString().trim(), getSentence()]
+'''
+
 class DictWindow
     w: null
     tid: null
@@ -103,8 +126,8 @@ class DictWindow
 dictWindowMap = {}
 
 export default {
-    lookup: ({ w, s, sc } = {}) ->
-        storage.addHistory { w, s, sc } if w
+    lookup: ({ w, s, sc, sentence } = {}) ->
+        storage.addHistory { w, s, sc, sentence } if w
         window.dictWindow?.lookup(w)
 
     init: () ->
@@ -118,19 +141,25 @@ export default {
 
         chrome.browserAction.onClicked.addListener (tab) =>
             chrome.tabs.executeScript {
-                code: "window.getSelection().toString();"
-            }, (selection) =>
-                @lookup({ w: selection?[0], s: tab.url, sc: tab.title })
+                code: getInfoOfSelectionCode 
+            }, (res) =>
+                [w, sentence] = res?[0]
+                @lookup({ w, sentence, s: tab.url, sc: tab.title })
 
         chrome.contextMenus.create {
             title: "Look up '%s' in dictionaries",
             contexts: ["selection"],
             onclick: (info, tab) =>
-                if info.selectionText
-                    @lookup({ w: info.selectionText, s: tab.url, sc: tab.title })
+                w = info.selectionText?.trim()
+                if w 
+                    chrome.tabs.executeScript {
+                        code: getInfoOfSelectionCode 
+                    }, (res) =>
+                        [w, sentence] = res?[0]
+                        @lookup({ w, sentence, s: tab.url, sc: tab.title })
         }
 
-        message.on 'look up', ({ dictName, w, s, sc, means }) ->
+        message.on 'look up', ({ dictName, w, s, sc, sentence, means }) ->
             if means == 'mouse'
                 if not setting.getValue('enableMinidict')
                     return
@@ -138,7 +167,7 @@ export default {
             w = w.trim() if w
             dictWindow.updateDict dictName if dictName
 
-            storage.addHistory { w, s, sc } if w and s # ignore lookup from options page
+            storage.addHistory { w, s, sc, sentence } if w and s # ignore lookup from options page
             dictWindow.lookup(w)
 
         message.on 'query', (request) ->
