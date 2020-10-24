@@ -143,7 +143,7 @@ export default {
             chrome.tabs.executeScript {
                 code: getInfoOfSelectionCode 
             }, (res) =>
-                [w, sentence] = res?[0]
+                [w, sentence] = res?[0] or []
                 @lookup({ w, sentence, s: tab.url, sc: tab.title })
 
         chrome.contextMenus.create {
@@ -155,7 +155,7 @@ export default {
                     chrome.tabs.executeScript {
                         code: getInfoOfSelectionCode 
                     }, (res) =>
-                        [w, sentence] = res?[0]
+                        [w, sentence] = res?[0] or []
                         @lookup({ w, sentence, s: tab.url, sc: tab.title })
         }
 
