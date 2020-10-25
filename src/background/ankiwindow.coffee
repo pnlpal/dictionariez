@@ -83,6 +83,7 @@ export default {
                     item = storage.getPreviousAnkiUnsaved request.ankiSavedWord 
                     if item?.w 
                         @anki.wordItem = item 
+                        console.info "Anki to save next word: #{item.w}"
 
                 if @anki.wordItem?.w 
                     lookupInfo = await plainLookup.parser.parse(@anki.wordItem.w)

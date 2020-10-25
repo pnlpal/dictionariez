@@ -2,11 +2,11 @@ import message from "./message.coffee"
 import setting from "./setting.coffee"
 
 class Item
-	constructor: ({ @w, @s, @sc, @r, @t = Date.now(), @sentence}) ->
+	constructor: ({ @w, @s, @sc, @r, @t = Date.now(), @sentence, @ankiSaved}) ->
 	save: () ->
 		new Promise (resolve) =>
 			chrome.storage.sync.set({
-				"w-#{@w}": { @w, @s, @sc, @r, @t, @sentence }
+				"w-#{@w}": { @w, @s, @sc, @r, @t, @sentence, @ankiSaved }
 			}, resolve)
 	update: ({w, s, sc, r, t, sentence, ankiSaved}) ->
 		@w = w if w?
