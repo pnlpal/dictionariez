@@ -44,6 +44,9 @@ buildActionIcon = (name) ->
         when 'anki'
             faIcon = 'fa-share-square-o'
             cls = 'text-warning'
+        when 'saved in anki'
+            faIcon = 'fa-retweet'
+            cls = 'text-muted'
 
     iEl = "<i class='fa #{faIcon}' aria-hidden='true' data-action='#{name}' title='#{name}'></i>"
     return "<a href='' class='action-button #{cls}' data-action='#{name}' title='#{name}'> #{iEl} </a>"
@@ -161,8 +164,10 @@ initHistory = () ->
             {
                 name: 'action',
                 title: 'Action',
-                render: (data, type) ->
+                render: (data, type, row) ->
                     if type == 'display'
+                        if row.ankiSaved 
+                            return buildActionIcon('saved in anki') + buildActionIcon('remove')
                         return buildActionIcon('anki') + buildActionIcon('remove')
                     return ''
             }

@@ -43,7 +43,24 @@ export default {
     promisifiedTimeout: (t) ->
         new Promise (resolve) ->
             setTimeout resolve, t
+    
+    checkInTime: (func, t=5000) ->
+        timeIsUp = false 
+        @promisifiedTimeout(t).then ()->
+            timeIsUp = true 
 
+        _check = () =>
+            new Promise (resolve, reject) =>
+                await @promisifiedTimeout(500)
+                if func()
+                    resolve()
+                else if timeIsUp
+                    reject() 
+                else 
+                    return _check()
+        
+        return _check()
+            
     send: (type, data = {}, callback) ->
         if typeof data == 'function'
             callback = data

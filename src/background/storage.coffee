@@ -8,13 +8,14 @@ class Item
 			chrome.storage.sync.set({
 				"w-#{@w}": { @w, @s, @sc, @r, @t, @sentence }
 			}, resolve)
-	update: ({w, s, sc, r, t, sentence}) ->
+	update: ({w, s, sc, r, t, sentence, ankiSaved}) ->
 		@w = w if w?
 		@s = s if s?
 		@s = sc if sc?
 		@r = r if r?
 		@t = t if t?
 		@sentence = sentence if sentence?
+		@ankiSaved = ankiSaved if ankiSaved?
 		@save()
 
 	remove: () ->
@@ -84,6 +85,21 @@ export default {
 		item = @getInHistory(word)
 		if item
 			await item.update {r: rating}
+	savedAnki: (word, saved = true)->
+		item = @getInHistory(word)
+		if item
+			await item.update {ankiSaved: saved}
+	getPreviousAnkiUnsaved: (w) ->
+		return if setting.getValue "disableWordHistory"
+		idx = @history.findIndex (item) ->
+			return item.w == w
+		idx ?= [@history.length - 1] 
+
+		while idx > 0
+			idx -= 1 
+			item = @history[idx]
+			if not item.ankiSaved
+				return item 
 
 	addHistory: ({w, s, sc, r, t, sentence})->
 		return if setting.getValue "disableWordHistory"

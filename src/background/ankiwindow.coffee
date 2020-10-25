@@ -3,6 +3,7 @@ import message from "./message.coffee"
 import utils from "utils"
 import setting from "./setting.coffee"
 import plainLookup from "./lookup-parser.coffee"
+import storage from "./storage.coffee"
 
 class AnkiWindow 
     url: 'https://ankiuser.net/edit/'
@@ -74,8 +75,17 @@ export default {
             @anki.wordItem = request
         
         message.on 'get anki info', (request, sender) =>
-            if sender.tab.id == @anki.tid and @anki.wordItem?.w 
-                lookupInfo = await plainLookup.parser.parse(@anki.wordItem.w)
-                return {wordItem: @anki.wordItem, lookupInfo}
+            if sender.tab.id == @anki.tid 
+                if request.ankiSavedWord
+                    console.info "Anki saved word: #{request.ankiSavedWord}"
+                    @anki.wordItem = null 
+                    await storage.savedAnki request.ankiSavedWord
+                    item = storage.getPreviousAnkiUnsaved request.ankiSavedWord 
+                    if item?.w 
+                        @anki.wordItem = item 
+
+                if @anki.wordItem?.w 
+                    lookupInfo = await plainLookup.parser.parse(@anki.wordItem.w)
+                    return {wordItem: @anki.wordItem, lookupInfo}
 
 }       

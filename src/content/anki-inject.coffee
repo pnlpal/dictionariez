@@ -1,24 +1,42 @@
 import $ from 'jquery'
 import utils from "utils"
 
-chrome.runtime.sendMessage {
-	type: 'get anki info',
-	origin: location.origin,
-	url: location.href
-}, (res) ->
-	return unless res?.wordItem 
+currentWordItem = null 
 
-	if res.wordItem.sentence 
-		$('.field#f0').append renderQuoteInfo res.wordItem 
+getAnkiInfo = (ankiSavedWord) ->
+	chrome.runtime.sendMessage {
+		type: 'get anki info',
+		ankiSavedWord
+	}, (res) ->
+		if not res?.wordItem 
+			currentWordItem = null 
+			return 
 
-	if res.lookupInfo?.w
-		$('.field#f0').append renderLookupDefs res.lookupInfo
+		currentWordItem = res.wordItem
 
-	$('.field#f0').append '<br>'
+		if res.wordItem.sentence 
+			$('.field#f0').append renderQuoteInfo res.wordItem 
 
-	if res.lookupInfo
-		$('.field#f1').append renderLookupWords res.wordItem, res.lookupInfo
-		$('.field#f1').append '<br><br>'
+		if res.lookupInfo?.w
+			$('.field#f0').append renderLookupDefs res.lookupInfo
+
+		$('.field#f0').append '<br>'
+
+		if res.lookupInfo
+			$('.field#f1').append renderLookupWords res.wordItem, res.lookupInfo
+			$('.field#f1').append '<br><br>'
+	
+
+getAnkiInfo()
+$(document).on 'click', 'button.btn-primary', () ->
+	try
+		await utils.checkInTime ()->$('.field#f0').text().trim() == ''
+		console.log "Anki saved word: #{currentWordItem.w}"
+
+		getAnkiInfo(currentWordItem.w)
+	catch 
+		console.err "Anki save failed on word: #{currentWordItem.w}"
+
 
 renderQuoteInfo = (res) ->
 	sanitizedSentence = utils.sanitizeHTML res.sentence
