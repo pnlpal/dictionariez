@@ -11,7 +11,7 @@ chrome.runtime.sendMessage {
 	if res.wordItem.sentence 
 		$('.field#f0').append renderQuoteInfo res.wordItem 
 
-	if res.lookupInfo 
+	if res.lookupInfo?.w
 		$('.field#f0').append renderLookupDefs res.lookupInfo
 
 	$('.field#f0').append '<br>'
@@ -79,13 +79,14 @@ renderLookupDefs = (res) ->
 	return html 
 
 renderLookupWords = (wordItem, res) ->
-	wTpl = (w, w2) -> "<strong class='fairydict-w' style='font-size: 20px;'> #{w} </strong> &nbsp; <span style='font-size: 12px;'>#{w2}</span>"
+	wTpl = (w='', w2='') -> "<strong class='fairydict-w' style='font-size: 20px;'> #{w} </strong> &nbsp; <span style='font-size: 12px;'>#{w2}</span>"
 	pronSymbolTpl = (symbol='', type='') -> "<span class='fairydict-symbol fairydict-symbol-#{type}'> <em> #{symbol} </em> </span>"
 	pronAudioTpl = (w, src='', type='', synthesis='') -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' href='' data-mp3='#{src}' data-synthesis='#{synthesis}' data-w='#{w}'><i class='icon-fairydict-volume'></i></a>"
 	pronsTpl = (w, prons) -> "<div class='fairydict-prons' style='font-size: 13px;'> #{w} #{prons} </div>"
 
 	# show w2 if the lookup word is different from the selected word.
 	w2 = if wordItem.w == res.w then '' else "[#{wordItem.w}]"
+	pronHtml = ''
 	wHtml = ''
 	wHtml = wTpl res.w, w2
 
