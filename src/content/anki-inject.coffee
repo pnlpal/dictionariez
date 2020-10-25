@@ -14,7 +14,7 @@ chrome.runtime.sendMessage {
 	if res.lookupInfo 
 		$('.field#f0').append renderLookupDefs res.lookupInfo
 
-	$('.field#f0').append '<br><br>'
+	$('.field#f0').append '<br>'
 
 	if res.lookupInfo
 		$('.field#f1').append renderLookupWords res.wordItem, res.lookupInfo
@@ -37,22 +37,20 @@ renderLookupDefs = (res) ->
 	labelTpl = (label) -> "<span class='fairydict-label'> #{label} </span>"
 	posTpl = (pos) -> "<span class='fairydict-pos' style='display: table-cell;width: 40px;padding-top: 1px;'> #{pos} </span>"
 	contentTpl = (content) -> "<div class='fairydict-content' style='font-size: 14px;line-height: 14px;background: floralwhite;padding: 0 5px;'> #{content} </div>"
-	pronTpl = (pron, type = '') -> "<span class='fairydict-pron' style='font-size: 13px;'> <em> #{pron} </em> </span>"
-	pronAudioTpl = (src, type='') -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' style='font-size: 13px;' href='' data-mp3='#{src}'><i class='icon-fairydict-volume'></i></a>"
-	pronSynthesisTpl = () -> "<a class='fairydict-pron-audio' href='' style='font-size: 13px;'><i class='icon-fairydict-volume'></i></a>"
-	pronsTpl = (prons) -> "<div class='fairydict-prons'> #{prons} </div>"
+	pronSymbolTpl = (symbol='', type='') -> "<span class='fairydict-symbol fairydict-symbol-#{type}'> <em> #{symbol} </em> </span>"
+	pronAudioTpl = (w, src='', type='', synthesis='') -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' href='' data-mp3='#{src}' data-synthesis='#{synthesis}' data-w='#{w}'><i class='icon-fairydict-volume'></i></a>"
+	pronsTpl = (prons) -> "<div class='fairydict-prons' style='font-size: 13px;'> #{prons} </div>"
 
 	html = ''
 
-	if res?.prons
+	if res?.prons and res.w 
 		pronHtml = res.prons.reduce ((prev, cur)->
-			prev += pronAudioTpl(cur.audio, cur.type) if cur.audio
-			if cur.synthesis and res.w
-				prev += pronSynthesisTpl()
-				synthesisObj = { text: res.w, lang: cur.synthesis }
-
+			if cur.synthesis or cur.audio or cur.symbol
+				# prev += pronSymbolTpl(cur.symbol, cur.type)
+				prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis)
 			return prev
 		), ''
+
 	html += pronsTpl pronHtml if pronHtml
 	
 	labelsCon = res?.labels?.map(({ name }) -> labelTpl name if name).reduce ((prev, cur) ->
@@ -81,26 +79,44 @@ renderLookupDefs = (res) ->
 	return html 
 
 renderLookupWords = (wordItem, res) ->
-	wTpl = (w, w2) -> "<strong class='fairydict-w'> #{w} </strong> &nbsp; <span style='font-size: 12px;'>#{w2}</span>"
-	pronTpl = (pron, type = '') -> "<span class='fairydict-pron' style='font-size: 13px;'> <em> #{pron} </em> </span>"
-	pronAudioTpl = (src, type='') -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' style='font-size: 13px;' href='' data-mp3='#{src}'><i class='icon-fairydict-volume'></i></a>"
-	pronSynthesisTpl = () -> "<a class='fairydict-pron-audio' href='' style='font-size: 13px;'><i class='icon-fairydict-volume'></i></a>"
-	pronsTpl = (w, prons) -> "<div class='fairydict-prons'> #{w} #{prons} </div>"
+	wTpl = (w, w2) -> "<strong class='fairydict-w' style='font-size: 20px;'> #{w} </strong> &nbsp; <span style='font-size: 12px;'>#{w2}</span>"
+	pronSymbolTpl = (symbol='', type='') -> "<span class='fairydict-symbol fairydict-symbol-#{type}'> <em> #{symbol} </em> </span>"
+	pronAudioTpl = (w, src='', type='', synthesis='') -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' href='' data-mp3='#{src}' data-synthesis='#{synthesis}' data-w='#{w}'><i class='icon-fairydict-volume'></i></a>"
+	pronsTpl = (w, prons) -> "<div class='fairydict-prons' style='font-size: 13px;'> #{w} #{prons} </div>"
 
 	# show w2 if the lookup word is different from the selected word.
 	w2 = if wordItem.w == res.w then '' else "[#{wordItem.w}]"
 	wHtml = ''
 	wHtml = wTpl res.w, w2
 
-	if res?.prons
+	if res?.prons and res.w 
 		pronHtml = res.prons.reduce ((prev, cur)->
-			prev += pronTpl(cur.symbol, cur.type) if cur.symbol 
-			prev += pronAudioTpl(cur.audio, cur.type) if cur.audio
-			if cur.synthesis and res.w
-				prev += pronSynthesisTpl()
-				synthesisObj = { text: res.w, lang: cur.synthesis }
-
+			if cur.synthesis or cur.audio or cur.symbol
+				prev += pronSymbolTpl(cur.symbol, cur.type)
+				prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis)
 			return prev
 		), ''
+
+		if res.prons.every (v)->['bre', 'ame'].includes(v.type)
+			getEnglishPronAudio res.w 
+			getEnglishPronSymbol res.w 
 		
 	return pronsTpl wHtml, pronHtml if pronHtml or wHtml
+
+getEnglishPronSymbol = (w) ->
+	{ prons } = await utils.send 'get english pron symbol', { w }
+
+	for item in prons 
+		if item.type == 'ame' and item.symbol 
+			$('.field .fairydict-symbol-ame em').text(item.symbol)
+		if item.type == 'bre' and item.symbol
+			$('.field .fairydict-symbol-bre em').text(item.symbol)
+
+getEnglishPronAudio = (w) ->
+	{ prons } = await utils.send 'get real person voice', { w }
+
+	for item in prons 
+		if item.type == 'ame' and item.audio 
+			$('.field .fairydict-pron-audio-ame').attr('data-mp3', item.audio)
+		if item.type == 'bre' and item.audio
+			$('.field .fairydict-pron-audio-bre').attr('data-mp3', item.audio)
