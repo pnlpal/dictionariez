@@ -370,7 +370,11 @@ chrome.runtime.sendMessage {
 		return unless text
 		return if text.split(/\s/).length > 5
 
-		sentence = getSentenceOfSelection()
+		try 
+			sentence = getSentenceOfSelection()
+		catch
+			# Gecko does not implement "sentence" yet
+			sentence = null
 
 		# popup window
 		if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
