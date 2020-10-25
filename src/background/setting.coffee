@@ -6,6 +6,10 @@ export default {
             windowTop: undefined,
             windowWidth: 580,
             windowHeight: 700,
+            ankiLeft: undefined,
+            ankiTop: undefined,
+            ankiWidth: 580,
+            ankiHeight: 700,
 
             markWords: false,
             disableWordHistory: false,

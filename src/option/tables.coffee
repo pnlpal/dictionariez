@@ -41,9 +41,12 @@ buildActionIcon = (name) ->
         when 'remove'
             faIcon = 'fa-remove'
             cls = 'text-danger'
+        when 'anki'
+            faIcon = 'fa-share-square-o'
+            cls = 'text-warning'
 
-    iEl = "<i class='fa #{faIcon}' aria-hidden='true' data-action='#{name}'></i>"
-    return "<a href='' class='action-button #{cls}' data-action='#{name}'> #{iEl} </a>"
+    iEl = "<i class='fa #{faIcon}' aria-hidden='true' data-action='#{name}' title='#{name}'></i>"
+    return "<a href='' class='action-button #{cls}' data-action='#{name}' title='#{name}'> #{iEl} </a>"
 
 buildActionButton = ({ name, cls = '' }) ->
     return "<a href='' class='action-button btn btn-xs #{cls}' data-action='#{name}'> #{name} </a>"
@@ -160,7 +163,7 @@ initHistory = () ->
                 title: 'Action',
                 render: (data, type) ->
                     if type == 'display'
-                        return buildActionIcon 'remove'
+                        return buildActionIcon('anki') + buildActionIcon('remove')
                     return ''
             }
         ],
@@ -187,10 +190,11 @@ initHistory = () ->
 
             switch $(e.target).data('action')
                 when 'remove'
-                    console.log rowData
                     await utils.send 'remove history', rowData
                     row.remove().draw()
                     bravo()
+                when 'anki'
+                    await utils.send 'open anki', rowData
 
         if $(e.target).hasClass('dictionaries-history-word')
             e.preventDefault()

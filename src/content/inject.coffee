@@ -12,6 +12,8 @@ import debounce from 'lodash/debounce'
 
 import highlight from './editable-highlight'
 
+import './anki-inject.coffee'
+
 isInDict = false
 
 chrome.runtime.sendMessage {
