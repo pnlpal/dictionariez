@@ -29,6 +29,8 @@ getAnkiInfo = (ankiSavedWord) ->
 
 getAnkiInfo()
 $(document).on 'click', 'button.btn-primary', () ->
+	return if not currentWordItem?.w
+
 	try
 		await utils.checkInTime ()->$('.field#f0').text().trim() == ''
 		console.log "Anki saved word: #{currentWordItem.w}"

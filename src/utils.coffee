@@ -57,9 +57,9 @@ export default {
                 else if timeIsUp
                     reject() 
                 else 
-                    return _check()
+                    return _check().then(resolve, reject)
         
-        return _check()
+        return await _check()
             
     send: (type, data = {}, callback) ->
         if typeof data == 'function'
