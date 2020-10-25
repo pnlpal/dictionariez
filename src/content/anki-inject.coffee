@@ -63,7 +63,7 @@ renderLookupDefs = (res) ->
 
 	if res?.prons and res.w 
 		pronHtml = res.prons.reduce ((prev, cur)->
-			if cur.synthesis or cur.audio or cur.symbol
+			if cur.synthesis or cur.audio
 				# prev += pronSymbolTpl(cur.symbol, cur.type)
 				prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis)
 			return prev
@@ -112,7 +112,7 @@ renderLookupWords = (wordItem, res) ->
 		pronHtml = res.prons.reduce ((prev, cur)->
 			if cur.synthesis or cur.audio or cur.symbol
 				prev += pronSymbolTpl(cur.symbol, cur.type)
-				prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis)
+				prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis) if cur.synthesis or cur.audio
 			return prev
 		), ''
 

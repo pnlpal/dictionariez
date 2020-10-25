@@ -286,7 +286,7 @@ chrome.runtime.sendMessage {
 				pronHtml = res.prons.reduce ((prev, cur)->
 					if cur.synthesis or cur.audio or cur.symbol
 						prev += pronSymbolTpl(cur.symbol, cur.type)
-						prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis)
+						prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis) if cur.synthesis or cur.audio
 					return prev
 				), ''
 		
