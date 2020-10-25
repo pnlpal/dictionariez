@@ -56,7 +56,11 @@ class LookupParser
                 result.prons = result.prons.filter (n) -> n.type != 'pinyin'
                 if not setting.getValue 'showChineseDefinition'
                     delete result.defs2
-
+        if tname == 'google'
+            if utils.isEnglish(w) 
+                if not setting.getValue 'showChineseDefinition'
+                    delete result.defs2
+        
         return result
 
     parseByType: (w, type="ldoce") ->
@@ -122,6 +126,8 @@ class LookupParser
                     "#{idx+1}. " + item.innerText?.trim()
                 else 
                     text
+            if desc.max and value.length > desc.max 
+                value = value.filter (item, i) -> i < 2
 
         else if desc.data
             value = $el.data(desc.data)

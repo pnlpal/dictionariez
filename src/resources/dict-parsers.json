@@ -91,6 +91,20 @@
             "includeArrayIndex": true
           }
         }
+      },
+
+      "defs2": {
+        "groups": "[data-tae]>[data-mh='-1']",
+        "result": {
+          "pos": {
+            "selector": "div"
+          },
+          "def": {
+            "selector": "ol>li",
+            "max": 2,
+            "toArray": true
+          }
+        }
       }
     }
   },
