@@ -42,8 +42,6 @@ chrome.runtime.sendMessage {
 }, (setting)->
 	mouseMoveTimer = null
 	plainQuerying = null
-	returnWord = null 
-	synthesisObj = null
 	lastAutoSelection = ''
 
 	await utils.promisify($(document).ready)
@@ -127,8 +125,6 @@ chrome.runtime.sendMessage {
 		if event.key == "Escape"
 			$('.dictionaries-tooltip').fadeOut().hide()
 			plainQuerying = null
-			returnWord = null 
-			synthesisObj = null
 
 			if isInDict
 				utils.sendToDict 'keypress focus'
@@ -155,7 +151,18 @@ chrome.runtime.sendMessage {
 
 	$(document).on 'click mouseover', '.fairydict-pron-audio', (e) ->
 		e.stopPropagation()
-		utils.send 'play audios', { otherSrc: $(this).data('mp3'), synthesisObj }
+
+		synthesisObj = null
+
+		if $(this).data('mp3')
+			utils.send 'play audios', { otherSrc: $(this).data('mp3') }
+
+		else if $(this).data('synthesis') 
+			synthesisObj = {
+				text: $(this).data('w'),
+				lang: $(this).data('synthesis')
+			}
+			utils.send 'play audios', { synthesisObj }
 
 		return false
 
@@ -233,8 +240,6 @@ chrome.runtime.sendMessage {
 
 			$('.dictionaries-tooltip').fadeOut().hide()
 			plainQuerying = null
-			returnWord = null
-			synthesisObj = null 
 			return
 
 		# issue #4
@@ -264,9 +269,8 @@ chrome.runtime.sendMessage {
 		labelTpl = (label) -> "<span class='fairydict-label'> #{label} </span>"
 		posTpl = (pos) -> "<span class='fairydict-pos'> #{pos} </span>"
 		contentTpl = (content) -> "<div class='fairydict-content'> #{content} </div>"
-		pronTpl = (pron, type = '') -> "<span class='fairydict-pron'> <em> #{pron} </em> </span>"
-		pronAudioTpl = (src, type='') -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' href='' data-mp3='#{src}'><i class='icon-fairydict-volume'></i></a>"
-		pronSynthesisTpl = () -> "<a class='fairydict-pron-audio' href=''><i class='icon-fairydict-volume'></i></a>"
+		pronSymbolTpl = (symbol='', type='') -> "<span class='fairydict-symbol fairydict-symbol-#{type}'> <em> #{symbol} </em> </span>"
+		pronAudioTpl = (w, src='', type='', synthesis='') -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' href='' data-mp3='#{src}' data-synthesis='#{synthesis}' data-w='#{w}'><i class='icon-fairydict-volume'></i></a>"
 		pronsTpl = (w, prons) -> "<div class='fairydict-prons'> #{w} #{prons} </div>"
 
 		# console.log res 
@@ -277,18 +281,14 @@ chrome.runtime.sendMessage {
 		pronHtml = ''
 		if res?.w
 			wHtml = wTpl res.w
-			returnWord = res.w 
 
-		if res?.prons
-			pronHtml = res.prons.reduce ((prev, cur)->
-				prev += pronTpl(cur.symbol, cur.type) if cur.symbol 
-				prev += pronAudioTpl(cur.audio, cur.type) if cur.audio
-				if cur.synthesis and res.w
-					prev += pronSynthesisTpl()
-					synthesisObj = { text: res.w, lang: cur.synthesis }
-
-				return prev
-			), ''
+			if res?.prons
+				pronHtml = res.prons.reduce ((prev, cur)->
+					if cur.synthesis or cur.audio or cur.symbol
+						prev += pronSymbolTpl(cur.symbol, cur.type)
+						prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis)
+					return prev
+				), ''
 		
 		html += pronsTpl wHtml, pronHtml if pronHtml or wHtml
 		
@@ -323,35 +323,40 @@ chrome.runtime.sendMessage {
 
 		return html
 
+	getEnglishPronSymbol = (w) ->
+		{ prons } = await utils.send 'get english pron symbol', { w }
+
+		for item in prons 
+			if item.type == 'ame' and item.symbol 
+				$('.dictionaries-tooltip .fairydict-symbol-ame em').text(item.symbol)
+			if item.type == 'bre' and item.symbol
+				$('.dictionaries-tooltip .fairydict-symbol-bre em').text(item.symbol)
+
+	getEnglishPronAudio = (w) ->
+		{ prons } = await utils.send 'get real person voice', { w }
+
+		ameSrc = ''
+		breSrc = ''
+		for item in prons 
+			if item.type == 'ame' and item.audio 
+				ameSrc = item.audio 
+				$('.dictionaries-tooltip .fairydict-pron-audio-ame').attr('data-mp3', ameSrc)
+			if item.type == 'bre' and item.audio
+				breSrc = item.audio
+				$('.dictionaries-tooltip .fairydict-pron-audio-bre').attr('data-mp3', breSrc)
+
+		utils.send 'play audios', { ameSrc, breSrc, checkSetting: true}
+
 	handlePlainResult = (res) ->
 		html = renderQueryResult res
 		if !html
 			plainQuerying = null
-			returnWord = null 
-			synthesisObj = null 
 
-		if res?.prons
-			ameSrc = ''
-			breSrc = ''
-			for item in res.prons 
-				ameSrc = item.audio if item.type == 'ame' and item.audio 
-				breSrc = item.audio if item.type == 'bre' and item.audio 
-
-			if ameSrc and breSrc 
-				{ prons } = await utils.send 'get real person voice', { w: res.w }
-
-				# console.log prons 
-
-				for item in prons 
-					if item.type == 'ame' and item.audio 
-						ameSrc = item.audio 
-						$('.dictionaries-tooltip .fairydict-pron-audio-ame').attr('data-mp3', ameSrc)
-					if item.type == 'bre' and item.audio
-						breSrc = item.audio
-						$('.dictionaries-tooltip .fairydict-pron-audio-bre').attr('data-mp3', breSrc)
-
-				utils.send 'play audios', { ameSrc, breSrc, checkSetting: true}
-
+		if res?.prons?.length and res.w
+			if res.prons.every (v)->['bre', 'ame'].includes(v.type)
+				getEnglishPronAudio res.w 
+				getEnglishPronSymbol res.w 
+			
 		return html
 
 	# toggleHighlight = (el) ->

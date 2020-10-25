@@ -6,6 +6,16 @@ import setting from "./setting.coffee"
 import utils from "utils"
 import parsers from '../resources/dict-parsers.json'
 
+trimWordPos = (pos) ->
+    specials = ["adjective", "adverb", "interjection", "numeral", "article", "determiner"]
+    
+    if specials.includes(pos) 
+        return pos.slice(0, 3)
+
+    if pos.length > 4
+        return pos.slice(0, 4)
+    return pos 
+
 class LookupParser 
     constructor: (@data) ->
         @typeCount = Object.keys(@data).length
@@ -84,7 +94,12 @@ class LookupParser
                             console.log "Find the group inside another group, ignore: ", $(el).parents(desc.groups).length
                         
                 else
-                    result[key] = @parseResultItem $container, desc
+                    value = @parseResultItem $container, desc
+
+                    if value and key == 'pos'
+                        value = trimWordPos value 
+
+                    result[key] = value 
 
         return result 
 
@@ -132,7 +147,8 @@ test = () ->
     # parser.parse('장소').then console.log 
     # parser.parse('бештар').then console.log 
     # parser.parse('бо').then console.log 
-    parser.parse('ไทย').then console.log 
+    # parser.parse('ไทย').then console.log 
+    parser.parse('beauty').then console.log 
 
 # test()
 
@@ -159,7 +175,9 @@ export default {
             return @parser.parse(w) 
 
         message.on 'get real person voice', ({ w }) =>
-            return @parser.parseByType(w)
+            return @parser.parseByType(w) if w.split(' ').length == 1  # ignore phrase
+        message.on 'get english pron symbol', ({ w }) =>
+            return @parser.parseByType(w, 'bing') if w.split(' ').length == 1 # ignore phrase
 
         message.on 'look up phonetic', ({ w, _counter }) =>
             { prons } = await @parser.parseByType(w, 'bing')

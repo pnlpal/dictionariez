@@ -1,7 +1,6 @@
 {
   "bing": {
     "url": "https://cn.bing.com/dict/search?mkt=zh-cn&q=<word>",
-    "supportEnglish": true,
     "supportChinese": true,
     "result": {
       "w": {
@@ -55,6 +54,41 @@
           },
           "def": {
             "selector": ".def"
+          }
+        }
+      }
+    }
+  },
+  "google": {
+    "url": "https://www.google.com/search?hl=zh-CN&q=define+<word>",
+    "supportEnglish": true,
+    "result": {
+      "w": {
+        "selector": "[data-dobid='hdw']"
+      },
+      "prons": [
+        {
+          "symbol": "Ame",
+          "type": "ame",
+          "synthesis": "en-US"
+        },
+        {
+          "symbol": "Bre",
+          "type": "bre",
+          "synthesis": "en-GB"
+        }
+      ],
+      
+      "defs": {
+        "groups": ".vmod>.vmod[data-topic]",
+        "result": {
+          "pos": {
+            "selector": "i"
+          },
+          "def": {
+            "selector": "[data-dobid='dfn']",
+            "toArray": true,
+            "includeArrayIndex": true
           }
         }
       }
