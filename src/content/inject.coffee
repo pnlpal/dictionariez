@@ -169,7 +169,7 @@ chrome.runtime.sendMessage {
 
 	handleSelectionWord = (e)->
 		word = window.getSelection().toString().trim()
-
+		
 		# filter last auto selection word, let choose another word.
 		if word == lastAutoSelection
 			word = getWordAtPoint(e.target, e.clientX, e.clientY)
@@ -245,6 +245,9 @@ chrome.runtime.sendMessage {
 		# issue #4
 		# check if mouse is at the same position of the selected text
 		including = $(event.target).has(selObj.focusNode).length or $(event.target).is(selObj.focusNode)
+		# on Firefox, the focusNode might be exactly adjoining the click target.
+		if not including 
+			including = $(event.target).has(selObj.focusNode.previousElementSibling).length or $(event.target).is(selObj.focusNode.previousElementSibling)
 		return if not including
 		
 		# check if click in editable element
