@@ -78,7 +78,7 @@
     {
       "dictName": "Klingonska (Klingon)",
       "windowUrl": "http://klingonska.org/dict/?q=<word>",
-      "css": "body * { visibility: hidden; } section * { visibility: visible; } header { visibility: hidden; } footer { visibility: hidden; }"
+      "css": "body * { visibility: hidden; } section * { visibility: visible; } header, [role='main']>h1, [role='main']>aside, form.dict {display: none !important;} section {margin-top: 50px;}"
     }
   ]
 }
