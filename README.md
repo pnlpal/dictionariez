@@ -1,17 +1,16 @@
-# Dictionaries
+# Dictionariez (dictionaries)
 
 ![Promo Banner](https://github.com/revir/dictionaries/raw/master/readme_images/all-in-one.jpg)
 
-Do you have your favorite dictionary? Do you want to look up different words in different dictionaries, even in different languages? Even if you are not a linguist, dictionaries help you to break language barriers, to understand information, as **information is freedom.**   
+This app, which is currently supported on Chrome and Firefox, helps facilitate your language learning by marking words in articles, looking up in various dictionaries, and exporting to Anki. 
 
-This app, which is currently supported on Chrome and Firefox, basically has two ways to look up words.   
-The first and simplest way is when you select any word on any webpage you will see the definition of the word just shows up right on the position. This is the fastest way to look up. In this case the app has builtin dictionaries to support English, Chinese, Japanese, Korean (aka CJK), and Tajik languages, more languages support can be added if you are interested.    
-The other way is to click on the app's icon, a popup window will shows to let you look up any words in a batch of your favorite dictionaries. This way you can look more deeply on the words. And it just looks like a traditional dictionary app. It has autocompletion function, word history, keyboard shortcuts, real human pronunciation and many more. Some example dictionaries include Urban dictionary, Oxford, Cambridge, Longman, Thesaurus, Merrian webster, Collins and Wikipedia etc.   
+Just click on a word you will see the definition shows up right on the position. This is the fastest way to look up. In this case the app has builtin dictionaries to support English, Chinese, Japanese, Korean (aka CJK), and Tajik languages, more languages support can be added if you are interested.    
+And click on the app's icon, a popup window will shows to let you look up any words in a batch of your favorite dictionaries. This way you can look more deeply on the words. And it just looks like a traditional dictionary app. It has autocompletion function, word history, keyboard shortcuts, real human pronunciation and many more. Some example dictionaries include Urban dictionary, Oxford, Cambridge, Longman, Thesaurus, Merrian webster, Collins and Wikipedia etc.   
 
-My goal is providing a universal architecture to look up any word in any language, currently [more dictionaries are needed](more-dicts.md), and more user reviews are wanted to improve its usability.  
+My goal is providing a universal tool to look up any word in any language, currently [more dictionaries are needed](more-dicts.md), and more user reviews are wanted to improve its usability.  
 As you can see, I am a language learner, Chinese is my mother tongue, English and Japanese are what I am learning right now. I wish this small tool could help the others like me. So if you have any suggestion please tell me, I am glad to hear feedbacks.  
 
-Join me on [telegram](https://t.me/worldlanguagelearner) to learn Languages together.
+Join me on [telegram](https://t.me/worldlanguagelearner) to learn languages together.
 
 # Install
 
@@ -19,16 +18,13 @@ Join me on [telegram](https://t.me/worldlanguagelearner) to learn Languages toge
 
 - [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/)
 
+- [Download crx file](dictionaries.crx)
+
 # Screenshot
-![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/s1-final.jpg)
-![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/s2-final.jpg)
-![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/s3-final.jpg)
-![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/s4-final.jpg)
-
-
-![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/english.jpg)
-![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/chinese.jpg)
-![Alt text](https://github.com/revir/dictionaries/raw/master/readme_images/japanese.jpg)
+![Alt text](readme_images/s1-final.jpg)
+![Alt text](readme_images/english.jpg)
+![Alt text](readme_images/s5-final.jpg)
+![Alt text](readme_images/japanese.jpg)
 
 # More dictionaries are needed!  
 

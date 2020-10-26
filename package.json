@@ -1,7 +1,7 @@
 {
 	"name": "dictionaries",
 	"version": "2.3.1",
-	"description": "One app to rule all dictionaries",
+	"description": "Facilitate your language learning by marking words in articles, looking up in various dictionaries, and exporting to Anki.",
 	"repository": {
 		"type": "git",
 		"url": "git@github.com:revir/dictionaries.git"
