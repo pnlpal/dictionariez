@@ -154,7 +154,7 @@ test = () ->
     # parser.parse('бештар').then console.log 
     # parser.parse('бо').then console.log 
     # parser.parse('ไทย').then console.log 
-    parser.parse('beauty').then console.log 
+    parser.parse('elephant').then console.log 
 
 # test()
 

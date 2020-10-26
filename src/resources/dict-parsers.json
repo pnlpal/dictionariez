@@ -105,6 +105,15 @@
             "toArray": true
           }
         }
+      },
+      "images": {
+        "groups": ".vmod [data-topic] g-img",
+        "result": {
+          "src": {
+            "selector": "img",
+            "attr": "title"
+          }
+        }
       }
     }
   },

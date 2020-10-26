@@ -16,6 +16,9 @@ getAnkiInfo = (ankiSavedWord) ->
 
 		if res.wordItem.sentence 
 			$('.field#f0').append renderQuoteInfo res.wordItem 
+		
+		if res.lookupInfo?.images?.length 
+			$('.field#f0').append renderImages res.lookupInfo
 
 		if res.lookupInfo?.w
 			$('.field#f0').append renderLookupDefs res.lookupInfo
@@ -49,6 +52,16 @@ renderQuoteInfo = (res) ->
 <div style="margin-top: 5px;">-- <a href="{s}" style="font-size: 11px;"> {sc} </a></div>
 </blockquote>
 	'''.replace('{s}', res.s).replace('{sc}', res.sc).replace('{sentence}', filteredSentence)
+
+renderImages = (res) ->
+	imgTpl = (src) -> "<img src='#{src}' style='width: 50%; padding-right: 1px;'></img>"
+	imgs = res.images.map((cur, i) ->
+		if cur.src and i < 2  # only display two images
+			return imgTpl(cur.src) 
+		return ''
+	).join('')
+
+	return "<div class='fairydict-images'> #{imgs} </div>"
 
 renderLookupDefs = (res) ->
 	defTpl = (def) -> "<span class='fairydict-def' style='display: inline-flex;margin-bottom: 3px;'> #{def} </span>"
