@@ -28,7 +28,8 @@ chrome.runtime.sendMessage {
 		isInDict = true
 
 	if res?.cardUrl and res.word and not location.host.includes('wikipedia.org')
-		if res.word.split(/\s/).every (s) -> location.href.toLowerCase().includes(s.toLowerCase())
+		comparedLoc = decodeURI(location.href).toLowerCase()
+		if res.word.split(/\s/).every (s) -> comparedLoc.includes(s.toLowerCase())
 			$("<iframe id='dictionaries-card' src='#{res.cardUrl}' style='display: none;'> </iframe>").appendTo('body')
 
 window.addEventListener "message", ((event) ->
