@@ -7,3 +7,5 @@ chrome.runtime.sendMessage {
 		if res.dict?.resources?.styles?
 			for style in res.dict.resources.styles
 				require("./css/#{style}")
+		
+		require('./scrollbar.less')

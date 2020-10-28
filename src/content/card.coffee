@@ -6,6 +6,7 @@ import debounce from 'lodash/debounce'
 import('bootstrap/dist/css/bootstrap.min.css')
 import('../vendor/font-awesome.css')
 
+import('./scrollbar.less')
 import('./card.less')
 
 getWikipedia = (w) ->
