@@ -12,13 +12,6 @@ allDicts = [{
         styles: ['longmanenglish.less']
     }
 }, {
-    'dictName': "Wikipedia",
-    'windowUrl': 'https://en.m.wikipedia.org/wiki/<word>',
-    'windowUrlMatch': 'wiki/([^&]+)',
-    "resources": {
-        styles: ['wikipedia.less']
-    }
-}, {
     'dictName': "vocabulary.com",
     'windowUrl': 'https://www.vocabulary.com/dictionary/<word>',
     'windowUrlMatch': '/dictionary/([^&/?]+)',
@@ -49,12 +42,11 @@ allDicts = [{
         styles: ['collins.less']
     }
 }, {
-    'dictName': '欧陆词典',
-    'entry': 'eudic',
-    'windowUrl': 'https://dict.eudic.net/dicts/en/<word>',
-    'windowUrlMatch': '/en/([^&/?]+)'
+    'dictName': "Wikipedia",
+    'windowUrl': 'https://en.m.wikipedia.org/wiki/<word>',
+    'windowUrlMatch': 'wiki/([^&]+)',
     "resources": {
-        styles: ['eudic.less']
+        styles: ['wikipedia.less']
     }
 }, {
     'dictName': "Bing Dict (必应词典)",
@@ -186,6 +178,14 @@ allDicts = [{
     'windowUrlMatch': 'definition/([^&]+)',
     "resources": {
         styles: ['wordreference.less']
+    }
+}, {
+    'dictName': '欧陆词典',
+    'entry': 'eudic',
+    'windowUrl': 'https://dict.eudic.net/dicts/en/<word>',
+    'windowUrlMatch': '/en/([^&/?]+)'
+    "resources": {
+        styles: ['eudic.less']
     }
 }, {
     'dictName': '金山词霸',
