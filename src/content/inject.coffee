@@ -27,13 +27,22 @@ chrome.runtime.sendMessage {
 		$("<iframe id='dictionaries-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('html')
 		isInDict = true
 
+	if res?.cardUrl and res.word and not location.host.includes('wikipedia.org')
+		if res.word.split(/\s/).every (s) -> location.href.toLowerCase().includes(s.toLowerCase())
+			$("<iframe id='dictionaries-card' src='#{res.cardUrl}' style='display: none;'> </iframe>").appendTo('body')
+
 window.addEventListener "message", ((event) ->
 	# chrome-extension or moz-extension
-	if event.origin.includes('extension://') and event.data.type == 'toggleDropdown'
-		if event.data.open
-			$('#dictionaries-iframe').addClass('dropdown-open')
-		else 
-			$('#dictionaries-iframe').removeClass('dropdown-open')
+	if event.origin.includes('extension://') 
+		if event.data.type == 'toggleDropdown'
+			if event.data.open
+				$('#dictionaries-iframe').addClass('dropdown-open')
+			else 
+				$('#dictionaries-iframe').removeClass('dropdown-open')
+		else if event.data.type == 'close-card'
+			$('#dictionaries-card').hide()
+		else if event.data.type == 'show-card'
+			$('#dictionaries-card').show()
 
 ), false
 
@@ -349,7 +358,7 @@ chrome.runtime.sendMessage {
 				$('.dictionaries-tooltip .fairydict-pron-audio-bre').attr('data-mp3', breSrc)
 
 		utils.send 'play audios', { ameSrc, breSrc, checkSetting: true}
-
+	
 	handlePlainResult = (res) ->
 		html = renderQueryResult res
 		if !html
@@ -359,7 +368,7 @@ chrome.runtime.sendMessage {
 			if res.prons.every (v)->['bre', 'ame'].includes(v.type)
 				getEnglishPronAudio res.w 
 				getEnglishPronSymbol res.w 
-			
+		
 		return html
 
 	# toggleHighlight = (el) ->

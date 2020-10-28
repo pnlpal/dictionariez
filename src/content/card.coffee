@@ -1,0 +1,55 @@
+import $ from 'jquery'
+# import angular from 'angular'
+import utils from "utils"
+import debounce from 'lodash/debounce'
+
+import('bootstrap/dist/css/bootstrap.min.css')
+import('../vendor/font-awesome.css')
+
+import('./card.less')
+
+getWikipedia = (w) ->
+    res = await utils.send 'get wikipedia', { w }
+    console.log res 
+
+    if res?.extract_html
+        if res?.thumbnail
+            $('.dictionaries-wikipedia .dictionaries-wiki-image').html "<img src='#{res.thumbnail.source}'></img>"
+        else 
+            $('.dictionaries-wikipedia .dictionaries-wiki-extract').addClass('dictionaries-wiki-margin-top')
+
+        $('.dictionaries-wikipedia .dictionaries-wiki-extract').html(res.extract_html)
+        $('.dictionaries-wikipedia .dictionaries-wiki-link').attr('href', res.content_urls.mobile.page)
+
+        window.top.postMessage { type: 'show-card' }, '*'
+
+$('''
+<div class="dictionaries-wikipedia">
+    <div class="dictionaries-card-toolbar navbar-fixed-top">
+        <a class="dictionaries-wiki-link" href="" title="Open wikipedia">
+            <img src="https://en.m.wikipedia.org/static/favicon/wikipedia.ico" alt="Wiki"></img>
+        </a>
+
+        <a class="dictionaries-card-close pull-right" href="">
+            <i class='fa fa-remove' aria-hidden='true' title='Close'></i>
+        </a>
+    </div>
+
+    <div class="dictionaries-wiki-image"> </div>
+    
+    <div class="dictionaries-wiki-extract">
+    </div>
+</div>
+''').appendTo('body')
+
+getWikipedia()
+
+$(document).on('click', 'a.dictionaries-wiki-link', (ev) -> 
+    window.top.location.href = ev.currentTarget.href
+)
+
+$(document).on('click', 'a.dictionaries-card-close', (ev) -> 
+    window.top.postMessage { type: 'close-card' }, '*'
+
+    return false 
+)

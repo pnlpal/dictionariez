@@ -3,6 +3,7 @@ import storage from  "./storage.coffee"
 import dict from "./dict.coffee"
 import message from "./message.coffee"
 import utils from "utils"
+import $ from "jquery"
 
 defaultWindowUrl = chrome.extension.getURL('dict.html')
 
@@ -221,7 +222,9 @@ export default {
 
                 return {
                     dictUrl: chrome.extension.getURL('dict.html'),
-                    dict: d
+                    cardUrl: chrome.extension.getURL('card.html'),
+                    dict: d,
+                    word: dictWindow.word 
                 }
            
 
@@ -231,5 +234,9 @@ export default {
 
         message.on 'sendToDict', ( request ) ->
             dictWindow.sendMessage request
+
+        message.on 'get wikipedia', () =>
+            return if not dictWindow.word 
+            return $.get "https://en.m.wikipedia.org/api/rest_v1/page/summary/" + dictWindow.word
 
 }

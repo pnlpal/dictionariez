@@ -184,7 +184,7 @@ export default {
             return @parser.parseByType(w) if w.split(' ').length == 1  # ignore phrase
         message.on 'get english pron symbol', ({ w }) =>
             return @parser.parseByType(w, 'bing') if w.split(' ').length == 1 # ignore phrase
-
+        
         message.on 'look up phonetic', ({ w, _counter }) =>
             { prons } = await @parser.parseByType(w, 'bing')
             for n in prons 

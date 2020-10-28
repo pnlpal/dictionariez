@@ -41,6 +41,7 @@ var options = {
 		inject: path.join(__dirname, "src", "content", "inject.coffee"),
 		preinject: path.join(__dirname, "src", "content", "preinject.coffee"),
 		dictheader: path.join(__dirname, "src", "content", "dictheader.coffee"),
+		card: path.join(__dirname, "src", "content", "card.coffee"),
 		options: path.join(__dirname, "src", "option", "option.coffee"),
 		background: path.join(__dirname, "src", "background", "main.coffee")
 	},
@@ -145,6 +146,11 @@ var options = {
 			template: path.join(__dirname, "src", "dict.html"),
 			filename: "dict.html",
 			chunks: ["dictheader"]
+		}),
+		new HtmlWebpackPlugin({
+			template: path.join(__dirname, "src", "card.html"),
+			filename: "card.html",
+			chunks: ["card"]
 		}),
 
 		new webpack.ProvidePlugin({

@@ -68,12 +68,12 @@
       },
       "prons": [
         {
-          "symbol": "Ame",
+          "symbol": "US",
           "type": "ame",
           "synthesis": "en-US"
         },
         {
-          "symbol": "Bre",
+          "symbol": "UK",
           "type": "bre",
           "synthesis": "en-GB"
         }
