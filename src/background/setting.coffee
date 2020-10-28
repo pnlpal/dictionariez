@@ -14,6 +14,8 @@ export default {
             markWords: false,
             disableWordHistory: false,
 
+            disableWikipediaCard: false,
+
             enableSelectionOnMouseMove: true,
             enableSelectionSK1: true,
             selectionSK1: 'Shift'

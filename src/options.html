@@ -266,7 +266,7 @@
 										ng-model="setting.showChineseDefinition"
 										ng-click="changeKey(!setting.showChineseDefinition, 'showChineseDefinition')"
 									/>
-									Show Chinese definition. <em class="text-new">New!</em>
+									Show Chinese definition.
 								</label>
 							</div>
 						</div>
@@ -278,7 +278,7 @@
 									ng-model="setting.enableMinidict"
 									ng-click="changeKey(!setting.enableMinidict, 'enableMinidict')"
 								/>
-								Automatically open the popup window to look up the seleted word.
+								Automatically open the popup dict window to look up the seleted word.
 							</label>
 						</div>
 
@@ -326,6 +326,17 @@
 								Disable word history!!
 							</label>
 						</div>
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.disableWikipediaCard"
+									ng-click="changeKey(!setting.disableWikipediaCard, 'disableWikipediaCard')"
+								/>
+								Disable wikipedia result on the popup dict window. <em class="text-new">New!</em>
+							</label>
+						</div>
+
 					</div>
 
 					<br />

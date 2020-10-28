@@ -30,8 +30,11 @@ $('''
             <img src="https://en.m.wikipedia.org/static/favicon/wikipedia.ico" alt="Wiki"></img>
         </a>
 
-        <a class="dictionaries-card-close pull-right" href="">
-            <i class='fa fa-remove' aria-hidden='true' title='Close'></i>
+        <a class="dictionaries-card-close pull-right" href="" title="Close">
+            <i class='fa fa-remove' aria-hidden='true'></i>
+        </a>
+        <a class="dictionaries-setting pull-right" href="" title="Go to settings">
+            <i class='fa fa-cog' aria-hidden='true'></i>
         </a>
     </div>
 
@@ -46,10 +49,15 @@ getWikipedia()
 
 $(document).on('click', 'a.dictionaries-wiki-link', (ev) -> 
     window.top.location.href = ev.currentTarget.href
+    return false
 )
 
 $(document).on('click', 'a.dictionaries-card-close', (ev) -> 
     window.top.postMessage { type: 'close-card' }, '*'
+    return false 
+)
 
+$(document).on('click', 'a.dictionaries-setting', (ev) -> 
+    utils.send 'open options', { to: 'function-setting' }
     return false 
 )

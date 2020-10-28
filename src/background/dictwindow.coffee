@@ -227,7 +227,6 @@ export default {
                     word: dictWindow.word 
                 }
            
-
         message.on 'window resize', (request, sender) ->
             if sender.tab.id == dictWindow.tid
                 dictWindow.saveWindowPosition()
@@ -237,6 +236,7 @@ export default {
 
         message.on 'get wikipedia', () =>
             return if not dictWindow.word 
+            return if setting.getValue 'disableWikipediaCard'
             if utils.isEnglish dictWindow.word 
                 return $.get "https://en.m.wikipedia.org/api/rest_v1/page/summary/" + dictWindow.word
             else if utils.isChinese(dictWindow.word) and setting.getValue "enableLookupChinese"
