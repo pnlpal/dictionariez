@@ -39,3 +39,9 @@ Join me on [telegram](https://t.me/worldlanguagelearner) to learn languages toge
 # Privacy Policy
 
 [See here](privacy.md)
+
+# Donate 
+I used to be a freelancer, and have been employed for several years. But now I am jobless. This project started as a sideline for fun, now I want to see how far it could go. If you find it's useful, please consider to donate, a cup of coffee would be my greatest incentive.  
+Thank you.
+
+[![](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://paypal.me/RevirYoung?locale.x=en_US)
