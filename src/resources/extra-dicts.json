@@ -82,8 +82,13 @@
     },
     
     {
-      "dictName": "Tureng",
+      "dictName": "Tureng (Turkish)",
       "windowUrl": "https://tureng.com/tr/turkce-ingilizce/<word>",
+      "css": "header,#miniheader {display: none !important;} body {margin-top: 50px !important;}"
+    }
+        {
+      "dictName": "Youglish",
+      "windowUrl": "https://youglish.com/pronounce/<word>",
       "css": "header,#miniheader {display: none !important;} body {margin-top: 50px !important;}"
     }
   ]
