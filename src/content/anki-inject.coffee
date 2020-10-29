@@ -47,9 +47,9 @@ renderQuoteInfo = (res) ->
 	sanitizedSentence = utils.sanitizeHTML res.sentence
 	filteredSentence = sanitizedSentence.replaceAll res.w, "<span style='font-weight: bold'>[?]</span>"
 	return '''
-<blockquote style="font-style:italic;font-size: 13px; color: #555555;padding: 0.3em 5px 0.3em 20px;border-left:5px solid #78C0A8;background:#EDEDED;">
-<span style="font-size: 13px;"> {sentence} </span>
-<div style="margin-top: 5px;">-- <a href="{s}" style="font-size: 11px;"> {sc} </a></div>
+<blockquote style="font-style:italic;font-size: 16px; color: #555555;padding: 0.3em 5px 0.3em 20px;border-left:5px solid #78C0A8;background:#EDEDED;">
+<span style="font-size: 16px;"> {sentence} </span>
+<div style="margin-top: 5px;">-- <a href="{s}" style="font-size: 15px;"> {sc} </a></div>
 </blockquote>
 	'''.replace('{s}', res.s).replace('{sc}', res.sc).replace('{sentence}', filteredSentence)
 
@@ -69,10 +69,10 @@ renderLookupDefs = (res) ->
 	labelsTpl = (labels) -> "<div class='fairydict-labels'> #{labels} </div>"
 	labelTpl = (label) -> "<span class='fairydict-label'> #{label} </span>"
 	posTpl = (pos) -> "<span class='fairydict-pos' style='display: table-cell;width: 40px;padding-top: 1px;'> #{pos} </span>"
-	contentTpl = (content) -> "<div class='fairydict-content' style='font-size: 14px;line-height: 14px;background: floralwhite;padding: 0 5px;'> #{content} </div>"
+	contentTpl = (content) -> "<div class='fairydict-content' style='font-size: 15px;line-height: 15px;background: floralwhite;padding: 0 5px;'> #{content} </div>"
 	pronSymbolTpl = (symbol='', type='') -> "<span class='fairydict-symbol fairydict-symbol-#{type}'> <em> #{symbol} </em> </span>"
 	pronAudioTpl = (w, src='', type='', synthesis='') -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' href='' data-mp3='#{src}' data-synthesis='#{synthesis}' data-w='#{w}'><i class='icon-fairydict-volume'></i></a>"
-	pronsTpl = (prons) -> "<div class='fairydict-prons' style='font-size: 13px;'> #{prons} </div>"
+	pronsTpl = (prons) -> "<div class='fairydict-prons' style='font-size: 15px;'> #{prons} </div>"
 
 	html = ''
 
