@@ -79,6 +79,12 @@
       "dictName": "Klingonska (Klingon)",
       "windowUrl": "http://klingonska.org/dict/?q=<word>",
       "css": "body * { visibility: hidden; } section * { visibility: visible; } header, [role='main']>h1, [role='main']>aside, form.dict {display: none !important;} section {margin-top: 50px;}"
+    },
+    
+    {
+      "dictName": "Tureng",
+      "windowUrl": "https://tureng.com/tr/turkce-ingilizce/<word>",
+      "css": "header,#miniheader {display: none !important;} body {margin-top: 50px !important;}"
     }
   ]
 }
