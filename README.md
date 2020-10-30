@@ -18,7 +18,7 @@ Join me on [telegram](https://t.me/worldlanguagelearner) to learn languages toge
 
 - [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/)
 
-- [Download crx file](dictionaries.crx)
+- [Download crx file](build.crx) *Build on the latest code, normally newer than Chrome store. Uninstall the other version before you install it.*
 
 # Screenshot
 ![Alt text](readme_images/s1-final.jpg)
@@ -28,7 +28,7 @@ Join me on [telegram](https://t.me/worldlanguagelearner) to learn languages toge
 
 # More dictionaries are needed!  
 
-[See here.](more-dicts.md)
+[See here.](more-dicts.md) 
 
 # Build
 
