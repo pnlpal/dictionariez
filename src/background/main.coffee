@@ -20,8 +20,9 @@ import "./hot-reload-content-scripts.js"
     window.dict = dict
     dict.syncExtraDicts()
 
-    { default: dictWindow } = await import(### webpackChunkName: "dictwindow"  ###"./dictwindow.coffee")
-    await dictWindow.init()
+    { default: dw } = await import(### webpackChunkName: "dictwindow"  ###"./dictwindow.coffee")
+    await dw.init()
+    window.dw = dw
 
     await import(### webpackChunkName: "auto-complete"  ###"./auto-complete.coffee")
     

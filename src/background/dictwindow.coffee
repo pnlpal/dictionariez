@@ -92,7 +92,6 @@ class DictWindow
         text = @word if not text
 
         if text
-            console.log('lookup...')
             @sendMessage({type: 'querying', text})
             result = await @queryDict(text, @dictName)
             url = result?.windowUrl
@@ -124,21 +123,17 @@ class DictWindow
             @dictName = dictName
             setting.setValue 'dictionary', dictName
 
-dictWindowMap = {}
-
 export default {
+    dictWindow: new DictWindow(),
+
     lookup: ({ w, s, sc, sentence } = {}) ->
         storage.addHistory { w, s, sc, sentence } if w
-        window.dictWindow?.lookup(w)
+        @dictWindow.lookup(w)
 
     init: () ->
-        dictWindow = new DictWindow()
-        window.dictWindow = dictWindow
-        window.dictWindowMap = dictWindowMap
-
-        chrome.windows.onRemoved.addListener (wid)->
-            if dictWindow.w?.id == wid
-                dictWindow.reset()
+        chrome.windows.onRemoved.addListener (wid)=>
+            if @dictWindow.w?.id == wid
+                @dictWindow.reset()
 
         chrome.browserAction.onClicked.addListener (tab) =>
             chrome.tabs.executeScript {
@@ -160,18 +155,18 @@ export default {
                         @lookup({ w, sentence, s: tab.url, sc: tab.title })
         }
 
-        message.on 'look up', ({ dictName, w, s, sc, sentence, means }) ->
+        message.on 'look up', ({ dictName, w, s, sc, sentence, means }) =>
             if means == 'mouse'
                 if not setting.getValue('enableMinidict')
                     return
 
             w = w.trim() if w
-            dictWindow.updateDict dictName if dictName
+            @dictWindow.updateDict dictName if dictName
 
             storage.addHistory { w, s, sc, sentence } if w and s # ignore lookup from options page
-            dictWindow.lookup(w)
+            @dictWindow.lookup(w)
 
-        message.on 'query', (request) ->
+        message.on 'query', (request) =>
             dictName = request.dictName
             w = request.w
             
@@ -180,7 +175,7 @@ export default {
             if request.previousDict
                 dictName = dict.getPreviousDict(dictName).dictName
 
-            dictWindow.updateDict(dictName)
+            @dictWindow.updateDict(dictName)
 
             if request.previousWord
                 w = storage.getPrevious(w, true)?.w
@@ -189,33 +184,30 @@ export default {
             else if w
                 storage.addHistory { w }
 
-            dictWindow.queryDict(w, dictName)
+            @dictWindow.queryDict(w, dictName)
 
-        message.on 'dictionary', (request, sender) ->
-            w = dictWindow.word
+        message.on 'dictionary', (request, sender) =>
+            w = @dictWindow.word
 
-            if sender.tab.id == dictWindow.tid or request.optionsPage
-                currentDictName = dictWindow.dictName
-            else
-                currentDictName = dictWindowMap[sender.tab.id].dictName
-                w = dictWindowMap[sender.tab.id].word
-
-            r = storage.getRating(w)
-            previous = storage.getPrevious(w)
-            nextDictName = dict.getNextDict(currentDictName).dictName
-            previousDictName = dict.getPreviousDict(currentDictName).dictName
-            history = storage.getHistory(w, 8) # at most show 8 words in the history list on dictionary header.
-            return { allDicts: dict.allDicts, history, currentDictName, nextDictName, previousDictName, previous, w, r }
+            if sender.tab.id == @dictWindow.tid or request.optionsPage
+                currentDictName = @dictWindow.dictName
+            
+                r = storage.getRating(w)
+                previous = storage.getPrevious(w)
+                nextDictName = dict.getNextDict(currentDictName).dictName
+                previousDictName = dict.getPreviousDict(currentDictName).dictName
+                history = storage.getHistory(w, 8) # at most show 8 words in the history list on dictionary header.
+                return { allDicts: dict.allDicts, history, currentDictName, nextDictName, previousDictName, previous, w, r }
         
         message.on 'dictionary history', (request, sender) ->
             history = storage.getHistory(request.word, 8) # at most show 8 words in the history list on dictionary header.
             return { history }
 
-        message.on 'injected', (request, sender) ->
-            if dictWindow.tid == sender.tab.id
-                d = dict.getDict(dictWindow.dictName)
+        message.on 'injected', (request, sender) =>
+            if @dictWindow.tid == sender.tab.id
+                d = dict.getDict(@dictWindow.dictName)
                 if d.css
-                    chrome.tabs.insertCSS dictWindow.tid, {
+                    chrome.tabs.insertCSS @dictWindow.tid, {
                         runAt: "document_start",
                         code: d.css
                     }
@@ -224,24 +216,24 @@ export default {
                     dictUrl: chrome.extension.getURL('dict.html'),
                     cardUrl: chrome.extension.getURL('card.html'),
                     dict: d,
-                    word: dictWindow.word 
+                    word: @dictWindow.word 
                 }
            
-        message.on 'window resize', (request, sender) ->
-            if sender.tab.id == dictWindow.tid
-                dictWindow.saveWindowPosition()
+        message.on 'window resize', (request, sender) =>
+            if sender.tab.id == @dictWindow.tid
+                @dictWindow.saveWindowPosition()
 
-        message.on 'sendToDict', ( request ) ->
-            dictWindow.sendMessage request
+        message.on 'sendToDict', ( request ) =>
+            @dictWindow.sendMessage request
 
         message.on 'get wikipedia', () =>
-            return if not dictWindow.word 
+            return if not @dictWindow.word 
             return if setting.getValue 'disableWikipediaCard'
-            if utils.isEnglish dictWindow.word 
-                return $.get "https://en.m.wikipedia.org/api/rest_v1/page/summary/" + dictWindow.word
-            else if utils.isChinese(dictWindow.word) and setting.getValue "enableLookupChinese"
-                return $.get "https://zh.wikipedia.org/api/rest_v1/page/summary/" + dictWindow.word
-            else if utils.isJapanese dictWindow.word
-                return $.get "https://ja.wikipedia.org/api/rest_v1/page/summary/" + dictWindow.word
+            if utils.isEnglish @dictWindow.word 
+                return $.get "https://en.m.wikipedia.org/api/rest_v1/page/summary/" + @dictWindow.word
+            else if utils.isChinese(@dictWindow.word) and setting.getValue "enableLookupChinese"
+                return $.get "https://zh.wikipedia.org/api/rest_v1/page/summary/" + @dictWindow.word
+            else if utils.isJapanese @dictWindow.word
+                return $.get "https://ja.wikipedia.org/api/rest_v1/page/summary/" + @dictWindow.word
 
 }
