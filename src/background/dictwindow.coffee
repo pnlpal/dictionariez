@@ -9,22 +9,26 @@ defaultWindowUrl = chrome.extension.getURL('dict.html')
 
 getInfoOfSelectionCode = '''
 var getSentence = function() {
-	var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-    if (!selection.toString()) return;
+    try {
+        var selection = window.getSelection();
+        var range = selection.getRangeAt(0);
+        if (!selection.toString()) return;
 
-    var range1 = range.cloneRange();
-    range1.detach();
+        var range1 = range.cloneRange();
+        range1.detach();
 
-    selection.modify('move', 'backward', 'sentence');
-    selection.modify('extend', 'forward', 'sentence');
+        selection.modify('move', 'backward', 'sentence');
+        selection.modify('extend', 'forward', 'sentence');
 
-    var text = selection.toString().trim();
+        var text = selection.toString().trim();
 
-    selection.removeAllRanges();
-    selection.addRange(range1);
+        selection.removeAllRanges();
+        selection.addRange(range1);
 
-    return text;
+        return text;
+    } catch (err) {
+        // On firefox, unable to get sentence.
+    }
 };
 
 [window.getSelection().toString().trim(), getSentence()]
