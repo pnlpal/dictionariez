@@ -159,7 +159,7 @@ chrome.runtime.sendMessage {
 				return false
 
 
-	$(document).on 'click mouseover', '.fairydict-pron-audio', (e) ->
+	$(document).on 'click mouseover', '.fairydict-pron-audio', debounce(((e) ->
 		e.stopPropagation()
 
 		synthesisObj = null
@@ -175,7 +175,7 @@ chrome.runtime.sendMessage {
 			utils.send 'play audios', { synthesisObj }
 
 		return false
-
+	), 1000, true)
 
 	handleSelectionWord = (e)->
 		word = window.getSelection().toString().trim()
