@@ -304,7 +304,8 @@ initDictionary = () ->
             rowData = row.data()
 
             utils.send('look up', {
-                dictName: rowData.dictName
+                dictName: rowData.dictName,
+                newDictWindow: e.ctrlKey
             })
 
 

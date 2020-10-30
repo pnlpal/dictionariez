@@ -193,18 +193,25 @@ export default {
                         @focus()
         }
 
-        message.on 'look up', ({ dictName, w, s, sc, sentence, means }) =>
+        message.on 'look up', ({ dictName, w, s, sc, sentence, means, newDictWindow }) =>
             if means == 'mouse'
                 if not setting.getValue('enableMinidict')
                     return
 
-            if dictName # only change the main window
-                @dictWindows[0].updateDict dictName 
+            if dictName # only change the main window or in new window.
+                if newDictWindow 
+                    targetWin = @create()
+                    targetWin.updateDict(dictName)
+                    targetWin.lookup(@dictWindows[0].word)
 
-            if w 
-                @lookup({ w: w.trim() })
+                else 
+                    @dictWindows[0].updateDict dictName 
+                    @dictWindows[0].lookup(w?.trim())
+                    @focus()
 
-            @focus()
+            else 
+                @lookup({ w: w?.trim() })
+                @focus()
 
         message.on 'query', (request, sender) =>
             dictName = request.dictName
