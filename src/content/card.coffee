@@ -11,7 +11,6 @@ import('./card.less')
 
 getWikipedia = (w) ->
     res = await utils.send 'get wikipedia', { w }
-    console.log res 
 
     if res?.extract_html
         if res?.thumbnail

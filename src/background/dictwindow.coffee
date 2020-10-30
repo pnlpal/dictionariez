@@ -41,6 +41,7 @@ class DictWindow
     word: null
     dictName: null
     savePosInterval: null
+    windex: 0
 
     constructor: ({ @w, @tid, @url, @word, dictName } = {}) ->
         @dictName = dictName || setting.getValue('dictionary') || dict.allDicts[0].dictName
@@ -60,6 +61,11 @@ class DictWindow
         left = setting.getValue('windowLeft', Math.round((screen.width / 2) - (width / 2)))
         top = setting.getValue('windowTop', Math.round((screen.height / 2) - (height / 2)))
 
+        # setup the other cloned window 
+        if @windex > 0
+            top += 50 * @windex
+            left += 50 * @windex 
+
         return new Promise (resolve) =>
             if !@w
                 # console.log "[dictWindow] create window position: top: #{top}, left: #{left}, width: #{width}, height: #{height}"
@@ -77,16 +83,19 @@ class DictWindow
                     @url = url or defaultWindowUrl
                     resolve()
 
-                    @savePosInterval = window.setInterval @saveWindowPosition.bind(this), 3000
+                    if @windex == 0  # only save the main window position
+                        @savePosInterval = window.setInterval @saveWindowPosition.bind(this), 3000
                 )
             else
                 chrome.tabs.update(@tid, {
                     url: url
                 }) if url
-                chrome.windows.update(dictWindow.w.id, {
-                    focused: true
-                })
+               
                 resolve()
+    focus: () ->
+        chrome.windows.update(@w.id, {
+            focused: true
+        }) if @w
 
     sendMessage: (msg)->
         chrome.tabs.sendMessage(@tid, msg) if @tid
@@ -97,17 +106,17 @@ class DictWindow
 
         if text
             @sendMessage({type: 'querying', text})
-            result = await @queryDict(text, @dictName)
+            result = await @queryDict(text)
             url = result?.windowUrl
 
         @open(url)
 
-    queryDict: (text, dictName)->
+    queryDict: (text)->
         return unless text
 
         @word = text
-        console.log "[dictWindow] query #{@word} from #{dictName}"
-        return dict.query(text, dictName)
+        console.log "[dictWindow] query #{@word} from #{@dictName}"
+        return dict.query(text, @dictName)
 
     saveWindowPosition: ()->
         # console.log 'saveWindowPosition...'
@@ -128,16 +137,39 @@ class DictWindow
             setting.setValue 'dictionary', dictName
 
 export default {
-    dictWindow: new DictWindow(),
+    dictWindows: [],
 
     lookup: ({ w, s, sc, sentence } = {}) ->
-        storage.addHistory { w, s, sc, sentence } if w
-        @dictWindow.lookup(w)
+        storage.addHistory { w, s, sc, sentence } if w and s  # ignore lookup from options page
+        @dictWindows.forEach (win)-> win.lookup(w)
+    
+    focus: () ->
+        i = @dictWindows.length 
+        while i  
+            i -= 1 
+            @dictWindows[i].focus()
+
+    create: () ->
+        win = new DictWindow()
+        win.windex = @dictWindows.length
+        @dictWindows.push win 
+        return win 
+    
+    getByTab: (tid) ->
+        for win in @dictWindows 
+            if win.tid == tid 
+                return win 
 
     init: () ->
+        @create()
+
         chrome.windows.onRemoved.addListener (wid)=>
-            if @dictWindow.w?.id == wid
-                @dictWindow.reset()
+            @dictWindows.forEach (win)->
+                if win.w?.id == wid
+                    win.reset()
+            
+            # clear closed window
+            @dictWindows = @dictWindows.filter (win, i)-> i == 0 or win.w 
 
         chrome.browserAction.onClicked.addListener (tab) =>
             chrome.tabs.executeScript {
@@ -145,6 +177,7 @@ export default {
             }, (res) =>
                 [w, sentence] = res?[0] or []
                 @lookup({ w, sentence, s: tab.url, sc: tab.title })
+                @focus()
 
         chrome.contextMenus.create {
             title: "Look up '%s' in dictionaries",
@@ -157,6 +190,7 @@ export default {
                     }, (res) =>
                         [w, sentence] = res?[0] or []
                         @lookup({ w, sentence, s: tab.url, sc: tab.title })
+                        @focus()
         }
 
         message.on 'look up', ({ dictName, w, s, sc, sentence, means }) =>
@@ -164,23 +198,23 @@ export default {
                 if not setting.getValue('enableMinidict')
                     return
 
-            w = w.trim() if w
-            @dictWindow.updateDict dictName if dictName
+            if dictName # only change the main window
+                @dictWindows[0].updateDict dictName 
 
-            storage.addHistory { w, s, sc, sentence } if w and s # ignore lookup from options page
-            @dictWindow.lookup(w)
+            if w 
+                @lookup({ w: w.trim() })
 
-        message.on 'query', (request) =>
+            @focus()
+
+        message.on 'query', (request, sender) =>
             dictName = request.dictName
             w = request.w
             
             if request.nextDict
                 dictName = dict.getNextDict(dictName).dictName
-            if request.previousDict
+            else if request.previousDict
                 dictName = dict.getPreviousDict(dictName).dictName
-
-            @dictWindow.updateDict(dictName)
-
+            
             if request.previousWord
                 w = storage.getPrevious(w, true)?.w
             else if request.nextWord
@@ -188,30 +222,47 @@ export default {
             else if w
                 storage.addHistory { w }
 
-            @dictWindow.queryDict(w, dictName)
+            if request.newDictWindow
+                targetWin = @create()
+                targetWin.updateDict(dictName)
+                targetWin.lookup(w)
+            else 
+                senderWin = @getByTab(sender.tab.id)
+                senderWin?.updateDict(dictName)
+
+                @dictWindows.forEach (win)->
+                    if win.w and win.w != senderWin.w 
+                        win.lookup(w)
+                
+                return senderWin.queryDict(w)
 
         message.on 'dictionary', (request, sender) =>
-            w = @dictWindow.word
+            win = @getByTab(sender.tab.id)
 
-            if sender.tab.id == @dictWindow.tid or request.optionsPage
-                currentDictName = @dictWindow.dictName
-            
-                r = storage.getRating(w)
-                previous = storage.getPrevious(w)
+            if win or request.optionsPage
+                currentDictName = win?.dictName || setting.getValue('dictionary')
+
+                if win 
+                    w = win.word
+                    r = storage.getRating(w)
+                    previous = storage.getPrevious(w)
+                    history = storage.getHistory(w, 8) # at most show 8 words in the history list on dictionary header.
+
                 nextDictName = dict.getNextDict(currentDictName).dictName
                 previousDictName = dict.getPreviousDict(currentDictName).dictName
-                history = storage.getHistory(w, 8) # at most show 8 words in the history list on dictionary header.
+                
                 return { allDicts: dict.allDicts, history, currentDictName, nextDictName, previousDictName, previous, w, r }
         
-        message.on 'dictionary history', (request, sender) ->
+        message.on 'dictionary history', (request, sender) =>
             history = storage.getHistory(request.word, 8) # at most show 8 words in the history list on dictionary header.
             return { history }
 
         message.on 'injected', (request, sender) =>
-            if @dictWindow.tid == sender.tab.id
-                d = dict.getDict(@dictWindow.dictName)
+            win = @getByTab sender.tab.id 
+            if win 
+                d = dict.getDict(win.dictName)
                 if d.css
-                    chrome.tabs.insertCSS @dictWindow.tid, {
+                    chrome.tabs.insertCSS win.tid, {
                         runAt: "document_start",
                         code: d.css
                     }
@@ -220,24 +271,25 @@ export default {
                     dictUrl: chrome.extension.getURL('dict.html'),
                     cardUrl: chrome.extension.getURL('card.html'),
                     dict: d,
-                    word: @dictWindow.word 
+                    word: win.word 
                 }
            
         message.on 'window resize', (request, sender) =>
-            if sender.tab.id == @dictWindow.tid
-                @dictWindow.saveWindowPosition()
+            @getByTab(sender.tab.id)?.saveWindowPosition()
 
-        message.on 'sendToDict', ( request ) =>
-            @dictWindow.sendMessage request
+        message.on 'sendToDict', ( request, sender ) =>
+            @getByTab(sender.tab.id)?.sendMessage request
 
-        message.on 'get wikipedia', () =>
-            return if not @dictWindow.word 
+        message.on 'get wikipedia', ( request, sender ) =>
+            win = @getByTab(sender.tab.id)
+
+            return if not win?.word 
             return if setting.getValue 'disableWikipediaCard'
-            if utils.isEnglish @dictWindow.word 
-                return $.get "https://en.m.wikipedia.org/api/rest_v1/page/summary/" + @dictWindow.word
-            else if utils.isChinese(@dictWindow.word) and setting.getValue "enableLookupChinese"
-                return $.get "https://zh.wikipedia.org/api/rest_v1/page/summary/" + @dictWindow.word
-            else if utils.isJapanese @dictWindow.word
-                return $.get "https://ja.wikipedia.org/api/rest_v1/page/summary/" + @dictWindow.word
+            if utils.isEnglish win.word 
+                return $.get "https://en.m.wikipedia.org/api/rest_v1/page/summary/" + win.word
+            else if utils.isChinese(win.word) and setting.getValue "enableLookupChinese"
+                return $.get "https://zh.wikipedia.org/api/rest_v1/page/summary/" + win.word
+            else if utils.isJapanese win.word
+                return $.get "https://ja.wikipedia.org/api/rest_v1/page/summary/" + win.word
 
 }

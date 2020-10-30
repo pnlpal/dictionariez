@@ -64,10 +64,6 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
 
     $scope.openOptions = (to) ->
         utils.send 'open options', { to }
-
-    $scope.queryHistory = (w)->
-        $scope.word = w
-        $scope.query()
     
     $scope.deleteHistory = (item, i) ->
         await utils.send 'remove history', item
@@ -75,7 +71,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         $scope.history = history.reverse()
         $scope.$apply()
 
-    $scope.query = ({ nextDict, previousDict, nextWord, previousWord, dictName, w } = {}) ->
+    $scope.query = ({ nextDict, previousDict, nextWord, previousWord, dictName, w, newDictWindow } = {}) ->
         # if not $scope.word
         #     $scope.initial = true
         #     return
@@ -92,6 +88,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             previousDict,
             nextWord,
             previousWord,
+            newDictWindow 
         }, (data) ->
             if data?.windowUrl
                 window.top.location.href = data.windowUrl
