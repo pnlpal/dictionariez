@@ -204,16 +204,15 @@ export default {
                 if not setting.getValue('enableMinidict')
                     return
 
-            if dictName # only change the main window or in new window.
-                if newDictWindow 
-                    targetWin = @create()
-                    targetWin.updateDict(dictName)
-                    targetWin.lookup(@dictWindows[0].word)
+            if newDictWindow 
+                targetWin = @create()
+                targetWin.updateDict(dictName || @dictWindows[0].dictName)
+                targetWin.lookup(w || @dictWindows[0].word)
 
-                else 
-                    @dictWindows[0].updateDict dictName 
-                    @dictWindows[0].lookup(w?.trim())
-                    @focus()
+            else if dictName # only change the main window or in new window.
+                @dictWindows[0].updateDict dictName 
+                @dictWindows[0].lookup(w?.trim())
+                @focus()
 
             else 
                 @lookup({ w: w?.trim() })

@@ -206,7 +206,8 @@ initHistory = () ->
             e.stopPropagation()
 
             utils.send('look up', {
-                w: $(e.target).data('w').trim()
+                w: $(e.target).data('w').trim(),
+                newDictWindow: e.ctrlKey
             })
 
 initHistory()
