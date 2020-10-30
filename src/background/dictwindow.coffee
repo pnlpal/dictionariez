@@ -295,6 +295,7 @@ export default {
         message.on 'get wikipedia', ( request, sender ) =>
             win = @getByTab(sender.tab.id)
 
+            return if win.windex != 0  # only show at the main window.
             return if not win?.word 
             return if setting.getValue 'disableWikipediaCard'
             if utils.isEnglish win.word 
