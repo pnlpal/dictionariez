@@ -60,6 +60,8 @@ class LookupParser
             if utils.isEnglish(w) 
                 if not setting.getValue 'showChineseDefinition'
                     delete result.defs2
+                if result.w 
+                    result.w = result.w.replaceAll '·', ''
         
         return result
 
