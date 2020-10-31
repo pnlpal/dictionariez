@@ -14,11 +14,11 @@ Join me on [telegram](https://t.me/worldlanguagelearner) to learn languages toge
 
 # Install
 
-- [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc)
+- [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc) *Always older, because of Chrome store's lagged review.*
 
-- [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/)
+- [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/) *Newest*
 
-- [Download crx file](build.crx) *Build on the latest code, normally newer than Chrome store. Uninstall the other version before you install it.*
+- [Download crx file](build.crx) *Newest, based on the latest code, normally newer than Chrome store. Uninstall the other version before you install it. But every time your have to upgrade by yourself. *
 
 # Screenshot
 ![Alt text](readme_images/s1-final.jpg)
