@@ -23,6 +23,9 @@ getAnkiInfo = (ankiSavedWord) ->
 		if res.lookupInfo?.w
 			$('.field#f0').append renderLookupDefs res.lookupInfo
 
+			# auto open dict to look up
+			utils.send 'look up', { w: res.lookupInfo.w }
+
 		$('.field#f0').append '<br>'
 
 		if res.lookupInfo
