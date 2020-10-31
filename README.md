@@ -1,6 +1,6 @@
 # Dictionariez (dictionaries)
 
-![Promo Banner](https://github.com/revir/dictionaries/raw/master/readme_images/all-in-one.jpg)
+![GIF](readme_images/optimized.gif)
 
 This app, which is currently supported on Chrome and Firefox, helps facilitate your language learning by marking words in articles, looking up in various dictionaries, and exporting to Anki. 
 
@@ -21,6 +21,7 @@ Join me on [telegram](https://t.me/worldlanguagelearner) to learn languages toge
 - [Download crx file](build.crx) *Newest, based on the latest code, normally newer than Chrome store. Uninstall the other version before you install it. But every time your have to upgrade by yourself. *
 
 # Screenshot
+![Promo Banner](https://github.com/revir/dictionaries/raw/master/readme_images/all-in-one.jpg)
 ![Alt text](readme_images/s1-final.jpg)
 ![Alt text](readme_images/english.jpg)
 ![Alt text](readme_images/s5-final.jpg)
