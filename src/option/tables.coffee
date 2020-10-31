@@ -106,6 +106,12 @@ initHistory = () ->
                 columns: ['w:name', 'r:name', 's:name', 't:name'],
                 orthogonal: 'download'
             }
+        }, {
+            text: 'Start Anki Study',
+            className: 'btn btn-success',
+            action: () ->
+                href = 'https://ankiuser.net/study/'
+                window.open(href, '_blank')
         }],
         order: [[4, 'desc']],
         columns: [
