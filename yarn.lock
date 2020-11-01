@@ -1976,6 +1976,11 @@ get-caller-file@^2.0.1:
   resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-2.0.5.tgz#4f94412a82db32f36e3b0b9741f8a97feb031f7e"
   integrity sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==
 
+get-selection-more@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/get-selection-more/-/get-selection-more-1.1.0.tgz#d315f9dbc2e31c22648160867806c11e783cbebd"
+  integrity sha512-UbDYXviVZvePCcF3MoCbaislXg4jIvcMxi+VlgruYQT64Y6jezgTuwfZleWIktzodHyIh5NNRjsSYxPmaFNRMQ==
+
 get-stream@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/get-stream/-/get-stream-3.0.0.tgz#8e943d1358dc37555054ecbe2edb05aa174ede14"

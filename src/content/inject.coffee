@@ -14,6 +14,10 @@ import highlight from './editable-highlight'
 
 import './anki-inject.coffee'
 
+import {
+  getSentenceFromSelection
+} from 'get-selection-more'
+
 isInDict = false
 
 chrome.runtime.sendMessage {
@@ -225,20 +229,23 @@ chrome.runtime.sendMessage {
 	
 	getSentenceOfSelection = () ->
 		selection = window.getSelection()
-		range = selection.getRangeAt(0)
+		try
+			range = selection.getRangeAt(0)
 
-		range1 = range.cloneRange()
-		range1.detach()
+			range1 = range.cloneRange()
+			range1.detach()
 
-		selection.modify('move', 'backward', 'sentence')
-		selection.modify('extend', 'forward', 'sentence')
+			selection.modify('move', 'backward', 'sentence')
+			selection.modify('extend', 'forward', 'sentence')
 
-		text = selection.toString().trim()
+			text = selection.toString().trim()
 
-		selection.removeAllRanges()
-		selection.addRange(range1)
+			selection.removeAllRanges()
+			selection.addRange(range1)
 
-		return text
+			return text
+		catch  # Gecko does not implement "sentence" yet
+			return getSentenceFromSelection(selection)
 
 	handleMouseUp = (event)->
 		selObj = window.getSelection()
@@ -386,7 +393,6 @@ chrome.runtime.sendMessage {
 		try 
 			sentence = getSentenceOfSelection()
 		catch
-			# Gecko does not implement "sentence" yet
 			sentence = null
 
 		# popup window
