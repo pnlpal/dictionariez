@@ -70,11 +70,22 @@ class LookupParser
             if result.w 
                 result.w = result.w.replaceAll '·', ''
             
-            _genPron = (lang) ->
-                result.prons = [{
-                    "symbol": lang.toUpperCase(),
-                    "synthesis": "#{lang}-#{lang.toUpperCase()}"
-                }]
+            _genPron = (langSymbol) ->
+                symbolLangMap = {
+                    "de": "German",
+                    "es": "Spanish",
+                    "fr": "French",
+                    "it": "Italian",
+                    "ko": "Korean",
+                }
+                lang = symbolLangMap[langSymbol]
+                if lang in setting.getValue("otherDisabledLanguages")
+                    result = null 
+                else 
+                    result.prons = [{
+                        "symbol": langSymbol.toUpperCase(),
+                        "synthesis": "#{langSymbol}-#{langSymbol.toUpperCase()}"
+                    }]
 
             if result.lang == 'en'
                 result.prons = [
@@ -89,6 +100,8 @@ class LookupParser
                     "synthesis": "en-GB"
                     }
                 ]
+                if not setting.getValue "enableLookupEnglish"
+                    result = null 
             else
                 _genPron(result.lang)
         

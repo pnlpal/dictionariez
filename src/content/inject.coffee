@@ -336,6 +336,7 @@ chrome.runtime.sendMessage {
 		res.defs2.forEach renderItem if res?.defs2
 
 		if html
+			$('.dictionaries-tooltip').fadeIn('slow')
 			$('.dictionaries-tooltip .fairydict-spinner').hide()
 			$('.dictionaries-tooltip .dictionaries-tooltip-content').html(html)
 		else
@@ -417,8 +418,8 @@ chrome.runtime.sendMessage {
 			if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
 				clickInside = $('.dictionaries-tooltip').has(event.target).length
 
-				$('.dictionaries-tooltip').fadeIn('slow')
-				$('.dictionaries-tooltip .fairydict-spinner').show()
+				# $('.dictionaries-tooltip').fadeIn('slow')
+				# $('.dictionaries-tooltip .fairydict-spinner').show()
 				$('.dictionaries-tooltip .dictionaries-tooltip-content').empty()
 
 				unless clickInside
