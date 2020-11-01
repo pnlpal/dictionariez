@@ -25,7 +25,7 @@ Join me on [telegram](https://t.me/worldlanguagelearner) to learn languages toge
 ![Alt text](readme_images/s1-final.jpg)
 ![Alt text](readme_images/english.jpg)
 ![Alt text](readme_images/s5-final.jpg)
-![Alt text](readme_images/japanese.jpg)
+![Alt text](readme_images/s6.jpg)
 
 # More dictionaries are needed!  
 

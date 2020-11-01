@@ -60,25 +60,23 @@
     }
   },
   "google": {
-    "url": "https://www.google.com/search?hl=zh-CN&q=define+<word>",
+    "url": "https://www.google.com/search?hl=en-US&q=define+<word>",
     "supportEnglish": true,
+    "language": {
+      "German": "[a-zA-Z]|[ÄÖÜẞäöüß]",
+      "Spanish": "[a-zA-Z]|[ÑñÁÉÍÓÚÜáéíóúü]",
+      "French": "[a-zA-Z]|[ÀàÂâÆæÇçÉéÈèÊêËëÎîÏïÔôŒœÙùÛûÜüŸÿ]",
+      "Italian": "[a-zA-Z]|[àèéìíîòóùúÀÈÉÌÍÎÒÓÙÚ]",
+      "Korean": "[\uac00-\ud7af]|[\u1100-\u11ff]|[\u3130-\u318f]|[\ua960-\ua97f]|[\ud7b0-\ud7ff]"
+    },
     "result": {
       "w": {
         "selector": "[data-dobid='hdw']"
       },
-      "prons": [
-        {
-          "symbol": "US",
-          "type": "ame",
-          "synthesis": "en-US"
-        },
-        {
-          "symbol": "UK",
-          "type": "bre",
-          "synthesis": "en-GB"
-        }
-      ],
-      
+      "lang": {
+        "selector": "[data-language]",
+        "attr": "data-language"
+      },
       "defs": {
         "groups": ".vmod>.vmod[data-topic]",
         "result": {
@@ -167,30 +165,6 @@
         "result": {
           "def": {
             "selector": "div[lang='en']"
-          }
-        }
-      }
-    }
-  },
-  "korean": {
-    "url": "https://en.bab.la/dictionary/korean-english/<word>",
-    "language": "Korean",
-    "regex": "[\uac00-\ud7af]|[\u1100-\u11ff]|[\u3130-\u318f]|[\ua960-\ua97f]|[\ud7b0-\ud7ff]",
-    "result": {
-      "w": {
-        "selector": ".quick-result-entry a.babQuickResult"
-      },
-      "prons": [
-        {
-          "synthesis": "ko-KR"
-        }
-      ],
-      "defs": {
-        "container": ".quick-result-entry",
-        "groups": "ul.sense-group-results>li",
-        "result": {
-          "def": {
-            "selector": "a"
           }
         }
       }

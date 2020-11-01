@@ -22,7 +22,11 @@ class LookupParser
 
         @otherSupportedLanguages = []
         for dictDesc in Object.values(@data)
-            @otherSupportedLanguages.push dictDesc.language if dictDesc.language
+            if dictDesc.language
+                if typeof dictDesc.language == 'object'
+                    @otherSupportedLanguages = @otherSupportedLanguages.concat Object.keys(dictDesc.language)
+                else 
+                    @otherSupportedLanguages.push dictDesc.language 
         
         setting.configCache.otherSupportedLanguages = @otherSupportedLanguages
         
@@ -36,6 +40,11 @@ class LookupParser
                 if w.match(new RegExp(dictDesc.regex, 'ug'))?.length == w.length \
                     and dictDesc.language not in setting.getValue("otherDisabledLanguages")
                     return name
+            if typeof dictDesc.language == 'object'
+                for lan, regex of dictDesc.language 
+                    if w.match(new RegExp(regex, 'ug'))?.length == w.length \
+                        and lan not in setting.getValue("otherDisabledLanguages")
+                        return name
 
     parse: (w) ->
         tname = @checkType(w)
@@ -43,6 +52,10 @@ class LookupParser
 
         dictDesc = @data[tname]
         url = dictDesc.url.replace('<word>', w)
+
+        # special handle Chinese
+        if tname == 'google' and setting.getValue 'showChineseDefinition'
+            url = url.replace 'hl=en-US', 'hl=zh-CN'
 
         html = $(await $.get url)
 
@@ -52,16 +65,32 @@ class LookupParser
         if tname == "bing"
             if utils.isChinese(w) 
                 result.prons.push({'synthesis': 'zh-CN'})
-            else # English 
-                result.prons = result.prons.filter (n) -> n.type != 'pinyin'
-                if not setting.getValue 'showChineseDefinition'
-                    delete result.defs2
+            
         if tname == 'google'
-            if utils.isEnglish(w) 
-                if not setting.getValue 'showChineseDefinition'
-                    delete result.defs2
-                if result.w 
-                    result.w = result.w.replaceAll '·', ''
+            if result.w 
+                result.w = result.w.replaceAll '·', ''
+            
+            _genPron = (lang) ->
+                result.prons = [{
+                    "symbol": lang.toUpperCase(),
+                    "synthesis": "#{lang}-#{lang.toUpperCase()}"
+                }]
+
+            if result.lang == 'en'
+                result.prons = [
+                    {
+                    "symbol": "US",
+                    "type": "ame",
+                    "synthesis": "en-US"
+                    },
+                    {
+                    "symbol": "UK",
+                    "type": "bre",
+                    "synthesis": "en-GB"
+                    }
+                ]
+            else
+                _genPron(result.lang)
         
         return result
 
