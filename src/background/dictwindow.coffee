@@ -86,8 +86,11 @@ class DictWindow
                     if @windex == 0  # only save the main window position
                         @savePosInterval = window.setInterval @saveWindowPosition.bind(this), 3000
 
-                    if navigator.userAgent.toLowerCase().indexOf('firefox') > -1
+                    # Firefox can't remember top and left, opera can't remember at all.
+                    if navigator.userAgent.toLowerCase().indexOf('firefox') > -1 or navigator.userAgent.toLowerCase().indexOf('opr') > -1
                         chrome.windows.update @w.id, {
+                            width: width,
+                            height: height,
                             top: if utils.isLinux() then top - screen.availTop else top, # fix top value on Linux, may be chrome's bug.
                             left: if utils.isLinux() then left - screen.availLeft else left, # fix left value on Linux, may be chrome's bug.
                         }
