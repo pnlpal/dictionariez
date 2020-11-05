@@ -10,7 +10,7 @@ And click on the app's icon, a popup window will shows to let you look up any wo
 My goal is providing a universal tool to look up any word in any language, currently [more dictionaries are needed](more-dicts.md), and more user reviews are wanted to improve its usability.  
 As you can see, I am a language learner, Chinese is my mother tongue, English and Japanese are what I am learning right now. I wish this small tool could help the others like me. So if you have any suggestion please tell me, I am glad to hear feedbacks.  
 
-Join me on [telegram](https://t.me/worldlanguagelearner) to learn languages together. We would talk about linguistics, programming, and even have virtual meetings once for a while. Let's build this community together.
+Join me on [Telegram](https://t.me/worldlanguagelearner) & [Discord](https://discord.gg/sazRac4kSa) to learn languages together. We would talk about linguistics, programming, and even have virtual meetings once for a while. Let's build this community together.
 
 # Install
 
