@@ -47,6 +47,9 @@ buildActionIcon = (name) ->
         when 'saved in anki'
             faIcon = 'fa-retweet'
             cls = 'text-muted'
+        when 'share with pals'
+            faIcon = 'fa-share-alt'
+            cls = 'text-warning'
 
     iEl = "<i class='fa #{faIcon}' aria-hidden='true' data-action='#{name}' title='#{name}'></i>"
     return "<a href='' class='action-button #{cls}' data-action='#{name}' title='#{name}'> #{iEl} </a>"
@@ -62,6 +65,27 @@ bravo = () ->
         timeout: 1,
         dismissible: false
     })
+
+shareOnPnlpal = ({ title, link }) ->
+    popupWidth = 995
+    popupHeight = 700
+          
+    # caculate browser window width
+    # if window width is too narrow, use screen width;
+    width = window.innerWidth
+    height = window.innerHeight
+
+    dualScreenLeft = window.screenLeft
+    dualScreenTop = window.screenTop
+    
+    #calculate top and left position
+    left = ((width / 2) - (popupWidth / 2)) + dualScreenLeft
+    top = ((height / 2) - (popupHeight / 2)) + dualScreenTop
+
+    url = "https://pnlpal.dev/compose?cid=1&title=#{encodeURIComponent(title)}&link=#{encodeURIComponent(link)}"
+    shareWindow = window.open(url,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=' + popupWidth + ', height=' + popupHeight + ', top=' + top + ', left=' + left)
+    # Puts focus on the newWindow
+    shareWindow.focus?()
 
 initHistory = () ->
     return if not $('#table-history').length
@@ -174,7 +198,7 @@ initHistory = () ->
                     if type == 'display'
                         if row.ankiSaved 
                             return buildActionIcon('saved in anki') + buildActionIcon('remove')
-                        return buildActionIcon('anki') + buildActionIcon('remove')
+                        return buildActionIcon('anki') + buildActionIcon('share with pals') + buildActionIcon('remove')
                     return ''
             }
         ],
@@ -206,6 +230,8 @@ initHistory = () ->
                     bravo()
                 when 'anki'
                     await utils.send 'open anki', rowData
+                when 'share with pals'
+                    shareOnPnlpal { link: rowData.s, title: rowData.sc }
 
         if $(e.target).hasClass('dictionaries-history-word')
             e.preventDefault()
