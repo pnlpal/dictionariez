@@ -319,7 +319,7 @@ export default {
         if fromCache
             extraDicts = await storage.get('extra-dicts', [])
         else 
-            extraSrc = 'https://github.com/revir/dictionaries/raw/master/src/resources/extra-dicts.json'
+            extraSrc = 'https://github.com/pnlpal/dictionaries/raw/master/src/resources/extra-dicts.json'
             result = await $.getJSON(extraSrc).catch (err)->
                 console.error "Get extra dicts remotely failed: ", err.status, err.statusText
                 errorResult = { message: err.statusText }

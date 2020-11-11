@@ -1,6 +1,6 @@
 {
 	"name": "Dictionaries",
-	"homepage": "https://github.com/revir/dictionaries",
+	"homepage": "https://github.com/pnlpal/dictionaries",
 	"authors": ["Revir <revir.qing@gmail.com>"],
 	"description": "One dictionary extension to rule all the other dictionaries",
 	"keywords": ["dictionary", "chrome extension"],

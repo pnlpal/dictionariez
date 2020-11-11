@@ -4,7 +4,7 @@
 	"description": "Facilitate your language learning by marking words in articles, looking up in various dictionaries, and exporting to Anki.",
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:revir/dictionaries.git"
+		"url": "git@github.com:pnlpal/dictionaries.git"
 	},
 	"scripts": {
 		"build": "node utils/build.js",
@@ -13,9 +13,9 @@
 	"author": "River Yang",
 	"license": "GPL2",
 	"bugs": {
-		"url": "https://github.com/revir/dictionaries/issues"
+		"url": "https://github.com/pnlpal/dictionaries/issues"
 	},
-	"homepage": "https://github.com/revir/dictionaries#readme",
+	"homepage": "https://github.com/pnlpal/dictionaries#readme",
 	"keywords": [
 		"dictionary",
 		"chrome extension",
