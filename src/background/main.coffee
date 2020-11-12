@@ -34,4 +34,7 @@ import "./hot-reload-content-scripts.js"
 
     { default: ankiWindow } = await import(### webpackChunkName: "ankiwindow"  ###"./ankiwindow.coffee")
     ankiWindow.init()
+
+    { default: pnlpal } = await import(### webpackChunkName: "pnlpal"  ###"./pnlpal.coffee")
+    pnlpal.init()
 )()

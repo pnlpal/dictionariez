@@ -66,27 +66,6 @@ bravo = () ->
         dismissible: false
     })
 
-shareOnPnlpal = ({ title, link }) ->
-    popupWidth = 995
-    popupHeight = 700
-          
-    # caculate browser window width
-    # if window width is too narrow, use screen width;
-    width = window.innerWidth
-    height = window.innerHeight
-
-    dualScreenLeft = window.screenLeft
-    dualScreenTop = window.screenTop
-    
-    #calculate top and left position
-    left = ((width / 2) - (popupWidth / 2)) + dualScreenLeft
-    top = ((height / 2) - (popupHeight / 2)) + dualScreenTop
-
-    url = "https://pnlpal.dev/compose?cid=1&title=#{encodeURIComponent(title)}&link=#{encodeURIComponent(link)}"
-    shareWindow = window.open(url,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=' + popupWidth + ', height=' + popupHeight + ', top=' + top + ', left=' + left)
-    # Puts focus on the newWindow
-    shareWindow.focus?()
-
 initHistory = () ->
     return if not $('#table-history').length
     data = await utils.send 'history'
@@ -231,7 +210,7 @@ initHistory = () ->
                 when 'anki'
                     await utils.send 'open anki', rowData
                 when 'share with pals'
-                    shareOnPnlpal { link: rowData.s, title: rowData.sc }
+                    await utils.send 'share with pals', { link: rowData.s, title: rowData.sc }
 
         if $(e.target).hasClass('dictionaries-history-word')
             e.preventDefault()
