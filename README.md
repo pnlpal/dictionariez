@@ -12,7 +12,7 @@ As you can see, I am a language learner, Chinese is my mother tongue, English an
 
 Join me on [Telegram](https://t.me/worldlanguagelearner) & [Discord](https://discord.gg/sazRac4kSa) to learn languages together. We would talk about linguistics, programming, and even have virtual meetings once for a while. Let's build this community together.
 
-With the launch of [pnlpal community](https://pnlpal.dev/topic/2/), you could share your reading with pals now.  
+With the launch of [pnlpal community](https://pnlpal.dev/topic/2/), you can share your reading with pals all over the world now. No matter it's a news story, or a technical review, or even a youtube video. As long as it benefits our programming and language community, you could share it. [Check it](https://pnlpal.dev) by yourself. Let's learn together, and grow together.
 
 # Install
 

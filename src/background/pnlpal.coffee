@@ -14,12 +14,17 @@ shareOnPnlpal = (title, link) ->
             popupTop = ((screen.height / 2) - (popupHeight / 2)) + top
         else
             popupTop = ((height / 2) - (popupHeight / 2)) + top
-
+        
         url = "https://pnlpal.dev/compose?cid=1&title=#{encodeURIComponent(title)}&link=#{encodeURIComponent(link)}"
-        shareWindow = window.open(url,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=' + popupWidth + ', height=' + popupHeight + ', top=' + popupTop + ', left=' + popupLeft)
-        # Puts focus on the newWindow
-        shareWindow.focus?()
 
+        chrome.windows.create {
+            url,
+            type: 'popup',
+            width: popupWidth,
+            height: popupHeight,
+            top: popupTop,
+            left: popupLeft
+        }
 
 export default {
     init: () ->
