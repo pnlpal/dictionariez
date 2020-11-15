@@ -32,6 +32,10 @@
         "regex": "[\\u{0400}-\\u{04ff}]",
         "synthesis": ""
     },
+    "Russian": {
+        "symbol": "ru",
+        "regex": "[\u0410-\u0475]"
+    },
     "Thai": {
         "regex": "[\\u{0e00}-\\u{0e7f}]",
         "symbol": "th"
