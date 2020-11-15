@@ -98,8 +98,9 @@ chrome.runtime.sendMessage {
 			$el.css({ top, left })
 
 	$(document).mousemove debounce ((e) ->
-		if $(e.target).hasClass('dictionaries-history-word')
-			w = $(e.target).data('w').trim()
+		if $(e.target).hasClass('dictionariez-w')
+			w = $(e.target).data('w') || $(e.target).text()
+			w = w.trim()
 			return if w == plainQuerying
 
 			$('.dictionaries-tooltip').fadeIn('slow')

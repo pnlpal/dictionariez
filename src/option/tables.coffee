@@ -124,7 +124,7 @@ initHistory = () ->
                 data: 'w',
                 render: (data, type) ->
                     if type == 'display'
-                        return "<a href='', class='dictionaries-history-word ellipsis' data-w='#{data}'> #{data} </a>"
+                        return "<a href='', class='dictionaries-history-word dictionariez-w ellipsis' data-w='#{data}'> #{data} </a>"
                     return data
             },
             {
