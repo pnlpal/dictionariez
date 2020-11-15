@@ -42,6 +42,14 @@ class LookupParser
                         and not setting.getValue("otherDisabledLanguages", []).includes(lang)
                         return name
 
+    checkLangs: (w) ->
+        res =  []
+        for lang, n of langs 
+            if w.match(new RegExp(n.regex, 'ug'))?.length == w.length \
+            and not setting.getValue("otherDisabledLanguages", []).includes(lang)
+                res.push lang 
+        return res 
+
     parse: (w, tname) ->
         tname ?= @checkType(w)
         return unless tname 
@@ -105,13 +113,35 @@ class LookupParser
                         n = langs[targetLang.lang]
                         synthesis = if n.synthesis? then n.synthesis else "#{n.symbol}-#{n.symbol.toUpperCase()}"
                         targetLang.prons[0].synthesis = synthesis
-                        targetLang.prons[0].symbol = "#{n.symbol.toUpperCase()} #{targetLang.prons[0].symbol || ''}"
+                        if n.symbol
+                            targetLang.prons[0].symbol = "#{n.symbol.toUpperCase()} #{targetLang.prons[0].symbol || ''}"
 
                         targetLang.w = result.w 
+
+                        if targetLang.lang == 'Tajik' # merge Tajik
+                            return @parseTajik w, targetLang
                         return targetLang
-               
+            
+            # merge Tajik
+            if @checkLangs(w).includes('Tajik')
+                return @parseTajik w
+
             result = null 
         return result
+
+    parseTajik: (w, wiktionaryResult) ->
+        result = await @parse(w, 'Tajik')
+
+        # wiktionary result is first.
+        if wiktionaryResult and result.w != wiktionaryResult.w 
+            return wiktionaryResult
+        
+        # merge 
+        if wiktionaryResult?.defs
+            result.defs2 = wiktionaryResult.defs 
+        
+        return result 
+
 
     parseResult: ($el, obj) ->
         result = {}
