@@ -123,11 +123,20 @@ chrome.runtime.sendMessage {
 
 		), 200
 
-	$(document).mouseup (e)->
-		# 对 mouseup 事件做一个延时处理，
-		# 以避免取消选中后getSelection依然能获得文字。
-		setTimeout (()->handleMouseUp(e)), 1
-
+	# 对 mouseup 事件做一个延时处理，
+	# 	# 以避免取消选中后getSelection依然能获得文字。
+	$(document).mouseup debounce ((e) -> handleMouseUp(e)), 100
+	
+	# if location.host == 'read.amazon.com'
+	# 	try
+	# 		await utils.checkInTime ()->$('#kindleReader_touchLayer').length 
+	# 		$('#kindleReader_touchLayer').mouseup debounce ((e) -> handleMouseUp(e)), 100
+	# 		$(document).on 'mouseup', '#kindleReader_touchLayer', debounce ((e) -> handleMouseUp(e)), 100
+	# 	catch 
+	# 		console.log 'aaaa!!!'
+	# else 
+	# 	$(document).mouseup debounce ((e) -> handleMouseUp(e)), 100
+	
 	$(document).bind 'keydown', (event)->
 		if utils.checkEventKey event, setting.openSK1, setting.openSK2, setting.openKey
 			chrome.runtime.sendMessage({
