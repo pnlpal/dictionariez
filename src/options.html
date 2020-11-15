@@ -219,6 +219,14 @@
 								</ul>
 							</div>
 						</div>
+						<div class="indent text-muted">
+							Some words might be used in multiple languages, for example English and Spanish have many 
+							common words, cancel one if you prefer the other.
+							
+							There is 
+							<a href="examples.html" target="_blank">an example page</a>
+							to look up different words in different languages you might be interested.
+						</div>
 						<div class="checkbox indent">
 							<div class="checkbox">
 								<label>
@@ -227,7 +235,7 @@
 										ng-model="setting.enableLookupChinese"
 										ng-click="changeKey(!setting.enableLookupChinese, 'enableLookupChinese')"
 									/>
-									Look up <strong>Chinese</strong> words (Japanese Kanji conflicts with Chinese, cancel one if you are confused.)
+									Look up <strong>Chinese</strong> words <span class="text-muted">(Japanese Kanji conflicts with Chinese, cancel Chinese if you prefer Japanese.)</span>
 								</label>
 							</div>
 	

@@ -43,7 +43,8 @@ var options = {
 		dictheader: path.join(__dirname, "src", "content", "dictheader.coffee"),
 		card: path.join(__dirname, "src", "content", "card.coffee"),
 		options: path.join(__dirname, "src", "option", "option.coffee"),
-		background: path.join(__dirname, "src", "background", "main.coffee")
+		background: path.join(__dirname, "src", "background", "main.coffee"),
+		examples: path.join(__dirname, "src", "examples", "example.coffee")
 	},
 	chromeExtensionBoilerplate: {
 		notHotReload: ["inject"]
@@ -151,6 +152,11 @@ var options = {
 			template: path.join(__dirname, "src", "card.html"),
 			filename: "card.html",
 			chunks: ["card"]
+		}),
+		new HtmlWebpackPlugin({
+			template: path.join(__dirname, "src", "examples.html"),
+			filename: "examples.html",
+			chunks: ["examples"]
 		}),
 
 		new webpack.ProvidePlugin({
