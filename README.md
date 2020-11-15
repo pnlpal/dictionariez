@@ -4,7 +4,7 @@
 
 This app, which is currently supported on Chrome and Firefox, helps facilitate your language learning by marking words in articles, looking up in various dictionaries, and exporting to Anki. 
 
-Just click on a word you will see the definition shows up right on the position. This is the fastest way to look up. In this case the app has builtin dictionaries to support English, Chinese, Japanese, Korean (aka CJK), German, Spanish, French, Italian and Tajik languages, I am happy to add more languages support if you are interested.    
+Just click on a word you will see the definition shows up right on the position. This is the fastest way to look up. In this case the app has builtin dictionaries to support **English, Chinese, Japanese, Korean (aka CJK), German, Spanish, French, Italian, Portuguese, Russian and Tajik** languages, I am happy to add more languages support if you are interested.    
 And click on the app's icon, a popup window will shows to let you look up any words in tons of your favorite dictionaries. This way you can look more deeply on the words. And it just looks like a traditional dictionary app. It has autocompletion function, word history, keyboard shortcuts, real human pronunciation and many more. Some example dictionaries include Urban dictionary, Oxford, Cambridge, Longman, Thesaurus, Merrian webster, Collins and Wikipedia etc.   
 
 My goal is providing a universal tool to look up any word in any language, currently [more dictionaries are needed](more-dicts.md), and more user reviews are wanted to improve its usability.  
