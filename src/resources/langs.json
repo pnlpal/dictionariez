@@ -15,6 +15,10 @@
         "regex": "[a-zA-Z]|[àèéìíîòóùúÀÈÉÌÍÎÒÓÙÚ]",
         "symbol": "it"
     },
+    "Portuguese": {
+        "regex": "[a-zA-Z]|[áâãàçéêíóôõú]",
+        "symbol": "pt"
+    },
     "Korean": {
         "regex": "[\uac00-\ud7af]|[\u1100-\u11ff]|[\u3130-\u318f]|[\ua960-\ua97f]|[\ud7b0-\ud7ff]",
         "symbol": "ko"
