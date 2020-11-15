@@ -419,8 +419,8 @@ chrome.runtime.sendMessage {
 			if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
 				clickInside = $('.dictionaries-tooltip').has(event.target).length
 
-				# $('.dictionaries-tooltip').fadeIn('slow')
-				# $('.dictionaries-tooltip .fairydict-spinner').show()
+				$('.dictionaries-tooltip').fadeIn('slow')
+				$('.dictionaries-tooltip .fairydict-spinner').show()
 				$('.dictionaries-tooltip .dictionaries-tooltip-content').empty()
 
 				unless clickInside
