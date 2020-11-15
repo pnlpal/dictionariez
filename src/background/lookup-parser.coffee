@@ -5,8 +5,10 @@ import storage from "./storage.coffee"
 import setting from "./setting.coffee"
 import utils from "utils"
 import parsers from '../resources/dict-parsers.json'
+import langs from '../resources/langs.json'
 
 trimWordPos = (pos) ->
+    pos = pos.toLowerCase()
     specials = ["adjective", "adverb", "interjection", "numeral", "article", "determiner"]
     
     if specials.includes(pos) 
@@ -22,12 +24,9 @@ class LookupParser
 
         @otherSupportedLanguages = []
         for dictDesc in Object.values(@data)
-            if dictDesc.language
-                if typeof dictDesc.language == 'object'
-                    @otherSupportedLanguages = @otherSupportedLanguages.concat Object.keys(dictDesc.language)
-                else 
-                    @otherSupportedLanguages.push dictDesc.language 
-        
+            dictDesc.languages?.forEach (n) =>
+                @otherSupportedLanguages.push n if not @otherSupportedLanguages.includes(n)
+                
         setting.configCache.otherSupportedLanguages = @otherSupportedLanguages
         
     checkType: (w) ->
@@ -36,18 +35,15 @@ class LookupParser
                 return name if utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
             if dictDesc.supportChinese
                 return name if utils.isChinese(w) and setting.getValue "enableLookupChinese"
-            if dictDesc.regex
-                if w.match(new RegExp(dictDesc.regex, 'ug'))?.length == w.length \
-                    and dictDesc.language not in setting.getValue("otherDisabledLanguages")
-                    return name
-            if typeof dictDesc.language == 'object'
-                for lan, regex of dictDesc.language 
-                    if w.match(new RegExp(regex, 'ug'))?.length == w.length \
-                        and lan not in setting.getValue("otherDisabledLanguages")
+            
+            if dictDesc.languages
+                for lang in dictDesc.languages 
+                    if w.match(new RegExp(langs[lang].regex, 'ug'))?.length == w.length \
+                        and not setting.getValue("otherDisabledLanguages", []).includes(lang)
                         return name
 
-    parse: (w) ->
-        tname = @checkType(w)
+    parse: (w, tname) ->
+        tname ?= @checkType(w)
         return unless tname 
 
         dictDesc = @data[tname]
@@ -69,25 +65,10 @@ class LookupParser
         if tname == 'google'
             if result.w 
                 result.w = result.w.replaceAll '·', ''
+            else 
+                return @parse.call this, w, 'wiktionary'
             
-            _genPron = (langSymbol) ->
-                symbolLangMap = {
-                    "de": "German",
-                    "es": "Spanish",
-                    "fr": "French",
-                    "it": "Italian",
-                    "ko": "Korean",
-                }
-                lang = symbolLangMap[langSymbol]
-                if lang in setting.getValue("otherDisabledLanguages")
-                    result = null 
-                else 
-                    result.prons = [{
-                        "symbol": langSymbol.toUpperCase(),
-                        "synthesis": "#{langSymbol}-#{langSymbol.toUpperCase()}"
-                    }]
-
-            if result.lang == 'en'
+            if result.langSymbol == 'en'
                 result.prons = [
                     {
                     "symbol": "US",
@@ -102,17 +83,35 @@ class LookupParser
                 ]
                 if not setting.getValue "enableLookupEnglish"
                     result = null 
-            else
-                _genPron(result.lang)
-        
+
+            else if result.langSymbol
+                for lang, n of langs 
+                    if n.symbol == result.langSymbol 
+                        if lang in setting.getValue("otherDisabledLanguages")
+                            result = null 
+                        else 
+                            synthesis = if n.synthesis? then n.synthesis else "#{result.langSymbol}-#{result.langSymbol.toUpperCase()}"
+                            result.prons = [{
+                                "symbol": result.langSymbol.toUpperCase(),
+                                "synthesis": synthesis
+                            }]
+
+        if tname == 'wiktionary'
+            for targetLang in result.langTargets
+                if targetLang.lang 
+                    if targetLang.lang in setting.getValue("otherDisabledLanguages") or not langs[targetLang.lang]
+                        targetLang = null 
+                    else 
+                        n = langs[targetLang.lang]
+                        synthesis = if n.synthesis? then n.synthesis else "#{n.symbol}-#{n.symbol.toUpperCase()}"
+                        targetLang.prons[0].synthesis = synthesis
+                        targetLang.prons[0].symbol = "#{n.symbol.toUpperCase()} #{targetLang.prons[0].symbol || ''}"
+
+                        targetLang.w = result.w 
+                        return targetLang
+               
+            result = null 
         return result
-
-    parseByType: (w, type="ldoce") ->
-        dictDesc = @data[type]
-        url = dictDesc.url.replace('<word>', w)
-
-        html = $(await $.get url)
-        return @parseResult html, dictDesc.result
 
     parseResult: ($el, obj) ->
         result = {}
@@ -128,6 +127,33 @@ class LookupParser
                 if desc.groups 
                     result[key] = []
                     $nodes = $container.find desc.groups 
+                    if desc.extendPrev
+                        $nodes = $nodes.map (i, n) -> 
+                            _ctnr = $('<div></div>')
+                            _ctnr.append $(n).clone() 
+
+                            _p = $(n)
+                            for i in [1..20] 
+                                _p = _p.prev()
+                                if (_p.is(desc.extendPrev))
+                                    _ctnr.append _p.clone()
+                                    return _ctnr
+                            return _ctnr
+
+                    if desc.extendNextTo 
+                        $nodes = $nodes.map (i, n) -> 
+                            _ctnr = $('<div></div>')
+                            _ctnr.append $(n).clone()
+
+                            _p = $(n)
+                            for i in [1..20] 
+                                _p = _p.next()
+                                if (!_p.is(desc.extendNextTo))
+                                    _ctnr.append _p.clone()
+                                else
+                                    return _ctnr 
+                            return _ctnr 
+                        
 
                     # Thai of Bab.la need to filter some related words
                     if desc.filterRelatedWord
@@ -160,6 +186,12 @@ class LookupParser
             if desc.singleParents 
                 $el = $el.filter (idx, item)->
                     return $(item).parents(desc.singleParents).length == 1
+            if desc.excludeChild 
+                $el.find(desc.excludeChild).detach()
+
+            if desc.parents 
+                $el = $el.filter (idx, item)->
+                    return $(item).parents(desc.parents).length >= 1
 
         if typeof desc == 'string'
             value = desc 
@@ -225,12 +257,12 @@ export default {
             return @parser.parse(w) 
 
         message.on 'get real person voice', ({ w }) =>
-            return @parser.parseByType(w) if w.split(' ').length == 1  # ignore phrase
+            return @parser.parse(w, 'ldoce') if w.split(' ').length == 1  # ignore phrase
         message.on 'get english pron symbol', ({ w }) =>
-            return @parser.parseByType(w, 'bing') if w.split(' ').length == 1 # ignore phrase
+            return @parser.parse(w, 'bing') if w.split(' ').length == 1 # ignore phrase
         
         message.on 'look up phonetic', ({ w, _counter }) =>
-            { prons } = await @parser.parseByType(w, 'bing')
+            { prons } = await @parser.parse(w, 'bing')
             for n in prons 
                 if n.type == 'ame' and n.symbol
                     ame = n.symbol.replace('US', '').trim()

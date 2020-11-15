@@ -62,18 +62,18 @@
   "google": {
     "url": "https://www.google.com/search?hl=en-US&q=define+<word>",
     "supportEnglish": true,
-    "language": {
-      "German": "[a-zA-Z]|[ÄÖÜẞäöüß]",
-      "Spanish": "[a-zA-Z]|[ÑñÁÉÍÓÚÜáéíóúü]",
-      "French": "[a-zA-Z]|[ÀàÂâÆæÇçÉéÈèÊêËëÎîÏïÔôŒœÙùÛûÜüŸÿ]",
-      "Italian": "[a-zA-Z]|[àèéìíîòóùúÀÈÉÌÍÎÒÓÙÚ]",
-      "Korean": "[\uac00-\ud7af]|[\u1100-\u11ff]|[\u3130-\u318f]|[\ua960-\ua97f]|[\ud7b0-\ud7ff]"
-    },
+    "languages": [
+      "German",
+      "Spanish",
+      "French",
+      "Italian",
+      "Korean"
+    ],
     "result": {
       "w": {
         "selector": "[data-dobid='hdw']"
       },
-      "lang": {
+      "langSymbol": {
         "selector": "[data-language]",
         "attr": "data-language"
       },
@@ -115,6 +115,53 @@
       }
     }
   },
+  "wiktionary": {
+    "url": "https://en.wiktionary.org/wiki/<word>",
+    "languages": [
+      "German",
+      "Spanish",
+      "French",
+      "Italian",
+      "Korean"
+    ],
+    "result": {
+      "w": {
+        "selector": "h1#firstHeading"
+      },
+      "langTargets": {
+        "groups": ".mw-parser-output h2:has('.mw-headline')",
+        "extendNextTo": "h2", 
+        "result": {
+          "lang": {
+            "selector": "span.mw-headline",
+            "parents": "h2"
+          },
+          "prons": [
+            {
+              "symbol": {
+                "selector": "li .IPA"
+              }
+            }
+          ],
+          "defs": {
+            "groups": "h3+p~ol",
+            "extendPrev": "h3",
+            "result": {
+              "pos": {
+                "selector": "h3 span.mw-headline"
+              },
+              "def": {
+                "selector": "ol>li",
+                "excludeChild": "div",
+                "toArray": true,
+                "includeArrayIndex": true
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "ldoce": {
     "url": "https://www.ldoceonline.com/dictionary/<word>",
     "result": {
@@ -138,8 +185,7 @@
   },
   "japan": {
     "url": "https://www.japandict.com/<word>",
-    "language": "Japanese",
-    "regex": "[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]",
+    "languages": ["Japanese"],
     "result": {
       "w": {
         "selector": "h1.display-1"
@@ -172,8 +218,7 @@
   },
   "Tajik": {
     "url": "https://vazhaju.com/search/<word>",
-    "language": "Tajik",
-    "regex": "[\\u{0400}-\\u{04ff}]",
+    "languages": ["Tajik"],
     "result": {
       "w": {
         "selector": ".word .word-spelling>span"
@@ -204,8 +249,7 @@
   },
   "Thai": {
     "url": "https://en.bab.la/dictionary/thai-english/<word>",
-    "language": "Thai",
-    "regex": "[\\u{0e00}-\\u{0e7f}]",
+    "languages": ["Thai"],
     "result": {
       "w": {
         "selector": ".quick-result-entry a.babQuickResult"
