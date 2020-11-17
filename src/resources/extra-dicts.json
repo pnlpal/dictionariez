@@ -94,6 +94,14 @@
       "dictName": "Youglish",
       "windowUrl": "https://youglish.com/pronounce/<word>",
       "css": "header,#miniheader {display: none !important;} body {margin-top: 50px !important;}"
+    },
+    {
+      "dictName": "Collins French Dictionary",
+      "windowUrl": "https://www.collinsdictionary.com/dictionary/french-english/<word>",
+      "fixSpaceInWords": "+",
+      "resources": {
+        "styles": ["collins.less"]
+      }    
     }
   ]
 }
