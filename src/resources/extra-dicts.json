@@ -102,6 +102,11 @@
       "resources": {
         "styles": ["collins.less"]
       }    
+    },
+    {
+      "dictName": "SpanishDict",
+      "windowUrl": "https://www.spanishdict.com/translate/<word>",
+      "css": "nav {display: none !important;} body {margin-top: 50px !important;}"   
     }
   ]
 }
