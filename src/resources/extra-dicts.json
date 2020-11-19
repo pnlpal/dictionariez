@@ -107,6 +107,11 @@
       "dictName": "SpanishDict",
       "windowUrl": "https://www.spanishdict.com/translate/<word>",
       "css": "nav {display: none !important;} body {margin-top: 50px !important;}"   
+    },
+    {
+      "dictName": "KR Dict",
+      "windowUrl": "https://krdict.korean.go.kr/eng/dicSearch/search?nation=eng&nationCode=6&ParaWordNo=&mainSearchWord=<word>",
+      "css": "#header_menu .gnb_area, #header_menu .logo_header {display: none !important;} #header_menu .search {left: 0 !important;}"
     }
   ]
 }
