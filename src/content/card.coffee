@@ -3,49 +3,59 @@ import $ from 'jquery'
 import utils from "utils"
 import debounce from 'lodash/debounce'
 
-import('bootstrap/dist/css/bootstrap.min.css')
+# import('bootstrap/dist/css/bootstrap.min.css')
 import('../vendor/font-awesome.css')
 
 import('./scrollbar.less')
 import('./card.less')
 
-getWikipedia = (w) ->
-    res = await utils.send 'get wikipedia', { w }
+sys = location.search.match(/sys=(\w+)/)[1]
 
-    if res?.extract_html
-        if res?.thumbnail
-            $('.dictionaries-wikipedia .dictionaries-wiki-image').html "<img src='#{res.thumbnail.source}'></img>"
-        else 
-            $('.dictionaries-wikipedia .dictionaries-wiki-extract').addClass('dictionaries-wiki-margin-top')
+initWiki = () ->
+    getWikipedia = (w) ->
+        res = await utils.send 'get wikipedia', { w }
 
-        $('.dictionaries-wikipedia .dictionaries-wiki-extract').html(res.extract_html)
-        $('.dictionaries-wikipedia .dictionaries-wiki-link').attr('href', res.content_urls.mobile.page)
+        if res?.extract_html
+            if res?.thumbnail
+                $('.dictionaries-wikipedia .dictionaries-wiki-image').html "<img src='#{res.thumbnail.source}'></img>"
+            else 
+                $('.dictionaries-wikipedia .dictionaries-wiki-extract').addClass('dictionaries-wiki-margin-top')
 
-        window.top.postMessage { type: 'show-card' }, '*'
+            $('.dictionaries-wikipedia .dictionaries-wiki-extract').html(res.extract_html)
+            $('.dictionaries-wikipedia .dictionaries-wiki-link').attr('href', res.content_urls.mobile.page)
 
-$('''
-<div class="dictionaries-wikipedia">
-    <div class="dictionaries-card-toolbar navbar-fixed-top">
-        <a class="dictionaries-wiki-link" href="" title="Open wikipedia">
-            <img src="https://en.m.wikipedia.org/static/favicon/wikipedia.ico" alt="Wiki"></img>
-        </a>
+            window.top.postMessage { type: 'show-card', sys }, '*'
 
-        <a class="dictionaries-card-close pull-right" href="" title="Close">
-            <i class='fa fa-remove' aria-hidden='true'></i>
-        </a>
-        <a class="dictionaries-setting pull-right" href="" title="Go to settings">
-            <i class='fa fa-cog' aria-hidden='true'></i>
-        </a>
+    $('''
+    <div class="dictionaries-wikipedia">
+        <div class="dictionaries-card-toolbar navbar-fixed-top">
+            <a class="dictionaries-wiki-link" href="" title="Open wikipedia">
+                <img src="https://en.m.wikipedia.org/static/favicon/wikipedia.ico" alt="Wiki"></img>
+            </a>
+
+            <a class="dictionaries-card-close pull-right" href="" title="Close">
+                <i class='fa fa-remove' aria-hidden='true'></i>
+            </a>
+            <a class="dictionaries-setting pull-right" href="" title="Go to settings">
+                <i class='fa fa-cog' aria-hidden='true'></i>
+            </a>
+        </div>
+
+        <div class="dictionaries-wiki-image"> </div>
+        
+        <div class="dictionaries-wiki-extract">
+        </div>
     </div>
+    ''').appendTo('body')
 
-    <div class="dictionaries-wiki-image"> </div>
+    getWikipedia()
+
+initMusic = () -> 
+    import('./music-player.coffee') 
     
-    <div class="dictionaries-wiki-extract">
-    </div>
-</div>
-''').appendTo('body')
 
-getWikipedia()
+initWiki() if sys == 'wiki'
+initMusic() if sys == 'music'
 
 $(document).on('click', 'a.dictionaries-wiki-link', (ev) -> 
     window.top.location.href = ev.currentTarget.href
@@ -53,11 +63,11 @@ $(document).on('click', 'a.dictionaries-wiki-link', (ev) ->
 )
 
 $(document).on('click', 'a.dictionaries-card-close', (ev) -> 
-    window.top.postMessage { type: 'close-card' }, '*'
+    window.top.postMessage { type: 'close-card', sys }, '*'
     return false 
 )
 
 $(document).on('click', 'a.dictionaries-setting', (ev) -> 
-    utils.send 'open options', { to: 'function-setting' }
+    utils.send 'open options', { to: 'function-setting', sys }
     return false 
 )

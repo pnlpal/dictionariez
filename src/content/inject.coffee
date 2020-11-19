@@ -34,7 +34,10 @@ chrome.runtime.sendMessage {
 	if res?.cardUrl and res.word and not location.host.includes('wikipedia.org')
 		comparedLoc = decodeURI(location.href).toLowerCase()
 		if res.word.split(/\s/).every (s) -> comparedLoc.includes(s.toLowerCase())
-			$("<iframe id='dictionaries-card' src='#{res.cardUrl}' style='display: none;'> </iframe>").appendTo('body')
+			$("<iframe class='dictionaries-card dictionaries-card-wiki' src='#{res.cardUrl}?sys=wiki' style='display: none;'> </iframe>").appendTo('body')
+	
+	$("<iframe class='dictionaries-card dictionaries-card-music' src='#{res.cardUrl}?sys=music' style='display: none;'> </iframe>").appendTo('body')
+
 
 window.addEventListener "message", ((event) ->
 	# chrome-extension or moz-extension
@@ -45,9 +48,9 @@ window.addEventListener "message", ((event) ->
 			else 
 				$('#dictionaries-iframe').removeClass('dropdown-open')
 		else if event.data.type == 'close-card'
-			$('#dictionaries-card').hide()
+			$('.dictionaries-card-'+event.data.sys).hide()
 		else if event.data.type == 'show-card'
-			$('#dictionaries-card').show()
+			$('.dictionaries-card-'+event.data.sys).show()
 
 ), false
 
@@ -126,7 +129,7 @@ chrome.runtime.sendMessage {
 	# 对 mouseup 事件做一个延时处理，
 	# 	# 以避免取消选中后getSelection依然能获得文字。
 	$(document).mouseup debounce ((e) -> handleMouseUp(e)), 100
-	
+
 	# if location.host == 'read.amazon.com'
 	# 	try
 	# 		await utils.checkInTime ()->$('#kindleReader_touchLayer').length 
