@@ -18,6 +18,20 @@ trimWordPos = (pos) ->
         return pos.slice(0, 4)
     return pos 
 
+setEnglishProns = (result) ->
+    result.prons = [
+        {
+        "symbol": "US",
+        "type": "ame",
+        "synthesis": "en-US"
+        },
+        {
+        "symbol": "UK",
+        "type": "bre",
+        "synthesis": "en-GB"
+        }
+    ]
+
 class LookupParser 
     constructor: (@data) ->
         @typeCount = Object.keys(@data).length
@@ -87,18 +101,7 @@ class LookupParser
                 return @parse.call this, w, 'wiktionary'
             
             if result.langSymbol == 'en'
-                result.prons = [
-                    {
-                    "symbol": "US",
-                    "type": "ame",
-                    "synthesis": "en-US"
-                    },
-                    {
-                    "symbol": "UK",
-                    "type": "bre",
-                    "synthesis": "en-GB"
-                    }
-                ]
+                setEnglishProns(result)
                 if not setting.getValue "enableLookupEnglish"
                     result = null 
 
@@ -120,11 +123,14 @@ class LookupParser
                     if targetLang.lang in setting.getValue("otherDisabledLanguages") or not langs[targetLang.lang]
                         targetLang = null 
                     else 
-                        n = langs[targetLang.lang]
-                        synthesis = if n.synthesis? then n.synthesis else "#{n.symbol}-#{n.symbol.toUpperCase()}"
-                        targetLang.prons[0].synthesis = synthesis
-                        if n.symbol
-                            targetLang.prons[0].symbol = "#{n.symbol.toUpperCase()} #{targetLang.prons[0].symbol || ''}"
+                        if targetLang.lang == 'English'
+                            setEnglishProns(targetLang)
+                        else 
+                            n = langs[targetLang.lang]
+                            synthesis = if n.synthesis? then n.synthesis else "#{n.symbol}-#{n.symbol.toUpperCase()}"
+                            targetLang.prons[0].synthesis = synthesis
+                            if n.symbol
+                                targetLang.prons[0].symbol = "#{n.symbol.toUpperCase()} #{targetLang.prons[0].symbol || ''}"
 
                         targetLang.w = result.w 
 

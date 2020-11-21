@@ -1,4 +1,7 @@
 {
+    "English": {
+
+    },
     "German": {
         "regex": "[a-zA-Z]|[ÄÖÜẞäöüß]",
         "symbol": "de"
