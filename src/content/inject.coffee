@@ -25,6 +25,9 @@ chrome.runtime.sendMessage {
 	origin: location.origin,
 	url: location.href
 }, (res) ->
+	if location.href.includes('https://accounts.spotify.com/')
+		return; 
+
 	if res?.dictUrl
 		# append to html rather than body.
 		# some websites such as naver dict, may clear body when reload to another page. 

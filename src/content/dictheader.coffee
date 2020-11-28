@@ -10,6 +10,7 @@ import('bootstrap/dist/css/bootstrap.min.css')
 import('../vendor/font-awesome.css')
 import('./dictheader.less')
 
+inFrame = window.self != window.top
 # some ui need bootstrap, like dropdown.
 dictApp = angular.module('fairyDictApp', ['ui.bootstrap'])
 
@@ -20,7 +21,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     document.title = 'Fairy Dict'
     baseNode = '#fairy-dict'
     $scope.initial = true
-    $scope.inFrame = window.self != window.top
+    $scope.inFrame = inFrame
     $scope.querying = false
     $scope.previous = null
 
@@ -223,7 +224,8 @@ if not location.href.includes('https://accounts.spotify.com/authorize')
             utils.send 'window resize'
         ), 300
 
-    $("<iframe class='dictionaries-card dictionaries-card-music' src='card.html?sys=music' style='display: none;'> </iframe>").appendTo('body')
+    if not inFrame
+        $("<iframe class='dictionaries-card dictionaries-card-music' src='card.html?sys=music' style='display: none;'> </iframe>").appendTo('body')
 
 
 window.addEventListener "message", ((event) ->

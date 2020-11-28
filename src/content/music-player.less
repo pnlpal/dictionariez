@@ -330,9 +330,9 @@ body
             padding: 12px;
             background-color: #fff;
             border-radius: 6px;
-            cursor: pointer;
 
-            &:hover {
+            &:hover:not([disabled]) {
+                cursor: pointer;
                 background-color: #d6d6de;
                 i {
                     color: #fff;

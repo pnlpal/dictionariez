@@ -22,17 +22,27 @@
             </div>
             <div id="player-controls">
                 <div class="control">
-                    <div class="button" id="play-previous">
+                    <div class="button" ng-disabled="!canSeekPrev"
+                        ng-click="toggleAction('previousTrack')">
                         <i class="fa fa-backward"></i>
                     </div>
                 </div>
                 <div class="control">
-                    <div class="button" id="play-pause-button" ng-click="play()">
+                    <div class="button" 
+                        ng-disabled="!canPause"
+                        ng-if="playing"
+                        ng-click="toggleAction('togglePlay')">
+                        <i class="fa fa-pause"></i>
+                    </div>
+                    <div class="button" 
+                        ng-if="!playing"
+                        ng-click="toggleAction('togglePlay')">
                         <i class="fa fa-play"></i>
                     </div>
                 </div>
                 <div class="control">
-                    <div class="button" id="play-next">
+                    <div class="button" ng-disabled="!canSeekNext"
+                        ng-click="toggleAction('nextTrack')">
                         <i class="fa fa-forward"></i>
                     </div>
                 </div>
