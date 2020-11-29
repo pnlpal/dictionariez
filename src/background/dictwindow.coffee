@@ -304,12 +304,32 @@ export default {
 
             return if win.windex != 0  # only show at the main window.
             return if not win?.word 
-            return if setting.getValue 'disableWikipediaCard'
+            
             if utils.isEnglish win.word 
                 return $.get "https://en.m.wikipedia.org/api/rest_v1/page/summary/" + win.word
             else if utils.isChinese(win.word) and setting.getValue "enableLookupChinese"
                 return $.get "https://zh.wikipedia.org/api/rest_v1/page/summary/" + win.word
             else if utils.isJapanese win.word
                 return $.get "https://ja.wikipedia.org/api/rest_v1/page/summary/" + win.word
+
+        message.on 'card setting', ( { sys } ) =>
+            if sys == 'wiki' 
+                disabled = setting.getValue 'disableWikipediaCard'
+            
+            if sys == 'music'
+                disabled = setting.getValue 'disableSpotify'
+            
+            s = setting.getValue 'minimalCards'
+            minimal = s.includes(sys)
+
+            return { disabled, minimal }
+
+        message.on 'card minimal', ( { sys, minimal } ) =>
+            s = setting.getValue 'minimalCards'
+            arr = s.split(',').filter (n) -> n != sys 
+            if minimal
+                arr.push sys 
+            setting.setValue 'minimalCards', arr.join(',')
+
 
 }

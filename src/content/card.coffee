@@ -24,7 +24,7 @@ initWiki = () ->
             $('.dictionaries-wikipedia .dictionaries-wiki-extract').html(res.extract_html)
             $('.dictionaries-wikipedia .dictionaries-card-link').attr('href', res.content_urls.mobile.page)
 
-            window.top.postMessage { type: 'show-card', sys }, '*'
+            window.showCard(window.cardSetting.minimal)
 
     $('''
     <a class="dictionaries-card-minimal-icon" href="" title="Open wikipedia" style="display: none;">
@@ -56,9 +56,13 @@ initWiki = () ->
 initMusic = () -> 
     import('./music-player.coffee') 
     
+(() ->
+    setting = await utils.send 'card setting', { sys } 
+    window.cardSetting = setting 
 
-initWiki() if sys == 'wiki'
-initMusic() if sys == 'music'
+    initWiki() if sys == 'wiki' and !setting.disabled
+    initMusic() if sys == 'music' and !setting.disabled
+)()
 
 $(document).on('click', 'a.dictionaries-card-link', (ev) -> 
     window.top.location.href = ev.currentTarget.href
@@ -76,11 +80,15 @@ window.showCard = (minimal) ->
 
 $(document).on('click', 'a.dictionaries-card-close', (ev) -> 
     showCard(true)
+
+    utils.send 'card minimal', { sys, minimal: true }
     return false 
 )
 
 $(document).on('click', 'a.dictionaries-card-minimal-icon', (ev) -> 
     showCard()
+
+    utils.send 'card minimal', { sys, minimal: false }
     return false 
 )
 

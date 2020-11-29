@@ -126,11 +126,14 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', ($scope) ->
         localStorage.removeItem("authorizing")
         getState()
         
-        window.showCard(!inRoot)
+        window.showCard()
     else 
         await getState()
         if $scope.isSpotifyReady or inRoot
-            window.showCard(!inRoot)                
+            if inRoot
+                window.showCard(window.cardSetting.minimal)
+            else 
+                window.showCard(true)                
 ]
 
 import('../music-player.html').then ({ default: dom }) ->

@@ -3,11 +3,11 @@ import $ from 'jquery'
 import './card-iframe.less'
 
 setupCardsPosition = () ->
-	hasMax = $('iframe.dictionaries-card').length != $('iframe.dictionaries-card-minimal').length 
+	hasMax = $('iframe.dictionaries-card:visible').length != $('iframe.dictionaries-card-minimal:visible').length 
 
 	maxiCount = 0
 	miniCount = 0
-	$('iframe.dictionaries-card').each (i, el) ->
+	$('iframe.dictionaries-card:visible').each (i, el) ->
 		if ($(el).hasClass('dictionaries-card-minimal'))
 			miniCount += 1
 			el.style.right = '10px';
@@ -40,7 +40,7 @@ window.addEventListener "message", ((event) ->
 				$('.dictionaries-card-'+event.data.sys).addClass('dictionaries-card-minimal')
 			else 
 				$('.dictionaries-card-'+event.data.sys).removeClass('dictionaries-card-minimal')
-				
+
 			setupCardsPosition()
 
 ), false
