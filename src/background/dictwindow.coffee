@@ -275,13 +275,17 @@ export default {
         message.on 'injected', (request, sender) =>
             win = @getByTab sender.tab.id 
             if win 
+                if request.url?.includes('https://accounts.spotify.com/')
+                    # ignore spotify authorization page
+                    return 
+
                 d = dict.getDict(win.dictName)
                 if d.css
                     chrome.tabs.insertCSS win.tid, {
                         runAt: "document_start",
                         code: d.css
                     }
-
+                
                 return {
                     dictUrl: chrome.extension.getURL('dict.html'),
                     cardUrl: chrome.extension.getURL('card.html'),

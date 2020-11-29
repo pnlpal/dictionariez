@@ -113,7 +113,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', ($scope) ->
             utils.send 'spotify action', { action }
         else 
             window.open('https://open.spotify.com/', '_blank')
-    
+
     if localStorage.getItem("authorizing") == 'code' and window.top.location.search.includes('spotifyCallback')
         res = await onAuthorized()
         if res?.access_token
@@ -125,13 +125,12 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', ($scope) ->
 
         localStorage.removeItem("authorizing")
         getState()
-
-        window.top.postMessage { type: 'show-card', sys }, '*'
+        
+        window.showCard(!inRoot)
     else 
         await getState()
         if $scope.isSpotifyReady or inRoot
-            window.top.postMessage { type: 'show-card', sys }, '*'
-                
+            window.showCard(!inRoot)                
 ]
 
 import('../music-player.html').then ({ default: dom }) ->

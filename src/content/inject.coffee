@@ -13,6 +13,7 @@ import debounce from 'lodash/debounce'
 import highlight from './editable-highlight'
 
 import './anki-inject.coffee'
+import './card-iframe.coffee'
 
 import {
   getSentenceFromSelection
@@ -25,9 +26,6 @@ chrome.runtime.sendMessage {
 	origin: location.origin,
 	url: location.href
 }, (res) ->
-	if location.href.includes('https://accounts.spotify.com/')
-		return; 
-
 	if res?.dictUrl
 		# append to html rather than body.
 		# some websites such as naver dict, may clear body when reload to another page. 
@@ -39,23 +37,8 @@ chrome.runtime.sendMessage {
 		if res.word.split(/\s/).every (s) -> comparedLoc.includes(s.toLowerCase())
 			$("<iframe class='dictionaries-card dictionaries-card-wiki' src='#{res.cardUrl}?sys=wiki' style='display: none;'> </iframe>").appendTo('body')
 	
-	$("<iframe class='dictionaries-card dictionaries-card-music' src='#{res.cardUrl}?sys=music' style='display: none;'> </iframe>").appendTo('body')
-
-
-window.addEventListener "message", ((event) ->
-	# chrome-extension or moz-extension
-	if event.origin.includes('extension://') 
-		if event.data.type == 'toggleDropdown'
-			if event.data.open
-				$('#dictionaries-iframe').addClass('dropdown-open')
-			else 
-				$('#dictionaries-iframe').removeClass('dropdown-open')
-		else if event.data.type == 'close-card'
-			$('.dictionaries-card-'+event.data.sys).hide()
-		else if event.data.type == 'show-card'
-			$('.dictionaries-card-'+event.data.sys).show()
-
-), false
+	if res?.cardUrl
+		$("<iframe class='dictionaries-card dictionaries-card-music' src='#{res.cardUrl}?sys=music' style='display: none;'> </iframe>").appendTo('body')
 
 chrome.runtime.sendMessage {
 	type: 'setting',

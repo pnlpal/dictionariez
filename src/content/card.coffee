@@ -27,7 +27,10 @@ initWiki = () ->
             window.top.postMessage { type: 'show-card', sys }, '*'
 
     $('''
-    <div class="dictionaries-wikipedia">
+    <a class="dictionaries-card-minimal-icon" href="" title="Open wikipedia" style="display: none;">
+        <img src="https://en.m.wikipedia.org/static/favicon/wikipedia.ico" alt="Wiki"></img>
+    </a>
+    <div class="dictionaries-wikipedia dictionaries-card-max">
         <div class="dictionaries-card-toolbar navbar-fixed-top">
             <a class="dictionaries-card-link" href="" title="Open wikipedia">
                 <img src="https://en.m.wikipedia.org/static/favicon/wikipedia.ico" alt="Wiki"></img>
@@ -62,8 +65,22 @@ $(document).on('click', 'a.dictionaries-card-link', (ev) ->
     return false
 )
 
+window.showCard = (minimal) ->
+    window.top.postMessage { type: 'show-card', sys, minimal }, '*'
+    if minimal
+        $('.dictionaries-card-minimal-icon').show()
+        $('.dictionaries-card-max').hide()
+    else 
+        $('.dictionaries-card-minimal-icon').hide()
+        $('.dictionaries-card-max').show()
+
 $(document).on('click', 'a.dictionaries-card-close', (ev) -> 
-    window.top.postMessage { type: 'close-card', sys }, '*'
+    showCard(true)
+    return false 
+)
+
+$(document).on('click', 'a.dictionaries-card-minimal-icon', (ev) -> 
+    showCard()
     return false 
 )
 

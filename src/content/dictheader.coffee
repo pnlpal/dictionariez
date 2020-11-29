@@ -10,6 +10,8 @@ import('bootstrap/dist/css/bootstrap.min.css')
 import('../vendor/font-awesome.css')
 import('./dictheader.less')
 
+import('./card-iframe.coffee')
+
 inFrame = window.self != window.top
 # some ui need bootstrap, like dropdown.
 dictApp = angular.module('fairyDictApp', ['ui.bootstrap'])
@@ -215,30 +217,15 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     return
 ]
 
-if not location.href.includes('https://accounts.spotify.com/authorize')
-    import('../header.html').then ({ default: headerDom }) ->
-        $(document.body).append(headerDom)
-        angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])
+import('../header.html').then ({ default: headerDom }) ->
+	$(document.body).append(headerDom)
+	angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])
 
-        $(window).on 'resize', debounce ((evt) ->
-            utils.send 'window resize'
-        ), 300
+	$(window).on 'resize', debounce ((evt) ->
+		utils.send 'window resize'
+	), 300
 
-    if not inFrame
-        $("<iframe class='dictionaries-card dictionaries-card-music' src='card.html?sys=music' style='display: none;'> </iframe>").appendTo('body')
+if not inFrame
+	$("<iframe class='dictionaries-card dictionaries-card-music' src='card.html?sys=music' style='display: none;'> </iframe>").appendTo('body')
 
 
-window.addEventListener "message", ((event) ->
-	# chrome-extension or moz-extension
-	if event.origin.includes('extension://') 
-		if event.data.type == 'toggleDropdown'
-			if event.data.open
-				$('#dictionaries-iframe').addClass('dropdown-open')
-			else 
-				$('#dictionaries-iframe').removeClass('dropdown-open')
-		else if event.data.type == 'close-card'
-			$('.dictionaries-card-'+event.data.sys).hide()
-		else if event.data.type == 'show-card'
-			$('.dictionaries-card-'+event.data.sys).show()
-
-), false

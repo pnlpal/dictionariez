@@ -1,0 +1,30 @@
+iframe.dictionaries-card {
+	position: fixed;
+	border: 1px solid yellow;
+	bottom: 1px;
+	z-index: 9999;
+	background-color: #f6fcf9;
+	border: 1px solid #eeeeee;
+	border-radius: 3px;
+	box-shadow: gray;
+	margin: 0;
+	height: 220px;
+	width: 200px; 
+
+	right: 1px;
+	
+	& + .dictionaries-card {
+		right: 202px;
+	}
+
+	&.dictionaries-card-minimal {
+		height: 34px;
+    	width: 34px;
+		border-radius: 50%;
+		bottom: 20px;
+		right: 10px;
+    }
+    // & + .dictionaries-card-minimal {
+    //     bottom: 240px;
+    // }
+}
