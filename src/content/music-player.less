@@ -116,19 +116,6 @@ body
             z-index: 2;
         }
 
-        &.active
-        {
-            top: -60px;
-            box-shadow: 0 0 0 4px #fff7f7, 0 30px 50px -15px #afb7c1;
-
-            img.active
-            {
-                z-index: 1;
-                -webkit-animation: rotateAlbumArt 3s linear 0s infinite forwards;
-                        animation: rotateAlbumArt 3s linear 0s infinite forwards;
-            }
-        }
-
         img
         {
             display: block;
@@ -137,13 +124,11 @@ body
             left: 0;
             width: 100%;
             height: 100%;
-            opacity: 0;
-            z-index: -1;
 
             &.active 
             {
-                opacity: 1;
-                z-index: 1;
+                -webkit-animation: rotateAlbumArt 3s linear 0s infinite forwards;
+                animation: rotateAlbumArt 3s linear 0s infinite forwards;
             }
         }
     }
