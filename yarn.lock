@@ -4422,6 +4422,11 @@ split-string@^3.0.1, split-string@^3.0.2:
   dependencies:
     extend-shallow "^3.0.0"
 
+spotify-uri@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/spotify-uri/-/spotify-uri-2.1.0.tgz#1e0428536bd616e90e086d74167310fa23465f6b"
+  integrity sha512-+QjB/9zRsbGB+2oOPK6K4jidLEWbsY43mov84vEj66dNj0aqqz6ul6VbxfUDlklOqgL4kVLFC/Yhr01PcXlJbQ==
+
 sshpk@^1.7.0:
   version "1.16.1"
   resolved "https://registry.yarnpkg.com/sshpk/-/sshpk-1.16.1.tgz#fb661c0bef29b39db40769ee39fa70093d6f6877"

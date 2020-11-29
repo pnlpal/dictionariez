@@ -14,6 +14,8 @@ import('./music-player.less')
 import 'bootoast/dist/bootoast.min.css'
 import bootoast from 'bootoast/dist/bootoast.min.js'
 
+import spotifyUri from 'spotify-uri'
+
 sys = 'music'
 inRoot = (() -> 
     try
@@ -79,7 +81,7 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', ($scope) ->
         
 
     updateState = (state) ->
-        $scope.spotifyState = state
+        $scope.spotifyState = state 
         console.log "Spotify state: ", state 
 
         $scope.isSpotifyReady = state.ready
@@ -113,6 +115,14 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', ($scope) ->
             utils.send 'spotify action', { action }
         else 
             window.open('https://open.spotify.com/', '_blank')
+    
+    $scope.openTrackLink = () ->
+        if $scope.spotifyState?.current_track
+            url = spotifyUri.formatOpenURL $scope.spotifyState.current_track.uri
+            window.open url, '_blank'
+        else 
+            window.open('https://open.spotify.com/', '_blank')
+
 
     if localStorage.getItem("authorizing") == 'code' and window.top.location.search.includes('spotifyCallback')
         res = await onAuthorized()

@@ -40,7 +40,8 @@
 		"less": "^2.7.1",
 		"lodash": "latest",
 		"moment": "^2.24.0",
-		"requirejs": "^2.3.2"
+		"requirejs": "^2.3.2",
+		"spotify-uri": "^2.1.0"
 	},
 	"devDependencies": {
 		"clean-webpack-plugin": "^1.0.0",
