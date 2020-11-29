@@ -61,7 +61,15 @@ class LookupParser
         if tname == 'google' and setting.getValue 'showChineseDefinition'
             url = url.replace 'hl=en-US', 'hl=zh-CN'
 
-        html = $(await $.get url)
+        try
+            html = $(await $.ajax {url, timeout: 2000})
+        catch err 
+            if err.statusText == 'timeout' \
+            and tname != 'bing' \
+            and (utils.isEnglish(w) or utils.isChinese(w)) 
+                return @parse(w, 'bing')
+            console.error "Failed to parse: ", url, err 
+            return  
 
         result = @parseResult html, dictDesc.result
 
@@ -69,6 +77,8 @@ class LookupParser
         if tname == "bing"
             if utils.isChinese(w) 
                 result.prons.push({'synthesis': 'zh-CN'})
+            else 
+                result.prons = result.prons.filter (n)->n.type != 'pinyin'
             
         if tname == 'google'
             if result.w 

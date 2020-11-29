@@ -373,9 +373,11 @@ chrome.runtime.sendMessage {
 			plainQuerying = null
 
 		if res?.prons?.length and res.w
-			if res.prons.every (v)->['bre', 'ame'].includes(v.type)
-				getEnglishPronAudio res.w 
+			if res.prons.every (v)->['US', 'UK'].includes(v.symbol)
 				getEnglishPronSymbol res.w 
+
+			if res.prons.every (v)->['bre', 'ame'].includes(v.type) 
+				getEnglishPronAudio res.w 
 		
 		return html
 
