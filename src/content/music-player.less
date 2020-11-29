@@ -10,12 +10,6 @@ body
     background-color: #1DB954;
 }
 
-#dictionariez-music-player
-{
-    // width: 200px;
-    // height: 100px;
-}
-
 @-webkit-keyframes rotateAlbumArt
 {
     0%{ -webkit-transform: rotateZ(0); transform: rotateZ(0); }
@@ -26,6 +20,56 @@ body
 {
     0%{ -webkit-transform: rotateZ(0); transform: rotateZ(0); }
     100%{ -webkit-transform: rotateZ(360deg); transform: rotateZ(360deg); }
+}
+
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.player-context {
+    height: 118px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-family: 'Comic Sans MS';
+    color: aliceblue;
+
+    .preliminary {
+        flex-grow: 1;
+    }
+
+    a {
+        color: aliceblue;
+    }
+    img {
+        width: 100%;
+        filter: grayscale(80%);
+        
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: -1;
+    }
+    .track-wrapper {
+        background: radial-gradient(rgba(0, 0, 0, 0.8), rgba(255, 255, 255, 0));
+        padding: 2px 10px;
+        margin-top: 10px;
+        .track-name {
+            color: floralwhite;
+            font-size: 16px;
+            font-family: 'Times New Roman';
+        }
+        .artist-name {
+            font-size: 12px;
+            max-width: 130px;
+            margin-bottom: 0;
+        }
+        
+    }
 }
 
 .player-content {

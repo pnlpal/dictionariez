@@ -13,11 +13,23 @@
         </div>
 
         <div class="player-context">
-
+            <div class="text-center preliminary">
+                <img ng-src="{{albumImage.url}}" class="active" ng-if="albumImage">
+                <a href="" ng-if="!isSpotifyReady" ng-click="toggleAction()">
+                    Authorize Dictionariez Spotify
+                </a>
+                <a href="" ng-if="!spotifyState.current_track && !isSpotifyReady" ng-click="toggleAction()">
+                    Choose music on Spotify
+                </a>
+                <div ng-if="spotifyState.current_track" class="track-wrapper">
+                    <p class="track-name">{{spotifyState.current_track.name}}</p>
+                    <p class="artist-name ellipsis">{{artistName}}</p>
+                </div>
+            </div>
         </div>
         <div class="player-content">
             <div id="album-art">
-                <img src="" class="active" ng-if="spotifyState.current_track">
+                <img ng-src="{{albumImage.url}}" class="active" ng-if="albumImage">
             </div>
             <div id="player-controls">
                 <div class="control">

@@ -32,6 +32,8 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', ($scope) ->
     $scope.canSeekNext = false 
     $scope.canSeekPrev = false 
     $scope.canPause = false 
+    $scope.albumImage = null
+    $scope.artistName = ''
     pkce = null
 
     if inRoot 
@@ -87,10 +89,19 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', ($scope) ->
         $scope.canSeekPrev = false 
         $scope.playing = false 
 
+        $scope.albumImage = null 
+        $scope.artistName = ''
+
         if state.disallows
             $scope.canPause = !state.disallows.pausing
             $scope.canSeekNext = !state.disallows.peeking_next
             $scope.canSeekPrev = !state.disallows.peeking_prev  
+
+        if state.current_track?.album?.images?.length
+            $scope.albumImage = state.current_track.album.images.find((n) -> n.width > 200) or \
+                state.current_track.album.images[0]
+        if state.current_track?.artists?.length 
+            $scope.artistName = state.current_track.artists.map((n) -> n.name).join(', ')
         
         $scope.playing = !state.paused and state.current_track
         $scope.$apply()
