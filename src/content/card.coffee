@@ -3,7 +3,7 @@ import $ from 'jquery'
 import utils from "utils"
 import debounce from 'lodash/debounce'
 
-# import('bootstrap/dist/css/bootstrap.min.css')
+import('bootstrap/dist/css/bootstrap.min.css')
 import('../vendor/font-awesome.css')
 
 import('./scrollbar.less')
@@ -22,14 +22,14 @@ initWiki = () ->
                 $('.dictionaries-wikipedia .dictionaries-wiki-extract').addClass('dictionaries-wiki-margin-top')
 
             $('.dictionaries-wikipedia .dictionaries-wiki-extract').html(res.extract_html)
-            $('.dictionaries-wikipedia .dictionaries-wiki-link').attr('href', res.content_urls.mobile.page)
+            $('.dictionaries-wikipedia .dictionaries-card-link').attr('href', res.content_urls.mobile.page)
 
             window.top.postMessage { type: 'show-card', sys }, '*'
 
     $('''
     <div class="dictionaries-wikipedia">
         <div class="dictionaries-card-toolbar navbar-fixed-top">
-            <a class="dictionaries-wiki-link" href="" title="Open wikipedia">
+            <a class="dictionaries-card-link" href="" title="Open wikipedia">
                 <img src="https://en.m.wikipedia.org/static/favicon/wikipedia.ico" alt="Wiki"></img>
             </a>
 
@@ -57,7 +57,7 @@ initMusic = () ->
 initWiki() if sys == 'wiki'
 initMusic() if sys == 'music'
 
-$(document).on('click', 'a.dictionaries-wiki-link', (ev) -> 
+$(document).on('click', 'a.dictionaries-card-link', (ev) -> 
     window.top.location.href = ev.currentTarget.href
     return false
 )

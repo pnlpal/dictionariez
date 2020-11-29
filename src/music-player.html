@@ -1,24 +1,23 @@
 <div id="dictionariez-music-player" ng-controller="musicPlayerCtrl">
-    <div id="bg-artwork"></div>
-    <div id="bg-layer"></div>
-    <div id="player">
-        <div id="player-track">
-            <div id="album-name"></div>
-            <div id="track-name"></div>
-            <div id="track-time">
-                <div id="current-time"></div>
-                <div id="track-length"></div>
-            </div>
-            <div id="s-area">
-                <div id="ins-time"></div>
-                <div id="s-hover"></div>
-                <div id="seek-bar"></div>
-            </div>
+        <div class="dictionaries-card-toolbar navbar-fixed-top">
+            <a class="dictionaries-card-link" href="" title="Open Spotify">
+                <img src="images/Spotify_Logo.png" alt="Spotify"></img>
+            </a>
+
+            <a class="dictionaries-card-close pull-right" href="" title="Close">
+                <i class='fa fa-remove' aria-hidden='true'></i>
+            </a>
+            <a class="dictionaries-setting pull-right" href="" title="Go to settings">
+                <i class='fa fa-cog' aria-hidden='true'></i>
+            </a>
         </div>
-        <div id="player-content">
+
+        <div class="player-context">
+
+        </div>
+        <div class="player-content">
             <div id="album-art">
-                <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_1.jpg" class="active" id="_1">
-                <div id="buffer-box">Buffering ...</div>
+                <img src="" class="active" ng-if="spotifyState.current_track">
             </div>
             <div id="player-controls">
                 <div class="control">
@@ -48,5 +47,4 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
