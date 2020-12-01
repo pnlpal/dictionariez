@@ -3,7 +3,7 @@ import angular from 'angular'
 import utils from "utils"
 import debounce from 'lodash/debounce'
 
-import PKCE from 'js-pkce';
+import PKCE from '@pnlpal/js-pkce';
 # import '../needsharebutton.min.js'
 # import 'angular-ui-bootstrap'
 

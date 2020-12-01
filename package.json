@@ -23,6 +23,7 @@
 		"WebExtensions"
 	],
 	"dependencies": {
+		"@pnlpal/js-pkce": "^1.1.1",
 		"angular": "~1.8.0",
 		"angular-bootstrap": "^0.12.2",
 		"angular-ui-bootstrap": "^2.5.6",
@@ -36,7 +37,6 @@
 		"font-awesome": "^4.6.3",
 		"get-selection-more": "^1.1.0",
 		"jquery": "^3.5.0",
-		"js-pkce": "^1.0.7",
 		"less": "^2.7.1",
 		"lodash": "latest",
 		"moment": "^2.24.0",

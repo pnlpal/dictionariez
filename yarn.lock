@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@pnlpal/js-pkce@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@pnlpal/js-pkce/-/js-pkce-1.1.1.tgz#9eb85c36d17b1a8fba2b3f8d6ade403f7c0a5446"
+  integrity sha512-RbTF5q337cl/ZOAPFd4NEeceX1pZ+RSUT3Xu9oiLAvcw6Y6DVfAqMwHRQ57SgQ/tuXKhfWOr5QfDhGEygNMmIQ==
+  dependencies:
+    crypto-js "^4.0.0"
+
 "@webassemblyjs/ast@1.7.11":
   version "1.7.11"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.7.11.tgz#b988582cafbb2b095e8b556526f30c90d057cace"
@@ -2703,13 +2710,6 @@ jquery@>=1.7, jquery@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.0.tgz#9980b97d9e4194611c36530e7dc46a58d7340fc9"
   integrity sha512-Xb7SVYMvygPxbFMpTFQiHh1J7HClEaThguL15N/Gg37Lri/qKyhRGZYzHRyLH8Stq3Aow0LsHO2O2ci86fCrNQ==
-
-js-pkce@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/js-pkce/-/js-pkce-1.0.7.tgz#cd1fa1bd64eff5ba262e88940c112ce25bd9f856"
-  integrity sha512-l3n+/ZUt5CR181eQ1UwYkPMsHiiA6pUlGuGdkASnjUT55cIF4oG9hX7yRrqs24hZQyUVV42plGaVn0WTSBDtwg==
-  dependencies:
-    crypto-js "^4.0.0"
 
 jsbn@~0.1.0:
   version "0.1.1"
