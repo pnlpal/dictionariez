@@ -28,6 +28,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
                 reject({ message, type: 'initialization_error' });
             });
             player.addListener('authentication_error', ({ message }) => {
+                player.isReady = false;
                 reject({ message, type: 'authentication_error' });
             });
             player.addListener('account_error', ({ message }) => { console.error(message); });
