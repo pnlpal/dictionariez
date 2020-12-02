@@ -57,7 +57,11 @@ initMusic = () ->
     import('./music-player.coffee') 
     
 (() ->
-    setting = await utils.send 'card setting', { sys } 
+    setting = await utils.send 'card setting', { 
+        sys, 
+        origin: location.origin,
+        url: location.href
+    }
     window.cardSetting = setting 
 
     initWiki() if sys == 'wiki' and !setting.disabled

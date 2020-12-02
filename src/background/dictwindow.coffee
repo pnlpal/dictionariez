@@ -312,12 +312,15 @@ export default {
             else if utils.isJapanese win.word
                 return $.get "https://ja.wikipedia.org/api/rest_v1/page/summary/" + win.word
 
-        message.on 'card setting', ( { sys } ) =>
+        message.on 'card setting', ( { sys, origin } ) =>
             if sys == 'wiki' 
                 disabled = setting.getValue 'disableWikipediaCard'
             
             if sys == 'music'
                 disabled = setting.getValue 'disableSpotify'
+                if not origin.includes('chrome-extension://')
+                    # only support on Chrome now 
+                    disabled = true 
             
             s = setting.getValue 'minimalCards'
             minimal = s.includes(sys)
