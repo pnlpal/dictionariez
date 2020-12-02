@@ -121,7 +121,11 @@ musicPlayer.controller 'musicPlayerCtrl', ['$scope', ($scope) ->
             url = spotifyUri.formatOpenURL $scope.spotifyState.current_track.uri
             window.open url, '_blank'
         else 
-            window.open('https://open.spotify.com/', '_blank')
+            $scope.openHelpLink()
+    
+    $scope.openHelpLink = () ->
+        url = 'https://revir.github.io/2020/12/02/I-put-a-spotify-player-on-Dictionariez/'
+        window.open url, '_blank'
 
 
     if localStorage.getItem("authorizing") == 'code' and window.top.location.search.includes('spotifyCallback')
