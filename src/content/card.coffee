@@ -21,6 +21,10 @@ initWiki = () ->
             else 
                 $('.dictionaries-wikipedia .dictionaries-wiki-extract').addClass('dictionaries-wiki-margin-top')
 
+                # wiki's bug?
+                if res.extract?.endsWith("may refer to:")
+                    return
+
             $('.dictionaries-wikipedia .dictionaries-wiki-extract').html(res.extract_html)
             $('.dictionaries-wikipedia .dictionaries-card-link').attr('href', res.content_urls.mobile.page)
 
