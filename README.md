@@ -31,7 +31,7 @@ With the launch of [pnlpal community](https://pnlpal.dev/topic/2/), you can shar
 
 # More dictionaries are needed!  
 
-[See here.](more-dicts.md) 
+[See here.](https://pnlpal.dev/topic/52/help-more-dictionaries-are-needed) 
 
 # Build
 
