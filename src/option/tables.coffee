@@ -268,11 +268,7 @@ initDictionary = () ->
                     if type == 'display'
                         el = ''
                         if currentDictName != row.dictName
-                            if row.disabled
-                                el += buildActionButton({name: "Enable", cls: "btn-info"})
-                            else
-                                el += buildActionButton({name: "Disable", cls: "btn-default"})
-
+                            el = buildActionIcon('remove')
                         return el
 
                     return ''
@@ -283,12 +279,12 @@ initDictionary = () ->
     })
 
     table.on 'row-reorder', (e, diff) ->
-        dicts = diff.map (item) ->
-            console.log item, item.oldData, item.newData
+        dictMap = {}
+        diff.forEach (item) ->
             rowData = table.row( item.node ).data()
-            rowData.sequence = item.newData
-            return rowData
-        utils.send 'set-dictionary-reorder', { dicts }
+            dictMap[rowData.dictName] = { sequence: item.newData }
+
+        utils.send 'set-dictionary-reorder', { dictMap }
 
     $('#table-dictionary tbody').on 'click', 'td', (e) ->
         if $(e.currentTarget).has('.action-button').length
@@ -299,15 +295,11 @@ initDictionary = () ->
             rowData = row.data()
 
             switch $(e.target).data('action')
-                when 'Disable'
-                    rowData.disabled = true
-                    await utils.send 'set-dictionary-disable', rowData
-                    table.rows().invalidate().draw()
+                when 'remove'
+                    await utils.send 'dictionary-remove', rowData
+                    row.remove().draw()
+                    bravo()
 
-                when 'Enable'
-                    rowData.disabled = false
-                    await utils.send 'set-dictionary-disable', rowData
-                    table.rows().invalidate().draw()
         if $(e.currentTarget).has('.link-dict-name').length 
             e.preventDefault()
             e.stopPropagation()

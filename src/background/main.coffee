@@ -18,7 +18,6 @@ import "./hot-reload-content-scripts.js"
     { default: dict } = await import(### webpackChunkName: "dict"  ###"./dict.coffee")
     await dict.init()
     window.dict = dict
-    dict.syncExtraDicts()
 
     { default: dw } = await import(### webpackChunkName: "dictwindow"  ###"./dictwindow.coffee")
     await dw.init()

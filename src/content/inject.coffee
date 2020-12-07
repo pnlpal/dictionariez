@@ -14,7 +14,7 @@ import highlight from './editable-highlight'
 
 import './anki-inject.coffee'
 import './card-iframe.coffee'
-
+import './pnlpal-inject.coffee'
 import {
   getSentenceFromSelection
 } from 'get-selection-more'

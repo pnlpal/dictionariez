@@ -144,4 +144,19 @@ export default {
 	cget: (k, defaultValue) ->
 		res = await @get(k, defaultValue)
 		console.log res
+
+	getAllByK: (k) ->
+		new Promise (resolve) ->
+			chrome.storage.sync.get null, (data) ->
+				resolve Object.keys(data).filter((item) -> item.startsWith(k)).
+				map((n) -> data[n])
+
+	setAllByK: (k, key, list) ->
+		Promise.all list.map (n)=> 
+			v = n[key]
+			if v 
+				res = {}
+				res[k + v] = n 
+				return @set res 
+
 }
