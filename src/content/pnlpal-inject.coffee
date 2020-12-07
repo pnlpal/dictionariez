@@ -2,7 +2,7 @@ import $ from 'jquery'
 import utils from "utils"
 
 addDictByTopic = (tid) ->
-	topic = await $.get("/api/topic/#{tid}")
+	topic = await $.get("#{location.origin}/api/topic/#{tid}").catch(console.error)
 	json = $(topic.posts[0].content).find('code.language-json').text()
 
 	dict = JSON.parse(json)
@@ -14,5 +14,10 @@ addDictByTopic = (tid) ->
 
 if location.host == 'pnlpal.dev' or location.host == "localhost:4567"
 	$(document).on 'click', '.add-to-dictionariez', () -> 
-		addDictByTopic $(this).data('tid')
+		$(this).text('waiting...')
+		$(this).addClass('disabled')
+		addDictByTopic($(this).data('tid')).then () => 
+			$(this).text('Added!')
+			$(this).removeClass('disabled')
+
 		return false
