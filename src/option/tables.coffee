@@ -50,6 +50,9 @@ buildActionIcon = (name) ->
         when 'share with pals'
             faIcon = 'fa-share-alt'
             cls = 'text-warning'
+        when 'comment'
+            faIcon = 'fa-comment-o'
+            cls = 'text-muted'
 
     iEl = "<i class='fa #{faIcon}' aria-hidden='true' data-action='#{name}' title='#{name}'></i>"
     return "<a href='' class='action-button #{cls}' data-action='#{name}' title='#{name}'> #{iEl} </a>"
@@ -275,7 +278,9 @@ initDictionary = () ->
                     if type == 'display'
                         el = ''
                         if currentDictName != row.dictName
-                            el = buildActionIcon('remove')
+                            if row.troveUrl
+                                el += buildActionIcon 'comment'
+                            el += buildActionIcon('remove')
                         return el
 
                     return ''
@@ -306,6 +311,8 @@ initDictionary = () ->
                     await utils.send 'dictionary-remove', rowData
                     row.remove().draw()
                     bravo()
+                when 'comment'
+                    window.open(rowData.troveUrl, '_blank')
 
         if $(e.currentTarget).has('.link-dict-name').length 
             e.preventDefault()
