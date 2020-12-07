@@ -228,12 +228,19 @@ initDictionary = () ->
     {currentDictName, allDicts} = await utils.send 'dictionary', { optionsPage: true }
 
     table = $('#table-dictionary').DataTable({
-        dom: 't',
+        dom: '<"pull-left"f><"pull-left"i><"pull-right"B>tp',
         paging: false,
         # ordering: false,
         rowReorder: {
             dataSrc: 'sequence'
         },
+        buttons: [{
+            text: 'Add more to your collection',
+            className: 'btn btn-success',
+            action: () ->
+                href = 'https://pnlpal.dev/category/4/dictionariez-trove'
+                window.open(href, '_blank')
+        }],
         columns: [
             {
                 name: 'sequence',

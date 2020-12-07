@@ -30,6 +30,9 @@ export default {
 
             storage.remove ('dict-'+dictName)
         
+        message.on 'dictionary-add', ({ dict }) =>
+            @addToDictionariez dict 
+        
     initAllDicts: () ->
         allDicts = await storage.getAllByK 'dict-'
         if not allDicts.length 

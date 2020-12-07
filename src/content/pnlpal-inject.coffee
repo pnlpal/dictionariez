@@ -1,8 +1,18 @@
 import $ from 'jquery'
 import utils from "utils"
 
-replaceTeaser = () ->
-	console.log '!!!!!'
-	$('.topic-list [component="topic/teaser"]').hide()
+addDictByTopic = (tid) ->
+	topic = await $.get("/api/topic/#{tid}")
+	json = $(topic.posts[0].content).find('code.language-json').text()
 
-# replaceTeaser()
+	dict = JSON.parse(json)
+	dict.dictName ?= topic.title 
+	dict.homepageUrl = topic.externalLink 
+	dict.troveUrl = "#{location.origin}#{topic.url}"
+	await utils.send 'dictionary-add', { dict }
+	await utils.send 'look up', dict
+
+if location.host == 'pnlpal.dev' or location.host == "localhost:4567"
+	$(document).on 'click', '.add-to-dictionariez', () -> 
+		addDictByTopic $(this).data('tid')
+		return false
