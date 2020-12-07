@@ -262,12 +262,7 @@ initDictionary = () ->
                 orderable: false,
                 render: (data, type, row) ->
                     if type == 'display'
-                        if row.disabled
-                            return "<span class='text-muted'>#{data}</span>"
-                        else if currentDictName == data
-                            return data + "&nbsp; <span class='badge'> Current </span>"
-                        else 
-                            return "<a class='link-dict-name' href='' data-name='#{data}' title='#{data}'> #{data} </a>"
+                        return "<a class='link-dict-name' href='' data-name='#{data}' title='#{data}'> #{data} </a>"
                     return data
             },
             {
@@ -277,10 +272,9 @@ initDictionary = () ->
                 render: (data, type, row) ->
                     if type == 'display'
                         el = ''
-                        if currentDictName != row.dictName
-                            if row.troveUrl
-                                el += buildActionIcon 'comment'
-                            el += buildActionIcon('remove')
+                        if row.troveUrl
+                            el += buildActionIcon 'comment'
+                        el += buildActionIcon('remove')
                         return el
 
                     return ''
