@@ -35,13 +35,14 @@ export default {
         
     initAllDicts: () ->
         allDicts = await storage.getAllByK 'dict-'
+        
         if not allDicts.length 
             # get dicts from default and old settings 
             dictSettings = await storage.get('dictionary-setting', {})
-            # storage.remove 'dictionary-setting'
+            storage.remove 'dictionary-setting'
 
             extraDicts = await storage.get('extra-dicts', [])
-            # storage.remove 'extra-dicts'
+            storage.remove 'extra-dicts'
 
             defaultDicts.forEach (d, oi) =>
                 s = dictSettings[d.dictName]
