@@ -16,11 +16,13 @@ With the launch of [pnlpal community](https://pnlpal.dev/topic/2/), you can shar
 
 # Install
 
-- [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc) *Always older, because of Chrome store's lagged review.*
+- [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc) *Sometimes older because of Chrome's delayed review.*
 
 - [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/) *Newest*
 
-- [Download crx file](build.crx) *Newest, based on the latest code, normally newer than Chrome store. Uninstall the other version before you install it. But every time your have to upgrade by yourself.*
+- [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/dictionaries-one-to-rule/jdgglojanbnghagoeffacmjodigadoof) *Sometimes older because of Microsoft's delayed review.*
+
+- [Download crx file](build.crx) *Newest. Uninstall the other version before you install it. But every time your have to upgrade by yourself.*
 
 # Screenshot
 ![Promo Banner](https://github.com/pnlpal/dictionaries/raw/master/readme_images/all-in-one.jpg)
