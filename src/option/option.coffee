@@ -72,8 +72,8 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
         else 
             location.reload()
     
-    window.addExtraDict = (d)->
-        await utils.send 'add extra dict', d 
+    window.addExtraDict = (dict)->
+        await utils.send 'dictionary-add', { dict } 
         location.reload()
 
     chrome.runtime.sendMessage {
