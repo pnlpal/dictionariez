@@ -58,6 +58,11 @@ class DictWindow
         # bugfix: dont know how why, windowWidth and windowHeight are saved as number, need integer here.
         width = parseInt(setting.getValue('windowWidth'))
         height = parseInt(setting.getValue('windowHeight'))
+
+        # fix too small value
+        width = 580 if !width or width < 300
+        height = 600 if !height or height < 300
+
         left = setting.getValue('windowLeft', Math.round((screen.width / 2) - (width / 2)))
         top = setting.getValue('windowTop', Math.round((screen.height / 2) - (height / 2)))
 

@@ -5,7 +5,7 @@ export default {
             windowLeft: undefined,
             windowTop: undefined,
             windowWidth: 580,
-            windowHeight: 700,
+            windowHeight: 600,
             ankiLeft: undefined,
             ankiTop: undefined,
             ankiWidth: 580,
