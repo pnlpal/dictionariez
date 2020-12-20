@@ -32,8 +32,9 @@ getAnkiInfo = (ankiSavedWord) ->
 			$('.field#f1').append renderLookupWords res.wordItem, res.lookupInfo
 			$('.field#f1').append '<br><br>'
 	
+if location.origin == 'https://ankiuser.net'
+	getAnkiInfo()
 
-getAnkiInfo()
 $(document).on 'click', 'button.btn-primary', () ->
 	return if not currentWordItem?.w
 

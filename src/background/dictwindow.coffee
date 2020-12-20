@@ -278,6 +278,8 @@ export default {
             return { history }
 
         message.on 'injected', (request, sender) =>
+            return unless sender.tab 
+            
             win = @getByTab sender.tab.id 
             if win 
                 if request.url?.includes('https://accounts.spotify.com/')

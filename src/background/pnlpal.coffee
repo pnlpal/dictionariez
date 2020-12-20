@@ -26,6 +26,19 @@ shareOnPnlpal = (title, link) ->
             left: popupLeft
         }
 
+openedYtbLink = ''
+openedTabId = null 
+
+openYtbOnCaptionz = (link) ->
+    openedYtbLink = link
+    url = "https://pnlpal.dev/captionz"
+
+    chrome.tabs.create {
+        url
+    }, (tab) => 
+        openedTabId = tab.id
+
+
 export default {
     init: () ->
         chrome.contextMenus.create {
@@ -37,4 +50,15 @@ export default {
 
         message.on 'share with pals', ({ title, link })->
             shareOnPnlpal title, link
+
+        message.on 'open ytb video on captionz', ({ link })->
+            openYtbOnCaptionz link 
+        
+        message.on 'get ytb link on captionz', (request, sender) ->
+            if sender.tab.id == openedTabId
+                link = openedYtbLink 
+
+                openedYtbLink = ''
+                openedTabId = null 
+                return link
 }
