@@ -47,6 +47,17 @@ export default {
             onclick: (info, tab) =>
                 shareOnPnlpal tab.title, tab.url
         }
+        chrome.contextMenus.create {
+            title: "Watch this video on Captionz",
+            contexts: ["link"],
+            documentUrlPatterns: [
+                "https://www.youtube.com/*"
+            ],
+            onclick: (info, tab) =>
+                if info.linkUrl?.startsWith "https://www.youtube.com/watch"
+                    openYtbOnCaptionz info.linkUrl
+
+        }
 
         message.on 'share with pals', ({ title, link })->
             shareOnPnlpal title, link
