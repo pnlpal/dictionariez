@@ -2,16 +2,19 @@ import $ from 'jquery'
 import utils from "utils"
 
 setYtb = () => 
-    sbtn = '<button id="captionz-ytb-btn">Watch on Captionz</button>'
+    sbtn = '<a href="" id="captionz-ytb-btn">Watch on Captionz</a>'
 
     await utils.checkInTime () ->
-        $('ytd-video-primary-info-renderer #container').length > 0
-    $('ytd-video-primary-info-renderer #container').first().prepend(sbtn);
+        $('#info #info-contents ytd-video-primary-info-renderer').length > 0
+
+    $('#info #info-contents ytd-video-primary-info-renderer').first().prepend(sbtn);
+    console.log 'gotcha.....'
 
     $(document).on('click', '#captionz-ytb-btn', () => 
         utils.send 'open ytb video on captionz', {
             link: location.href
         }
+        return false;
     )
 
 setCaptionz = () =>
@@ -24,7 +27,7 @@ setCaptionz = () =>
         $('input.video-url')[0].dispatchEvent(new CustomEvent('input', { bubbles: true }))
 
 $(document).ready () ->
-    if location.origin == "https://www.youtube.com" and location.pathname == "/watch"
+    if location.origin == "https://www.youtube.com"
         setYtb().catch(console.warn)
 
     if location.origin == 'https://pnlpal.dev' and location.pathname == '/captionz-ii/'

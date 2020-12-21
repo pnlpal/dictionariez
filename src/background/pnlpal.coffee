@@ -42,7 +42,7 @@ openYtbOnCaptionz = (link) ->
 export default {
     init: () ->
         chrome.contextMenus.create {
-            title: "Share your reading with pals",
+            title: "Share with pals",
             contexts: ["page"],
             onclick: (info, tab) =>
                 shareOnPnlpal tab.title, tab.url
@@ -50,8 +50,8 @@ export default {
         chrome.contextMenus.create {
             title: "Watch this video on Captionz",
             contexts: ["link"],
-            documentUrlPatterns: [
-                "https://www.youtube.com/*"
+            targetUrlPatterns: [
+                "https://www.youtube.com/watch*"
             ],
             onclick: (info, tab) =>
                 if info.linkUrl?.startsWith "https://www.youtube.com/watch"
@@ -63,7 +63,8 @@ export default {
             shareOnPnlpal title, link
 
         message.on 'open ytb video on captionz', ({ link })->
-            openYtbOnCaptionz link 
+            if link.startsWith "https://www.youtube.com/watch"
+                openYtbOnCaptionz link 
         
         message.on 'get ytb link on captionz', (request, sender) ->
             if sender.tab.id == openedTabId
