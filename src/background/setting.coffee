@@ -17,6 +17,8 @@ export default {
             disableWikipediaCard: false,
             disableSpotify: false,
             minimalCards: '',
+            disableContextMenu: false,
+            disableYtbCaptionz: false,
 
             enableSelectionOnMouseMove: true,
             enableSelectionSK1: true,

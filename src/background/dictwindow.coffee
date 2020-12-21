@@ -193,19 +193,20 @@ export default {
                 @lookup({ w, sentence, s: tab.url, sc: tab.title })
                 @focus()
 
-        chrome.contextMenus.create {
-            title: "Look up '%s' in dictionaries",
-            contexts: ["selection"],
-            onclick: (info, tab) =>
-                w = info.selectionText?.trim()
-                if w 
-                    chrome.tabs.executeScript {
-                        code: getInfoOfSelectionCode 
-                    }, (res) =>
-                        [w, sentence] = res?[0] or []
-                        @lookup({ w, sentence, s: tab.url, sc: tab.title })
-                        @focus()
-        }
+        if not setting.getValue "disableContextMenu"
+            chrome.contextMenus.create {
+                title: "Look up '%s' in dictionaries",
+                contexts: ["selection"],
+                onclick: (info, tab) =>
+                    w = info.selectionText?.trim()
+                    if w 
+                        chrome.tabs.executeScript {
+                            code: getInfoOfSelectionCode 
+                        }, (res) =>
+                            [w, sentence] = res?[0] or []
+                            @lookup({ w, sentence, s: tab.url, sc: tab.title })
+                            @focus()
+            }
 
         message.on 'look up', ({ dictName, w, s, sc, sentence, means, newDictWindow }) =>
             if means == 'mouse'
@@ -279,7 +280,7 @@ export default {
 
         message.on 'injected', (request, sender) =>
             return unless sender.tab 
-            
+
             win = @getByTab sender.tab.id 
             if win 
                 if request.url?.includes('https://accounts.spotify.com/')

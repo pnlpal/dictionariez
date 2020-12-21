@@ -1,4 +1,5 @@
 import message from "./message.coffee"
+import setting from "./setting.coffee"
 
 shareOnPnlpal = (title, link) ->
     popupWidth = 1024
@@ -41,26 +42,32 @@ openYtbOnCaptionz = (link) ->
 
 export default {
     init: () ->
-        chrome.contextMenus.create {
-            title: "Share with pals",
-            contexts: ["page"],
-            onclick: (info, tab) =>
-                shareOnPnlpal tab.title, tab.url
-        }
-        chrome.contextMenus.create {
-            title: "Watch this video on Captionz",
-            contexts: ["link"],
-            targetUrlPatterns: [
-                "https://www.youtube.com/watch*"
-            ],
-            onclick: (info, tab) =>
-                if info.linkUrl?.startsWith "https://www.youtube.com/watch"
-                    openYtbOnCaptionz info.linkUrl
+        if not setting.getValue "disableContextMenu"
+            chrome.contextMenus.create {
+                title: "Share with pals",
+                contexts: ["page"],
+                onclick: (info, tab) =>
+                    shareOnPnlpal tab.title, tab.url
+            }
 
-        }
+        if not setting.getValue "disableYtbCaptionz"
+            chrome.contextMenus.create {
+                title: "Watch this video on Captionz",
+                contexts: ["link"],
+                targetUrlPatterns: [
+                    "https://www.youtube.com/watch*"
+                ],
+                onclick: (info, tab) =>
+                    if info.linkUrl?.startsWith "https://www.youtube.com/watch"
+                        openYtbOnCaptionz info.linkUrl
+
+            }
 
         message.on 'share with pals', ({ title, link })->
             shareOnPnlpal title, link
+
+        message.on 'setting of ytb captionz', () ->
+            return { disableYtbCaptionz: setting.getValue("disableYtbCaptionz") }
 
         message.on 'open ytb video on captionz', ({ link })->
             if link.startsWith "https://www.youtube.com/watch"
