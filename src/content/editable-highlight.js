@@ -1,4 +1,11 @@
+const ignoredSites = [
+    "https://twitter.com", // https://github.com/pnlpal/dictionaries/issues/38
+];
+
 export default function (colour) {
+    if (ignoredSites.includes(location.origin)) 
+        return; 
+
     var range, sel = window.getSelection();
     if (sel.rangeCount && sel.getRangeAt) {
         range = sel.getRangeAt(0);
