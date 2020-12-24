@@ -410,7 +410,8 @@ chrome.runtime.sendMessage {
 			})
 
 		# floating definition
-		return unless await utils.send 'check text supported', { w: text }
+		text = await utils.send 'check text supported', { w: text }
+		return unless text
 
 		# highlight selected words is a special feature
 		# even if the floating definition is turned off, still highlight can be working.

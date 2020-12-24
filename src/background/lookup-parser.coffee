@@ -290,8 +290,12 @@ export default {
             w = w.trim()
             return unless w
 
-            return @parser.checkType(w)
-        
+            # ignore one or two punctuation signs in the end
+            w = w.replace(/[,:;'"-?!.]{1,2}$/, '')
+
+            if @parser.checkType(w)
+                return w
+
         message.on 'look up plain', ({w, s, sc, sentence}) =>
             w = w.trim()
             return unless w
