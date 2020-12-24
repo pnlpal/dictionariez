@@ -62,14 +62,22 @@ class DictWindow
         # fix too small value
         width = 580 if !width or width < 300
         height = 600 if !height or height < 300
-
-        left = setting.getValue('windowLeft', Math.round((screen.width / 2) - (width / 2)))
-        top = setting.getValue('windowTop', Math.round((screen.height / 2) - (height / 2)))
+        
+        defaultLeft = Math.round((screen.width / 2) - (width / 2))
+        defaultTop = Math.round((screen.height / 2) - (height / 2))
+        left = setting.getValue('windowLeft', defaultLeft)
+        top = setting.getValue('windowTop', defaultTop)
 
         # setup the other cloned window 
         if @windex > 0
             top += 50 * @windex
             left += 50 * @windex 
+        
+        # fix on windows, if window is out of the screen
+        if left < 0 or left > screen.width 
+            left = defaultLeft
+        if top < 0 or top > screen.height
+            top = defaultTop
 
         return new Promise (resolve) =>
             if !@w
