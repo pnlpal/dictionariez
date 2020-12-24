@@ -32,6 +32,9 @@ export default {
         
         message.on 'dictionary-add', ({ dict }) =>
             @addToDictionariez dict 
+
+        message.on 'restore-default-dicts', () =>
+            @restoreDefaultDicts()
         
     initAllDicts: () ->
         allDicts = await storage.getAllByK 'dict-'
@@ -77,6 +80,22 @@ export default {
             @allDicts.push d
         
         storage.setAllByK 'dict-', 'dictName', [d]
+    
+    restoreDefaultDicts: () ->
+        added = []
+
+        defaultDicts.forEach (d, oi) =>
+            if @allDicts.find (d1) -> d1.dictName == d.dictName 
+                return  # ignore existing ones 
+
+            d.sequence = oi
+            
+            @allDicts.push d 
+            added.push d 
+
+        if added.length
+            @allDicts.sort (a, b) -> a.sequence - b.sequence
+            storage.setAllByK 'dict-', 'dictName', added 
 
     getDict: (dictName) ->
         dict = @allDicts.find (d)->

@@ -53,24 +53,6 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
             key: 'otherDisabledLanguages',
             value: $scope.setting.otherDisabledLanguages
         }
-
-
-    $scope.syncDicts = ()->
-        $scope.syncing = true
-        err = await utils.send 'sync dicts'
-        $scope.syncing = false 
-        $scope.$apply()
-
-        if err
-            bootoast.toast({
-                message: 'Sync failed:<br>' + err.message,
-                type: 'error',
-                position: 'top',
-                timeout: 5,
-                dismissible: false
-            }) 
-        else 
-            location.reload()
     
     window.addExtraDict = (dict)->
         await utils.send 'dictionary-add', { dict } 

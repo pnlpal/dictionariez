@@ -243,6 +243,19 @@ initDictionary = () ->
             action: () ->
                 href = 'https://pnlpal.dev/category/4/dictionariez-trove'
                 window.open(href, '_blank')
+        }, {
+            text: 'Restore default',
+            className: 'btn btn-default',
+            action: () ->
+                bootoast.toast({
+                    "message": "<span>Are you sure?</span><button type=\"button\" class=\"restore-default-dicts btn btn-sm btn-success pull-right\">Yes</button>",
+                    "type": "info",
+                    "timeout": 5000,
+                    "icon": "",
+                    "position": "top",
+                    "animationDuration": "300",
+                    "dismissable": true
+                })
         }],
         columns: [
             {
@@ -320,6 +333,10 @@ initDictionary = () ->
                 newDictWindow: e.ctrlKey
             })
 
+    $(document).on 'click', '.restore-default-dicts', () => 
+      await utils.send "restore-default-dicts"
+      location.reload()
+    
 
 initDictionary()
 
