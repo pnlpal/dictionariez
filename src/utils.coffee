@@ -95,8 +95,9 @@ export default {
         /\w/.test(str)
 
     isEnglish: (str)->
-        REGEX_ENG = /[a-zA-Z'.-\s]/g
-        return str.match(REGEX_ENG)?.length == str.length
+        # match: I'll  don't  Mr.Jackson
+        REGEX_ENG = /[a-zA-Z\s-]+[’'.]?[a-zA-Z\s-]+/
+        return str.match(REGEX_ENG)?[0] == str
 
     isLinux: () -> 
         return window.navigator.platform.includes('Linux')
