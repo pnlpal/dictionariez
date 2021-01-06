@@ -16,7 +16,12 @@ shareOnPnlpal = (title, link) ->
         else
             popupTop = ((height / 2) - (popupHeight / 2)) + top
         
-        url = "https://pnlpal.dev/compose?cid=1&title=#{encodeURIComponent(title)}&link=#{encodeURIComponent(link)}"
+        if link.includes('youtube.com') and link.includes('v=')
+            cid = 5
+            title = title.replace ' - YouTube', ''
+        else 
+            cid = 1
+        url = "https://pnlpal.dev/compose?cid=#{cid}&title=#{encodeURIComponent(title)}&link=#{encodeURIComponent(link)}"
 
         chrome.windows.create {
             url,
