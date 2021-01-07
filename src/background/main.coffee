@@ -38,4 +38,6 @@ import "./hot-reload-content-scripts.js"
     pnlpal.init()
 
     import(### webpackChunkName: "spotify"  ###"./spotify.js")
+    { default: ytb } = await import(### webpackChunkName: "ytb"  ###"./ytb.coffee")
+    ytb.init()
 )()
