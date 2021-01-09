@@ -33,26 +33,4 @@ $(document).ready () ->
 
         if location.origin == 'https://pnlpal.dev' and location.pathname == '/captionz-ii/'
             setCaptionz().catch(console.warn)
-            setCaptionzMessages()
         
-        if location.origin == 'http://river.com'   # development env 
-            setCaptionzMessages()
-
-setCaptionzMessages = () ->
-    window.addEventListener "message", (event) ->
-        if event.source == window and \
-            event.data and \
-            event.data.direction == "from-page-captionz"
-            # console.log("Content script received message:", event.data)
-
-            if event.data.get == 'tracks'
-                result = await utils.send 'get tracks', event.data.params
-            else if event.data.get == 'caption'
-                result = await utils.send 'get caption', event.data.params
-
-            window.postMessage({
-                direction: "from-dictionariez-to-captionz",
-                get: event.data.get,
-                result
-            }, "*")
-  
