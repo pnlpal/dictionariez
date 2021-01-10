@@ -44,9 +44,10 @@ class LookupParser
         setting.configCache.otherSupportedLanguages = @otherSupportedLanguages
         
     checkType: (w) ->
+        if utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
+            return setting.getValue "englishLookupSource" # google, bing, wiktionary
+
         for name, dictDesc of @data
-            if dictDesc.supportEnglish
-                return name if utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
             if dictDesc.supportChinese
                 return name if utils.isChinese(w) and setting.getValue "enableLookupChinese"
             
@@ -309,7 +310,7 @@ export default {
         message.on 'get real person voice', ({ w }) =>
             if setting.getValue 'enableRealPron'
                 return @parser.parse(w, 'ldoce') if w.split(' ').length == 1  # ignore phrase
-                
+
         message.on 'get english pron symbol', ({ w }) =>
             if setting.getValue "enableUSUKPron"
                 return @parser.parse(w, 'bing') if w.split(' ').length == 1 # ignore phrase

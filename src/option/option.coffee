@@ -34,6 +34,11 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
     $scope.allPositions = ['topLeft', 'topCenter', 'topRight',
                            'middleLeft', 'middleCenter', 'middleRight',
                            'bottomLeft', 'bottomCenter', 'bottomRight']
+    $scope.englishLookupSources = {
+        'google': 'Google Dict',
+        'bing': 'Bing Dict',
+        'wiktionary': 'Wiktionary'
+    };
 
     $scope.changeKey = (value, key)->
         $scope.setting[key] = value

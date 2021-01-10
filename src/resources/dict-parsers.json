@@ -61,7 +61,6 @@
   },
   "google": {
     "url": "https://www.google.com/search?hl=en-US&q=define+<word>",
-    "supportEnglish": true,
     "languages": [
       "German",
       "Spanish",

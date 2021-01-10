@@ -29,6 +29,7 @@ export default {
             otherDisabledLanguages: [],
 
             enablePlainLookup: true,
+            englishLookupSource: 'google', # google, bing, wiktionary
             enableAmeAudio: false,
             enableBreAudio: false,
             enableUSUKPron: false,
