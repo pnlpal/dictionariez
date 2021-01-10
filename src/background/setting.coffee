@@ -31,6 +31,8 @@ export default {
             enablePlainLookup: true,
             enableAmeAudio: false,
             enableBreAudio: false,
+            enableUSUKPron: false,
+            enableRealPron: false,
             showChineseDefinition: false,
             enablePlainSK1: false,
             plainSK1: 'Ctrl',

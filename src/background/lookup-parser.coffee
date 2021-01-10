@@ -19,16 +19,16 @@ trimWordPos = (pos) ->
     return pos 
 
 setEnglishProns = (result) ->
-    result.prons = [
-        {
-        "symbol": "US",
-        "type": "ame",
-        "synthesis": "en-US"
-        },
+    result.prons = result.prons.concat [
         {
         "symbol": "UK",
         "type": "bre",
         "synthesis": "en-GB"
+        },
+        {
+        "symbol": "US",
+        "type": "ame",
+        "synthesis": "en-US"
         }
     ]
 
@@ -307,9 +307,12 @@ export default {
             return @parser.parse(w) 
 
         message.on 'get real person voice', ({ w }) =>
-            return @parser.parse(w, 'ldoce') if w.split(' ').length == 1  # ignore phrase
+            if setting.getValue 'enableRealPron'
+                return @parser.parse(w, 'ldoce') if w.split(' ').length == 1  # ignore phrase
+                
         message.on 'get english pron symbol', ({ w }) =>
-            return @parser.parse(w, 'bing') if w.split(' ').length == 1 # ignore phrase
+            if setting.getValue "enableUSUKPron"
+                return @parser.parse(w, 'bing') if w.split(' ').length == 1 # ignore phrase
         
         message.on 'look up phonetic', ({ w, _counter }) =>
             { prons } = await @parser.parse(w, 'bing')

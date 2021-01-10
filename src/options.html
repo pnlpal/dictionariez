@@ -254,20 +254,42 @@
 								<label>
 									<input
 										type="checkbox"
-										ng-model="setting.enableAmeAudio"
-										ng-click="changeKey(!setting.enableAmeAudio, 'enableAmeAudio')"
+										ng-model="setting.enableUSUKPron"
+										ng-click="changeKey(!setting.enableUSUKPron, 'enableUSUKPron')"
 									/>
-									Automatically play U.S. pronunciation.
+									Get the US and UK phonetic symbols
 								</label>
-								<br />
+							</div>
+
+							<div class="checkbox indent">
 								<label>
 									<input
 										type="checkbox"
-										ng-model="setting.enableBreAudio"
-										ng-click="changeKey(!setting.enableBreAudio, 'enableBreAudio')"
+										ng-model="setting.enableRealPron"
+										ng-click="changeKey(!setting.enableRealPron, 'enableRealPron')"
 									/>
-									Automatically play U.K. pronunciation.
+									Get the real person pronunciations
 								</label>
+
+								<div class="checkbox indent">
+									<label>
+										<input
+											type="checkbox"
+											ng-model="setting.enableAmeAudio"
+											ng-click="changeKey(!setting.enableAmeAudio, 'enableAmeAudio')"
+										/>
+										Automatically play U.S. pronunciation.
+									</label>
+									<br />
+									<label>
+										<input
+											type="checkbox"
+											ng-model="setting.enableBreAudio"
+											ng-click="changeKey(!setting.enableBreAudio, 'enableBreAudio')"
+										/>
+										Automatically play U.K. pronunciation.
+									</label>
+								</div>
 							</div>
 
 							<div class="checkbox">

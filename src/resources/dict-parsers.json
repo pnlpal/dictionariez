@@ -77,6 +77,14 @@
         "selector": "[data-language]",
         "attr": "data-language"
       },
+      "prons": [
+        {
+          "symbol": {
+            "selector": ".vmod[data-topic] .XpoqFe"
+          },
+          "type": "unknow"
+        }
+      ],
       "defs": {
         "groups": ".vmod>.vmod[data-topic]",
         "result": {
@@ -143,7 +151,8 @@
             {
               "symbol": {
                 "selector": "li .IPA"
-              }
+              },
+              "type": "unknow"
             }
           ],
           "defs": {

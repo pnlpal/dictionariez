@@ -345,28 +345,29 @@ chrome.runtime.sendMessage {
 		return html
 
 	getEnglishPronSymbol = (w) ->
-		{ prons } = await utils.send 'get english pron symbol', { w }
-
-		for item in prons 
-			if item.type == 'ame' and item.symbol 
-				$('.dictionaries-tooltip .fairydict-symbol-ame em').text(item.symbol)
-			if item.type == 'bre' and item.symbol
-				$('.dictionaries-tooltip .fairydict-symbol-bre em').text(item.symbol)
+		res = await utils.send 'get english pron symbol', { w }
+		if res?.prons
+			for item in res.prons 
+				if item.type == 'ame' and item.symbol 
+					$('.dictionaries-tooltip .fairydict-symbol-ame em').text(item.symbol)
+				if item.type == 'bre' and item.symbol
+					$('.dictionaries-tooltip .fairydict-symbol-bre em').text(item.symbol)
+				$('.dictionaries-tooltip .fairydict-symbol-unknow').hide()
 
 	getEnglishPronAudio = (w) ->
-		{ prons } = await utils.send 'get real person voice', { w }
+		res = await utils.send 'get real person voice', { w }
+		if res?.prons
+			ameSrc = ''
+			breSrc = ''
+			for item in res.prons 
+				if item.type == 'ame' and item.audio 
+					ameSrc = item.audio 
+					$('.dictionaries-tooltip .fairydict-pron-audio-ame').attr('data-mp3', ameSrc)
+				if item.type == 'bre' and item.audio
+					breSrc = item.audio
+					$('.dictionaries-tooltip .fairydict-pron-audio-bre').attr('data-mp3', breSrc)
 
-		ameSrc = ''
-		breSrc = ''
-		for item in prons 
-			if item.type == 'ame' and item.audio 
-				ameSrc = item.audio 
-				$('.dictionaries-tooltip .fairydict-pron-audio-ame').attr('data-mp3', ameSrc)
-			if item.type == 'bre' and item.audio
-				breSrc = item.audio
-				$('.dictionaries-tooltip .fairydict-pron-audio-bre').attr('data-mp3', breSrc)
-
-		utils.send 'play audios', { ameSrc, breSrc, checkSetting: true}
+			utils.send 'play audios', { ameSrc, breSrc, checkSetting: true}
 	
 	handlePlainResult = (res) ->
 		html = renderQueryResult res
@@ -374,10 +375,11 @@ chrome.runtime.sendMessage {
 			plainQuerying = null
 
 		if res?.prons?.length and res.w
-			if res.prons.every (v)->['US', 'UK'].includes(v.symbol)
+
+			if res.prons.some (v)->['US', 'UK'].includes(v.symbol)
 				getEnglishPronSymbol res.w 
 
-			if res.prons.every (v)->['bre', 'ame'].includes(v.type) 
+			if res.prons.some (v)->['bre', 'ame'].includes(v.type) 
 				getEnglishPronAudio res.w 
 		
 		return html
