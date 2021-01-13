@@ -16,21 +16,9 @@ setYtb = () =>
         return false;
     )
 
-setCaptionz = () =>
-    link = await utils.send 'get ytb link on captionz'
-    if link 
-        await utils.checkInTime () ->
-            $('input.video-url').length > 0
-        
-        $('input.video-url').val(link)
-        $('input.video-url')[0].dispatchEvent(new CustomEvent('input', { bubbles: true }))
-
 $(document).ready () ->
     { disableYtbCaptionz } = await utils.send 'setting of ytb captionz'
     if not disableYtbCaptionz
         if location.origin == "https://www.youtube.com" and window.self == window.top
             setYtb().catch(console.warn)
-
-        if location.origin == 'https://pnlpal.dev' and location.pathname == '/captionz-ii/'
-            setCaptionz().catch(console.warn)
         

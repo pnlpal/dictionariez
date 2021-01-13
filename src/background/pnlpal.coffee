@@ -32,17 +32,12 @@ shareOnPnlpal = (title, link) ->
             left: popupLeft
         }
 
-openedYtbLink = ''
-openedTabId = null 
-
 openYtbOnCaptionz = (link) ->
-    openedYtbLink = link
-    url = "https://pnlpal.dev/captionz"
+    url = "https://pnlpal.dev/captionz?link="+encodeURIComponent(link)
 
     chrome.tabs.create {
         url
-    }, (tab) => 
-        openedTabId = tab.id
+    }
 
 
 export default {
@@ -77,12 +72,4 @@ export default {
         message.on 'open ytb video on captionz', ({ link })->
             if link.startsWith "https://www.youtube.com/watch"
                 openYtbOnCaptionz link 
-        
-        message.on 'get ytb link on captionz', (request, sender) ->
-            if sender.tab.id == openedTabId
-                link = openedYtbLink 
-
-                openedYtbLink = ''
-                openedTabId = null 
-                return link
 }
