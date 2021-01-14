@@ -44,3 +44,10 @@ With the launch of [pnlpal community](https://pnlpal.dev/topic/2/), you can shar
 # Privacy Policy
 
 [See here](privacy.md)
+
+
+# Donate 
+I used to be a freelancer, and have been employed for several years. But now I am jobless. This project started as a sideline for fun, now I want to see how far it could go. If you find it's useful, please consider to donate, a cup of coffee would be my greatest incentive.  
+Thank you.
+
+[![buymeacoffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/riveryoung)
