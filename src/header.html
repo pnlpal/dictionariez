@@ -81,7 +81,7 @@
 				<div class="btn-group dictionaries">
 					<button
 						type="button"
-						class="btn btn-default btn-sm"
+						class="btn btn-default btn-sm hidden-xss"
 						title="{{ previousDictName }}"
 						ng-click="query({ previousDict: true, newDictWindow: $event.ctrlKey })"
 					>
@@ -130,7 +130,7 @@
 					</div>
 					<button
 						type="button"
-						class="btn btn-default btn-sm"
+						class="btn btn-default btn-sm hidden-xss"
 						title="{{ nextDictName }}"
 						ng-click="query({ nextDict: true, newDictWindow: $event.ctrlKey})"
 					>
@@ -183,7 +183,7 @@
 				</div>
 				<div ng-if="!setting.disableWordHistory"
 					id="fairy-stars"
-					class="starrr "
+					class="starrr hidden-xss"
 					ng-hide="querying"
 					title="Rating"
 				></div>
