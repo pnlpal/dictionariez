@@ -113,7 +113,7 @@
 							role="menu"
 							aria-labelledby="dropdownMenu1"
 						>
-							<li role="menuitem" ng-repeat="dict in allDicts" ng-hide="dict.disabled">
+							<li role="menuitem" ng-repeat="dict in allDicts">
 								<a ng-click="query({dictName: dict.dictName, newDictWindow: $event.ctrlKey})" title="{{ dict.dictName }}" 
 									class="ellipsis" 
 									ng-class="{'text-bold': currentDictName == dict.dictName}">{{

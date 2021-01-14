@@ -103,20 +103,18 @@ export default {
         return dict or @allDicts[0]
 
     getNextDict: (dictName) ->
-        dictEnabled = @allDicts.filter (d) -> not d.disabled
-        i = dictEnabled.findIndex (d) -> d.dictName == dictName
-        if i >= 0 and i < dictEnabled.length - 1
-            return dictEnabled[i + 1]
+        i = @allDicts.findIndex (d) -> d.dictName == dictName
+        if i >= 0 and i < @allDicts.length - 1
+            return @allDicts[i + 1]
         else
-            return dictEnabled[0]
+            return @allDicts[0]
 
     getPreviousDict: (dictName) ->
-        dictEnabled = @allDicts.filter (d) -> not d.disabled
-        i = dictEnabled.findIndex (d) -> d.dictName == dictName
-        if i > 0 and i <= dictEnabled.length - 1
-            return dictEnabled[i - 1]
+        i = @allDicts.findIndex (d) -> d.dictName == dictName
+        if i > 0 and i <= @allDicts.length - 1
+            return @allDicts[i - 1]
         else
-            return dictEnabled[dictEnabled.length - 1]
+            return @allDicts[@allDicts.length - 1]
 
     getDictResources: (dictName)->
         dict = @getDict(dictName)
