@@ -79,7 +79,8 @@
       "prons": [
         {
           "symbol": {
-            "selector": ".vmod[data-topic] .XpoqFe"
+            "selector": ".vmod[data-topic][data-hveid]",
+            "htmlRegex": "/<span>[^<>]*</span>/"
           },
           "type": "unknow"
         }
