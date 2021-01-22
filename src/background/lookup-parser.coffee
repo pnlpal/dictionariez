@@ -77,12 +77,12 @@ class LookupParser
             url = url.replace 'hl=en-US', 'hl=zh-CN'
 
         try
-            html = $(await $.ajax {url, timeout: 2000})
+            html = $(await $.ajax {url, timeout: 3000})
         catch err 
             if err.statusText == 'timeout' \
-            and tname != 'bing' \
-            and (utils.isEnglish(w) or utils.isChinese(w)) 
-                return @parse(w, 'bing')
+            and tname != 'wiktionary' \
+            and utils.isEnglish(w)
+                return @parse(w, 'wiktionary')
             console.error "Failed to parse: ", url, err 
             return  
 
