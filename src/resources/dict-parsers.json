@@ -133,7 +133,8 @@
       "Korean",
       "Portuguese",
       "Russian",
-      "Tajik"
+      "Tajik",
+      "Vietnamese"
     ],
     "result": {
       "w": {
@@ -157,9 +158,10 @@
           ],
           "defs": {
             "groups": "h3+p~ol",
-            "extendPrev": "h3",
+            "extendPrev": "h3,h4",
             "result": {
               "pos": {
+                "selector1": "h4 span.mw-headline",
                 "selector": "h3 span.mw-headline"
               },
               "def": {

@@ -228,8 +228,14 @@ class LookupParser
         value = null
 
         $el = $node 
-        if desc.selector
-            $el = $node.find(desc.selector)
+        if desc.selector or desc.selector1
+            if desc.selector1
+                $el = $node.find(desc.selector1)
+                if not $el.length 
+                    $el = $node.find(desc.selector)
+            else 
+                $el = $node.find(desc.selector)
+
             if desc.singleParents 
                 $el = $el.filter (idx, item)->
                     return $(item).parents(desc.singleParents).length == 1
