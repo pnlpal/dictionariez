@@ -270,6 +270,7 @@ export default {
 
             if win or request.optionsPage
                 currentDictName = win?.dictName || setting.getValue('dictionary')
+                currentDictName = dict.getDict(currentDictName).dictName
 
                 if win 
                     w = win.word
