@@ -44,7 +44,8 @@ var options = {
 		card: path.join(__dirname, "src", "content", "card.coffee"),
 		options: path.join(__dirname, "src", "option", "option.coffee"),
 		background: path.join(__dirname, "src", "background", "main.coffee"),
-		examples: path.join(__dirname, "src", "examples", "example.coffee")
+		examples: path.join(__dirname, "src", "other", "example.coffee"),
+		share: path.join(__dirname, "src", "other", "share.coffee")
 	},
 	chromeExtensionBoilerplate: {
 		notHotReload: ["inject"]
@@ -157,6 +158,11 @@ var options = {
 			template: path.join(__dirname, "src", "examples.html"),
 			filename: "examples.html",
 			chunks: ["examples"]
+		}),
+		new HtmlWebpackPlugin({
+			template: path.join(__dirname, "src", "share.html"),
+			filename: "share.html",
+			chunks: ["share"]
 		}),
 
 		new webpack.ProvidePlugin({

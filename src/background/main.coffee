@@ -38,4 +38,10 @@ import "./hot-reload-content-scripts.js"
     pnlpal.init()
 
     import(### webpackChunkName: "spotify"  ###"./spotify.js")
+
+    chrome.runtime.onInstalled.addListener () ->
+        chrome.tabs.create({
+            url: chrome.extension.getURL('share.html')
+        })
+    
 )()
