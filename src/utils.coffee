@@ -60,6 +60,19 @@ export default {
                     return _check().then(resolve, reject)
         
         return await _check()
+    
+    promiseInTime: (promise, t=3000) ->
+        new Promise (resolve, reject) =>
+            timer = setTimeout (()->
+                reject(new Error('timeout'))), t
+
+            promise.then((value) =>
+                clearTimeout(timer)
+                resolve(value)
+            ).catch((reason) =>
+                clearTimeout(timer)
+                reject(reason)
+            )
             
     send: (type, data = {}, callback) ->
         if typeof data == 'function'

@@ -65,6 +65,19 @@ class LookupParser
                 res.push lang 
         return res 
 
+    load: (url) ->
+        utils.promiseInTime(fetch(url, {
+            method: 'GET', 
+            credentials: 'omit'
+        }), 5000)
+        .then((resp) -> resp.text())
+        .then((html) -> 
+            # To let jQuery parse HTML without loading resources.
+            # see: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
+            virtualDom = document.implementation.createHTMLDocument('virtual')
+            return $(html, virtualDom)
+        )
+
     parse: (w, tname) ->
         tname ?= @checkType(w)
         return unless tname 
@@ -77,9 +90,9 @@ class LookupParser
             url = url.replace 'hl=en-US', 'hl=zh-CN'
 
         try
-            html = $(await $.ajax {url, timeout: 3000})
+            html = await @load url 
         catch err 
-            if err.statusText == 'timeout' \
+            if (err.statusText or err.message) == 'timeout' \
             and tname != 'wiktionary' \
             and utils.isEnglish(w)
                 return @parse(w, 'wiktionary')
