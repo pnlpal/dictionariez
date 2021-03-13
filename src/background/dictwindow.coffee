@@ -211,7 +211,9 @@ export default {
                         chrome.tabs.executeScript {
                             code: getInfoOfSelectionCode 
                         }, (res) =>
-                            [w, sentence] = res?[0] or []
+                            if res?[0]?.length
+                                w = res[0][0] or w 
+                                sentence = res[0][1]
                             @lookup({ w, sentence, s: tab.url, sc: tab.title })
                             @focus()
             }
