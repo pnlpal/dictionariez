@@ -34,7 +34,10 @@ export default {
             enableBreAudio: false,
             enableUSUKPron: false,
             enableRealPron: false,
-            showChineseDefinition: false,
+
+            showOtherLang: '',
+            otherLang: 'zh-CN',
+
             enablePlainSK1: false,
             plainSK1: 'Ctrl',
 

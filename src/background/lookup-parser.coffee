@@ -86,8 +86,9 @@ class LookupParser
         url = dictDesc.url.replace('<word>', w)
 
         # special handle Chinese
-        if tname == 'google' and setting.getValue 'showChineseDefinition'
-            url = url.replace 'hl=en-US', 'hl=zh-CN'
+        if tname == 'google' 
+            if setting.getValue('showOtherLang')
+                url = url.replace 'hl=en-US', 'hl='+setting.getValue('otherLang')
 
         try
             html = await @load url, dictDesc.credentials

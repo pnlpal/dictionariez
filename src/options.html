@@ -325,11 +325,39 @@
 								<label>
 									<input
 										type="checkbox"
-										ng-model="setting.showChineseDefinition"
-										ng-click="changeKey(!setting.showChineseDefinition, 'showChineseDefinition')"
+										ng-model="setting.showOtherLang"
+										ng-click="changeKey(!setting.showOtherLang, 'showOtherLang')"
 									/>
-									Show Chinese definition for some languages, like English, German, Spanish etc.
+									Show
 								</label>
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-otherLang"
+									>
+										{{ otherLangs[setting.otherLang] }}
+										<span class="caret"></span>
+									</button>
+	
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-otherLang"
+									>
+										<li role="menuitem" ng-repeat="(k, v) in otherLangs">
+											<a ng-click="changeKey(k, 'otherLang')">{{ v }}</a>
+										</li>
+									</ul>
+								</div>
+								
+								definition alongside for some languages, partially supporting English, French, German, Spanish, Korean etc.
+							</div>
+							<div class="text-muted">
+								For example, if your first languages is Chinese, showing Chinese definition of an English word alongside the English definition
+								is helpful.
 							</div>
 						</div>
 						<br>

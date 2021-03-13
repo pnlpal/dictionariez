@@ -39,6 +39,14 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
         'bing': 'Bing Dict',
         'wiktionary': 'Wiktionary'
     };
+    $scope.otherLangs = {
+        'zh-CN': 'Chinese',
+        "ja-JP": 'Japanese',
+        'ko-KR': 'Korean',
+        'es-ES': 'Spanish',
+        'fr-FR': 'French',
+        'de-DE': 'German'
+    }
 
     $scope.changeKey = (value, key)->
         $scope.setting[key] = value
