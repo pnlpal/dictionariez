@@ -50,6 +50,11 @@ chrome.runtime.sendMessage {
 
 	await utils.promisify($(document).ready)
 
+	if document.body.isContentEditable
+		# If the page is editable, such as blogger's editor, disable the injection.
+		# See issue #45
+		return
+
 	$('''
 		<div class="dictionaries-tooltip">
 			<div class="fairydict-spinner">
