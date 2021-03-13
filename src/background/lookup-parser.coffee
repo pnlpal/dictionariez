@@ -65,10 +65,10 @@ class LookupParser
                 res.push lang 
         return res 
 
-    load: (url) ->
+    load: (url, credentials='omit') ->
         utils.promiseInTime(fetch(url, {
             method: 'GET', 
-            credentials: 'omit'
+            credentials,
         }), 5000)
         .then((resp) -> resp.text())
         .then((html) -> 
@@ -90,7 +90,7 @@ class LookupParser
             url = url.replace 'hl=en-US', 'hl=zh-CN'
 
         try
-            html = await @load url 
+            html = await @load url, dictDesc.credentials
         catch err 
             if (err.statusText or err.message) == 'timeout' \
             and tname != 'wiktionary' \

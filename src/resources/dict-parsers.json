@@ -200,6 +200,7 @@
   "japan": {
     "url": "https://www.japandict.com/<word>",
     "languages": ["Japanese"],
+    "credentials": "same-origin",
     "result": {
       "w": {
         "selector": "h1.display-1"
