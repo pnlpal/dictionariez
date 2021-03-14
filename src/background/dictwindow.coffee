@@ -109,9 +109,11 @@ class DictWindow
                         }
                 )
             else
-                chrome.tabs.update(@tid, {
-                    url: url
-                }) if url
+                if url and url != @url
+                    chrome.tabs.update(@tid, {
+                        url: url
+                    })
+                    @url = url
                
                 resolve()
     focus: () ->
@@ -127,9 +129,10 @@ class DictWindow
         text = @word if not text
 
         if text
-            @sendMessage({type: 'querying', text})
             result = await @queryDict(text)
             url = result?.windowUrl
+            if url != @url
+                @sendMessage({type: 'querying', text})
 
         @open(url)
 
