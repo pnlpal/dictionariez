@@ -398,7 +398,7 @@ chrome.runtime.sendMessage {
 	handleLookupByMouse = (event)->
 		text = window.getSelection().toString().trim()
 		return unless text
-		return if text.split(/\s/).length > 5
+		return if text.split(/\s/).length > 3
 
 		try 
 			sentence = getSentenceOfSelection()
