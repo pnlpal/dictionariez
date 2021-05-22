@@ -22,7 +22,14 @@ parseVocabulary = (text) ->
 
 message.on 'autocomplete', ({ text })->
     results = []
-    results = results.concat dict.searchDicts text 
+    
+    dicts = dict.searchDicts text.trim().split(/\s/)[0]
+    if dicts.length 
+        dicts.forEach (d) ->
+            ts = text.trim().split(/\s/)
+            ts.shift()
+            d.queryText = ts.join(' ') or ''
+        results = results.concat dicts
 
     if text.trim().length > 1
         results = results.concat await parseVocabulary(text.trim())

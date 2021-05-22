@@ -71,7 +71,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         $scope.history = history.reverse()
         $scope.$apply()
 
-    $scope.query = ({ nextDict, previousDict, nextWord, previousWord, _fromSelect, dictName, w, newDictWindow } = {}) ->
+    $scope.query = ({ nextDict, previousDict, nextWord, previousWord, queryText, dictName, w, newDictWindow } = {}) ->
         # if not $scope.word
         #     $scope.initial = true
         #     return
@@ -81,8 +81,8 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
 
         $scope.word = w if w
     
-        if dictName and _fromSelect
-            $scope.word = $scope._lastQueryWord
+        if dictName and queryText?
+            $scope.word = queryText || $scope._lastQueryWord
 
         chrome.runtime.sendMessage({
             type: 'query',
