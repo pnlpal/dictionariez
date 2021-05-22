@@ -165,9 +165,10 @@
 						aria-labelledby="dropdownMenu-autocomplete"
 					>
 						<li role="menuitem" ng-repeat="item in autocompletes">
-							<a ng-click="query({w: item.w, dictName: item.dictName, newDictWindow: $event.ctrlKey})" title="{{ item.def }}" 
+							<a ng-click="query({w: item.w, dictName: item.dictName, _fromSelect: true, newDictWindow: $event.ctrlKey})" title="{{ item.def }}" 
 								href="" class="ellipsis">
 								<span ng-show="item.dictName">{{item.dictName}}</span>
+								<em ng-show="item.dictName && _lastQueryWord">: {{_lastQueryWord}}</em>
 								<span class="text-bold" ng-show="item.w">{{item.w || item.dictName }}</span>
 								<em>{{item.ame}}</em>
 								<span class="">{{item.def}}</span>
