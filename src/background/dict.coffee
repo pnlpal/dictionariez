@@ -142,4 +142,25 @@ export default {
         if dict.fixSpaceInWords
             word = word.replace(/\s+/g, dict.fixSpaceInWords)
         return dfd.resolve {windowUrl: dict.windowUrl.replace('<word>', word)}
+    
+    searchDicts: (key) ->
+        results = []
+        for dict in @allDicts
+            if dict.dictName.toLowerCase().startsWith(key)
+                results.push(dict)
+            else
+                domain = dict.windowUrl.match(/:\/\/([^\/\?]+)/)[1]
+                domain = domain.replace(/^www\.|^dict\.|^dictionary\.|^m\.|\.m\./, '')
+                domains = domain.split('.')
+                domains.pop()
+
+                domains.forEach (s)->
+                    if s.toLowerCase().startsWith(key)
+                        results.push(dict)
+                
+            
+            if results.length >= 3
+                break
+
+        return results
 }

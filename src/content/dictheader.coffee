@@ -125,7 +125,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
 
         _counter = $scope.autocompleteCounter
         for item in $scope.autocompletes or []
-            if _counter == $scope.autocompleteCounter and item.w.match(/\w+/g)[0] == item.w and $dropdown.hasClass('open')
+            if item.w and _counter == $scope.autocompleteCounter and item.w.match(/\w+/g)[0] == item.w and $dropdown.hasClass('open')
                 { ame } = await utils.send 'look up phonetic', { w: item.w, _counter }
                 item.ame = ame
                 $scope.$apply()

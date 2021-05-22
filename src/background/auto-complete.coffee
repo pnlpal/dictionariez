@@ -21,4 +21,7 @@ parseVocabulary = (text) ->
     return list
 
 message.on 'autocomplete', ({ text })->
-    return parseVocabulary(text.trim())
+    results = []
+    results = results.concat dict.searchDicts text 
+    results = results.concat await parseVocabulary(text.trim())
+    return results
