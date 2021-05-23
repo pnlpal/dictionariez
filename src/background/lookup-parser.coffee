@@ -70,7 +70,10 @@ class LookupParser
             method: 'GET', 
             credentials,
         }), 5000)
-        .then((resp) -> resp.text())
+        .then((resp) -> 
+            throw new Error(resp.status) if not resp.ok
+            return resp.text()
+        )
         .then((html) -> 
             # To let jQuery parse HTML without loading resources.
             # see: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
@@ -135,6 +138,11 @@ class LookupParser
         if tname == 'wiktionary'
             for targetLang in result.langTargets
                 if targetLang.lang 
+                    # Special handle for Norwegian on Wiktionary
+                    # see https://en.wiktionary.org/wiki/bl%C3%A5kval#Norwegian
+                    if targetLang.lang.includes('Norwegian')
+                        targetLang.lang = 'Norwegian'
+
                     if targetLang.lang in setting.getValue("otherDisabledLanguages") or not langs[targetLang.lang]
                         targetLang = null 
                     else 

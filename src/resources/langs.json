@@ -3,24 +3,39 @@
 
     },
     "German": {
-        "regex": "[a-zA-Z]|[ÄÖÜẞäöüß]",
+        "regex": "[a-zA-Z]|[ÄÖÜẞäöüß ]",
         "symbol": "de"
     },
     "Spanish": {
-        "regex": "[a-zA-Z]|[ÑñÁÉÍÓÚÜáéíóúü]",
+        "regex": "[a-zA-Z]|[ÑñÁÉÍÓÚÜáéíóúü ]",
         "symbol": "es"
     },
     "French": {
-        "regex": "[a-zA-Z]|[ÀàÂâÆæÇçÉéÈèÊêËëÎîÏïÔôŒœÙùÛûÜüŸÿ]",
+        "regex": "[a-zA-Z]|[ÀàÂâÆæÇçÉéÈèÊêËëÎîÏïÔôŒœÙùÛûÜüŸÿ ]",
         "symbol": "fr"
     },
     "Italian": {
-        "regex": "[a-zA-Z]|[àèéìíîòóùúÀÈÉÌÍÎÒÓÙÚ]",
+        "regex": "[a-zA-Z]|[àèéìíîòóùúÀÈÉÌÍÎÒÓÙÚ ]",
         "symbol": "it"
     },
     "Portuguese": {
-        "regex": "[a-zA-Z]|[áâãàçéêíóôõú]",
+        "regex": "[a-zA-Z]|[áâãàçéêíóôõú ]",
         "symbol": "pt"
+    },
+    "Swedish": {
+        "regex": "[a-zA-ZäöåÄÖÅ ]",
+        "symbol": "se",
+        "synthesis": "sv-SE"
+    },
+    "Norwegian": {
+        "regex": "[a-zA-ZæøåÆØÅ ]",
+        "symbol": "no",
+        "synthesis": "nb-NO"
+    },
+    "Danish": {
+        "regex": "[a-zA-ZæøåÆØÅ ]",
+        "symbol": "dk",
+        "synthesis": "da-DK"
     },
     "Korean": {
         "regex": "[\uac00-\ud7af]|[\u1100-\u11ff]|[\u3130-\u318f]|[\ua960-\ua97f]|[\ud7b0-\ud7ff]",
