@@ -225,8 +225,3 @@ import('../header.html').then ({ default: headerDom }) ->
 	$(window).on 'resize', debounce ((evt) ->
 		utils.send 'window resize'
 	), 300
-
-if not inFrame
-	$("<iframe class='dictionaries-card dictionaries-card-music' src='card.html?sys=music' style='display: none;'> </iframe>").appendTo('body')
-
-

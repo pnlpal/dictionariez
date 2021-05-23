@@ -37,9 +37,6 @@ chrome.runtime.sendMessage {
 		comparedLoc = decodeURI(location.href).toLowerCase()
 		if res.word.split(/\s/).every (s) -> comparedLoc.includes(s.toLowerCase())
 			$("<iframe class='dictionaries-card dictionaries-card-wiki' src='#{res.cardUrl}?sys=wiki' style='display: none;'> </iframe>").appendTo('body')
-	
-	if res?.cardUrl
-		$("<iframe class='dictionaries-card dictionaries-card-music' src='#{res.cardUrl}?sys=music' style='display: none;'> </iframe>").appendTo('body')
 
 chrome.runtime.sendMessage {
 	type: 'setting',

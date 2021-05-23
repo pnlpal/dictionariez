@@ -36,8 +36,6 @@ import "./hot-reload-content-scripts.js"
 
     { default: pnlpal } = await import(### webpackChunkName: "pnlpal"  ###"./pnlpal.coffee")
     pnlpal.init()
-
-    import(### webpackChunkName: "spotify"  ###"./spotify.js")
 )()
 
 chrome.runtime.onInstalled.addListener () ->

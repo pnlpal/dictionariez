@@ -297,10 +297,6 @@ export default {
 
             win = @getByTab sender.tab.id 
             if win 
-                if request.url?.includes('https://accounts.spotify.com/')
-                    # ignore spotify authorization page
-                    return 
-
                 d = dict.getDict(win.dictName)
                 if d.css
                     chrome.tabs.insertCSS win.tid, {
@@ -337,12 +333,6 @@ export default {
         message.on 'card setting', ( { sys, origin } ) =>
             if sys == 'wiki' 
                 disabled = setting.getValue 'disableWikipediaCard'
-            
-            if sys == 'music'
-                disabled = setting.getValue 'disableSpotify'
-                if not origin.includes('chrome-extension://')
-                    # only support on Chrome now 
-                    disabled = true 
             
             s = setting.getValue 'minimalCards'
             minimal = s.includes(sys)

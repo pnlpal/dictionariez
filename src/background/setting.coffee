@@ -15,7 +15,6 @@ export default {
             disableWordHistory: false,
 
             disableWikipediaCard: false,
-            disableSpotify: false,
             minimalCards: '',
             disableContextMenu: false,
             disableYtbCaptionz: false,

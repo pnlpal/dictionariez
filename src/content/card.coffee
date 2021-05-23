@@ -56,9 +56,6 @@ initWiki = () ->
     ''').appendTo('body')
 
     getWikipedia()
-
-initMusic = () -> 
-    import('./music-player.coffee') 
     
 (() ->
     setting = await utils.send 'card setting', { 
@@ -69,7 +66,6 @@ initMusic = () ->
     window.cardSetting = setting 
 
     initWiki() if sys == 'wiki' and !setting.disabled
-    initMusic() if sys == 'music' and !setting.disabled
 )()
 
 $(document).on('click', 'a.dictionaries-card-link', (ev) -> 
