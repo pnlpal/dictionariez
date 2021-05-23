@@ -19,6 +19,7 @@ export default {
             minimalCards: '',
             disableContextMenu: false,
             disableYtbCaptionz: false,
+            disableSharePnlpal: false,
 
             enableSelectionOnMouseMove: true,
             enableSelectionSK1: true,

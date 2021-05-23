@@ -448,8 +448,20 @@
 									ng-model="setting.disableContextMenu"
 									ng-click="changeKey(!setting.disableContextMenu, 'disableContextMenu')"
 								/>
-								Disable Context Menu Items
-								<span class="text-muted">(Will be in effect after the extension restarts)</span>
+								Disable the lookup item in context menu.
+								<span class="text-muted">(Restart the extension to take effect.)</span>
+							</label>
+						</div>
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.disableSharePnlpal"
+									ng-click="changeKey(!setting.disableSharePnlpal, 'disableSharePnlpal')"
+								/>
+								Disable the share with pals item in context menu.
+								<span class="text-muted">(Restart the extension to take effect.)</span>
+								<em class="text-new">New!</em> 
 							</label>
 						</div>
 						<div class="checkbox">

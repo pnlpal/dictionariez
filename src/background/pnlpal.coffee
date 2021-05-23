@@ -42,7 +42,7 @@ openYtbOnCaptionz = (link) ->
 
 export default {
     init: () ->
-        if not setting.getValue "disableContextMenu"
+        if not setting.getValue "disableSharePnlpal"
             chrome.contextMenus.create {
                 title: "Share with pals",
                 contexts: ["page"],
