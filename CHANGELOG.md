@@ -1,3 +1,10 @@
+# v2.8.0 May 24, 2021
+* Add Swedish, Norwegian, Danish support when double-click on a word.
+* Search dicts when input keywords in the search bar to show in auto-completion list.
+* Enable Keyboard(Tab or Down key) to navigate the auto-completion list in the search bar.
+* Add a setting to disable "share with pals" in the context menu.
+* Remove the Spotify player.
+
 # v2.7.4 Mar 14, 2021
 * Add settings to show other lang definition alongside the English definition of some words.
 * Don't inject code in editable frames, see issue #45.
