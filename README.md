@@ -1,5 +1,18 @@
-# Dictionariez (dictionaries)
+# Dictionariez
+A browser extension to look up words in all kinds of dictionaries (in as many languages as possible)
+and export your look-up words to **Anki**.
 
+# Install
+
+- [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc) *Sometimes older because of Chrome's delayed review.*
+
+- [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/) *Newest*
+
+- [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/dictionaries-one-to-rule/jdgglojanbnghagoeffacmjodigadoof) *Sometimes older because of Microsoft's delayed review.*
+
+- [Download crx file](build.crx) *Newest. Uninstall the other version before you install it. But every time your have to upgrade by yourself.*
+
+# TL;DR
 ![GIF](readme_images/optimized.gif)
 
 This app, which is currently supported on Chrome and Firefox, helps facilitate your language learning by marking words in articles, looking up in various dictionaries, and exporting to Anki. 
@@ -14,18 +27,8 @@ Join me on [Telegram](https://t.me/worldlanguagelearner) & [Discord](https://dis
 
 With the launch of [pnlpal community](https://pnlpal.dev/topic/2/), you can share your reading with pals all over the world now. No matter it's a news story, or a technical review, or even a youtube video. As long as it benefits our programming and language community, you could share it. [Check it](https://pnlpal.dev) by yourself. Let's learn together, and grow together.
 
-# Install
-
-- [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc) *Sometimes older because of Chrome's delayed review.*
-
-- [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/) *Newest*
-
-- [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/dictionaries-one-to-rule/jdgglojanbnghagoeffacmjodigadoof) *Sometimes older because of Microsoft's delayed review.*
-
-- [Download crx file](build.crx) *Newest. Uninstall the other version before you install it. But every time your have to upgrade by yourself.*
-
 # Screenshot
-![Promo Banner](https://github.com/pnlpal/dictionaries/raw/master/readme_images/all-in-one.jpg)
+![Promo Banner](readme_images/all-in-one.jpg)
 ![Alt text](readme_images/s1-final.jpg)
 ![Alt text](readme_images/english.jpg)
 ![Alt text](readme_images/s5-final.jpg)
