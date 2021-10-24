@@ -38,7 +38,8 @@ import "./hot-reload-content-scripts.js"
     pnlpal.init()
 )()
 
-chrome.runtime.onInstalled.addListener () ->
-    chrome.tabs.create({
-        url: chrome.runtime.getURL('share.html')
-    })
+chrome.runtime.onInstalled.addListener (details) ->
+    if [chrome.runtime.OnInstalledReason.INSTALL, chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason)
+        chrome.tabs.create({
+            url: chrome.runtime.getURL('share.html')
+        })
