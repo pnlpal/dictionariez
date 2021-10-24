@@ -221,7 +221,7 @@ initHistory = () ->
 
             utils.send('look up', {
                 w: $(e.target).data('w').trim(),
-                newDictWindow: e.ctrlKey
+                newDictWindow: e.ctrlKey or e.metaKey
             })
 
 initHistory()
@@ -330,7 +330,7 @@ initDictionary = () ->
 
             utils.send('look up', {
                 dictName: rowData.dictName,
-                newDictWindow: e.ctrlKey
+                newDictWindow: e.ctrlKey or e.metaKey
             })
 
     $(document).on 'click', '.restore-default-dicts', () => 
