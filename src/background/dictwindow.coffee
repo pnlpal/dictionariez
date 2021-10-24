@@ -5,7 +5,7 @@ import message from "./message.coffee"
 import utils from "utils"
 import $ from "jquery"
 
-defaultWindowUrl = chrome.extension.getURL('dict.html')
+defaultWindowUrl = chrome.runtime.getURL('dict.html')
 
 getInfoOfSelectionCode = '''
 var getSentence = function() {
@@ -305,8 +305,8 @@ export default {
                     }
                 
                 return {
-                    dictUrl: chrome.extension.getURL('dict.html'),
-                    cardUrl: chrome.extension.getURL('card.html'),
+                    dictUrl: chrome.runtime.getURL('dict.html'),
+                    cardUrl: chrome.runtime.getURL('card.html'),
                     dict: d,
                     word: win.word 
                 }

@@ -40,5 +40,5 @@ import "./hot-reload-content-scripts.js"
 
 chrome.runtime.onInstalled.addListener () ->
     chrome.tabs.create({
-        url: chrome.extension.getURL('share.html')
+        url: chrome.runtime.getURL('share.html')
     })
