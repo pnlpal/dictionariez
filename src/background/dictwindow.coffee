@@ -237,7 +237,7 @@ export default {
                 @focus()
 
             else 
-                @lookup({ w: w?.trim() })
+                @lookup({ w: w?.trim(), s, sc, sentence })
                 @focus()
 
         message.on 'query', (request, sender) =>
