@@ -71,7 +71,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         $scope.history = history.reverse()
         $scope.$apply()
 
-    $scope.query = ({ nextDict, previousDict, nextWord, previousWord, queryText, dictName, w, newDictWindow } = {}) ->
+    $scope.query = ({ nextDict, previousDict, dictNumber, nextWord, previousWord, queryText, dictName, w, newDictWindow } = {}) ->
         # if not $scope.word
         #     $scope.initial = true
         #     return
@@ -90,6 +90,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             dictName: dictName or $scope.currentDictName,
             nextDict,
             previousDict,
+            dictNumber,
             nextWord,
             previousWord,
             newDictWindow 
@@ -158,6 +159,8 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
                 $scope.query({ previousDict: true })
             if request.action == 'keypress dict next'
                 $scope.query({ nextDict: true })
+            if request.action == 'keypress dict by number'
+                $scope.query({ dictNumber: request.dictNumber })
 
         $scope.$apply()
 
@@ -210,6 +213,10 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         if utils.checkEventKey evt, $scope.setting.nextHistorySK1, null, $scope.setting.nextHistoryKey
             $scope.query({ nextWord: true })
             stop = true
+        if (evt.ctrlKey or evt.metaKey) and evt.key.match(/\d/)
+            $scope.query({ dictNumber: parseInt(event.key.match(/\d/)[0]) })
+            stop = true 
+
         if stop
             evt.preventDefault()
             evt.stopPropagation()

@@ -116,6 +116,11 @@ export default {
         else
             return @allDicts[@allDicts.length - 1]
 
+    getDictByNumber: (n) ->
+        if n == 9
+            return @allDicts[@allDicts.length-1]
+        return @allDicts[n-1]
+
     getDictResources: (dictName)->
         dict = @getDict(dictName)
         if dict.windowUrl

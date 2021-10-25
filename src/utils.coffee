@@ -87,8 +87,13 @@ export default {
             return p.then callback
         return p
 
-    sendToDict: (action, callback) ->
-        return @send 'sendToDict', { action }, callback
+    sendToDict: (action, data={}, callback) ->
+        if typeof data == 'function'
+            callback = data
+            data = {}
+        data.action = action
+        
+        return @send 'sendToDict', data, callback
 
     hasJapanese: (str) ->
         REGEX_JAPANESE = /[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]/

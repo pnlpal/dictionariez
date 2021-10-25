@@ -163,6 +163,9 @@ chrome.runtime.sendMessage {
 			if utils.checkEventKey event, setting.nextDictSK1, null, setting.nextDictKey
 				utils.sendToDict 'keypress dict next'
 				return false
+			if (event.ctrlKey or event.metaKey) and event.key.match(/\d/)
+				utils.sendToDict 'keypress dict by number', { dictNumber: parseInt(event.key.match(/\d/)[0]) }
+				return false 
 
 
 	$(document).on 'click mouseover', '.fairydict-pron-audio', debounce(((e) ->

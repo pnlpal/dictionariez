@@ -248,6 +248,10 @@ export default {
                 dictName = dict.getNextDict(dictName).dictName
             else if request.previousDict
                 dictName = dict.getPreviousDict(dictName).dictName
+            else if request.dictNumber 
+                d = dict.getDictByNumber(request.dictNumber)
+                return if not d 
+                dictName = d.dictName
             
             if request.previousWord
                 w = storage.getPrevious(w, true)?.w
