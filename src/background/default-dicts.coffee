@@ -55,7 +55,7 @@ export default [{
     'dictName': 'Oxford Learner',
     'entry': 'OxfordLearner',
     'fixSpaceInWords': '-',
-    'windowUrl': 'https://www.oxfordlearnersdictionaries.com/definition/english/<word>'
+    'windowUrl': 'https://www.oxfordlearnersdictionaries.com/search/english/?q=<word>'
     'windowUrlMatch': '/english/([^&/?]+)'
     "resources": {
         styles: ['oxfordlearner.less']
