@@ -20,7 +20,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     console.log "[dictCtrl] init"
 
     # change Bing dictionary's title
-    document.title = 'Fairy Dict'
+    document.title = 'Dictionariez'
     baseNode = '#fairy-dict'
     $scope.initial = true
     $scope.inFrame = inFrame
