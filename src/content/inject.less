@@ -1,137 +1,137 @@
 .dictionaries-tooltip {
-	display: none;
-	position: absolute;
-	border: 1px solid #333;
-	
-	// editable highlight might change nodes' background color, such as on twitter, so here has to use !important
-	background-color: #161616 !important;
-	
-	border-radius: 5px;
-	padding: 10px;
+  display: none;
+  position: absolute;
+  border: 1px solid #333;
 
-	z-index: 99999;
+  // editable highlight might change nodes' background color, such as on twitter, so here has to use !important
+  background-color: #161616 !important;
 
-	text-align: left; // fix on w3cschool
+  border-radius: 5px;
+  padding: 10px;
 
-	.dictionaries-tooltip-content {
-		color: #fff;
-		font-size: 13px;
-		line-height: normal;
+  z-index: 99999;
 
-		.icon-fairydict-volume {
-			color: goldenrod;
-		}
+  text-align: left; // fix on w3cschool
 
-		.fairydict-w {
-			font-size: 16px;
-			margin-bottom: 4px;
-		}
+  .dictionaries-tooltip-content {
+    color: #fff;
+    font-size: 13px;
+    line-height: normal;
 
-		.fairydict-labels {
-			margin: 8px 0px;
+    .icon-fairydict-volume {
+      color: goldenrod;
+    }
 
-			.fairydict-label {
-				border: 1px solid;
-				border-radius: 3px;
-				padding: 1px;
-				margin-right: 3px;
-				border-color: dimgray;
-			}
-		}
+    .fairydict-w {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
 
-		.fairydict-content {
-			margin-top: 3px;
+    .fairydict-labels {
+      margin: 8px 0px;
 
-			.fairydict-pos {
-				display: table-cell;
-				width: 40px;
-				padding-top: 1px;
-			}
+      .fairydict-label {
+        border: 1px solid;
+        border-radius: 3px;
+        padding: 1px;
+        margin-right: 3px;
+        border-color: dimgray;
+      }
+    }
 
-			.fairydict-defs {
-				display: table-cell;
-				padding-top: 1px;
-			}
-		}
-	}
+    .fairydict-content {
+      margin-top: 3px;
+
+      .fairydict-pos {
+        display: table-cell;
+        width: 40px;
+        padding-top: 1px;
+      }
+
+      .fairydict-defs {
+        display: table-cell;
+        padding-top: 1px;
+      }
+    }
+  }
 }
 
 .fairydict-spinner {
-	margin: 10px auto 0;
-	width: 70px;
-	text-align: center;
+  margin: 10px auto 0;
+  width: 70px;
+  text-align: center;
 }
 
 .fairydict-spinner > div {
-	width: 18px;
-	height: 18px;
-	background-color: #333;
+  width: 18px;
+  height: 18px;
+  background-color: #333;
 
-	border-radius: 100%;
-	display: inline-block;
-	-webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-	animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
 }
 
 .fairydict-spinner .fairydict-bounce1 {
-	-webkit-animation-delay: -0.32s;
-	animation-delay: -0.32s;
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
 }
 
 .fairydict-spinner .fairydict-bounce2 {
-	-webkit-animation-delay: -0.16s;
-	animation-delay: -0.16s;
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
 }
 
 @-webkit-keyframes sk-bouncedelay {
-	0%,
-	80%,
-	100% {
-		-webkit-transform: scale(0);
-	}
-	40% {
-		-webkit-transform: scale(1);
-	}
+  0%,
+  80%,
+  100% {
+    -webkit-transform: scale(0);
+  }
+  40% {
+    -webkit-transform: scale(1);
+  }
 }
 
 @keyframes sk-bouncedelay {
-	0%,
-	80%,
-	100% {
-		-webkit-transform: scale(0);
-		transform: scale(0);
-	}
-	40% {
-		-webkit-transform: scale(1);
-		transform: scale(1);
-	}
+  0%,
+  80%,
+  100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
 }
 
 #dictionaries-iframe {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	opacity: 0.95;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0.95;
 
-	z-index: 99999;
-	border: none;
-	height: 50px;
+  z-index: 9999999999;
+  border: none;
+  height: 50px;
 
-	&.dropdown-open {
-		height: 420px;
-	}
+  &.dropdown-open {
+    height: 420px;
+  }
 }
 
 #captionz-ytb-btn {
-	float: right;
-    font-weight: 700;
-    color: grey;
-    display: inline-block;
-	font-size: 15px;
-	text-decoration: none;
+  float: right;
+  font-weight: 700;
+  color: grey;
+  display: inline-block;
+  font-size: 15px;
+  text-decoration: none;
 }
 
 .dictionariez-promotion {
-	display: none;
+  display: none;
 }
