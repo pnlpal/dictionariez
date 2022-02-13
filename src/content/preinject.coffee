@@ -1,5 +1,6 @@
 chrome.runtime.sendMessage {
 	type: 'injected',
+	preinject: true,
 	origin: location.origin,
 	url: location.href
 }, (res) ->

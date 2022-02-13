@@ -1,40 +1,35 @@
 {
-	"manifest_version": 2,
-	"name": "Dictionaries: one to rule them all",
-	"permissions": ["activeTab", "tabs", "storage", "contextMenus", "<all_urls>"],
-	"background": {
-		"persistent": true,
-		"page": "background.html"
-	},
-	"content_scripts": [
-		{
-			"js": ["inject.bundle.js"],
-			"matches": ["<all_urls>"],
-			"all_frames": true
-		},
-		{
-			"js": ["preinject.bundle.js"],
-			"matches": ["<all_urls>"],
-			"run_at": "document_start"
-		}
-	],
-	"options_ui": {
-		"page": "options.html",
-		"open_in_tab": true
-	},
-	"web_accessible_resources": ["*.js", "*.json", "*.html", "fonts/*"],
-	"browser_action": {
-		"default_title": "Dictionaries: one dictionary to rule them all"
-	},
-	"icons": {
-		"16": "images/library-16.png",
-		"32": "images/library-32.png",
-		"64": "images/library-64.png",
-		"128": "images/library-128.png"
-	},
-	"browser_specific_settings": {
-		"gecko": {
-			"id": "revir.qing@gmail.com"
-		}
-	}
+  "manifest_version": 2,
+  "name": "Dictionaries: one to rule them all",
+  "permissions": ["activeTab", "tabs", "storage", "contextMenus", "<all_urls>"],
+  "background": {
+    "persistent": true,
+    "page": "background.html"
+  },
+  "content_scripts": [
+    {
+      "js": ["preinject.bundle.js"],
+      "matches": ["<all_urls>"],
+      "run_at": "document_start"
+    }
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "web_accessible_resources": ["*.js", "*.json", "*.html", "fonts/*"],
+  "browser_action": {
+    "default_title": "Dictionaries: one dictionary to rule them all"
+  },
+  "icons": {
+    "16": "images/library-16.png",
+    "32": "images/library-32.png",
+    "64": "images/library-64.png",
+    "128": "images/library-128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "revir.qing@gmail.com"
+    }
+  }
 }

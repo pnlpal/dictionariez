@@ -299,6 +299,16 @@ export default {
         message.on 'injected', (request, sender) =>
             return unless sender.tab 
 
+            if request.preinject and sender.tab.url
+                if not setting.getValue('excludedSites')
+                .split('\n')
+                .filter((x) => x.trim())
+                .find((x) => sender.tab.url.match(new RegExp(x)))
+                    chrome.tabs.executeScript sender.tab.id, {
+                        allFrames: true,
+                        file: 'inject.bundle.js'
+                    }
+
             win = @getByTab sender.tab.id 
             if win 
                 d = dict.getDict(win.dictName)

@@ -61,7 +61,9 @@ export default {
             prevHistoryKey: 'ArrowLeft',
             nextHistorySK1: 'Alt',
             nextHistoryKey: 'ArrowRight',
-            dictionary: ''
+            dictionary: '',
+
+            excludedSites: 'freecodecamp.org/'
         }
 
         init: ()->

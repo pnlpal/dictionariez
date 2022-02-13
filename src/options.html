@@ -447,7 +447,6 @@
 								/>
 								Disable the share with pals item in context menu.
 								<span class="text-muted">(Restart the extension to take effect.)</span>
-								<em class="text-new">New!</em> 
 							</label>
 						</div>
 						<div class="checkbox">
@@ -461,8 +460,21 @@
 								<a href='https://revir.github.io/2020/12/21/Captionz-learn-on-YouTube-with-fun/' title="What is this?" class="text-muted" target="_blank">
 									<i class="fa fa-question-circle" aria-hidden="true"></i>
 								</a>
-								<em class="text-new">New!</em> 
 							</label>
+						</div>
+
+						<div>
+							<label for="excluded-websites">
+								<span>Don't run on these websites:</span> <em class="text-new">New!</em>
+							</label>
+							<br>
+							<em>
+								This extension injects a script on the webpages so that when you select a word or use the keyboard shortcut, it can
+								look up the word for you. But some websites may not be compatible with it. You can add the exceptions here. Regex is supported.
+							</em>
+							<div>
+								<textarea name="excluded-webistes" id="excluded-websites" ng-model="setting.excludedSites" ng-change="changeKey('excludedSites')" cols="100" rows="5"></textarea>
+							</div>
 						</div>
 					</div>
 

@@ -3,6 +3,7 @@
 
 import angular from 'angular'
 import utils from "utils"
+import debounce from 'lodash/debounce'
 
 import 'angular-ui-bootstrap'
 
@@ -48,13 +49,20 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
         'de-DE': 'German'
     }
 
-    $scope.changeKey = (value, key)->
-        $scope.setting[key] = value
+    $scope.changeKey = debounce ((value, key)->
+        if key 
+            $scope.setting[key] = value
+        else 
+            key = value 
+            value = $scope.setting[key]
+        
         chrome.runtime.sendMessage {
             type: 'save setting'
             key: key,
             value: value
         }
+    ), 500
+
     $scope.toggleOtherDisabledLanguages = (lang) ->
         idx = $scope.setting.otherDisabledLanguages.indexOf lang 
         if idx >= 0
