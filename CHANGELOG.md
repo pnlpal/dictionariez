@@ -1,3 +1,10 @@
+# v2.9.0 Feb 13, 2022
+
+- Support reading text from clipboard.
+- Support to exclude running on specific websites.
+- Fix refreshing page when click on pronunciation.
+- Fix bab.la and oxford learner dicts.
+
 # v2.8.1 Oct 25, 2021
 
 - Support Ctrl/Meta + n to access correspondent dict.
