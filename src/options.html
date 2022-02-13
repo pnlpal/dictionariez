@@ -463,6 +463,19 @@
 							</label>
 						</div>
 
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enableReadClipboard"
+									ng-click="changeKey(!setting.enableReadClipboard, 'enableReadClipboard')"
+								/>
+								Enable reading the clipboard to get the selected word. 
+								<em ng-if="!setting.readClipboardError" class="text-new">New!</em>
+								<em>{{setting.readClipboardError}}</em>
+							</label>
+						</div>
+
 						<div>
 							<label for="excluded-websites">
 								<span>Don't run on these websites:</span> <em class="text-new">New!</em>

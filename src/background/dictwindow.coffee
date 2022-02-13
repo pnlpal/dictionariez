@@ -2,6 +2,7 @@ import setting from "./setting.coffee"
 import storage from  "./storage.coffee"
 import dict from "./dict.coffee"
 import message from "./message.coffee"
+import readClipboard from "./clipboard.coffee"
 import utils from "utils"
 import $ from "jquery"
 
@@ -201,6 +202,10 @@ export default {
                 code: getInfoOfSelectionCode 
             }, (res) =>
                 [w, sentence] = res?[0] or []
+
+                if not w
+                    w = await readClipboard() 
+
                 @lookup({ w, sentence, s: tab.url, sc: tab.title })
                 @focus()
 
@@ -225,6 +230,9 @@ export default {
             if means == 'mouse'
                 if not setting.getValue('enableMinidict')
                     return
+
+            if !w 
+                w = await readClipboard()
 
             if newDictWindow 
                 targetWin = @create()

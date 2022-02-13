@@ -63,7 +63,8 @@ export default {
             nextHistoryKey: 'ArrowRight',
             dictionary: '',
 
-            excludedSites: 'freecodecamp.org/'
+            excludedSites: 'freecodecamp.org/',
+            enableReadClipboard: false,
         }
 
         init: ()->
@@ -87,7 +88,7 @@ export default {
         getValue: (key, defaultValue)->
             v = @configCache[key]
             v ?= defaultValue
-            return v
+            return v            
 
         clear: () ->
             new Promise (resolve) ->
