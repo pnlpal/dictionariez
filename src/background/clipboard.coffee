@@ -1,12 +1,13 @@
 import message from "./message.coffee"
 import setting from "./setting.coffee"
+import lookupParser from "./lookup-parser.coffee"
 
 
 readClipboardText = () -> 
     try 
         text = await navigator.clipboard.readText()
         chrome.runtime.sendMessage {
-            text, 
+            text: text or '', 
             type: 'clipboard text'
         }
     catch err
@@ -25,7 +26,7 @@ export default () ->
         }, (res) =>
             message.on 'clipboard text', (request) ->
                 setting.setValue('readClipboardError', undefined)
-                return resolve(request.text)
+                return resolve(lookupParser.checkTypeOfSupport(request.text))
             
             message.on 'read clipboard text error', (request) -> 
                 setting.setValue('enableReadClipboard', false)

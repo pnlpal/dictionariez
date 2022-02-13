@@ -312,18 +312,20 @@ test = () ->
 export default {
     parser: new LookupParser(parsers),
 
+    checkTypeOfSupport: (w) ->
+        w = w.trim()
+        return unless w
+        return if w.split(/\s/).length > 3
+
+        # ignore one or two punctuation signs in the end
+        w = w.replace(/[,:;'"-?!.]{1,2}$/, '')
+
+        if @parser.checkType(w)
+            return w
+
     init: () ->
-        # await @syncDictParsers()
-
         message.on 'check text supported', ({ w }) =>
-            w = w.trim()
-            return unless w
-
-            # ignore one or two punctuation signs in the end
-            w = w.replace(/[,:;'"-?!.]{1,2}$/, '')
-
-            if @parser.checkType(w)
-                return w
+            return @checkTypeOfSupport(w)
 
         message.on 'look up plain', ({w, s, sc, sentence}) =>
             w = w.trim()
@@ -349,14 +351,4 @@ export default {
                 if n.type == 'ame' and n.symbol
                     ame = n.symbol.replace('US', '').trim()
                     return { ame } 
-
-    syncDictParsers: () ->
-        errorResult = null 
-
-        src = 'http://localhost:8000/dict-parsers.json'
-        data = await $.getJSON(extraSrc).catch (err)->
-                console.error "Get parsers remotely failed: ", err.status, err.statusText
-                errorResult = { message: err.statusText, error: true }
-
-        @parser = new LookupParser(data)
 }
