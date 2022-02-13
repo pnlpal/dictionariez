@@ -118,16 +118,6 @@ chrome.runtime.sendMessage {
 	# 对 mouseup 事件做一个延时处理，
 	# 	# 以避免取消选中后getSelection依然能获得文字。
 	$(document).mouseup debounce ((e) -> handleMouseUp(e)), 100
-
-	# if location.host == 'read.amazon.com'
-	# 	try
-	# 		await utils.checkInTime ()->$('#kindleReader_touchLayer').length 
-	# 		$('#kindleReader_touchLayer').mouseup debounce ((e) -> handleMouseUp(e)), 100
-	# 		$(document).on 'mouseup', '#kindleReader_touchLayer', debounce ((e) -> handleMouseUp(e)), 100
-	# 	catch 
-	# 		console.log 'aaaa!!!'
-	# else 
-	# 	$(document).mouseup debounce ((e) -> handleMouseUp(e)), 100
 	
 	$(document).bind 'keydown', (event)->
 		if utils.checkEventKey event, setting.openSK1, setting.openSK2, setting.openKey
@@ -187,7 +177,10 @@ chrome.runtime.sendMessage {
 	), 1000, {leading: true})
 
 	handleSelectionWord = (e)->
-		word = window.getSelection().toString().trim()
+		selObj = window.getSelection()
+		return if checkEditable(selObj.focusNode)
+
+		word = selObj.toString().trim()
 		
 		# filter last auto selection word, let choose another word.
 		if word == lastAutoSelection
@@ -252,6 +245,12 @@ chrome.runtime.sendMessage {
 		catch  # Gecko does not implement "sentence" yet
 			return getSentenceFromSelection(selection)
 
+	checkEditable = (curNode) ->
+		while curNode 
+			if curNode.isContentEditable or ["input", "textarea"].includes(curNode.nodeName.toLowerCase())
+				return true
+			curNode = curNode.parentElement
+
 	handleMouseUp = (event)->
 		selObj = window.getSelection()
 		text = selObj.toString().trim()
@@ -273,14 +272,7 @@ chrome.runtime.sendMessage {
 		return if not including
 		
 		# check if click in editable element
-		curNode = selObj.focusNode
-		isEditable = false 
-		while curNode 
-			if curNode.isContentEditable or ["input", "textarea"].includes(curNode.nodeName.toLowerCase())
-				isEditable = true 
-				break
-			curNode = curNode.parentElement
-		return if isEditable 
+		return if checkEditable(selObj.focusNode)
 
 		if event.which == 1
 			handleLookupByMouse(event)
@@ -388,12 +380,6 @@ chrome.runtime.sendMessage {
 				getEnglishPronAudio res.w 
 		
 		return html
-
-	# toggleHighlight = (el) ->
-	# 	if el.nodeName == 'SPAN' and el.style.backgroundColor == 'yellow'
-	# 		el.style.backgroundColor = 'transparent'
-	# 	else
-	# 		highlight('yellow')
 
 	handleLookupByMouse = (event)->
 		text = window.getSelection().toString().trim()
