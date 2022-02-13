@@ -88,6 +88,20 @@ chrome.runtime.sendMessage {
 				top = domH - 200
 
 			$el.css({ top, left })
+	
+	if setting.enableReadClipboard
+		document.addEventListener('copy', (() -> 
+			try 
+				sentence = getSentenceOfSelection()
+			catch
+				sentence = null
+
+			utils.send('copy event triggered', {
+				sentence,
+				s: location.href,
+				sc: document.title
+			})
+		), true) 
 
 	$(document).mousemove debounce ((e) ->
 		if $(e.target).hasClass('dictionariez-w')

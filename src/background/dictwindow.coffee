@@ -226,6 +226,12 @@ export default {
                             @focus()
             }
 
+        message.on "copy event triggered", ({s, sc, sentence}) => 
+            w = await readClipboard()
+            if w
+                @lookup({ w, s, sc, sentence })
+                @focus()
+
         message.on 'look up', ({ dictName, w, s, sc, sentence, means, newDictWindow }) =>
             if means == 'mouse'
                 if not setting.getValue('enableMinidict')
