@@ -6,13 +6,13 @@ import lookupParser from "./lookup-parser.coffee"
 readClipboardText = () -> 
     try 
         text = await navigator.clipboard.readText()
-        chrome.runtime.sendMessage {
+        browser.runtime.sendMessage {
             text: text or '', 
             type: 'clipboard text'
         }
     catch err
-        chrome.runtime.sendMessage {
-            error: err.message,
+        browser.runtime.sendMessage {
+            error: err?.message or "not supported on this browser.",
             type: 'read clipboard text error'
         }
 
