@@ -1,3 +1,7 @@
+# v2.9.1 Feb 23, 2022
+
+- Add hotkey to mark words.
+
 # v2.9.0 Feb 13, 2022
 
 - Support reading text from clipboard.
