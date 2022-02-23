@@ -12,6 +12,10 @@ export default {
             ankiHeight: 700,
 
             markWords: false,
+            enableMarkWordsSK1: true,
+            markWordsSK1: 'Meta',
+            markWordsKey: 'B', 
+
             disableWordHistory: false,
 
             disableWikipediaCard: false,
