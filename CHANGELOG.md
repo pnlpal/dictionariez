@@ -1,3 +1,7 @@
+# v2.9.2 Feb 24, 2022
+
+- Fix loading images when exporting word to Anki.
+
 # v2.9.1 Feb 23, 2022
 
 - Add hotkey to mark words.
