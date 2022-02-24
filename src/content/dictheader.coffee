@@ -17,8 +17,6 @@ inFrame = window.self != window.top
 dictApp = angular.module('fairyDictApp', ['ui.bootstrap'])
 
 dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
-    console.log "[dictCtrl] init"
-
     # change Bing dictionary's title
     document.title = 'Dictionariez'
     baseNode = '#fairy-dict'
@@ -167,7 +165,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     $(baseNode).on 'starrr:change', (e, value)->
         if $scope.word
             value ?= 0
-            console.log "[dictCtrl] rating word: #{$scope.word} #{value}"
+            # console.log "[dictCtrl] rating word: #{$scope.word} #{value}"
             chrome.runtime.sendMessage {
                 type: 'rating',
                 value: value,

@@ -143,7 +143,7 @@ export default {
 
 	cget: (k, defaultValue) ->
 		res = await @get(k, defaultValue)
-		console.log res
+		# console.log res
 
 	getAllByK: (k) ->
 		new Promise (resolve) ->

@@ -141,11 +141,9 @@ class DictWindow
         return unless text
 
         @word = text
-        console.log "[dictWindow] query #{@word} from #{@dictName}"
         return dict.query(text, @dictName)
 
     saveWindowPosition: ()->
-        # console.log 'saveWindowPosition...'
         if @w
             chrome.windows.get @w.id, null, (w)=>
                 if w?.width and w?.height

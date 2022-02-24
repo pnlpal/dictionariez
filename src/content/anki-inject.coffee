@@ -36,15 +36,12 @@ getAnkiInfo = (ankiSavedWord) ->
 		$('.field#f0, .field#f1').on 'input', debounce ((e) -> 
 			$('img', e.target).each () ->
 				$img = $(this)
-				console.log $img
 				return if $img.attr('is-handling')
 
 				$img.attr('is-handling', true)
 				src = $img.attr('src')
 				imageInfo = await utils.send 'image to data url', { src }
 				$img.replaceWith renderImage imageInfo
-				console.log "replaced from src", src, "to", imageInfo
-
 		), 1000
 		
 	
@@ -56,7 +53,6 @@ $(document).on 'click', 'button.btn-primary', () ->
 
 	try
 		await utils.checkInTime ()->$('.field#f0').text().trim() == ''
-		console.log "Anki saved word: #{currentWordItem.w}"
 
 		getAnkiInfo(currentWordItem.w)
 	catch 
