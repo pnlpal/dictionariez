@@ -122,4 +122,24 @@ export default {
 
     sanitizeHTML: (s)->
         s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+
+    imageToDataUrl: (src) ->
+        new Promise (resolve) -> 
+            if src.startsWith('data:')
+                resolve src 
+            else 
+                xhr = new XMLHttpRequest()
+                xhr.onload = () ->
+                    reader = new FileReader()
+
+                    reader.onloadend = () ->
+                        resolve reader.result
+                    
+                    reader.readAsDataURL(xhr.response)
+                
+                xhr.open('GET', src)
+                xhr.responseType = 'blob'
+                xhr.send()
+
+
 }

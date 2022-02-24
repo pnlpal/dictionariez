@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import debounce from 'lodash/debounce'
 import utils from "utils"
 
 currentWordItem = null 
@@ -18,7 +19,7 @@ getAnkiInfo = (ankiSavedWord) ->
 			$('.field#f0').append renderQuoteInfo res.wordItem 
 		
 		if res.lookupInfo?.images?.length 
-			$('.field#f0').append renderImages res.lookupInfo
+			$('.field#f0').append renderImages res.lookupInfo.images
 
 		if res.lookupInfo?.w
 			$('.field#f0').append renderLookupDefs res.lookupInfo
@@ -31,6 +32,21 @@ getAnkiInfo = (ankiSavedWord) ->
 		if res.lookupInfo
 			$('.field#f1').append renderLookupWords res.wordItem, res.lookupInfo
 			$('.field#f1').append '<br><br>'
+
+		$('.field#f0, .field#f1').on 'input', debounce ((e) -> 
+			$('img', e.target).each () ->
+				$img = $(this)
+				console.log $img
+				return if $img.attr('is-handling')
+
+				$img.attr('is-handling', true)
+				src = $img.attr('src')
+				imageInfo = await utils.send 'image to data url', { src }
+				$img.replaceWith renderImage imageInfo
+				console.log "replaced from src", src, "to", imageInfo
+
+		), 1000
+		
 	
 if location.origin == 'https://ankiuser.net'
 	getAnkiInfo()
@@ -57,15 +73,28 @@ renderQuoteInfo = (res) ->
 </blockquote>
 	'''.replace('{s}', res.s).replace('{sc}', res.sc).replace('{sentence}', filteredSentence)
 
-renderImages = (res) ->
-	imgTpl = (src) -> "<img src='#{src}' style='width: 50%; padding-right: 1px;'></img>"
-	imgs = res.images.map((cur, i) ->
-		if cur.src and i < 2  # only display two images
-			return imgTpl(cur.src) 
-		return ''
-	).join('')
+renderImage = (image) -> 
+	dataImgTpl = '''
+<div style='width: 100%; 
+	height: 0;
+	display: inline-block;
+	padding: 0;
+	padding-bottom: 55%;
+	background-image: url("{dataUrl}");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100% auto;
+'></div>
+	'''
+	return dataImgTpl.replace('{dataUrl}', image.dataUrl)
 
-	return "<div class='fairydict-images'> #{imgs} </div>"
+renderImages = (images) ->
+	imgs = images.map((cur, i) ->
+		if cur.dataUrl and i < 2  # only display two images
+			return renderImage cur 
+		return ''
+	)
+	return "<div class='fairydict-images'> #{imgs.join('')} </div>"
 
 renderLookupDefs = (res) ->
 	defTpl = (def) -> "<span class='fairydict-def' style='display: inline-flex;margin-bottom: 3px;'> #{def} </span>"

@@ -87,6 +87,18 @@ export default {
 
                 if @anki.wordItem?.w 
                     lookupInfo = await plainLookup.parser.parse(@anki.wordItem.w)
+
+                    if lookupInfo?.images?.length
+                        await Promise.all lookupInfo.images.map (image) ->
+                            dataUrl = await utils.imageToDataUrl(image.src)
+                            image.dataUrl = dataUrl
+
                     return {wordItem: @anki.wordItem, lookupInfo}
+
+        message.on 'image to data url', (request, sender) => 
+            dataUrl = await utils.imageToDataUrl(request.src)
+            return {dataUrl}
+
+
 
 }       
