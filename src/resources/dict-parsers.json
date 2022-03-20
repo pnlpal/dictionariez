@@ -61,13 +61,7 @@
   },
   "google": {
     "url": "https://www.google.com/search?hl=en-US&q=define+<word>",
-    "languages": [
-      "German",
-      "Spanish",
-      "French",
-      "Italian",
-      "Korean"
-    ],
+    "languages": ["German", "Spanish", "French", "Italian", "Korean"],
     "result": {
       "w": {
         "selector": "[data-dobid='hdw']"
@@ -145,7 +139,7 @@
       },
       "langTargets": {
         "groups": ".mw-parser-output h2:has('.mw-headline')",
-        "extendNextTo": "h2", 
+        "extendNextTo": "h2",
         "result": {
           "lang": {
             "selector": "span.mw-headline",
@@ -172,6 +166,9 @@
                 "excludeChild": "div,ul,dl",
                 "toArray": true,
                 "includeArrayIndex": true
+              },
+              "followWord": {
+                "selector": "ol>li .mention a[href]"
               }
             }
           }
@@ -272,9 +269,11 @@
       "w": {
         "selector": ".quick-result-entry a.babQuickResult"
       },
-      "prons": [{
-        "synthesis": "th-TH"
-      }],
+      "prons": [
+        {
+          "synthesis": "th-TH"
+        }
+      ],
       "defs": {
         "container": ".quick-results",
         "groups": ".quick-result-entry:has('.quick-result-overview')",

@@ -141,5 +141,6 @@ export default {
                 xhr.responseType = 'blob'
                 xhr.send()
 
-
+    toUpperFirst: (text)->
+        text[0].toUpperCase() + text.slice(1)
 }

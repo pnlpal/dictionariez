@@ -81,7 +81,7 @@ class LookupParser
             return $(html, virtualDom)
         )
 
-    parse: (w, tname) ->
+    parse: (w, tname, prevResult) ->
         tname ?= @checkType(w)
         return unless tname 
 
@@ -159,11 +159,20 @@ class LookupParser
 
                         if targetLang.lang == 'Tajik' # merge Tajik
                             return @parseTajik w, targetLang
-                        return targetLang
+
+                        if targetLang.defs?.length == 1 and targetLang.defs[0].followWord
+                            return @parse targetLang.defs[0].followWord, 'wiktionary', targetLang
+
+                        return if prevResult then [prevResult, targetLang] else targetLang
             
             # merge Tajik
             if @checkLangs(w).includes('Tajik')
                 return @parseTajik w
+
+
+            upperFirst = utils.toUpperFirst w 
+            if html.find("a[href='/wiki/#{upperFirst}']").get(0)
+                return @parse(upperFirst, 'wiktionary')
 
             result = null 
         return result
@@ -328,7 +337,7 @@ export default {
             return @checkTypeOfSupport(w)
 
         message.on 'look up plain', ({w, s, sc, sentence}) =>
-            w = w.trim()
+            w = w.trim().toLowerCase()
             return unless w
 
             storage.addHistory({

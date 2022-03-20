@@ -15,7 +15,8 @@ getAnkiInfo = (ankiSavedWord) ->
 
 		currentWordItem = res.wordItem
 
-		if res.wordItem.sentence 
+		if res.wordItem?.sentence 
+			$('.field#f0').append renderTTS res.wordItem.sentence
 			$('.field#f0').append renderQuoteInfo res.wordItem 
 		
 		if res.lookupInfo?.images?.length 
@@ -30,6 +31,7 @@ getAnkiInfo = (ankiSavedWord) ->
 		$('.field#f0').append '<br>'
 
 		if res.lookupInfo
+			$('.field#f1').append renderTTS res.lookupInfo.w
 			$('.field#f1').append renderLookupWords res.wordItem, res.lookupInfo
 			$('.field#f1').append '<br><br>'
 
@@ -58,6 +60,9 @@ $(document).on 'click', 'button.btn-primary', () ->
 	catch 
 		console.err "Anki save failed on word: #{currentWordItem.w}"
 
+renderTTS = (s) -> 
+	sanitized = utils.sanitizeHTML s
+	return "<tts service='android' voice='sv_SE' style='position: absolute; left: 9999px;'>#{sanitized}</tts>"
 
 renderQuoteInfo = (res) ->
 	sanitizedSentence = utils.sanitizeHTML res.sentence

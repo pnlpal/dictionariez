@@ -353,7 +353,7 @@ chrome.runtime.sendMessage {
 		if html
 			$('.dictionaries-tooltip').fadeIn('slow')
 			$('.dictionaries-tooltip .fairydict-spinner').hide()
-			$('.dictionaries-tooltip .dictionaries-tooltip-content').html(html)
+			$('.dictionaries-tooltip .dictionaries-tooltip-content').append(html)
 		else
 			$('.dictionaries-tooltip').fadeOut().hide()
 
@@ -385,7 +385,7 @@ chrome.runtime.sendMessage {
 			utils.send 'play audios', { ameSrc, breSrc, checkSetting: true}
 	
 	handlePlainResult = (res) ->
-		html = renderQueryResult res
+		html = if Array.isArray(res) then res.map(renderQueryResult).join('') else renderQueryResult res
 		if !html
 			plainQuerying = null
 
