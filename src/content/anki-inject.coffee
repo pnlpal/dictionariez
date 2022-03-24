@@ -73,7 +73,7 @@ replaceW = (text, w) ->
 
 renderTTS = (s) -> 
 	sanitized = utils.sanitizeHTML s
-	return "<tts service='android' voice='sv_SE' style='position: absolute; left: 9999px;'>#{sanitized}</tts>"
+	return "<tts service='android' voice='en-US' style='position: absolute; left: 9999px;'>#{sanitized}</tts>"
 
 renderQuoteInfo = (res) ->
 	sanitizedSentence = utils.sanitizeHTML res.sentence
@@ -128,6 +128,9 @@ renderLookupDefs = (res, followedWords = []) ->
 				prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis)
 			return prev
 		), ''
+
+		if res.prons[res.prons.length - 1]?.synthesis
+			$('.field tts').attr('voice', res.prons[res.prons.length - 1].synthesis)
 
 	html += pronsTpl pronHtml if pronHtml
 	
