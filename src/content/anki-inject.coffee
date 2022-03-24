@@ -13,27 +13,23 @@ getAnkiInfo = (ankiSavedWord) ->
 			currentWordItem = null 
 			return 
 
+		await utils.checkInTime (()->$('.field#f0')), 5000
+
 		currentWordItem = res.wordItem
 
 		if res.wordItem?.sentence 
 			$('.field#f0').append renderTTS res.wordItem.sentence
 			$('.field#f0').append renderQuoteInfo res.wordItem 
 		
-		if res.lookupInfo?.images?.length 
-			$('.field#f0').append renderImages res.lookupInfo.images
-
-		if res.lookupInfo?.w
-			$('.field#f0').append renderLookupDefs res.lookupInfo
-
-			# auto open dict to look up
-			utils.send 'look up', { w: res.lookupInfo.w }
-
+		if Array.isArray(res.lookupInfo) 
+			res.lookupInfo.forEach(renderLookupInfo(res.wordItem, res.followedWords))
+			utils.send 'look up', { w: res.lookupInfo[1].w } if res.lookupInfo?[1]?.w
+		else 
+			renderLookupInfo(res.wordItem)(res.lookupInfo)
+			utils.send 'look up', { w: res.lookupInfo.w } if res.lookupInfo?.w
+		
 		$('.field#f0').append '<br>'
-
-		if res.lookupInfo
-			$('.field#f1').append renderTTS res.lookupInfo.w
-			$('.field#f1').append renderLookupWords res.wordItem, res.lookupInfo
-			$('.field#f1').append '<br><br>'
+		$('.field#f1').append '<br><br>'
 
 		$('.field#f0, .field#f1').on 'input', debounce ((e) -> 
 			$('img', e.target).each () ->
@@ -45,8 +41,7 @@ getAnkiInfo = (ankiSavedWord) ->
 				imageInfo = await utils.send 'image to data url', { src }
 				$img.replaceWith renderImage imageInfo
 		), 1000
-		
-	
+
 if location.origin == 'https://ankiuser.net'
 	getAnkiInfo()
 
@@ -60,13 +55,29 @@ $(document).on 'click', 'button.btn-primary', () ->
 	catch 
 		console.err "Anki save failed on word: #{currentWordItem.w}"
 
+renderLookupInfo = (wordItem, followedWords) ->
+	(lookupInfo) ->
+		if lookupInfo?.images?.length 
+			$('.field#f0').append renderImages lookupInfo.images
+
+		if lookupInfo?.w
+			$('.field#f0').append renderLookupDefs lookupInfo, followedWords
+
+		if lookupInfo
+			$('.field#f1').append renderTTS lookupInfo.w
+			$('.field#f1').append renderLookupWords wordItem, lookupInfo
+			
+replaceW = (text, w) ->
+	text.replaceAll(w, "<span style='font-weight: bold'>[?]</span>")
+	.replaceAll(utils.toUpperFirst(w), "<span style='font-weight: bold'>[?]</span>")
+
 renderTTS = (s) -> 
 	sanitized = utils.sanitizeHTML s
 	return "<tts service='android' voice='sv_SE' style='position: absolute; left: 9999px;'>#{sanitized}</tts>"
 
 renderQuoteInfo = (res) ->
 	sanitizedSentence = utils.sanitizeHTML res.sentence
-	filteredSentence = sanitizedSentence.replaceAll res.w, "<span style='font-weight: bold'>[?]</span>"
+	filteredSentence = replaceW sanitizedSentence, res.w
 	return '''
 <blockquote style="font-style:italic;font-size: 16px; padding: 0.3em 5px 0.3em 20px;border-left:5px solid #78C0A8;">
 <span style="font-size: 16px;"> {sentence} </span>
@@ -97,7 +108,7 @@ renderImages = (images) ->
 	)
 	return "<div class='fairydict-images'> #{imgs.join('')} </div>"
 
-renderLookupDefs = (res) ->
+renderLookupDefs = (res, followedWords = []) ->
 	defTpl = (def) -> "<span class='fairydict-def' style='display: inline-flex;margin-bottom: 3px;'> #{def} </span>"
 	defsTpl = (defs) -> "<span class='fairydict-defs' style='display: table-cell;padding-top: 1px;'> #{defs} </span>"
 	labelsTpl = (labels) -> "<div class='fairydict-labels'> #{labels} </div>"
@@ -127,13 +138,18 @@ renderLookupDefs = (res) ->
 
 	html += labelsTpl labelsCon if labelsCon
 
+	renderDef = (def) ->
+		defTpl followedWords.reduce ((res, fw) -> 
+			res.replace(fw, '[?]')
+		), def if def
+
 	renderItem = (item) ->
 		posHtml = ''
 		defsHtml = ''
 
 		posHtml = posTpl item.pos if item.pos 
 		defs = if Array.isArray(item.def) then item.def else [item.def]
-		defsCon = defs.map((def) -> defTpl def if def).reduce (prev, next) ->
+		defsCon = defs.map(renderDef).reduce (prev, next) ->
 			return prev + '<br>' + next if prev and next 
 			return prev 
 		defsHtml = defsTpl defsCon if defsCon

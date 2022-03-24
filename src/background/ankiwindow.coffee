@@ -86,14 +86,14 @@ export default {
                         console.info "Anki to save next word: #{item.w}"
 
                 if @anki.wordItem?.w 
-                    lookupInfo = await plainLookup.parser.parse(@anki.wordItem.w)
+                    lookupInfo = await plainLookup.parser.parse(@anki.wordItem.w.toLowerCase())
 
                     if lookupInfo?.images?.length
                         await Promise.all lookupInfo.images.map (image) ->
                             dataUrl = await utils.imageToDataUrl(image.src)
                             image.dataUrl = dataUrl
 
-                    return {wordItem: @anki.wordItem, lookupInfo}
+                    return {wordItem: @anki.wordItem, lookupInfo, followedWords: lookupInfo?.map?((n) -> n.w)}
 
         message.on 'image to data url', (request, sender) => 
             dataUrl = await utils.imageToDataUrl(request.src)
