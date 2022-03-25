@@ -28,7 +28,6 @@ getAnkiInfo = (ankiSavedWord) ->
 			renderLookupInfo(res.wordItem)(res.lookupInfo)
 			utils.send 'look up', { w: res.lookupInfo.w } if res.lookupInfo?.w
 		
-		$('.field#f0').append '<br>'
 		$('.field#f1').append '<br><br>'
 
 		$('.field#f0, .field#f1').on 'input', debounce ((e) -> 
@@ -62,6 +61,7 @@ renderLookupInfo = (wordItem, followedWords) ->
 
 		if lookupInfo?.w
 			$('.field#f0').append renderLookupDefs lookupInfo, followedWords
+			$('.field#f0').append '<br>'
 
 		if lookupInfo
 			$('.field#f1').append renderTTS lookupInfo.w
