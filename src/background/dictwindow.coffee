@@ -82,7 +82,6 @@ class DictWindow
 
         return new Promise (resolve) =>
             if !@w
-                # console.log "[dictWindow] create window position: top: #{top}, left: #{left}, width: #{width}, height: #{height}"
                 chrome.windows.create({
                     url: url or defaultWindowUrl,
                     type: 'popup',
@@ -93,7 +92,7 @@ class DictWindow
                     state: 'normal',
                 }, (win)=>
                     @w = win
-                    @tid = @w.tabs[0].id
+                    @tid = @w.tabs[@w.tabs.length-1].id
                     @url = url or defaultWindowUrl
                     resolve()
 
@@ -147,7 +146,6 @@ class DictWindow
         if @w
             chrome.windows.get @w.id, null, (w)=>
                 if w?.width and w?.height
-                    # console.log "[dictWindow] update window position: top: #{w.top}, left: #{w.left}, width: #{w.width}, height: #{w.height}"
                     setting.setValue 'windowWidth', w.width
                     setting.setValue 'windowHeight', w.height
                 if w?.top? and w?.left?
@@ -190,6 +188,10 @@ export default {
         chrome.windows.onRemoved.addListener (wid)=>
             @dictWindows.forEach (win)->
                 if win.w?.id == wid
+                    win.reset()
+        chrome.tabs.onRemoved.addListener (tid)=>
+            @dictWindows.forEach (win)->
+                if win.tid == tid
                     win.reset()
             
             # clear closed window
@@ -278,7 +280,7 @@ export default {
                 targetWin.lookup(w)
             else 
                 senderWin = @getByTab(sender.tab.id)
-                senderWin?.updateDict(dictName)
+                senderWin.updateDict(dictName)
 
                 @dictWindows.forEach (win)->
                     if win.w and win.w != senderWin.w 
