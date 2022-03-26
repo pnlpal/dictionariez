@@ -170,8 +170,7 @@
           class="search-wrapper pull-left"
           keyboard-nav
           uib-dropdown
-          is-open="hasAutocompletes"
-          on-toggle="toggleDropdown(open)"
+          is-open="autocompletes.length > 0"
         >
           <input
             type="text"

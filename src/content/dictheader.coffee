@@ -118,9 +118,8 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             $scope.autocompletes = await utils.send 'autocomplete', { text }
         else
             $scope.autocompletes = []
-        $scope.hasAutocompletes = $scope.autocompletes.length > 0
         $scope.$apply()
-        $scope.toggleDropdown($scope.hasAutocompletes)
+        $scope.toggleDropdown($scope.autocompletes.length > 0)
 
         # get phonetic of word in autocompletes
         $scope.autocompleteCounter ?= 0
@@ -186,7 +185,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     $(document).mouseover _handler
     $(document).click _handler
 
-    $(document).on 'touchend click', 'input.dict-input', () ->
+    $(document).on 'touchend focus', 'input.dict-input', () ->
         this.select() 
 
     $(document).keyup (evt)->
