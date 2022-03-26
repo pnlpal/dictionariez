@@ -1,75 +1,79 @@
 body {
-	position: relative;
-	.nav {
-		position: fixed;
-		top: 20px;
-	}
+  position: relative;
+  .nav {
+    position: fixed;
+    top: 20px;
 
-	.indent {
-		margin-left: 20px;
-	}
-	.ellipsis {
-		display: inline-block;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
+    @media screen and (max-width: 768px) {
+      right: 20px;
+    }
+  }
 
-	.ascii-title {
-		border: none;
-		background-color: initial;
-		margin: 0;
-		padding: 0;
-	}
-	.text-new {
-		color: red;
-	}
+  .indent {
+    margin-left: 20px;
+  }
+  .ellipsis {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-	.link-github {
-		i {
-			vertical-align: middle;
-		}
-	}
+  .ascii-title {
+    border: none;
+    background-color: initial;
+    margin: 0;
+    padding: 0;
+  }
+  .text-new {
+    color: red;
+  }
 
-	#table-history {
-		.starrr {
-			.fa {
-				color: orange;
-			}
-		}
-		.dictionaries-history-word {
-			max-width: 130px;
-		}
-		.w-sentence {
-			max-width: 300px;
-		}
-		.link-s {
-			max-width: 150px;
-		}
-	}
+  .link-github {
+    i {
+      vertical-align: middle;
+    }
+  }
 
-	#dictionary {
-		table.dataTable {
-			td.reorder {
-				text-align: left;
-			}
-		}
-	}
+  #table-history {
+    .starrr {
+      .fa {
+        color: orange;
+      }
+    }
+    .dictionaries-history-word {
+      max-width: 130px;
+    }
+    .w-sentence {
+      max-width: 300px;
+    }
+    .link-s {
+      max-width: 150px;
+    }
+  }
 
-	#shortcut-setting {
-		margin-bottom: 500px;
-	}
+  #dictionary {
+    table.dataTable {
+      td.reorder {
+        text-align: left;
+      }
+    }
+  }
 
-	.container {
-		position: relative;
+  #shortcut-setting {
+    margin-bottom: 500px;
+  }
 
-		.buymeacoffee {
-			position: absolute;
-			top: 20px;
-			right: 20px;
-			img {
-				height: 50px;
-			}
-		}
-	}
+  .container {
+    position: relative;
+
+    .buymeacoffee {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      img {
+        height: 50px;
+      }
+    }
+  }
 }
