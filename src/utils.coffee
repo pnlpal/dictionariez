@@ -143,4 +143,6 @@ export default {
 
     toUpperFirst: (text)->
         text[0].toUpperCase() + text.slice(1)
+    
+    isMobile: () -> /Mobi|Android/i.test(navigator.userAgent)
 }

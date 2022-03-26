@@ -192,6 +192,8 @@ chrome.runtime.sendMessage {
 	$(document).on 'click mouseover', '.fairydict-pron-audio', debounce(((e) ->
 		e.stopPropagation()
 
+		return if utils.isMobile() and e.type == 'mouseover'  # on mobile mouseover will be triggered when click.
+
 		synthesisObj = null
 
 		if $(this).data('mp3')
