@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Dictionaries: one to rule them all",
+  "name": "Dictionariez: one to rule them all",
   "permissions": ["activeTab", "tabs", "storage", "contextMenus", "<all_urls>"],
   "background": {
     "persistent": true,
@@ -19,7 +19,7 @@
   },
   "web_accessible_resources": ["*.js", "*.json", "*.html", "fonts/*"],
   "browser_action": {
-    "default_title": "Dictionaries: one dictionary to rule them all"
+    "default_title": "Dictionariez: one to rule them all"
   },
   "icons": {
     "16": "images/library-16.png",

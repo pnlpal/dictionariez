@@ -1,10 +1,10 @@
 {
-  "name": "dictionaries",
-  "version": "2.9.2",
+  "name": "dictionariez",
+  "version": "3.0.0",
   "description": "Facilitate your language learning by marking words in articles, looking up in various dictionaries, and exporting to Anki.",
   "repository": {
     "type": "git",
-    "url": "git@github.com:pnlpal/dictionaries.git"
+    "url": "git@github.com:pnlpal/dictionariez.git"
   },
   "scripts": {
     "build": "node utils/build.js",
@@ -13,9 +13,9 @@
   "author": "River Yang",
   "license": "GPL2",
   "bugs": {
-    "url": "https://github.com/pnlpal/dictionaries/issues"
+    "url": "https://github.com/pnlpal/dictionariez/issues"
   },
-  "homepage": "https://github.com/pnlpal/dictionaries#readme",
+  "homepage": "https://github.com/pnlpal/dictionariez#readme",
   "keywords": [
     "dictionary",
     "chrome extension",
