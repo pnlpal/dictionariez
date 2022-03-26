@@ -186,6 +186,9 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     $(document).mouseover _handler
     $(document).click _handler
 
+    $(document).on 'touchend click', 'input.dict-input', () ->
+        this.select() 
+
     $(document).keyup (evt)->
         code = evt.charCode or evt.keyCode
         if code == 27
