@@ -1,3 +1,10 @@
+# v3.0.0 Mar 26, 2022
+
+- Support mobile browsers like Kiwi and Flow.
+- Follow transformed words in some languages such as Swedish.
+- Set tts to the sentence when export to Anki.
+- Auto select the word when focus on the input.
+
 # v2.9.2 Feb 24, 2022
 
 - Fix loading images when exporting word to Anki.
