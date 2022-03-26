@@ -66,9 +66,16 @@ chrome.runtime.sendMessage {
 
 	setupPlainContentPosition = (e) ->
 		$el = $('.dictionaries-tooltip')
-		if $el.length && e.pageX && e.pageY
-			mousex = e.pageX + 20
-			mousey = e.pageY + 10
+		if e.pageX && e.pageY
+			pageX = e.pageX
+			pageY = e.pageY
+		else 
+			pageX = e.changedTouches?[0].pageX
+			pageY = e.changedTouches?[0].pageY
+
+		if $el.length and pageY
+			mousex = pageX + 20
+			mousey = pageY + 10
 			top = mousey
 			left = mousex
 
@@ -131,7 +138,13 @@ chrome.runtime.sendMessage {
 
 	# 对 mouseup 事件做一个延时处理，
 	# 	# 以避免取消选中后getSelection依然能获得文字。
-	$(document).mouseup debounce ((e) -> handleMouseUp(e)), 100
+	$(document).on 'mouseup', debounce(((e) -> handleMouseUp(e)), 100)
+	$(document).on 'touchstart', debounce(((e) -> 
+		try 
+			await utils.checkInTime (() -> window.getSelection()?.getRangeAt(0)?.toString()), 3000
+			handleMouseUp(e)
+		catch
+	), 800)
 	
 	$(document).bind 'keydown', (event)->
 		if utils.checkEventKey event, setting.openSK1, setting.openSK2, setting.openKey
@@ -208,7 +221,7 @@ chrome.runtime.sendMessage {
 			lastAutoSelection = ''
 
 		if word
-			handleLookupByMouse(e)
+			handleLookupByMouse(e, word)
 
 	getWordAtPoint = (elem, x, y)->
 		if elem.nodeType == elem.TEXT_NODE
@@ -271,7 +284,7 @@ chrome.runtime.sendMessage {
 
 	handleMouseUp = (event)->
 		selObj = window.getSelection()
-		text = selObj.toString().trim()
+		text = selObj.getRangeAt(0)?.toString().trim()
 		unless text
 			# click inside the dict
 			if $('.dictionaries-tooltip').has(event.target).length
@@ -292,9 +305,8 @@ chrome.runtime.sendMessage {
 		# check if click in editable element
 		return if checkEditable(selObj.focusNode)
 
-		if event.which == 1
-			handleLookupByMouse(event)
-
+		if event.which == 0 or event.which == 1 # left mouse or touchend
+			handleLookupByMouse(event, text)
 
 	renderQueryResult = (res) ->
 		wTpl = (w) -> "<strong class='fairydict-w'> #{w} </strong>"
@@ -399,8 +411,7 @@ chrome.runtime.sendMessage {
 		
 		return html
 
-	handleLookupByMouse = (event)->
-		text = window.getSelection().toString().trim()
+	handleLookupByMouse = (event, text)->
 		return unless text
 		return if text.split(/\s/).length > 3
 
