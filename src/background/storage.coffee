@@ -54,12 +54,12 @@ export default {
 		return @history.find (item) ->
 			return item.w == word
 
-	getPrevious: (w, circle = false) ->
+	getPrevious: (w) ->
 		return if setting.getValue "disableWordHistory"
 		idx = @history.findIndex (item) ->
 			return item.w == w
 		return @history[idx - 1] if idx > 0
-		return @history[@history.length - 1] if circle or !w
+		return @history[@history.length - 1]
 
 	getHistory: (w, length) ->
 		end = @history.length

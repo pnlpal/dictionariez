@@ -268,7 +268,7 @@ export default {
                 dictName = d.dictName
             
             if request.previousWord
-                w = storage.getPrevious(w, true)?.w
+                w = storage.getPrevious(w)?.w
             else if request.nextWord
                 w = storage.getNext(w, true)?.w
             else if w
