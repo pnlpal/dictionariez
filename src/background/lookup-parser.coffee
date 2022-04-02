@@ -145,6 +145,8 @@ class LookupParser
 
                     if targetLang.lang in setting.getValue("otherDisabledLanguages") or not langs[targetLang.lang]
                         targetLang = null 
+                    else if targetLang.lang == 'English' and not setting.getValue "enableLookupEnglish"
+                        targetLang = null
                     else 
                         if targetLang.lang == 'English'
                             setEnglishProns(targetLang)
