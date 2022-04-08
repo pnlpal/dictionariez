@@ -162,7 +162,7 @@ class LookupParser
                         if targetLang.lang == 'Tajik' # merge Tajik
                             return @parseTajik w, targetLang
 
-                        if targetLang.defs?.length == 1 and targetLang.defs[0].followWord
+                        if targetLang.defs?.length == 1 and targetLang.defs[0].followWord and !prevResult
                             return @parse targetLang.defs[0].followWord, 'wiktionary', targetLang
 
                         return if prevResult then [prevResult, targetLang] else targetLang
@@ -173,7 +173,7 @@ class LookupParser
 
 
             upperFirst = utils.toUpperFirst w 
-            if html.find("a[href='/wiki/#{upperFirst}']").get(0)
+            if upperFirst != w and html.find("a[href='/wiki/#{upperFirst}']").get(0)
                 return @parse(upperFirst, 'wiktionary')
 
             result = null 
