@@ -1,3 +1,8 @@
+# v3.0.1 Apr 9, 2022
+
+- fix recursively following words.
+- fix looking up when English is disabled.
+
 # v3.0.0 Mar 26, 2022
 
 - Support mobile browsers like Kiwi and Flow.
