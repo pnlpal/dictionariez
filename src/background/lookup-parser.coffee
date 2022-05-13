@@ -82,11 +82,13 @@ class LookupParser
         )
 
     parse: (w, tname, prevResult) ->
+        console.log "STARTED PARSING WORD #{w}"
         tname ?= @checkType(w)
         return unless tname 
 
         dictDesc = @data[tname]
         url = dictDesc.url.replace('<word>', w)
+        console.log "USING URL #{url}"
 
         # special handle Chinese
         if tname == 'google' 
@@ -103,6 +105,8 @@ class LookupParser
             console.error "Failed to parse: ", url, err 
             return  
 
+
+        console.log "GOT HTML #{JSON.stringify(html)}"
         result = @parseResult html, dictDesc.result
 
         # special handle of bing when look up Chinese
@@ -194,12 +198,16 @@ class LookupParser
 
 
     parseResult: ($el, obj) ->
+        console.log "STARTED PARSING RESULT OF OBJ: #{JSON.stringify(obj)}"
+        console.log "$el is: #{JSON.stringify($el)}"
         result = {}
         for key, desc of obj
             if Array.isArray desc 
+                console.log "IS ARRAY!"
                 result[key] = []
                 result[key].push @parseResult($el, subObj) for subObj in desc
             else 
+                console.log "NOT ARRAY"
                 $container = $el 
                 if desc.container 
                     $container = $($el.find(desc.container).get(0))
@@ -249,6 +257,7 @@ class LookupParser
                         
                 else
                     value = @parseResultItem $container, desc
+                    console.log "PARSERESULT VALUE IS: #{value}"
 
                     if value and key == 'pos'
                         value = trimWordPos value 
@@ -258,6 +267,7 @@ class LookupParser
         return result 
 
     parseResultItem: ($node, desc) ->
+        console.log "PARSING RESULT ITEM"
         value = null
 
         $el = $node 
@@ -312,13 +322,13 @@ test = () ->
     # parser.parse('請').then console.log 
     # parser.parse('請う').then console.log 
     # parser.parse('あなた').then console.log 
-    # parser.parse('장소').then console.log 
+    parser.parse('장소').then console.log 
     # parser.parse('бештар').then console.log 
     # parser.parse('бо').then console.log 
     # parser.parse('ไทย').then console.log 
-    parser.parse('elephant').then console.log 
+    # parser.parse('elephant').then console.log 
 
-# test()
+test()
 
 export default {
     parser: new LookupParser(parsers),
