@@ -81,14 +81,22 @@ class LookupParser
             return $(html, virtualDom)
         )
 
+    loadJson: (url, credentials) ->
+        utils.promiseInTime(fetch(url, {
+            method: 'GET', 
+            credentials
+        }), 5000)
+        .then((resp) -> 
+            throw new Error(resp.status) if not resp.ok
+            return resp.json()
+        )
+
     parse: (w, tname, prevResult) ->
-        console.log "STARTED PARSING WORD #{w}"
         tname ?= @checkType(w)
         return unless tname 
 
         dictDesc = @data[tname]
         url = dictDesc.url.replace('<word>', w)
-        console.log "USING URL #{url}"
 
         # special handle Chinese
         if tname == 'google' 
@@ -96,7 +104,10 @@ class LookupParser
                 url = url.replace 'hl=en-US', 'hl='+setting.getValue('otherLang')
 
         try
-            html = await @load url, dictDesc.credentials
+            if dictDesc.responseFormat == "json"
+                json = await @loadJson url, dictDesc.credentials
+            else
+                html = await @load url, dictDesc.credentials
         catch err 
             if (err.statusText or err.message) == 'timeout' \
             and tname != 'wiktionary' \
@@ -105,9 +116,10 @@ class LookupParser
             console.error "Failed to parse: ", url, err 
             return  
 
-
-        console.log "GOT HTML #{JSON.stringify(html)}"
-        result = @parseResult html, dictDesc.result
+        if dictDesc.name == "naver-dict-json-api"
+            result = @parseNaver json, dictDesc.result
+        else
+            result = @parseResult html, dictDesc.result
 
         # special handle of bing when look up Chinese
         if tname == "bing"
@@ -196,18 +208,45 @@ class LookupParser
         
         return result 
 
+    parseNaver: (json, obj) ->
+        result = {}
+        definitions = json.searchResultMap.searchResultListMap.WORD.items
+
+        result['langSymbol'] = 'ko'
+        result['defs'] = []
+
+        for explanation in definitions
+            newDef = {}
+            entry = explanation.expEntry.replace(/(<([^>]+)>)/gi, "")
+            meansCollector = explanation.meansCollector[0]
+
+            newDef['def'] = []
+
+            count = 1
+            for def in meansCollector.means
+                pretty_value = def.value.replace(/(<([^>]+)>)/gi, "")
+
+                if meansCollector.means.length != 1
+                    pretty_value = count.toString() + ". " + def.value.replace(/(<([^>]+)>)/gi, "")
+
+                if count == 1
+                    pretty_value = entry + ": " + pretty_value
+
+                count += 1
+                newDef['def'].push pretty_value
+
+            result['defs'].push newDef
+
+        return result
+
 
     parseResult: ($el, obj) ->
-        console.log "STARTED PARSING RESULT OF OBJ: #{JSON.stringify(obj)}"
-        console.log "$el is: #{JSON.stringify($el)}"
         result = {}
         for key, desc of obj
             if Array.isArray desc 
-                console.log "IS ARRAY!"
                 result[key] = []
                 result[key].push @parseResult($el, subObj) for subObj in desc
             else 
-                console.log "NOT ARRAY"
                 $container = $el 
                 if desc.container 
                     $container = $($el.find(desc.container).get(0))
@@ -257,7 +296,6 @@ class LookupParser
                         
                 else
                     value = @parseResultItem $container, desc
-                    console.log "PARSERESULT VALUE IS: #{value}"
 
                     if value and key == 'pos'
                         value = trimWordPos value 
@@ -267,7 +305,6 @@ class LookupParser
         return result 
 
     parseResultItem: ($node, desc) ->
-        console.log "PARSING RESULT ITEM"
         value = null
 
         $el = $node 
@@ -322,7 +359,8 @@ test = () ->
     # parser.parse('請').then console.log 
     # parser.parse('請う').then console.log 
     # parser.parse('あなた').then console.log 
-    parser.parse('장소').then console.log 
+    # parser.parse('장소').then console.log 
+    parser.parse('배').then console.log # this example is here because 배 has a lot of different definitions
     # parser.parse('бештар').then console.log 
     # parser.parse('бо').then console.log 
     # parser.parse('ไทย').then console.log 
