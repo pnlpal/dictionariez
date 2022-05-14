@@ -369,13 +369,13 @@ test = () ->
     # parser.parse('請う').then console.log 
     # parser.parse('あなた').then console.log 
     # parser.parse('장소').then console.log 
-    parser.parse('배').then console.log # this example is here because 배 has a lot of different definitions
+    # parser.parse('배').then console.log # this example is here because 배 has a lot of different definitions
     # parser.parse('бештар').then console.log 
     # parser.parse('бо').then console.log 
     # parser.parse('ไทย').then console.log 
-    # parser.parse('elephant').then console.log 
+    parser.parse('elephant').then console.log 
 
-test()
+# test()
 
 export default {
     parser: new LookupParser(parsers),
