@@ -396,7 +396,6 @@ export default {
             return @checkTypeOfSupport(w)
 
         message.on 'look up plain', ({w, s, sc, sentence}) =>
-            console.log "LOOKING UP PLAIN"
             w = w.trim().toLowerCase()
             return unless w
 
