@@ -104,7 +104,7 @@ class LookupParser
                 url = url.replace 'hl=en-US', 'hl='+setting.getValue('otherLang')
 
         try
-            if dictDesc.responseFormat == "json"
+            if dictDesc.name == "naver-dict-json-api"
                 json = await @loadJson url, dictDesc.credentials
             else
                 html = await @load url, dictDesc.credentials
