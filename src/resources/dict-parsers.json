@@ -60,13 +60,11 @@
     }
   },
   "naver": {
-    "url": "https://ko.dict.naver.com/api3/koko/search?query=<word>&m=pc&range=all&lang=ko",
-    "languages": ["Korean"],
-    "name": "naver-dict-json-api"
+    "url": "https://ko.dict.naver.com/api3/koko/search?query=<word>&m=pc&range=all&lang=ko"
   },
   "google": {
     "url": "https://www.google.com/search?hl=en-US&q=define+<word>",
-    "languages": ["German", "Spanish", "French", "Italian", "Korean"],
+    "languages": ["German", "Spanish", "French", "Italian"],
     "result": {
       "w": {
         "selector": "[data-dobid='hdw']"
@@ -128,7 +126,6 @@
       "Spanish",
       "French",
       "Italian",
-      "Korean",
       "Portuguese",
       "Swedish",
       "Norwegian",

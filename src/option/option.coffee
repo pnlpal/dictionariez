@@ -38,6 +38,11 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
         'bing': 'Bing Dict',
         'wiktionary': 'Wiktionary'
     };
+    $scope.koreanLookupSources = {
+        'google': 'Google Dict',
+        'wiktionary': 'Wiktionary',
+        'naver': 'Naver Dict',
+    }
     $scope.otherLangs = {
         'zh-CN': 'Chinese',
         "ja-JP": 'Japanese',
