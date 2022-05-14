@@ -117,6 +117,10 @@ export default {
         REGEX_ENG = /[a-zA-Z\s-]+[’'.]?[a-zA-Z\s-]+/
         return str.match(REGEX_ENG)?[0] == str
 
+    hasKorean: (str)->
+        REGEX_KOR = /[\uac00-\ud7af]|[\u1100-\u11ff]|[\u3130-\u318f]|[\ua960-\ua97f]|[\ud7b0-\ud7ff]/g
+        REGEX_KOR.test(str)
+
     isLinux: () -> 
         return window.navigator.platform.includes('Linux')
 

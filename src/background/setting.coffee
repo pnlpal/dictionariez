@@ -29,11 +29,13 @@ export default {
             selectionSK1: 'Shift'
 
             enableLookupEnglish: true,
+            enableLookupKorean: true,
             enableLookupChinese: true,
             otherDisabledLanguages: [],
 
             enablePlainLookup: true,
             englishLookupSource: 'google', # google, bing, wiktionary
+            koreanLookupSource: 'google', # google, naver, wiktionary
             enableAmeAudio: false,
             enableBreAudio: false,
             enableUSUKPron: false,

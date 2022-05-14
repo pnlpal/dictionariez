@@ -300,6 +300,46 @@
 								<label>
 									<input
 										type="checkbox"
+										ng-model="setting.enableLookupKorean"
+										ng-click="changeKey(!setting.enableLookupKorean, 'enableLookupKorean')"
+									/>
+									Look up <strong>Korean</strong> words
+								</label>
+							</div>
+
+							<div class="indent">
+								<label>
+									Lookup source from:
+								</label>
+
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-koreanLookupSource"
+									>
+										{{ koreanLookupSources[setting.koreanLookupSource] }}
+										<span class="caret"></span>
+									</button>
+	
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-koreanLookupSource"
+									>
+										<li role="menuitem" ng-repeat="(k, v) in koreanLookupSources">
+											<a ng-click="changeKey(k, 'koreanLookupSource')">{{ v }}</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="checkbox">
+								<label>
+									<input
+										type="checkbox"
 										ng-model="setting.enableLookupEnglish"
 										ng-click="changeKey(!setting.enableLookupEnglish, 'enableLookupEnglish')"
 									/>

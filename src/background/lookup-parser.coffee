@@ -47,6 +47,9 @@ class LookupParser
         if utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
             return setting.getValue "englishLookupSource" # google, bing, wiktionary
 
+        if utils.hasKorean(w) and setting.getValue "enableLookupKorean"
+            return setting.getValue "koreanLookupSource" # google, wiktionary, naver (korean only)
+
         for name, dictDesc of @data
             if dictDesc.supportChinese
                 return name if utils.isChinese(w) and setting.getValue "enableLookupChinese"
@@ -104,7 +107,7 @@ class LookupParser
                 url = url.replace 'hl=en-US', 'hl='+setting.getValue('otherLang')
 
         try
-            if dictDesc.name == "naver-dict-json-api"
+            if tname == "naver"
                 json = await @loadJson url, dictDesc.credentials
             else
                 html = await @load url, dictDesc.credentials
@@ -116,7 +119,7 @@ class LookupParser
             console.error "Failed to parse: ", url, err 
             return  
 
-        if dictDesc.name == "naver-dict-json-api"
+        if tname == "naver"
             result = @parseNaver json, dictDesc.result
         else
             result = @parseResult html, dictDesc.result
@@ -138,6 +141,10 @@ class LookupParser
                 setEnglishProns(result)
                 if not setting.getValue "enableLookupEnglish"
                     result = null 
+
+            else if result.langSymbol == 'ko'
+                if not setting.getValue "enableLookupKorean"
+                    result = null
 
             else if result.langSymbol
                 for lang, n of langs 
@@ -162,6 +169,8 @@ class LookupParser
                     if targetLang.lang in setting.getValue("otherDisabledLanguages") or not langs[targetLang.lang]
                         targetLang = null 
                     else if targetLang.lang == 'English' and not setting.getValue "enableLookupEnglish"
+                        targetLang = null
+                    else if targetLang.lang == 'Korean' and not setting.getValue "enableLookupKorean"
                         targetLang = null
                     else 
                         if targetLang.lang == 'English'
@@ -387,6 +396,7 @@ export default {
             return @checkTypeOfSupport(w)
 
         message.on 'look up plain', ({w, s, sc, sentence}) =>
+            console.log "LOOKING UP PLAIN"
             w = w.trim().toLowerCase()
             return unless w
 
