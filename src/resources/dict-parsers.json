@@ -60,14 +60,9 @@
     }
   },
   "naver": {
-    "url": "https://ko.dict.naver.com/search.nhn?query=<word>&target=dic",
-    "credentials": "same-origin",
+    "url": "https://ko.dict.naver.com/api3/koko/search?query=<word>&m=pc&range=all&lang=ko",
     "languages": ["Korean"],
-    "result": {
-      "w": {
-        "selector": "class='highlight'"
-      }
-    }
+    "name": "naver-dict-json-api"
   },
   "google": {
     "url": "https://www.google.com/search?hl=en-US&q=define+<word>",
