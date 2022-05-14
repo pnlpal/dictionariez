@@ -265,5 +265,12 @@ export default [{
     'windowUrlMatch': '[^\\w]query=([^&]+)',
     "resources": {
         styles: ['naver.less']
-    }
+    }, 
+},  {
+        'dictName': 'Naver Korean Resizable', 
+        'windowUrl': 'https://ko.dict.naver.com/search.nhn?query=<word>&target=dic',
+        'windowUrlMatch': '[^\\w]query=([^&]+)',
+        'resources': {
+            styles: ['naver-resizable.less']
+    },
 }]
