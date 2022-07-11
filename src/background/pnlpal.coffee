@@ -28,8 +28,8 @@ shareOnPnlpal = (title, link) ->
             type: 'popup',
             width: popupWidth,
             height: popupHeight,
-            top: popupTop,
-            left: popupLeft
+            top: Math.round(popupTop),
+            left: Math.round(popupLeft)
         }
 
 openYtbOnCaptionz = (link) ->
