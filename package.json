@@ -39,7 +39,7 @@
     "jquery": "^3.5.0",
     "less": "^2.7.1",
     "lodash": "latest",
-    "moment": "^2.29.2",
+    "moment": "^2.29.4",
     "requirejs": "^2.3.2"
   },
   "devDependencies": {
