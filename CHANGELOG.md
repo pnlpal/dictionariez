@@ -1,3 +1,10 @@
+# v3.0.2 Jul 11, 2022
+
+- Add Naver dict for Korean language
+- Fix sharing to pnlpal
+- Fix styles esp for mobile phone
+- Fix range object not exist error in inject.js
+
 # v3.0.1 Apr 9, 2022
 
 - fix recursively following words.
