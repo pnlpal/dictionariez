@@ -286,7 +286,7 @@ chrome.runtime.sendMessage {
 
 	handleMouseUp = (event)->
 		selObj = window.getSelection()
-		text = selObj.getRangeAt(0)?.toString().trim()
+		text = selObj.getRangeAt(0)?.toString().trim() if selObj.rangeCount > 0
 		unless text
 			# click inside the dict
 			if $('.dictionaries-tooltip').has(event.target).length
