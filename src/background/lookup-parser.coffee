@@ -43,6 +43,10 @@ class LookupParser
                 
         setting.configCache.otherSupportedLanguages = @otherSupportedLanguages
         
+    isLangDisabled: (lang) ->
+        setting.getValue("otherSupportedLanguages", []).includes(lang) \
+            && setting.getValue("otherDisabledLanguages", []).includes(lang)
+
     checkType: (w) ->
         if utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
             return setting.getValue "englishLookupSource" # google, bing, wiktionary
@@ -57,14 +61,14 @@ class LookupParser
             if dictDesc.languages
                 for lang in dictDesc.languages 
                     if w.match(new RegExp(langs[lang].regex, 'ug'))?.length == w.length \
-                        and not setting.getValue("otherDisabledLanguages", []).includes(lang)
+                        and not @isLangDisabled(lang)
                         return name
 
     checkLangs: (w) ->
         res =  []
         for lang, n of langs 
             if w.match(new RegExp(n.regex, 'ug'))?.length == w.length \
-            and not setting.getValue("otherDisabledLanguages", []).includes(lang)
+            and not @isLangDisabled(lang)
                 res.push lang 
         return res 
 
@@ -149,7 +153,7 @@ class LookupParser
             else if result.langSymbol
                 for lang, n of langs 
                     if n.symbol == result.langSymbol 
-                        if lang in setting.getValue("otherDisabledLanguages")
+                        if @isLangDisabled(lang)
                             result = null 
                         else 
                             synthesis = if n.synthesis? then n.synthesis else "#{result.langSymbol}-#{result.langSymbol.toUpperCase()}"
@@ -166,7 +170,7 @@ class LookupParser
                     if targetLang.lang.includes('Norwegian')
                         targetLang.lang = 'Norwegian'
 
-                    if targetLang.lang in setting.getValue("otherDisabledLanguages") or not langs[targetLang.lang]
+                    if @isLangDisabled(lang) or not langs[targetLang.lang]
                         targetLang = null 
                     else if targetLang.lang == 'English' and not setting.getValue "enableLookupEnglish"
                         targetLang = null

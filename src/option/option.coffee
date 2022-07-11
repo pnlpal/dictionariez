@@ -85,6 +85,7 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
     chrome.runtime.sendMessage {
         type: 'setting'
     }, (config)->
+        # window.setting = config
         $scope.setting = config
         $scope.$apply()
 
