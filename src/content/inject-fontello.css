@@ -24,8 +24,8 @@
 }
 */
 
-[class^="icon-fairydict"]:before,
-[class*=" icon-fairydict"]:before {
+i[class^="icon-fairydict"]:before,
+i[class*=" icon-fairydict"]:before {
 	font-family: "fairydict-font";
 	font-style: normal;
 	font-weight: normal;
