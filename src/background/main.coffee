@@ -39,7 +39,10 @@ import "./hot-reload-content-scripts.js"
 )()
 
 chrome.runtime.onInstalled.addListener (details) ->
-    if [chrome.runtime.OnInstalledReason.INSTALL, chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason)
+    manifestData = chrome.runtime.getManifest()
+
+    if [chrome.runtime.OnInstalledReason.INSTALL, chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason) \
+        and details.previousVersion != manifestData.version
         chrome.tabs.create({
             url: chrome.runtime.getURL('share.html')
         })
