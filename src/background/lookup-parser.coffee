@@ -121,7 +121,7 @@ class LookupParser
             and utils.isEnglish(w)
                 return @parse(w, 'wiktionary')
             console.error "Failed to parse: ", url, err 
-            return  
+            return prevResult
 
         if tname == "naver"
             result = @parseNaver json, dictDesc.result
@@ -170,7 +170,7 @@ class LookupParser
                     if targetLang.lang.includes('Norwegian')
                         targetLang.lang = 'Norwegian'
 
-                    if @isLangDisabled(lang) or not langs[targetLang.lang]
+                    if @isLangDisabled(targetLang.lang) or not langs[targetLang.lang]
                         targetLang = null 
                     else if targetLang.lang == 'English' and not setting.getValue "enableLookupEnglish"
                         targetLang = null
