@@ -142,17 +142,21 @@ class LookupParser
                 return @parse.call this, w, 'wiktionary'
             
             if result.langSymbol == 'en'
+                result.lang = 'English'
                 setEnglishProns(result)
                 if not setting.getValue "enableLookupEnglish"
                     result = null 
 
             else if result.langSymbol == 'ko'
+                result.lang = 'Korean'
                 if not setting.getValue "enableLookupKorean"
                     result = null
 
             else if result.langSymbol
                 for lang, n of langs 
                     if n.symbol == result.langSymbol 
+                        result.lang = lang 
+
                         if @isLangDisabled(lang)
                             result = null 
                         else 
@@ -162,9 +166,22 @@ class LookupParser
                                 "synthesis": synthesis
                             }]
 
+            # parse the second language if possible.
+            possibleLangs = @checkLangs(w).filter((l) -> l != result.lang)
+            if possibleLangs.length
+                return @parse w, 'wiktionary', result 
+
+
         if tname == 'wiktionary'
+            multipleResult = []
+            if prevResult
+                multipleResult.push prevResult
+
             for targetLang in result.langTargets
                 if targetLang.lang 
+                    if prevResult?.lang == targetLang.lang 
+                        continue 
+
                     # Special handle for Norwegian on Wiktionary
                     # see https://en.wiktionary.org/wiki/bl%C3%A5kval#Norwegian
                     if targetLang.lang.includes('Norwegian')
@@ -194,18 +211,20 @@ class LookupParser
                         if targetLang.defs?.length >= 1 and targetLang.defs[0].followWord and !prevResult
                             return @parse targetLang.defs[0].followWord, 'wiktionary', targetLang
 
-                        return if prevResult then [prevResult, targetLang] else targetLang
+                        multipleResult.push targetLang if multipleResult.length < 3
+                        
             
-            # merge Tajik
-            if @checkLangs(w).includes('Tajik')
-                return @parseTajik w
+            if !multipleResult.length
+                # merge Tajik
+                if @checkLangs(w).includes('Tajik')
+                    return @parseTajik w
 
+                upperFirst = utils.toUpperFirst w 
+                if !result and upperFirst != w and html.find("a[href='/wiki/#{upperFirst}']").get(0)
+                    return @parse(upperFirst, 'wiktionary')
 
-            upperFirst = utils.toUpperFirst w 
-            if upperFirst != w and html.find("a[href='/wiki/#{upperFirst}']").get(0)
-                return @parse(upperFirst, 'wiktionary')
+            return multipleResult
 
-            result = null 
         return result
 
     parseTajik: (w, wiktionaryResult) ->
