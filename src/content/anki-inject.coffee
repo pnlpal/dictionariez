@@ -4,10 +4,11 @@ import utils from "utils"
 
 currentWordItem = null 
 
-getAnkiInfo = (ankiSavedWord) ->
+getAnkiInfo = (ankiSavedWord, ankiSkippedWord) ->
 	chrome.runtime.sendMessage {
 		type: 'get anki info',
-		ankiSavedWord
+		ankiSavedWord,
+		ankiSkippedWord
 	}, (res) ->
 		if not res?.wordItem 
 			currentWordItem = null 
@@ -41,8 +42,19 @@ getAnkiInfo = (ankiSavedWord) ->
 				$img.replaceWith renderImage imageInfo
 		), 1000
 
+addSkipButton = () ->
+	btn = '''
+	<button class="btn btn-secondary btn-skip" style="float: right;">Skip</button>'''
+	$(btn).insertAfter("button.btn-primary")
+
+	$('.btn-skip').on 'click', () ->
+		$('.field#f0').empty()
+		$('.field#f1').empty() 
+		getAnkiInfo(null, currentWordItem.w)
+
 if location.origin == 'https://ankiuser.net'
 	getAnkiInfo()
+	addSkipButton()
 
 $(document).on 'click', 'button.btn-primary', () ->
 	return if not currentWordItem?.w

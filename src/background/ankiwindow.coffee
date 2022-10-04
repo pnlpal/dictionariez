@@ -65,6 +65,12 @@ class AnkiWindow
 export default {
     anki: new AnkiWindow(),
 
+    getNextWord: (prevWord) ->
+        item = storage.getPreviousAnkiUnsaved prevWord
+        if item?.w 
+            @anki.wordItem = item 
+            console.info "Anki to save next word: #{item.w}"
+
     init: () ->
         chrome.windows.onRemoved.addListener (wid) =>
             if @anki.w?.id == wid
@@ -80,10 +86,10 @@ export default {
                     console.info "Anki saved word: #{request.ankiSavedWord}"
                     @anki.wordItem = null 
                     await storage.savedAnki request.ankiSavedWord
-                    item = storage.getPreviousAnkiUnsaved request.ankiSavedWord 
-                    if item?.w 
-                        @anki.wordItem = item 
-                        console.info "Anki to save next word: #{item.w}"
+                    @getNextWord(request.ankiSavedWord)
+
+                if request.ankiSkippedWord 
+                    @getNextWord(request.ankiSkippedWord)
 
                 if @anki.wordItem?.w 
                     lookupInfo = await plainLookup.parser.parse(@anki.wordItem.w.toLowerCase())
