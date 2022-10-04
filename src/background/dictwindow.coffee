@@ -55,7 +55,7 @@ class DictWindow
         window.clearInterval(@savePosInterval) if @savePosInterval
         @savePosInterval = null
 
-    open: (url)->
+    open: (url, useDefaultPosition)->
         # bugfix: dont know how why, windowWidth and windowHeight are saved as number, need integer here.
         width = parseInt(setting.getValue('windowWidth'))
         height = parseInt(setting.getValue('windowHeight'))
@@ -80,17 +80,32 @@ class DictWindow
         if top < 0 or top > screen.height
             top = defaultTop
 
-        return new Promise (resolve) =>
+        # fix top value on Linux, may be chrome's bug.
+        if utils.isLinux()
+            if top > screen.availTop
+                top = defaultTop 
+            if left > screen.availLeft
+                left = defaultLeft
+
+        if useDefaultPosition
+            top = defaultTop
+            left = defaultLeft
+
+        return new Promise (resolve, reject) =>
             if !@w
                 chrome.windows.create({
                     url: url or defaultWindowUrl,
                     type: 'popup',
                     width: width,
                     height: height,
-                    top: if utils.isLinux() then top - screen.availTop else top, # fix top value on Linux, may be chrome's bug.
-                    left: if utils.isLinux() then left - screen.availLeft else left, # fix left value on Linux, may be chrome's bug.
+                    top: top, 
+                    left: left, 
                     state: 'normal',
                 }, (win)=>
+                    if not win
+                        return @open(url, true) if not useDefaultPosition
+                        return reject(new Error("Failed to create the popup lookup window!")) 
+
                     @w = win
                     @tid = @w.tabs[@w.tabs.length-1].id
                     @url = url or defaultWindowUrl
