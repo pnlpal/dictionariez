@@ -179,7 +179,7 @@ class LookupParser
 
             for targetLang in result.langTargets
                 if targetLang.lang 
-                    if prevResult?.lang == targetLang.lang 
+                    if prevResult?.lang == targetLang.lang && prevResult.w == w 
                         continue 
 
                     # Special handle for Norwegian on Wiktionary
