@@ -23,7 +23,7 @@ getAnkiInfo = (ankiSavedWord) ->
 		
 		if Array.isArray(res.lookupInfo) 
 			res.lookupInfo.forEach(renderLookupInfo(res.wordItem, res.followedWords))
-			utils.send 'look up', { w: res.lookupInfo[1].w } if res.lookupInfo?[1]?.w
+			utils.send 'look up', { w: res.lookupInfo.at(-1)?.w } if res.lookupInfo.at(-1)?.w
 		else 
 			renderLookupInfo(res.wordItem)(res.lookupInfo)
 			utils.send 'look up', { w: res.lookupInfo.w } if res.lookupInfo?.w
