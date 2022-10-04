@@ -74,11 +74,12 @@ class DictWindow
             top += 50 * @windex
             left += 50 * @windex 
         
-        # fix on windows, if window is out of the screen
-        if left < 0 or left > screen.width 
-            left = defaultLeft
-        if top < 0 or top > screen.height
-            top = defaultTop
+        # fix on windows, if window is out of the screen. But On Mac, it's OK.
+        if not utils.isMac() 
+            if left < 0 or left > screen.width 
+                left = defaultLeft
+            if top < 0 or top > screen.height
+                top = defaultTop
 
         # fix top value on Linux, may be chrome's bug.
         if utils.isLinux()

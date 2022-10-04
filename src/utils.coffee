@@ -123,6 +123,9 @@ export default {
 
     isLinux: () -> 
         return window.navigator.platform.includes('Linux')
+    
+    isMac: () -> 
+        return window.navigator.platform.includes('Mac')
 
     sanitizeHTML: (s)->
         s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')

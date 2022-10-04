@@ -17,14 +17,39 @@ class AnkiWindow
         window.clearInterval(@savePosInterval) if @savePosInterval
         @savePosInterval = null
 
-    open: ()->
+    open: (useDefaultPosition)->
         # bugfix: dont know how why, windowWidth and windowHeight are saved as number, need integer here.
         width = parseInt(setting.getValue('ankiWidth'))
         height = parseInt(setting.getValue('ankiHeight'))
-        left = setting.getValue('ankiLeft', Math.round((screen.width / 2) - (width / 2)))
-        top = setting.getValue('ankiTop', Math.round((screen.height / 2) - (height / 2)))
 
-        return new Promise (resolve) =>
+        # fix too small value
+        width = 580 if !width or width < 300
+        height = 600 if !height or height < 300
+        
+        defaultLeft = Math.round((screen.width / 2) - (width / 2))
+        defaultTop = Math.round((screen.height / 2) - (height / 2))
+        left = setting.getValue('ankiLeft', defaultLeft)
+        top = setting.getValue('ankiTop', defaultTop)
+        
+        # fix on windows, if window is out of the screen. But On Mac, it's OK.
+        if not utils.isMac() 
+            if left < 0 or left > screen.width 
+                left = defaultLeft
+            if top < 0 or top > screen.height
+                top = defaultTop
+
+        # fix top value on Linux, may be chrome's bug.
+        if utils.isLinux()
+            if top > screen.availTop
+                top = defaultTop 
+            if left > screen.availLeft
+                left = defaultLeft
+
+        if useDefaultPosition
+            top = defaultTop
+            left = defaultLeft
+
+        return new Promise (resolve, reject) =>
             if !@w
                 # console.log "[dictWindow] create window position: top: #{top}, left: #{left}, width: #{width}, height: #{height}"
                 chrome.windows.create({
@@ -36,6 +61,10 @@ class AnkiWindow
                     left: if utils.isLinux() then left - screen.availLeft else left, # fix left value on Linux, may be chrome's bug.
                     state: 'normal',
                 }, (win)=>
+                    if not win
+                        return @open(true) if not useDefaultPosition
+                        return reject(new Error("Failed to create the popup anki window!")) 
+
                     @w = win
                     @tid = @w.tabs[0].id
                     resolve()
