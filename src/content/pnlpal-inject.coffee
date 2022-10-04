@@ -4,6 +4,7 @@ import utils from "utils"
 addDictByTopic = (tid) ->
 	topic = await $.get("#{location.origin}/api/topic/#{tid}").catch(console.error)
 	json = $(topic.posts[0].content).find('code.language-json').text()
+	json = $(topic.posts[0].content).find('code').text() if not json
 
 	dict = JSON.parse(json)
 	dict.dictName ?= topic.title 
