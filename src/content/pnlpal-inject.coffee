@@ -17,8 +17,12 @@ if location.host == 'pnlpal.dev' or location.host == "localhost:4567"
 	$(document).on 'click', '.add-to-dictionariez', () -> 
 		$(this).text('waiting...')
 		$(this).addClass('disabled')
-		addDictByTopic($(this).data('tid')).then () => 
+		addDictByTopic($(this).data('tid')).then (() => 
 			$(this).text('Added!')
-			$(this).removeClass('disabled')
+			$(this).removeClass('disabled')), ((err) => 
+				alert("Your json format has error: " + err.message);
+				console.error("Your json format has error: ");
+				console.error(err);
+			)
 
 		return false
