@@ -5,13 +5,12 @@ and export your look-up words to **Anki**.
 
 # Install
 
-- [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc) _Sometimes older because of Chrome's delayed review._
+- [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc) 
+- [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/) 
 
-- [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/) _Newest_
+- [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/dictionaries-one-to-rule/jdgglojanbnghagoeffacmjodigadoof)
 
-- [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/dictionaries-one-to-rule/jdgglojanbnghagoeffacmjodigadoof) _Sometimes older because of Microsoft's delayed review._
-
-- [Download crx file](build.crx) _Newest. Uninstall the other version before you install it. But every time your have to upgrade by yourself._
+- [Download crx file](build.crx) _Newest. Uninstall the other version before you install it. But each time your have to upgrade it by yourself._
 
 - New: Download [Kiwi] or [Flow] to use Dictionariez on Android.
 
