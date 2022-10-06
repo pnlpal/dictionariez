@@ -1,3 +1,12 @@
+# v3.0.3 Oct 6, 2022
+
+- Parse multiple languages if possible.
+- Parse word conjugation if possible.
+- Add a skip button on Anki when importing words.
+- Fix dict position on multiple monitors.
+- Fix installing dict from non-json code block.
+- Fix thefreedictionry style on #issues/82.
+
 # v3.0.2 Jul 11, 2022
 
 - Add Naver dict for Korean language
