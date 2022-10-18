@@ -354,8 +354,15 @@ chrome.runtime.sendMessage {
 
 			posHtml = posTpl item.pos if item.pos 
 			defs = if Array.isArray(item.def) then item.def else [item.def]
-			defsCon = defs.map((def) -> defTpl def if def).reduce (prev, next) ->
-				return prev + '<br>' + next if prev and next 
+			defsCon = defs.map((def, i) -> 
+				if def
+					if defs.length == 1
+						return defTpl def 
+					else 
+						return defTpl("#{i+1}. #{def}")
+				return ""
+			).reduce (prev, next) ->
+				return prev + '<br>' + next if next 
 				return prev 
 			defsHtml = defsTpl defsCon if defsCon
 

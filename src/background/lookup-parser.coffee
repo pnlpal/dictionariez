@@ -78,7 +78,11 @@ class LookupParser
             credentials,
         }), 5000)
         .then((resp) -> 
-            throw new Error(resp.status) if not resp.ok
+            if not resp.ok
+                err = new Error(resp.statusText) 
+                err.status = resp.status
+                throw err
+
             return resp.text()
         )
         .then((html) -> 
@@ -94,16 +98,20 @@ class LookupParser
             credentials
         }), 5000)
         .then((resp) -> 
-            throw new Error(resp.status) if not resp.ok
+            if not resp.ok
+                err = new Error(resp.statusText) 
+                err.status = resp.status
+                throw err
+
             return resp.json()
         )
 
-    parse: (w, tname, prevResult) ->
+    parse: (w, tname, prevResult, url) ->
         tname ?= @checkType(w)
         return unless tname 
 
         dictDesc = @data[tname]
-        url = dictDesc.url.replace('<word>', w)
+        url = (url or dictDesc.url).replace('<word>', w)
 
         # special handle Chinese
         if tname == 'google' 
@@ -116,10 +124,17 @@ class LookupParser
             else
                 html = await @load url, dictDesc.credentials
         catch err 
-            if (err.statusText or err.message) == 'timeout' \
-            and tname != 'wiktionary' \
-            and utils.isEnglish(w)
+            if err.message == 'timeout' \
+                and tname != 'wiktionary' \
+                and utils.isEnglish(w)
                 return @parse(w, 'wiktionary')
+
+            else if (err.status == 404 \
+                and tname == 'wiktionary' \
+                and (not url.includes('sv.wiktionary.org')) \
+                and @checkLangs(w).includes('Swedish')) 
+                return @parse(w, 'wiktionary', prevResult, url.replace('en.wiktionary.org', 'sv.wiktionary.org'))
+
             console.error "Failed to parse: ", url, err 
             return prevResult
 
@@ -186,6 +201,9 @@ class LookupParser
                     # see https://en.wiktionary.org/wiki/bl%C3%A5kval#Norwegian
                     if targetLang.lang.includes('Norwegian')
                         targetLang.lang = 'Norwegian'
+                    
+                    if targetLang.lang == 'Svenska'
+                        targetLang.lang = 'Swedish'
 
                     if @isLangDisabled(targetLang.lang) or not langs[targetLang.lang]
                         targetLang = null 
@@ -361,12 +379,7 @@ class LookupParser
         if typeof desc == 'string'
             value = desc 
         else if desc.toArray 
-            value = $el.toArray().map (item, idx) -> 
-                text = item.innerText?.trim()
-                if desc.includeArrayIndex and text
-                    "#{idx+1}. " + item.innerText?.trim()
-                else 
-                    text
+            value = $el.toArray().map((item) -> item.innerText?.trim()).filter((x) -> x)
             if desc.max and value.length > desc.max 
                 value = value.filter (item, i) -> i < 2
 
