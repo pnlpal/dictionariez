@@ -65,7 +65,12 @@ export default {
                     allDicts.push d
             
             storage.setAllByK 'dict-', 'dictName', allDicts
+
         allDicts.sort (a, b) -> a.sequence - b.sequence
+
+        allDicts.forEach (d, oi) => 
+            d.sequence = oi 
+
         @allDicts = allDicts   
 
     addToDictionariez: (d) ->
