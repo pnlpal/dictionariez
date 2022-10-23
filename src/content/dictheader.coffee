@@ -25,6 +25,8 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     $scope.querying = false
     $scope.previous = null
 
+    $scope.version = chrome.runtime.getManifest().version
+
     if not $scope.inFrame
         import(### webpackChunkName: "github-badge"  ###'../vendor/github-badge.js')
         import(### webpackChunkName: "needsharebutton-js"  ###'../vendor/needsharebutton.min.js')
