@@ -1,3 +1,9 @@
+# v3.0.4 Oct 23, 2022
+
+- Won't show the share page anymore when update.
+- Parse the Swedish wiktionary when the Swedish word couldn't be found on the English wiktionary site.
+- Fix reordering the dicts when the sequence has a duplicate.
+
 # v3.0.3 Oct 6, 2022
 
 - Parse multiple languages if possible.
