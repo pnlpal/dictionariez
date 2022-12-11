@@ -148,6 +148,14 @@ export default {
                 xhr.responseType = 'blob'
                 xhr.send()
 
+    imageSize: (src) -> 
+        new Promise (resolve) ->
+            img = new Image()
+            img.onload = () ->
+                resolve {width: this.width, height: this.height}
+            
+            img.src = src
+
     toUpperFirst: (text)->
         text[0].toUpperCase() + text.slice(1)
     

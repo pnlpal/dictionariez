@@ -103,14 +103,14 @@ renderImage = (image) ->
 	height: 0;
 	display: inline-block;
 	padding: 0;
-	padding-bottom: 55%;
+	padding-bottom: {ratio};
 	background-image: url("{dataUrl}");
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 100% auto;
 '></div>
 	'''
-	return dataImgTpl.replace('{dataUrl}', image.dataUrl)
+	return dataImgTpl.replace('{dataUrl}', image.dataUrl).replace('{ratio}', Math.ceil(image.height / image.width * 100) + '%')
 
 renderImages = (images) ->
 	imgs = images.map((cur, i) ->

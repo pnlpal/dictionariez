@@ -132,8 +132,8 @@ export default {
 
         message.on 'image to data url', (request, sender) => 
             dataUrl = await utils.imageToDataUrl(request.src)
-            return {dataUrl}
+            {width, height} =  await utils.imageSize(dataUrl)
 
-
+            return {dataUrl, width, height}
 
 }       
