@@ -1,6 +1,7 @@
 import $ from 'jquery'
 import debounce from 'lodash/debounce'
 import utils from "utils"
+import './anki-inject.less'
 
 currentWordItem = null 
 
@@ -41,6 +42,9 @@ getAnkiInfo = (ankiSavedWord, ankiSkippedWord) ->
 				imageInfo = await utils.send 'image to data url', { src }
 				$img.replaceWith renderImage imageInfo
 		), 1000
+
+		$('.field').on 'click', '.dictionariez-anki-image', (e) ->
+			this.remove();
 
 addSkipButton = () ->
 	btn = '''
@@ -108,7 +112,7 @@ renderImage = (image) ->
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 100% auto;
-'></div>
+' class='dictionariez-anki-image'></div>
 	'''
 	return dataImgTpl.replace('{dataUrl}', image.dataUrl).replace('{ratio}', Math.ceil(image.height / image.width * 100) + '%')
 

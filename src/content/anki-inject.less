@@ -1,0 +1,22 @@
+.dictionariez-anki-image {
+    position: relative;
+    pointer-events: none;
+
+    &::before {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        content: "X";
+        width: 10px;
+        height: 10px;
+        
+        color: gray;
+        mix-blend-mode: difference;
+        font-family: fantasy;
+        font-size: 30px;
+        font-weight: bold;
+
+        cursor: pointer;
+        pointer-events: auto;
+    }
+}
