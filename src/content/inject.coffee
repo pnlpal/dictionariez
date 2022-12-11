@@ -406,18 +406,22 @@ chrome.runtime.sendMessage {
 			utils.send 'play audios', { ameSrc, breSrc, checkSetting: true}
 	
 	handlePlainResult = (res) ->
-		html = if Array.isArray(res) then res.map(renderQueryResult).join('') else renderQueryResult res
+		html = ''
+		res = if Array.isArray(res) then res else [res]
+		for item in res 
+			html += renderQueryResult item
+	
+			if item?.prons?.length and item.w
+
+				if item.prons.some (v)->['US', 'UK'].includes(v.symbol)
+					getEnglishPronSymbol item.w 
+
+				if item.prons.some (v)->['bre', 'ame'].includes(v.type) 
+					getEnglishPronAudio item.w 
+		
 		if !html
 			plainQuerying = null
 
-		if res?.prons?.length and res.w
-
-			if res.prons.some (v)->['US', 'UK'].includes(v.symbol)
-				getEnglishPronSymbol res.w 
-
-			if res.prons.some (v)->['bre', 'ame'].includes(v.type) 
-				getEnglishPronAudio res.w 
-		
 		return html
 
 	handleLookupByMouse = (event, text)->
