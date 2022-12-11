@@ -56,7 +56,7 @@ addSkipButton = () ->
 		$('.field#f1').empty() 
 		getAnkiInfo(null, currentWordItem.w)
 
-if location.origin == 'https://ankiuser.net'
+if location.origin == 'https://ankiuser.net' && location.pathname == '/edit/'
 	getAnkiInfo()
 	addSkipButton()
 
