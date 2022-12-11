@@ -27,6 +27,7 @@
     "angular": "~1.8.0",
     "angular-bootstrap": "^0.12.2",
     "angular-ui-bootstrap": "^2.5.6",
+    "angularjs-color-picker": "^3.4.8",
     "bootoast": "^1.0.1",
     "bootstrap": "^3.4.1",
     "datatables.net-bs": "^1.10.20",

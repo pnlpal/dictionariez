@@ -19,7 +19,11 @@ import('./options.less')
 
 import bootoast from 'bootoast/dist/bootoast.min.js'
 
-dictApp = angular.module('fairyDictApp', ['ui.bootstrap'])
+import "angularjs-color-picker/dist/angularjs-color-picker.min.css"
+import "angularjs-color-picker/dist/themes/angularjs-color-picker-bootstrap.min.css"
+import 'angularjs-color-picker'
+
+dictApp = angular.module('fairyDictApp', ['ui.bootstrap', 'color.picker'])
 
 dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
     $scope.version = chrome.runtime.getManifest().version
@@ -92,4 +96,10 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
         $scope.$apply()
 
         import(### webpackChunkName: "tables"  ###'./tables.coffee')
+
+    
+    $scope.markColorEvent = { 
+        onChange: (api, color, $event) -> 
+            $scope.changeKey(color, 'markColor')
+    }
 ]

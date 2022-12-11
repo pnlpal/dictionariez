@@ -12,6 +12,7 @@ export default {
             ankiHeight: 700,
 
             markWords: false,
+            markColor: 'yellow',
             enableMarkWordsSK1: true,
             markWordsSK1: 'Meta',
             markWordsKey: 'B', 

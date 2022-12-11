@@ -168,7 +168,7 @@ chrome.runtime.sendMessage {
 		
 		if setting.markWords 
 			if setting.enableMarkWordsSK1 and utils.checkEventKey(event, setting.markWordsSK1, null, setting.markWordsKey)
-				highlight('yellow') 
+				highlight(setting.markColor) 
 
 		if isInDict
 			if utils.checkEventKey event, setting.prevHistorySK1, null, setting.prevHistoryKey
@@ -451,7 +451,7 @@ chrome.runtime.sendMessage {
 		# highlight selected words is a special feature
 		# even if the floating definition is turned off, still highlight can be working.
 		if setting.markWords and !setting.enableMarkWordsSK1
-				highlight('yellow') 
+				highlight(setting.markColor) 
 
 		if setting.enablePlainLookup && text != plainQuerying
 			if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
