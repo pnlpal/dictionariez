@@ -109,7 +109,7 @@ initHistory = () ->
             filename: 'dictionaries-history',
             className: 'btn btn-info',
             exportOptions: {
-                columns: ['w:name', 'r:name', 's:name', 't:name'],
+                columns: ['w:name', 'r:name', 'sentence:name', 's:name', 't:name'],
                 orthogonal: 'download'
             }
         }, {
