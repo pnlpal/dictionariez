@@ -1,3 +1,12 @@
+# v3.1.0 Dec 12, 2022
+
+- Auto adapt the image size when adding to Anki.
+- Export the sentence column to csv.
+- Can change the mark color of highlight.
+- Support Polish.
+- Fix getting the real person pronunciation of English words.
+- Follow more conjugated words if possible.
+
 # v3.0.4 Oct 23, 2022
 
 - Won't show the share page anymore when update.
