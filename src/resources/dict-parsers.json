@@ -172,6 +172,9 @@
               },
               "followWord": {
                 "selector": "ol>li .mention a[href]"
+              },
+              "optionalFollowWord": {
+                "selector": "ol>li a[href]"
               }
             }
           }

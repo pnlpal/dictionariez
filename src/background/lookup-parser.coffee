@@ -6,6 +6,7 @@ import setting from "./setting.coffee"
 import utils from "utils"
 import parsers from '../resources/dict-parsers.json'
 import langs from '../resources/langs.json'
+import stringSimilarity from 'string-similarity'
 
 trimWordPos = (pos) ->
     pos = pos.toLowerCase()
@@ -226,8 +227,12 @@ class LookupParser
                         if targetLang.lang == 'Tajik' # merge Tajik
                             return @parseTajik w, targetLang
 
+                        # use followWord fist, then try optionalFollowWord
                         if targetLang.defs?.length >= 1 and targetLang.defs[0].followWord and !prevResult
                             return @parse targetLang.defs[0].followWord, 'wiktionary', targetLang
+                        else if targetLang.defs?.length >= 1 and targetLang.defs[0].optionalFollowWord and !prevResult
+                            if stringSimilarity.compareTwoStrings(w, targetLang.defs[0].optionalFollowWord) > 0.7
+                                return @parse targetLang.defs[0].optionalFollowWord, 'wiktionary', targetLang
 
                         multipleResult.push targetLang if multipleResult.length < 3
                         
@@ -409,7 +414,7 @@ test = () ->
     # parser.parse('бештар').then console.log 
     # parser.parse('бо').then console.log 
     # parser.parse('ไทย').then console.log 
-    parser.parse('elephant').then console.log 
+    parser.parse('anhållen').then console.log 
 
 # test()
 

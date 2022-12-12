@@ -41,7 +41,8 @@
     "less": "^2.7.1",
     "lodash": "latest",
     "moment": "^2.29.4",
-    "requirejs": "^2.3.2"
+    "requirejs": "^2.3.2",
+    "string-similarity": "^4.0.4"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^1.0.0",
