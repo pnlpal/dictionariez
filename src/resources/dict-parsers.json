@@ -297,5 +297,31 @@
         }
       }
     }
+  },
+  "Indonesian": {
+    "url": "https://www.kamus.net/indonesia/<word>",
+    "languages": ["Indonesian"],
+    "result": {
+      "w": {
+        "selector": "#featured-term #featured-term-int"
+      },
+      "prons": [
+        {
+          "synthesis": "id-ID"
+        }
+      ],
+      "defs": {
+        "container": "#featured-term-trans",
+        "groups": ".trans-target",
+        "result": {
+          "def": {
+            "selector": "p",
+            "toArray": true,
+            "excludeChild": ".pron",
+            "includeArrayIndex": true
+          }
+        }
+      }
+    }
   }
 }

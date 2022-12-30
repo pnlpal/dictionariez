@@ -273,4 +273,11 @@ export default [{
         'resources': {
             styles: ['naver-resizable.less']
     },
+},  {
+        'dictName': 'Kamus (Indonesian)', 
+        'windowUrl': 'https://www.kamus.net/indonesia/<word>',
+        'windowUrlMatch': '/indonesian/([^&/?]+)',
+        'resources': {
+            styles: ['kamus.less']
+    },
 }]
