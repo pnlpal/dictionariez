@@ -170,7 +170,7 @@ class LookupParser
 
             else if result.langSymbol
                 for lang, n of langs 
-                    if n.symbol == result.langSymbol 
+                    if n.symbol == result?.langSymbol and result
                         result.lang = lang 
 
                         if @isLangDisabled(lang)
@@ -183,7 +183,7 @@ class LookupParser
                             }]
 
             # parse the second language if possible.
-            possibleLangs = @checkLangs(w).filter((l) -> l != result.lang)
+            possibleLangs = @checkLangs(w).filter((l) -> l != result?.lang)
             if possibleLangs.length
                 return @parse w, 'wiktionary', result 
 
@@ -193,7 +193,7 @@ class LookupParser
             if prevResult
                 multipleResult.push prevResult
 
-            for targetLang in result.langTargets
+            for targetLang in (result.langTargets || [])
                 if targetLang.lang 
                     if prevResult?.lang == targetLang.lang && prevResult.w == w 
                         continue 
@@ -225,10 +225,10 @@ class LookupParser
                         targetLang.w = result.w 
 
                         if targetLang.lang == 'Tajik'
-                            return @parseOtherLang w, 'Tajik', targetLang
+                            return @parseOtherLang w, 'Tajik', targetLang, prevResult
 
                         if targetLang.lang == 'Indonesian' 
-                            return @parseOtherLang w, 'Indonesian', targetLang
+                            return @parseOtherLang w, 'Indonesian', targetLang, prevResult
 
                         # use followWord fist, then try optionalFollowWord
                         if targetLang.defs?.length >= 1 and targetLang.defs[0].followWord and !prevResult
@@ -253,7 +253,7 @@ class LookupParser
 
         return result
 
-    parseOtherLang: (w, lang, wiktionaryResult) ->
+    parseOtherLang: (w, lang, wiktionaryResult, prevResult) ->
         result = await @parse(w, lang)
 
         # wiktionary result is first.
@@ -267,7 +267,7 @@ class LookupParser
         if not result?.prons?[0]?.symbol and wiktionaryResult.prons?.length
             result.prons = wiktionaryResult.prons
         
-        return result 
+        return if prevResult then [prevResult, result] else result 
 
     parseNaver: (json, obj) ->
         result = {}
