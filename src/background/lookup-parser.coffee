@@ -19,6 +19,14 @@ trimWordPos = (pos) ->
         return pos.slice(0, 4)
     return pos 
 
+virtualDom = undefined
+
+$clean = (html) ->
+    # To let jQuery parse HTML without loading resources.
+    # see: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
+    virtualDom ?= document.implementation.createHTMLDocument('virtual')
+    return $(html, virtualDom)
+
 setEnglishProns = (result) ->
     result.prons = result.prons.concat [
         {
@@ -86,12 +94,7 @@ class LookupParser
 
             return resp.text()
         )
-        .then((html) -> 
-            # To let jQuery parse HTML without loading resources.
-            # see: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
-            virtualDom = document.implementation.createHTMLDocument('virtual')
-            return $(html, virtualDom)
-        )
+        .then($clean)
 
     loadJson: (url, credentials) ->
         utils.promiseInTime(fetch(url, {
@@ -317,7 +320,7 @@ class LookupParser
                     $nodes = $container.find desc.groups 
                     if desc.extendPrev
                         $nodes = $nodes.map (i, n) -> 
-                            _ctnr = $('<div></div>')
+                            _ctnr = $clean('<div></div>')
                             _ctnr.append $(n).clone() 
 
                             _p = $(n)
@@ -330,7 +333,7 @@ class LookupParser
 
                     if desc.extendNextTo 
                         $nodes = $nodes.map (i, n) -> 
-                            _ctnr = $('<div></div>')
+                            _ctnr = $clean('<div></div>')
                             _ctnr.append $(n).clone()
 
                             _p = $(n)
