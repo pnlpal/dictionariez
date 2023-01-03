@@ -370,14 +370,6 @@ chrome.runtime.sendMessage {
 
 		res.defs.forEach renderItem if res?.defs
 		res.defs2.forEach renderItem if res?.defs2
-
-		if html
-			$('.dictionaries-tooltip').fadeIn('slow')
-			$('.dictionaries-tooltip .fairydict-spinner').hide()
-			$('.dictionaries-tooltip .dictionaries-tooltip-content').append(html)
-		else
-			$('.dictionaries-tooltip').fadeOut().hide()
-
 		return html
 
 	getEnglishPronSymbol = (w) ->
@@ -419,8 +411,13 @@ chrome.runtime.sendMessage {
 				if item.prons.some (v)->['bre', 'ame'].includes(v.type) 
 					getEnglishPronAudio item.w 
 		
-		if !html
+		if html 
+			$('.dictionaries-tooltip').fadeIn('slow')
+			$('.dictionaries-tooltip .fairydict-spinner').hide()
+			$('.dictionaries-tooltip .dictionaries-tooltip-content').append(html)
+		else 
 			plainQuerying = null
+			$('.dictionaries-tooltip').fadeOut().hide()
 
 		return html
 

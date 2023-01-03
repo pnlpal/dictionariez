@@ -139,7 +139,7 @@ class LookupParser
                 and @checkLangs(w).includes('Swedish')) 
                 return @parse(w, 'wiktionary', prevResult, url.replace('en.wiktionary.org', 'sv.wiktionary.org'))
 
-            console.error "Failed to parse: ", url, err 
+            console.error "Failed to parse: ", url, err.message
             return prevResult
 
         if tname == "naver"
