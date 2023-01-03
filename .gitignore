@@ -6,3 +6,5 @@ secrets.*.js
 
 dictionaries.zip
 dictionaries-src.zip
+
+.DS_Store

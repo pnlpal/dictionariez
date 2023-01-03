@@ -40,6 +40,11 @@
     "symbol": "pl",
     "synthesis": "pl-PL"
   },
+  "Finnish": {
+    "regex": "[a-zA-ZäöåÄÖÅ ]",
+    "symbol": "fi",
+    "synthesis": "fi-FI"
+  },
   "Korean": {
     "regex": "[\uac00-\ud7af]|[\u1100-\u11ff]|[\u3130-\u318f]|[\ua960-\ua97f]|[\ud7b0-\ud7ff]",
     "symbol": "ko"
