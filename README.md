@@ -5,8 +5,8 @@ and export your look-up words to **Anki**.
 
 # Install
 
-- [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc) 
-- [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/) 
+- [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc)
+- [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/)
 
 - [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/dictionaries-one-to-rule/jdgglojanbnghagoeffacmjodigadoof)
 
@@ -35,8 +35,8 @@ With the launch of [pnlpal community](https://pnlpal.dev/topic/2/), you can shar
 ![Promo Banner](readme_images/all-in-one.jpg)
 ![Alt text](readme_images/s1-final.jpg)
 ![Alt text](readme_images/english.jpg)
-![Alt text](readme_images/s5-final.jpg)
-![Alt text](readme_images/s6.jpg)
+![Alt text](readme_images/s2-final.jpg)
+![Alt text](readme_images/s3-final.jpg)
 
 # More dictionaries are needed!
 
