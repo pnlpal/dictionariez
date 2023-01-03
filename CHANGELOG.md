@@ -1,3 +1,11 @@
+# v3.2.0 Jan 03, 2023
+
+- Support Finnish.
+- Support Indonesian.
+- Fix parsing words in multiple languages.
+- Finnally get rid of invalid requests when parsing some words.
+- Fix hiding the loading box when no result found.
+
 # v3.1.0 Dec 12, 2022
 
 - Auto adapt the image size when adding to Anki.
