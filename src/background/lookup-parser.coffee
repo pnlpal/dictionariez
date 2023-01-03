@@ -224,8 +224,11 @@ class LookupParser
 
                         targetLang.w = result.w 
 
-                        if targetLang.lang == 'Tajik' # merge Tajik
-                            return @parseTajik w, targetLang
+                        if targetLang.lang == 'Tajik'
+                            return @parseOtherLang w, 'Tajik', targetLang
+
+                        if targetLang.lang == 'Indonesian' 
+                            return @parseOtherLang w, 'Indonesian', targetLang
 
                         # use followWord fist, then try optionalFollowWord
                         if targetLang.defs?.length >= 1 and targetLang.defs[0].followWord and !prevResult
@@ -250,16 +253,19 @@ class LookupParser
 
         return result
 
-    parseTajik: (w, wiktionaryResult) ->
-        result = await @parse(w, 'Tajik')
+    parseOtherLang: (w, lang, wiktionaryResult) ->
+        result = await @parse(w, lang)
 
         # wiktionary result is first.
         if wiktionaryResult and result.w != wiktionaryResult.w 
             return wiktionaryResult
         
         # merge 
-        if wiktionaryResult?.defs
-            result.defs2 = wiktionaryResult.defs 
+        if not result?.defs?.length
+            result.defs = wiktionaryResult.defs 
+        
+        if not result?.prons?[0]?.symbol and wiktionaryResult.prons?.length
+            result.prons = wiktionaryResult.prons
         
         return result 
 
