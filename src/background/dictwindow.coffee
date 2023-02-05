@@ -131,7 +131,10 @@ class DictWindow
                     })
                     @url = url
                
-                resolve()
+                    resolve()
+                else 
+                    resolve({noUpdate: true})
+                    
     focus: () ->
         chrome.windows.update(@w.id, {
             focused: true
@@ -145,18 +148,13 @@ class DictWindow
         text = @word if not text
 
         if text
-            result = await @queryDict(text)
+            @word = text
+            result = await dict.query(text, @dictName) 
             url = result?.windowUrl
             if url != @url
                 @sendMessage({type: 'querying', text})
 
         @open(url)
-
-    queryDict: (text)->
-        return unless text
-
-        @word = text
-        return dict.query(text, @dictName)
 
     saveWindowPosition: ()->
         if @w
@@ -302,7 +300,7 @@ export default {
                     if win.w and win.w != senderWin.w 
                         win.lookup(w)
                 
-                return senderWin.queryDict(w)
+                return senderWin.lookup(w)
 
         message.on 'dictionary', (request, sender) =>
             win = @getByTab(sender.tab.id)

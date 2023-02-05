@@ -95,18 +95,9 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             previousWord,
             newDictWindow 
         }, (data) ->
-            if data?.windowUrl
-                window.top.location.href = data.windowUrl
-
-                # some website may not reload window, like naver dict.
-                setTimeout (() ->
-                    $scope.querying = false
-                    initDict()
-                ), 2000
-                
-            else
+            $scope.querying = false
+            if data.noUpdate
                 # current dict might be changed
-                $scope.querying = false
                 initDict()
         )
 
