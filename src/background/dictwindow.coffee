@@ -269,8 +269,9 @@ export default {
                 @focus()
 
         message.on 'query', (request, sender) =>
-            dictName = request.dictName
-            w = request.w
+            senderWin = @getByTab(sender.tab.id)
+            dictName = request.dictName || senderWin.dictName
+            w = request.w || senderWin.word
             
             if request.nextDict
                 dictName = dict.getNextDict(dictName).dictName
@@ -293,9 +294,7 @@ export default {
                 targetWin.updateDict(dictName)
                 targetWin.lookup(w)
             else 
-                senderWin = @getByTab(sender.tab.id)
                 senderWin.updateDict(dictName)
-
                 @dictWindows.forEach (win)->
                     if win.w and win.w != senderWin.w 
                         win.lookup(w)

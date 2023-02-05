@@ -145,12 +145,6 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
                 $scope.query({ previousWord: true })
             if request.action == 'keypress history next'
                 $scope.query({ nextWord: true })
-            if request.action == 'keypress dict prev'
-                $scope.query({ previousDict: true })
-            if request.action == 'keypress dict next'
-                $scope.query({ nextDict: true })
-            if request.action == 'keypress dict by number'
-                $scope.query({ dictNumber: request.dictNumber })
 
         $scope.$apply()
 

@@ -179,13 +179,22 @@ chrome.runtime.sendMessage {
 				utils.sendToDict 'keypress history next'
 				return false
 			if utils.checkEventKey event, setting.prevDictSK1, null, setting.prevDictKey
-				utils.sendToDict 'keypress dict prev'
+				chrome.runtime.sendMessage({
+					type: 'query',
+					previousDict: true
+				})
 				return false
 			if utils.checkEventKey event, setting.nextDictSK1, null, setting.nextDictKey
-				utils.sendToDict 'keypress dict next'
+				chrome.runtime.sendMessage({
+					type: 'query',
+					nextDict: true
+				})
 				return false
 			if (event.ctrlKey or event.metaKey) and event.key.match(/\d/)
-				utils.sendToDict 'keypress dict by number', { dictNumber: parseInt(event.key.match(/\d/)[0]) }
+				chrome.runtime.sendMessage({
+					type: 'query',
+					dictNumber: parseInt(event.key.match(/\d/)[0])
+				})
 				return false 
 
 
