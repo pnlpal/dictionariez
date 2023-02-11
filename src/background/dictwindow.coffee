@@ -149,8 +149,7 @@ class DictWindow
 
         if text
             @word = text
-            result = await dict.query(text, @dictName) 
-            url = result?.windowUrl
+            url = dict.query(text, @dictName) 
             if url != @url
                 @sendMessage({type: 'querying', text})
 

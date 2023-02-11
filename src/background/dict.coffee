@@ -147,11 +147,10 @@ export default {
         return
 
     query: (word, dictName)->
-        dfd = $.Deferred()
         dict = @getDict(dictName)
         if dict.fixSpaceInWords
             word = word.replace(/\s+/g, dict.fixSpaceInWords)
-        return dfd.resolve {windowUrl: dict.windowUrl.replace('<word>', word)}
+        return dict.windowUrl.replace('<word>', word)
     
     searchDicts: (key) ->
         results = []

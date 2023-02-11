@@ -36,6 +36,8 @@ import "./hot-reload-content-scripts.js"
 
     { default: pnlpal } = await import(### webpackChunkName: "pnlpal"  ###"./pnlpal.coffee")
     pnlpal.init()
+
+    import(### webpackChunkName: "omnibox"  ###"./omnibox.coffee")
 )()
 
 chrome.runtime.onInstalled.addListener (details) ->
@@ -46,3 +48,5 @@ chrome.runtime.onInstalled.addListener (details) ->
         chrome.tabs.create({
             url: chrome.runtime.getURL('share.html')
         })
+
+

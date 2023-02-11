@@ -2,6 +2,7 @@
   "manifest_version": 2,
   "name": "Dictionariez: one to rule them all",
   "permissions": ["activeTab", "tabs", "storage", "contextMenus", "<all_urls>"],
+  "omnibox": { "keyword": "d" },
   "background": {
     "persistent": true,
     "page": "background.html"
