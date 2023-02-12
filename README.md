@@ -26,7 +26,7 @@ And click on the app's icon, a popup window will show to let you look up any wor
 My goal is providing a universal tool to look up any word in any language, currently [more dictionaries are needed](https://pnlpal.dev/topic/52/help-more-dictionaries-are-needed), and more user reviews are wanted to improve its usability.  
 As you can see, I am a language learner, Chinese is my mother tongue, English and Japanese are what I am learning right now. I wish this small tool could help the others like me. So if you have any suggestion please tell me, I am glad to hear feedbacks.
 
-Join me on [Telegram](https://t.me/worldlanguagelearner) & [Discord](https://discord.gg/sazRac4kSa) to learn languages together. We would talk about linguistics, programming, and even have virtual meetings once for a while. Let's build this community together.
+Join me on [Discord](https://discord.gg/sazRac4kSa) to learn languages together. We would talk about linguistics, programming, and even have virtual meetings once for a while. Let's build this community together.
 
 With the launch of [pnlpal community](https://pnlpal.dev/topic/2/), you can share your reading with pals all over the world now. No matter it's a news story, or a technical review, or even a youtube video. As long as it benefits our programming and language community, you could share it. [Check it](https://pnlpal.dev) by yourself. Let's learn together, and grow together.
 
