@@ -310,7 +310,11 @@ export default {
             if win 
                 w = win.word
                 r = storage.getRating(w)
-                
+            else if !win && !request.optionsPage 
+                win = @create()
+                win.tid = sender.tab.id
+                win.dictName = currentDictName
+
             previous = storage.getPrevious(w)
             history = storage.getHistory(w, 10) # at most show 10 words in the history list on dictionary header.
 
