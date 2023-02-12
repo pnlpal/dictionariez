@@ -1,5 +1,14 @@
 # v3.2.0 Jan 03, 2023
 
+- Fix layout of the options page on mobile.
+- More concise view on mobile.
+- Fix the refresh of the dict on open it again.
+- Fix changing dict when opened multiple dict windows.
+- Remove promotion of Twitter and Telegram channel.
+- Remove the sharing btn to pnlpal in the word history.
+
+# v3.2.0 Jan 03, 2023
+
 - Support Finnish.
 - Support Indonesian.
 - Fix parsing words in multiple languages.
