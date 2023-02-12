@@ -35,7 +35,7 @@
 					</ul>
 				</div>
 
-				<div class="col-md-10">
+				<div class="col-md-10 col-xs-12">
 					<div id="home" class="section">
 						<h1 class="">
 							<!-- http://patorjk.com/software/taag/#p=display&h=1&v=1&f=Swan&t=Dictionariez -->
@@ -593,7 +593,14 @@
 								look up the word for you. But some websites may not be compatible with it. You can add the exceptions here. Regex is supported.
 							</em>
 							<div>
-								<textarea name="excluded-webistes" id="excluded-websites" ng-model="setting.excludedSites" ng-change="changeKey('excludedSites')" cols="100" rows="5"></textarea>
+								<textarea name="excluded-webistes" 
+									id="excluded-websites" 
+									class="form-control"
+									ng-model="setting.excludedSites" 
+									ng-change="changeKey('excludedSites')" 
+									cols="10" 
+									rows="5">
+								</textarea>
 							</div>
 						</div>
 					</div>

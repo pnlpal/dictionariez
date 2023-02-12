@@ -73,6 +73,7 @@ initHistory = () ->
     return if not $('#table-history').length
     data = await utils.send 'history'
     table = $('#table-history').DataTable({
+        responsive: true,
         dom: '<"pull-left"f><"pull-left"i><"pull-right"B>tp',
         paging: false,
         autoWidth: false,
@@ -231,6 +232,7 @@ initDictionary = () ->
     {currentDictName, allDicts} = await utils.send 'dictionary', { optionsPage: true }
 
     table = $('#table-dictionary').DataTable({
+        responsive: true,
         dom: '<"pull-left"f><"pull-left"i><"pull-right"B>tp',
         paging: false,
         # ordering: false,

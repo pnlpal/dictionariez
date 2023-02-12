@@ -1,6 +1,5 @@
 
 # import '../needsharebutton.min.css'
-
 import angular from 'angular'
 import utils from "utils"
 import debounce from 'lodash/debounce'
@@ -27,7 +26,6 @@ dictApp = angular.module('fairyDictApp', ['ui.bootstrap', 'color.picker'])
 
 dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
     $scope.version = chrome.runtime.getManifest().version
-
     $scope.allSK = ['', 'Ctrl', 'Shift', 'Alt', 'Meta']
     $scope.allLetters = (String.fromCharCode(code) for code in ['A'.charCodeAt(0)..'Z'.charCodeAt(0)])
     $scope.allLetters.unshift('Disabled')

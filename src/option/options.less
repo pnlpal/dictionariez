@@ -1,11 +1,27 @@
 body {
   position: relative;
-  .nav {
-    position: fixed;
-    top: 20px;
 
+  .nav-wrapper {
     @media screen and (max-width: 768px) {
-      right: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .nav {
+      position: fixed;
+      top: 20px;
+
+      @media screen and (max-width: 768px) {
+        bottom: 20px;
+        top: auto;
+        z-index: 9999;
+        background-color: gainsboro;
+
+        &.nav-stacked > li {
+          float: left;
+        }
+      }
     }
   }
 
@@ -32,6 +48,12 @@ body {
   .link-github {
     i {
       vertical-align: middle;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .dataTables_info {
+      display: none;
     }
   }
 
@@ -73,6 +95,10 @@ body {
       right: 20px;
       img {
         height: 50px;
+
+        @media screen and (max-width: 768px) {
+          height: 25px;
+        }
       }
     }
   }
@@ -80,7 +106,7 @@ body {
   .function-setting {
     .choose-mark-color {
       margin-bottom: 20px;
-     
+
       color-picker {
         position: absolute;
         input {
@@ -88,6 +114,5 @@ body {
         }
       }
     }
-    
   }
 }
