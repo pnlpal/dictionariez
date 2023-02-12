@@ -41,15 +41,12 @@ buildActionIcon = (name) ->
         when 'remove'
             faIcon = 'fa-remove'
             cls = 'text-danger'
-        when 'anki'
+        when 'export to Anki'
             faIcon = 'fa-share-square-o'
             cls = 'text-warning'
-        when 'saved in anki'
+        when 'saved in Anki'
             faIcon = 'fa-retweet'
             cls = 'text-muted'
-        when 'share with pals'
-            faIcon = 'fa-share-alt'
-            cls = 'text-warning'
         when 'comment'
             faIcon = 'fa-comment-o'
             cls = 'text-muted'
@@ -180,8 +177,8 @@ initHistory = () ->
                 render: (data, type, row) ->
                     if type == 'display'
                         if row.ankiSaved 
-                            return buildActionIcon('saved in anki') + buildActionIcon('remove')
-                        return buildActionIcon('anki') + buildActionIcon('share with pals') + buildActionIcon('remove')
+                            return buildActionIcon('saved in Anki') + buildActionIcon('remove')
+                        return buildActionIcon('export to Anki') + buildActionIcon('remove')
                     return ''
             }
         ],
@@ -211,10 +208,8 @@ initHistory = () ->
                     await utils.send 'remove history', rowData
                     row.remove().draw()
                     bravo()
-                when 'anki'
+                when 'export to Anki'
                     await utils.send 'open anki', rowData
-                when 'share with pals'
-                    await utils.send 'share with pals', { link: rowData.s, title: rowData.sc }
 
         if $(e.target).hasClass('dictionaries-history-word')
             e.preventDefault()
