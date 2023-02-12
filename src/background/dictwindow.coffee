@@ -304,20 +304,20 @@ export default {
         message.on 'dictionary', (request, sender) =>
             win = @getByTab(sender.tab.id)
 
-            if win or request.optionsPage
-                currentDictName = win?.dictName || setting.getValue('dictionary')
-                currentDictName = dict.getDict(currentDictName).dictName
+            currentDictName = win?.dictName || setting.getValue('dictionary')
+            currentDictName = dict.getDict(currentDictName).dictName
 
-                if win 
-                    w = win.word
-                    r = storage.getRating(w)
-                    previous = storage.getPrevious(w)
-                    history = storage.getHistory(w, 10) # at most show 10 words in the history list on dictionary header.
-
-                nextDictName = dict.getNextDict(currentDictName).dictName
-                previousDictName = dict.getPreviousDict(currentDictName).dictName
+            if win 
+                w = win.word
+                r = storage.getRating(w)
                 
-                return { allDicts: dict.allDicts, history, currentDictName, nextDictName, previousDictName, previous, w, r }
+            previous = storage.getPrevious(w)
+            history = storage.getHistory(w, 10) # at most show 10 words in the history list on dictionary header.
+
+            nextDictName = dict.getNextDict(currentDictName).dictName
+            previousDictName = dict.getPreviousDict(currentDictName).dictName
+            
+            return { allDicts: dict.allDicts, history, currentDictName, nextDictName, previousDictName, previous, w, r }
         
         message.on 'dictionary history', (request, sender) =>
             history = storage.getHistory(request.word, 10) # at most show 8 words in the history list on dictionary header.
