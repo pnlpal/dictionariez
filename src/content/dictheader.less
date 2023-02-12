@@ -178,6 +178,15 @@
       padding-left: 5px;
       padding-right: 5px;
       overflow: hidden;
+
+      @media screen and (max-width: 450px) {
+        display: none;
+
+        + .btn {
+          border-top-left-radius: 4px;
+          border-bottom-left-radius: 4px;
+        }
+      }
     }
     .vhide {
       visibility: hidden;
@@ -259,9 +268,9 @@
     }
 
     .history-group {
-        #history-btn {
-            max-width: 75px;
-        }
+      #history-btn {
+        max-width: 75px;
+      }
     }
 
     .dict-group {
