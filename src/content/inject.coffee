@@ -16,6 +16,7 @@ import './anki-inject.coffee'
 import './card-iframe.coffee'
 import './pnlpal-inject.coffee'
 import './captionz-inject.coffee'
+import { initOnChatGPT } from './chatgpt-inject.js'
 import {
   getSentenceFromSelection
 } from 'get-selection-more'
@@ -32,6 +33,7 @@ chrome.runtime.sendMessage {
 		# some websites such as naver dict, may clear body when reload to another page. 
 		$("<iframe id='dictionaries-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('html')
 		isInDict = true
+		initOnChatGPT({ word: res.word, dict: res.dict })
 
 	if res?.cardUrl and res.word and not location.host.includes('wikipedia.org')
 		comparedLoc = decodeURI(location.href).toLowerCase()

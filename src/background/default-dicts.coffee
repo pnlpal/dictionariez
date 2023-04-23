@@ -1,4 +1,8 @@
 export default [{
+    "dictName": "chatgpt definition",
+    "chatgptPrompt": "Give me the full definitions of \"<word>\", including IPA, definitions each with at least two examples, etymology, related words with explanations, and in an organized output.",
+    "chatgptPromptWithContext": "Give me the full definitions of \"<word>\", including IPA, definitions each with at least two examples, etymology, related words with explanations, and in an organized output. The word is in the context of \"<sentense>\"."
+}, {
     'dictName': 'Longman English'
     'entry': 'LongmanEnglish'
     'windowUrl': 'https://www.ldoceonline.com/dictionary/<word>'

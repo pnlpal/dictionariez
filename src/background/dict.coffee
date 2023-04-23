@@ -151,7 +151,13 @@ export default {
         dict = @getDict(dictName)
         if dict.fixSpaceInWords
             word = word.replace(/\s+/g, dict.fixSpaceInWords)
-        return dfd.resolve {windowUrl: dict.windowUrl.replace('<word>', word)}
+
+        if dict.windowUrl
+            windowUrl = dict.windowUrl.replace('<word>', word)
+        else if dict.chatgptPrompt 
+            windowUrl = 'https://chat.openai.com/'
+
+        return dfd.resolve { windowUrl }
     
     searchDicts: (key) ->
         results = []
