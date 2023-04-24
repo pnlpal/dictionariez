@@ -164,7 +164,7 @@ export default {
         for dict in @allDicts
             if dict.dictName.toLowerCase().startsWith(key)
                 results.push(dict)
-            else
+            else if dict.windowUrl
                 domain = dict.windowUrl.match(/:\/\/([^\/\?]+)/)[1]
                 domain = domain.replace(/^www\.|^dict\.|^dictionary\.|^m\.|\.m\./, '')
                 domains = domain.split('.')

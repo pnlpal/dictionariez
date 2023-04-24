@@ -145,7 +145,7 @@ class DictWindow
     sendMessage: (msg)->
         chrome.tabs.sendMessage(@tid, msg) if @tid
 
-    lookup: (text, sentence)->
+    lookup: (text, sentence, languagePrompt)->
         url = ''
         text = @word if not text
 
@@ -155,7 +155,7 @@ class DictWindow
                 @sentence = sentence || null
                 result = await dict.query(text, @dictName) 
                 url = result?.windowUrl
-                @sendMessage({type: 'querying', text, sentence})
+                @sendMessage({type: 'querying', text, sentence, languagePrompt})
             else 
                 url = @url 
 
@@ -277,6 +277,8 @@ export default {
             senderWin = @getByTab(sender.tab.id)
             dictName = request.dictName || senderWin.dictName
             w = request.w || senderWin.word
+            languagePrompt = w?.split(" /")[1]
+            w = w?.split(" /")[0]
             sentence = request.sentence
             
             if request.nextDict
@@ -302,14 +304,14 @@ export default {
             if request.newDictWindow
                 targetWin = @create()
                 targetWin.updateDict(dictName)
-                targetWin.lookup(w, sentence)
+                targetWin.lookup(w, sentence, languagePrompt)
             else 
                 senderWin.updateDict(dictName)
                 @dictWindows.forEach (win)->
                     if win.w and win.w != senderWin.w 
-                        win.lookup(w, sentence)
+                        win.lookup(w, sentence, languagePrompt)
                 
-                return senderWin.lookup(w, sentence)
+                return senderWin.lookup(w, sentence, languagePrompt)
 
         message.on 'dictionary', (request, sender) =>
             win = @getByTab(sender.tab.id)
