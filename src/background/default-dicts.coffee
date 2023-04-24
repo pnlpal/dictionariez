@@ -1,7 +1,8 @@
 export default [{
     "dictName": "chatgpt definition",
-    "chatgptPrompt": "Give me the full definitions of \"<word>\", including IPA, definitions each with at least two examples, etymology, related words with explanations, and in an organized output.",
-    "chatgptPromptWithContext": "Give me the full definitions of \"<word>\", including IPA, definitions each with at least two examples, etymology, related words with explanations, and in an organized output. The word is in the context of \"<sentense>\"."
+    "css": "body {margin-top: 50px !important;}",
+    "chatgptPrompt": "Give me the full definitions of \"<word>\", if possible try to include IPA, definitions each with at least two examples, etymology, conjugations, related words with explanations, and in a pretty output with formatting like bold, italics etc.",
+    "chatgptPromptWithContext": "Give me the full definitions of \"<word>\", which is used in the context \"<sentence>\", if possible try to include IPA, definitions each with at least two examples, etymology, conjugations, related words with explanations etc, and in a pretty output with formatting like bold, italics etc."
 }, {
     'dictName': 'Longman English'
     'entry': 'LongmanEnglish'

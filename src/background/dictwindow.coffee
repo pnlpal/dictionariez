@@ -40,11 +40,12 @@ class DictWindow
     tid: null
     url: null
     word: null
+    sentence: null
     dictName: null
     savePosInterval: null
     windex: 0
 
-    constructor: ({ @w, @tid, @url, @word, dictName } = {}) ->
+    constructor: ({ @w, @tid, @url, @word, @sentence, dictName } = {}) ->
         @dictName = dictName || setting.getValue('dictionary') || dict.allDicts[0].dictName
 
     reset: ()->
@@ -52,6 +53,7 @@ class DictWindow
         @tid = null
         @url = null
         @word = null
+        @sentence = null
         window.clearInterval(@savePosInterval) if @savePosInterval
         @savePosInterval = null
 
@@ -143,16 +145,17 @@ class DictWindow
     sendMessage: (msg)->
         chrome.tabs.sendMessage(@tid, msg) if @tid
 
-    lookup: (text)->
+    lookup: (text, sentence)->
         url = ''
         text = @word if not text
 
         if text
-            if @word != text 
+            if @word != text || @sentence != sentence
                 @word = text
+                @sentence = sentence || null
                 result = await dict.query(text, @dictName) 
                 url = result?.windowUrl
-                @sendMessage({type: 'querying', text})
+                @sendMessage({type: 'querying', text, sentence})
             else 
                 url = @url 
 
@@ -179,7 +182,7 @@ export default {
 
     lookup: ({ w, s, sc, sentence } = {}) ->
         storage.addHistory { w, s, sc, sentence } if w and s  # ignore lookup from options page
-        @dictWindows.forEach (win)-> win.lookup(w)
+        @dictWindows.forEach (win)-> win.lookup(w, sentence)
     
     focus: () ->
         i = @dictWindows.length 
@@ -259,14 +262,14 @@ export default {
             if newDictWindow 
                 targetWin = @create()
                 targetWin.updateDict(dictName || @dictWindows[0].dictName)
-                targetWin.lookup(w || @dictWindows[0].word)
+                targetWin.lookup(w || @dictWindows[0].word, sentence)
 
             else if dictName # only change the main window or in new window.
                 @dictWindows[0].updateDict dictName 
-                @dictWindows[0].lookup(w?.trim())
+                @dictWindows[0].lookup(w?.trim(), sentence)
                 @focus()
 
-            else 
+            else  # This is more likely to happen.
                 @lookup({ w: w?.trim(), s, sc, sentence })
                 @focus()
 
@@ -274,6 +277,7 @@ export default {
             senderWin = @getByTab(sender.tab.id)
             dictName = request.dictName || senderWin.dictName
             w = request.w || senderWin.word
+            sentence = request.sentence
             
             if request.nextDict
                 dictName = dict.getNextDict(dictName).dictName
@@ -285,23 +289,27 @@ export default {
                 dictName = d.dictName
             
             if request.previousWord
-                w = storage.getPrevious(w)?.w
+                prev = storage.getPrevious(w)
+                w = prev?.w
+                sentence = prev?.sentence
             else if request.nextWord
-                w = storage.getNext(w, true)?.w
+                next = storage.getNext(w, true)
+                w = next?.w 
+                sentence = next?.sentence
             else if w
-                storage.addHistory { w }
+                storage.addHistory { w, sentence }
 
             if request.newDictWindow
                 targetWin = @create()
                 targetWin.updateDict(dictName)
-                targetWin.lookup(w)
+                targetWin.lookup(w, sentence)
             else 
                 senderWin.updateDict(dictName)
                 @dictWindows.forEach (win)->
                     if win.w and win.w != senderWin.w 
-                        win.lookup(w)
+                        win.lookup(w, sentence)
                 
-                return senderWin.lookup(w)
+                return senderWin.lookup(w, sentence)
 
         message.on 'dictionary', (request, sender) =>
             win = @getByTab(sender.tab.id)
@@ -355,7 +363,8 @@ export default {
                     dictUrl: chrome.runtime.getURL('dict.html'),
                     cardUrl: chrome.runtime.getURL('card.html'),
                     dict: d,
-                    word: win.word 
+                    word: win.word,
+                    sentence: win.sentence 
                 }
            
         message.on 'window resize', (request, sender) =>
