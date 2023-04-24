@@ -150,12 +150,17 @@ chrome.runtime.sendMessage {
 	
 	$(document).bind 'keydown', (event)->
 		if utils.checkEventKey event, setting.openSK1, setting.openSK2, setting.openKey
+			try 
+				sentence = getSentenceOfSelection()
+			catch
+				sentence = null
 			chrome.runtime.sendMessage({
 				type: 'look up',
 				means: 'keyboard',
 				w: window.getSelection().toString().trim(),
 				s: location.href,
-				sc: document.title
+				sc: document.title,
+				sentence,
 			})
 		if event.key == "Escape"
 			$('.dictionaries-tooltip').fadeOut().hide()
