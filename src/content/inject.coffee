@@ -179,11 +179,17 @@ chrome.runtime.sendMessage {
 
 		if isInDict
 			if utils.checkEventKey event, setting.prevHistorySK1, null, setting.prevHistoryKey
-				utils.sendToDict 'keypress history prev'
+				chrome.runtime.sendMessage({
+					type: 'query',
+					previousWord: true
+				})
 				return false
 
 			if utils.checkEventKey event, setting.nextHistorySK1, null, setting.nextHistoryKey
-				utils.sendToDict 'keypress history next'
+				chrome.runtime.sendMessage({
+					type: 'query',
+					nextWord: true
+				})
 				return false
 			if utils.checkEventKey event, setting.prevDictSK1, null, setting.prevDictKey
 				chrome.runtime.sendMessage({

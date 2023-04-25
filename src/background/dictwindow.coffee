@@ -304,15 +304,17 @@ export default {
             if request.newDictWindow
                 targetWin = @create()
                 targetWin.updateDict(dictName)
-                targetWin.lookup(w, sentence, languagePrompt)
+                return targetWin.lookup(w, sentence, languagePrompt)
             else 
                 senderWin.updateDict(dictName)
-                @dictWindows.forEach (win)->
-                    if win.w and win.w != senderWin.w 
-                        win.lookup(w, sentence, languagePrompt)
-                
-                return senderWin.lookup(w, sentence, languagePrompt)
 
+                result = null
+                @dictWindows.forEach (win)->
+                    res = win.lookup(w, sentence, languagePrompt)
+                    if win.tid == senderWin.tid 
+                        result = res 
+                return result
+                
         message.on 'dictionary', (request, sender) =>
             win = @getByTab(sender.tab.id)
 

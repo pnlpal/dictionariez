@@ -145,11 +145,6 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             if request.action == 'keypress focus'
                 $('input.dict-input', baseNode)[0].select()
 
-            if request.action == 'keypress history prev'
-                $scope.query({ previousWord: true })
-            if request.action == 'keypress history next'
-                $scope.query({ nextWord: true })
-
         $scope.$apply()
 
     $(baseNode).on 'starrr:change', (e, value)->
