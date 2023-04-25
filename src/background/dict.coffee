@@ -3,6 +3,13 @@ import storage from  "./storage.coffee"
 import message from "./message.coffee"
 import defaultDicts from "./default-dicts.coffee"
 
+chatgptDefault = {
+    "windowUrl": "https://chat.openai.com",
+    "css": "body {margin-top: 50px !important;}",
+    "inputSelector": "main form textarea",
+    "submitButtonSelector": "main form textarea+button"
+}
+
 export default {
     setting: undefined,
     allDicts: [],
@@ -52,6 +59,8 @@ export default {
                 d.sequence = oi
                 if s
                     Object.assign d, s 
+
+                d = Object.assign {}, chatgptDefault, d if d.chatgptPrompt
                 allDicts.push d 
             
             extraDicts.forEach (d)=>
@@ -82,6 +91,7 @@ export default {
             d = locDict
         else 
             d.sequence = @allDicts.length
+            d = Object.assign {}, chatgptDefault, d if d.chatgptPrompt
             @allDicts.push d
         
         storage.setAllByK 'dict-', 'dictName', [d]
@@ -90,11 +100,13 @@ export default {
         added = []
 
         defaultDicts.forEach (d, oi) =>
-            if @allDicts.find (d1) -> d1.dictName == d.dictName 
+            currentDict = @allDicts.find (d1) -> d1.dictName == d.dictName 
+            if currentDict 
+                Object.assign currentDict, d, (if d.chatgptPrompt then chatgptDefault else null)
                 return  # ignore existing ones 
 
             d.sequence = oi
-            
+            d = Object.assign {}, chatgptDefault, d if d.chatgptPrompt
             @allDicts.push d 
             added.push d 
 
