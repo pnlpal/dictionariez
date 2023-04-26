@@ -138,26 +138,6 @@ export default {
             return @allDicts[@allDicts.length-1]
         return @allDicts[n-1]
 
-    getDictResources: (dictName)->
-        dict = @getDict(dictName)
-        if dict.windowUrl
-            # web dict
-            return dict.resources
-
-    getDictFromOrigin: (origin) ->
-        @allDicts.find (d) ->
-            d.windowUrl?.includes(origin)
-
-    getWordFromUrl: (url, dictName)->
-        dict = @getDict dictName
-        if dict?.windowUrlMatch
-            m = new RegExp(dict.windowUrlMatch)
-            s = url?.match(m)?[1]
-            if s
-                s = s.replace(/[+_]/g, ' ')
-                return decodeURI(s)
-        return
-
     query: (word, dictName)->
         dfd = $.Deferred()
         dict = @getDict(dictName)
