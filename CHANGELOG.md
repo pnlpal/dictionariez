@@ -1,3 +1,9 @@
+# v3.3.0 Apr 26, 2023
+
+- Integrate with ChatGPT.
+- Reduce the default dicts.
+- Fix getting sentence when looking up with keyboard shortcut.
+
 # v3.2.0 Jan 03, 2023
 
 - Fix layout of the options page on mobile.
