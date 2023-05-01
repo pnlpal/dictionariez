@@ -82,10 +82,6 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
             value: $scope.setting.otherDisabledLanguages
         }
     
-    window.addExtraDict = (dict)->
-        await utils.send 'dictionary-add', { dict } 
-        location.reload()
-
     chrome.runtime.sendMessage {
         type: 'setting'
     }, (config)->
@@ -100,4 +96,33 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
         onChange: (api, color, $event) -> 
             $scope.changeKey(color, 'markColor')
     }
+
+    setupDevFunctions = () -> 
+        console.log("""
+.--.        .                                    
+|   : o    _|_   o                    o          
+|   | .  .-.|    .  .-. .--. .-.  .--..  .-. ---.
+|   ; | (   |    | (   )|  |(   ) |   | (.-'  .' 
+'--'-' `-`-'`-'-' `-`-' '  `-`-'`-' -' `-`--''---
+
+Welcome to dictionariez! 
+You can use the function "addDict" to add/change a dict to your dictionary list.
+For example: 
+
+addDict({
+  "dictName": "Google Image",
+  "windowUrl": "https://www.google.com/search?tbm=isch&q=<word>",
+  "css": "c-wiz[jsdata='deferred-i3']>div:first-child {display: none;} body {margin-top: 50px !important;}"
+})
+
+And use "allDicts" to access all the dicts in your collection. 
+
+Read more here: https://pnlpal.dev/topic/52/help-more-dictionaries-needed
+
+        """)
+        window.addDict = window.addExtraDict = (dict)->
+            await utils.send 'dictionary-add', { dict } 
+            location.reload()
+    
+    setupDevFunctions()
 ]

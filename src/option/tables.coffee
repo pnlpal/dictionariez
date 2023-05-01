@@ -225,6 +225,8 @@ initHistory()
 
 initDictionary = () ->
     {currentDictName, allDicts} = await utils.send 'dictionary', { optionsPage: true }
+    
+    window.allDicts = allDicts;
 
     table = $('#table-dictionary').DataTable({
         responsive: true,
@@ -235,7 +237,7 @@ initDictionary = () ->
             dataSrc: 'sequence'
         },
         buttons: [{
-            text: 'Add more to your collection',
+            text: 'Add more dicts',
             className: 'btn btn-success',
             action: () ->
                 href = 'https://pnlpal.dev/category/4/dictionariez-trove'
