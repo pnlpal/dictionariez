@@ -31,6 +31,7 @@ import "./hot-reload-content-scripts.js"
 
     { default: speak } = await import(### webpackChunkName: "speak"  ###"./speak.coffee")
     speak.init()
+    window.speak = speak;
 
     { default: ankiWindow } = await import(### webpackChunkName: "ankiwindow"  ###"./ankiwindow.coffee")
     ankiWindow.init()

@@ -33,7 +33,7 @@ chrome.runtime.sendMessage {
 		# some websites such as naver dict, may clear body when reload to another page. 
 		$("<iframe id='dictionaries-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('html')
 		isInDict = true
-		initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict })
+		initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict }, $)
 
 	if res?.cardUrl and res.word and not location.host.includes('wikipedia.org')
 		comparedLoc = decodeURI(location.href).toLowerCase()
@@ -225,6 +225,13 @@ chrome.runtime.sendMessage {
 			synthesisObj = {
 				text: $(this).data('w'),
 				lang: $(this).data('synthesis')
+			}
+			utils.send 'play audios', { synthesisObj }
+		
+		else if $(this).hasClass('for-chatgpt-audio')
+			synthesisObj = {
+				text: $(this).parent().text(),
+				lang: 'en-US'
 			}
 			utils.send 'play audios', { synthesisObj }
 

@@ -54,6 +54,7 @@ class DictWindow
         @url = null
         @word = null
         @sentence = null
+        @dictName = null
         window.clearInterval(@savePosInterval) if @savePosInterval
         @savePosInterval = null
 
@@ -202,6 +203,7 @@ export default {
                 win.url = options.url
                 win.word = options.word
                 win.sentence = options.sentence 
+                win.dictName = options.dictName
             return win
 
         else 

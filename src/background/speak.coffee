@@ -25,11 +25,19 @@ playAudios = (urls) ->
     for url in urls
         await _play(url)
 
-playSynthesis = ({text, lang}) ->
+playSynthesis = ({text, lang, voice}) ->
     return if window.speechSynthesis.speaking
     msg = new SpeechSynthesisUtterance()
     msg.text = text
     msg.lang = lang if lang 
+
+    if lang == 'en-US'
+        voices = speechSynthesis.getVoices()
+        msg.voice = voices.find((x) => x.name == voice) \
+        || voices.find((x) => x.name == 'Google US English') \
+        || voices.find((x) => x.lang == 'en-US' && x.name == 'Samantha') \
+        || voices[0]
+
     window.speechSynthesis.speak(msg)
 
 export default {
