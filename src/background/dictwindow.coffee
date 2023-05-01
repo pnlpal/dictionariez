@@ -141,6 +141,9 @@ class DictWindow
         chrome.windows.update(@w.id, {
             focused: true
         }) if @w
+        chrome.tabs.update(@tid, {
+            highlighted: true
+        }) if @tid
 
     sendMessage: (msg)->
         chrome.tabs.sendMessage(@tid, msg) if @tid
@@ -190,11 +193,22 @@ export default {
             i -= 1 
             @dictWindows[i].focus()
 
-    create: () ->
-        win = new DictWindow()
-        win.windex = @dictWindows.length
-        @dictWindows.push win 
-        return win 
+    create: (options) ->
+        if (@dictWindows[0] && !@dictWindows[0].w) 
+            win = @dictWindows[0]
+            if options
+                win.w = options.w
+                win.tid = options.tid
+                win.url = options.url
+                win.word = options.word
+                win.sentence = options.sentence 
+            return win
+
+        else 
+            win = new DictWindow(options)
+            win.windex = @dictWindows.length
+            @dictWindows.push win 
+            return win 
     
     getByTab: (tid) ->
         for win in @dictWindows 
@@ -370,6 +384,22 @@ export default {
                     word: win.word,
                     sentence: win.sentence 
                 }
+            else if utils.isMobile()
+                chatgptDict = dict.getDict("chatgpt definition")
+                if chatgptDict && sender.tab.url.startsWith(chatgptDict.windowUrl)
+                    @create({ w: {id: sender.tab.windowId}, tid: sender.tab.id, url: sender.tab.url, dictName: chatgptDict.dictName })
+                    if chatgptDict.css
+                        chrome.tabs.insertCSS sender.tab.id, {
+                            runAt: "document_start",
+                            code: chatgptDict.css
+                        }
+                    
+                    return {
+                        dictUrl: chrome.runtime.getURL('dict.html'),
+                        cardUrl: chrome.runtime.getURL('carchatgptDicthtml'),
+                        dict: chatgptDict
+                    }
+
            
         message.on 'window resize', (request, sender) =>
             @getByTab(sender.tab.id)?.saveWindowPosition()

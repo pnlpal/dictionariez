@@ -22,6 +22,7 @@ import "./hot-reload-content-scripts.js"
     { default: dw } = await import(### webpackChunkName: "dictwindow"  ###"./dictwindow.coffee")
     await dw.init()
     window.dw = dw
+    window.dictWindows = dw.dictWindows
 
     await import(### webpackChunkName: "auto-complete"  ###"./auto-complete.coffee")
     
