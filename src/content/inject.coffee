@@ -307,6 +307,9 @@ chrome.runtime.sendMessage {
 			curNode = curNode.parentElement
 
 	handleMouseUp = (event)->
+		if isInDict
+			window.top.postMessage { type: 'toggleDropdown', open: false }, '*'
+
 		selObj = window.getSelection()
 		text = selObj.getRangeAt(0)?.toString().trim() if selObj.rangeCount > 0
 		unless text

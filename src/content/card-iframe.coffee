@@ -26,7 +26,7 @@ setupCardsPosition = () ->
 
 window.addEventListener "message", ((event) ->
 	# chrome-extension or moz-extension
-	if event.origin.includes('extension://') 
+	if event?.data?.type 
 		if event.data.type == 'toggleDropdown'
 			if event.data.open
 				$('#dictionaries-iframe').addClass('dropdown-open')
