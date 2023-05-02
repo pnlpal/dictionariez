@@ -1,3 +1,10 @@
+# v3.3.1 Apr 26, 2023
+
+- Add pronunciations to ChatGPT examples and definitions.
+- Setup dictionary when open ChatGPT on mobile.
+- Setup dev functions and examples in the console of the options page.
+- Fix closing dropdown menus when clicking on the area of the dict.
+
 # v3.3.0 Apr 26, 2023
 
 - Integrate with ChatGPT.
