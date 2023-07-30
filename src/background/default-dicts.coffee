@@ -44,12 +44,9 @@ export default [{
         styles: ['oxfordlearner.less']
     }
 }, {
-    'dictName': 'Cambridge English'
-    'entry': 'CambridgeEnglish'
-    'windowUrl': 'https://dictionary.cambridge.org/dictionary/english/<word>'
-    "resources": {
-        styles: ['cambridgeenglish.less']
-    }
+    'dictName': 'Cambridge English',
+    'windowUrl': 'https://dictionary.cambridge.org/dictionary/english/<word>',
+    'css': '#header, #ad_topslot_a {display: none;}'
 }, {
     'dictName': "thefreedictionary.com",
     'windowUrl': 'https://www.thefreedictionary.com/<word>',
