@@ -16,6 +16,7 @@ import './anki-inject.coffee'
 import './card-iframe.coffee'
 import './pnlpal-inject.coffee'
 import './captionz-inject.coffee'
+import './ytb-inject.js'
 import { initOnLoadDynamicDict } from './dynamic-dict-inject.js'
 import {
   getSentenceFromSelection
