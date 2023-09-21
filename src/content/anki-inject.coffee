@@ -3,6 +3,8 @@ import debounce from 'lodash/debounce'
 import utils from "utils"
 import './anki-inject.less'
 
+window.$ = $;
+
 currentWordItem = null 
 
 getAnkiInfo = (ankiSavedWord, ankiSkippedWord) ->
@@ -15,13 +17,13 @@ getAnkiInfo = (ankiSavedWord, ankiSkippedWord) ->
 			currentWordItem = null 
 			return 
 
-		await utils.checkInTime (()->$('.field#f0')), 5000
+		await utils.checkInTime (()->$('.field').length), 5000
 
 		currentWordItem = res.wordItem
 
 		if res.wordItem?.sentence 
-			$('.field#f0').append renderTTS res.wordItem.sentence
-			$('.field#f0').append renderQuoteInfo res.wordItem 
+			$('.field:eq(0)').append renderTTS res.wordItem.sentence
+			$('.field:eq(0)').append renderQuoteInfo res.wordItem 
 		
 		if Array.isArray(res.lookupInfo) 
 			res.lookupInfo.forEach(renderLookupInfo(res.wordItem, res.followedWords))
@@ -30,33 +32,35 @@ getAnkiInfo = (ankiSavedWord, ankiSkippedWord) ->
 			renderLookupInfo(res.wordItem)(res.lookupInfo)
 			utils.send 'look up', { w: res.lookupInfo.w } if res.lookupInfo?.w
 		
-		$('.field#f1').append '<br><br>'
+		$('.field:eq(1)').append '<br><br>'
 
-		$('.field#f0, .field#f1').on 'input', debounce ((e) -> 
-			$('img', e.target).each () ->
-				$img = $(this)
-				return if $img.attr('is-handling')
+		# $('.field:eq(0), .field:eq(1)').on 'input', debounce ((e) -> 
+		# 	$('img', e.target).each () ->
+		# 		$img = $(this)
+		# 		return if $img.attr('is-handling')
 
-				$img.attr('is-handling', true)
-				src = $img.attr('src')
-				imageInfo = await utils.send 'image to data url', { src }
-				$img.replaceWith renderImage imageInfo
-		), 1000
+		# 		$img.attr('is-handling', true)
+		# 		src = $img.attr('src')
+		# 		imageInfo = await utils.send 'image to data url', { src }
+		# 		$img.replaceWith renderImage imageInfo
+		# ), 1000
 
 		$('.field').on 'click', '.dictionariez-anki-image', (e) ->
-			this.remove();
+			this.remove()
+		
 
 addSkipButton = () ->
+	await utils.checkInTime (()->$('button.btn-primary').length), 5000
 	btn = '''
-	<button class="btn btn-secondary btn-skip" style="float: right;">Skip</button>'''
+	<button class="btn btn-secondary btn-skip mt-2" style="float: right">Skip</button>'''
 	$(btn).insertAfter("button.btn-primary")
 
 	$('.btn-skip').on 'click', () ->
-		$('.field#f0').empty()
-		$('.field#f1').empty() 
+		$('.field:eq(0)').empty()
+		$('.field:eq(1)').empty() 
 		getAnkiInfo(null, currentWordItem.w)
 
-if location.origin == 'https://ankiuser.net' && location.pathname == '/edit/'
+if location.origin == 'https://ankiuser.net' && location.pathname == '/add'
 	getAnkiInfo()
 	addSkipButton()
 
@@ -64,24 +68,24 @@ $(document).on 'click', 'button.btn-primary', () ->
 	return if not currentWordItem?.w
 
 	try
-		await utils.checkInTime ()->$('.field#f0').text().trim() == ''
+		await utils.checkInTime ()->$('.field:eq(0)').text().trim() == ''
 
 		getAnkiInfo(currentWordItem.w)
 	catch 
-		console.err "Anki save failed on word: #{currentWordItem.w}"
+		console.error "Anki save failed on word: #{currentWordItem.w}"
 
 renderLookupInfo = (wordItem, followedWords) ->
 	(lookupInfo) ->
-		if lookupInfo?.images?.length 
-			$('.field#f0').append renderImages lookupInfo.images
+		# if lookupInfo?.images?.length 
+		# 	$('.field:eq(0)').append renderImages lookupInfo.images
 
 		if lookupInfo?.w
-			$('.field#f0').append renderLookupDefs lookupInfo, followedWords
-			$('.field#f0').append '<br>'
+			$('.field:eq(0)').append renderLookupDefs lookupInfo, followedWords
+			$('.field:eq(0)').append '<br>'
 
 		if lookupInfo
-			$('.field#f1').append renderTTS lookupInfo.w
-			$('.field#f1').append renderLookupWords wordItem, lookupInfo
+			$('.field:eq(1)').append renderTTS lookupInfo.w
+			$('.field:eq(1)').append renderLookupWords wordItem, lookupInfo
 			
 replaceW = (text, w) ->
 	text.replaceAll(w, "<span style='font-weight: bold'>[?]</span>")

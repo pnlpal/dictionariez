@@ -6,7 +6,7 @@ import plainLookup from "./lookup-parser.coffee"
 import storage from "./storage.coffee"
 
 class AnkiWindow 
-    url: 'https://ankiuser.net/edit/'
+    url: 'https://ankiuser.net/add'
     w: null,
     tid: null, 
     wordItem: null, 
