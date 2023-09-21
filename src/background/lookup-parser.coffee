@@ -146,6 +146,7 @@ class LookupParser
             result = @parseNaver json, dictDesc.result
         else
             result = @parseResult html, dictDesc.result
+            # console.log "parsed from:", tname, "result:", result
 
         # special handle of bing when look up Chinese
         if tname == "bing"

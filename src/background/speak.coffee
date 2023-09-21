@@ -25,19 +25,25 @@ playAudios = (urls) ->
     for url in urls
         await _play(url)
 
-playSynthesis = ({text, lang, voice}) ->
+playSynthesis = ({text, lang, name, voice}) ->
     return if window.speechSynthesis.speaking
     msg = new SpeechSynthesisUtterance()
     msg.text = text
     msg.lang = lang if lang 
 
-    if lang == 'en-US'
-        voices = speechSynthesis.getVoices()
-        msg.voice = voices.find((x) => x.name == voice) \
-        || voices.find((x) => x.name == 'Google US English') \
-        || voices.find((x) => x.lang == 'en-US' && x.name == 'Samantha') \
-        || voices[0]
+    voices = speechSynthesis.getVoices()
+    # console.log(voices.map(x => x.name + " " + x.lang))
 
+    if lang == 'en-US'
+        v = voices.find((x) => x.name == voice) \
+        || voices.find((x) => x.name == 'Google US English') \
+        || voices.find((x) => x.lang == 'en-US' && x.name == 'Samantha')
+        msg.voice = v if v
+    else if name
+        v = voices.find((x) => x.name.toLowerCase().includes(name.toLowerCase()))
+        msg.voice = v if v
+
+    # console.log('speak:', msg.text, msg.lang, msg.voice?.name)
     window.speechSynthesis.speak(msg)
 
 export default {
@@ -59,8 +65,6 @@ export default {
             if synthesisObj
                 playSynthesis synthesisObj
 
-        
-        message.on 'play synthesis', ({ text, lang }) ->
-            playSynthesis text, lang 
+
 
 }

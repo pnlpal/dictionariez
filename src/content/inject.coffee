@@ -228,6 +228,7 @@ run = () =>
 			else if $(this).data('synthesis') 
 				synthesisObj = {
 					text: $(this).data('w'),
+					name: $(this).data('lang'),
 					lang: $(this).data('synthesis')
 				}
 				utils.send 'play audios', { synthesisObj }
@@ -355,7 +356,7 @@ run = () =>
 			posTpl = (pos) -> "<span class='fairydict-pos'> #{pos} </span>"
 			contentTpl = (content) -> "<div class='fairydict-content'> #{content} </div>"
 			pronSymbolTpl = (symbol='', type='') -> "<span class='fairydict-symbol fairydict-symbol-#{type}'> <em> #{symbol} </em> </span>"
-			pronAudioTpl = (w, src='', type='', synthesis='') -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' href='javascript:void(0)' data-mp3='#{src}' data-synthesis='#{synthesis}' data-w='#{w}'><i class='icon-fairydict-volume'></i></a>"
+			pronAudioTpl = (w, src='', type='', synthesis='', lang='') -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' href='javascript:void(0)' data-mp3='#{src}' data-synthesis='#{synthesis}' data-lang='#{lang}' data-w='#{w}'><i class='icon-fairydict-volume'></i></a>"
 			pronsTpl = (w, prons) -> "<div class='fairydict-prons'> #{w} #{prons} </div>"
 
 			# console.log res 
@@ -371,7 +372,7 @@ run = () =>
 					pronHtml = res.prons.reduce ((prev, cur)->
 						if cur.synthesis or cur.audio or cur.symbol
 							prev += pronSymbolTpl(cur.symbol, cur.type)
-							prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis) if cur.synthesis or cur.audio
+							prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis, res.lang) if cur.synthesis or cur.audio
 						return prev
 					), ''
 			
