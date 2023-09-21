@@ -1,8 +1,8 @@
-(() => {
+export function initYtbInjection() {
   if (location.hostname !== "www.youtube.com" || window.self === window.top)
     return;
 
-  console.log("Injected in ytb: ", location.href);
+  // console.log("Injected in ytb: ", location.href);
 
   async function fetchCaption(url) {
     var xml = await fetch(url);
@@ -115,4 +115,4 @@
       });
     }
   });
-})();
+}
