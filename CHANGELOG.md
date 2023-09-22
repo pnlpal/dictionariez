@@ -1,3 +1,10 @@
+# v4.0.0 Sep 22, 2023
+
+- Add integration with Cats Love YouTube.
+- Fix looking up words in iframes.
+- Fix querying a word always using lowercase.
+- Fix speaking voice for some languages.
+
 # v3.3.1 Apr 26, 2023
 
 - Add pronunciations to ChatGPT examples and definitions.
