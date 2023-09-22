@@ -15,7 +15,7 @@ import highlight from './editable-highlight'
 import './anki-inject.coffee'
 import './card-iframe.coffee'
 import './pnlpal-inject.coffee'
-import './captionz-inject.coffee'
+import { initCaptionzInjection } from  './captionz-inject.coffee'
 import { initYtbInjection } from './ytb-inject.js'
 import { initOnLoadDynamicDict } from './dynamic-dict-inject.js'
 import {
@@ -24,6 +24,7 @@ import {
 
 run = () =>
 	initYtbInjection()
+	initCaptionzInjection()
 
 	isInDict = false
 

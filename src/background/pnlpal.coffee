@@ -33,7 +33,7 @@ shareOnPnlpal = (title, link) ->
         }
 
 openYtbOnCaptionz = (link) ->
-    url = "https://pnlpal.dev/captionz?link="+encodeURIComponent(link)
+    url = "https://pnlpal.dev/cats-love-youtube?link="+encodeURIComponent(link)
 
     chrome.tabs.create {
         url
@@ -52,7 +52,7 @@ export default {
 
         if not setting.getValue "disableYtbCaptionz"
             chrome.contextMenus.create {
-                title: "Watch this video on Captionz",
+                title: "Watch this video on CatsLoveYouTube",
                 contexts: ["link"],
                 targetUrlPatterns: [
                     "https://www.youtube.com/watch*"
