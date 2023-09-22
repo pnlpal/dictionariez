@@ -145,7 +145,7 @@ export default {
             word = word.replace(/\s+/g, dict.fixSpaceInWords)
 
         if dict.windowUrl
-            windowUrl = dict.windowUrl.replace('<word>', word)
+            windowUrl = dict.windowUrl.replace('<word>', word.toLowerCase())
         else if dict.chatgptPrompt 
             windowUrl = 'https://chat.openai.com/'
 
