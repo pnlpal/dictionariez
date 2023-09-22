@@ -24,7 +24,11 @@ async function chatgptSpecific($) {
 async function doQuery(w, sentence, languagePrompt, dict) {
   if (!w) return;
 
-  await utils.checkInTime(() => document.querySelector(dict.inputSelector));
+  await utils.checkInTime(
+    () =>
+      document.querySelector(dict.inputSelector) &&
+      document.querySelector(dict.submitButtonSelector)
+  );
   const prompt =
     sentence && dict.chatgptPromptWithContext
       ? dict.chatgptPromptWithContext
@@ -34,10 +38,23 @@ async function doQuery(w, sentence, languagePrompt, dict) {
       : dict.chatgptPrompt
           .replaceAll("<word>", w)
           .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "");
+
+  await utils.promisifiedTimeout(500);
+
   const textarea = document.querySelector(dict.inputSelector);
-  const btn = document.querySelector(dict.submitButtonSelector);
+  // var nativeTextAreaValueSetter = Object.getOwnPropertyDescriptor(
+  //   window.HTMLTextAreaElement.prototype,
+  //   "value"
+  // ).set;
+  // nativeTextAreaValueSetter.call(textarea, prompt);
   textarea.value = prompt;
 
+  await utils.promisifiedTimeout(1000);
+
+  const event = new Event("input", { bubbles: true });
+  textarea.dispatchEvent(event);
+
+  const btn = document.querySelector(dict.submitButtonSelector);
   btn.removeAttribute("disabled");
   btn.click();
 }
