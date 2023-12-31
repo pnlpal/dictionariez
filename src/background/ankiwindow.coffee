@@ -123,10 +123,16 @@ export default {
                 if @anki.wordItem?.w 
                     lookupInfo = await plainLookup.parser.parse(@anki.wordItem.w.toLowerCase())
 
-                    if lookupInfo?.images?.length
-                        await Promise.all lookupInfo.images.map (image) ->
+                    setDataToImages = (images) -> 
+                        await Promise.all images.map (image) ->
                             dataUrl = await utils.imageToDataUrl(image.src)
                             image.dataUrl = dataUrl
+
+                    if lookupInfo?.length 
+                        await setDataToImages(lookupInfo[0]?.images || lookupInfo[1]?.images || [])
+
+                    if lookupInfo?.images?.length
+                        await setDataToImages(lookupInfo.images)
 
                     return {wordItem: @anki.wordItem, lookupInfo, followedWords: lookupInfo?.map?((n) -> n.w)}
 

@@ -424,9 +424,9 @@ test = () ->
     # parser.parse('бештар').then console.log 
     # parser.parse('бо').then console.log 
     # parser.parse('ไทย').then console.log 
-    parser.parse('anhållen').then console.log 
+    # parser.parse('anhållen').then console.log 
 
-# test()
+window.parser = new LookupParser(parsers)
 
 export default {
     parser: new LookupParser(parsers),
