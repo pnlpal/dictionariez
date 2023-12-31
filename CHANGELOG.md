@@ -1,3 +1,10 @@
+# v4.1.0 Dec 31, 2023
+- Fix adding words on Anki.
+- Fix adding images on Anki.
+- Fix using the default dict set by user when querying.
+- Fix parsing some words with accent mark esp for Russian, see issue#116.
+- Be able to get video info for cats-love-youtube.
+
 # v4.0.0 Sep 22, 2023
 
 - Add integration with Cats Love YouTube.
