@@ -173,7 +173,8 @@
                 "includeArrayIndex": true
               },
               "followWord": {
-                "selector": "ol>li .mention a[href]"
+                "selector": "ol>li .mention a[href]",
+                "attrOrText": "title"
               },
               "optionalFollowWord": {
                 "selector": "ol>li a[href]"

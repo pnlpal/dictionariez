@@ -402,6 +402,9 @@ class LookupParser
             value = $el.data(desc.data)
         else if desc.attr
             value = $el.attr(desc.attr)
+        else if desc.attrOrText
+            value = $el.attr(desc.attrOrText) || $el.get(0)?.innerText?.trim()
+
         else if desc.htmlRegex
             value = $el.html()?.match(new RegExp(desc.htmlRegex))?[0]
         else
