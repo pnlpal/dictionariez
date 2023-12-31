@@ -50,7 +50,7 @@ getAnkiInfo = (ankiSavedWord, ankiSkippedWord) ->
 				src = $img.attr('src')
 				imageInfo = await utils.send 'image to data url', { src }
 				$img.replaceWith renderImage imageInfo
-				
+
 				triggerInput($('.field:eq(0)')[0]);
 				triggerInput($('.field:eq(1)')[0]);
 		), 1000
@@ -70,11 +70,8 @@ addSkipButton = () ->
 		$('.field:eq(1)').empty() 
 		getAnkiInfo(null, currentWordItem.w)
 
-if location.origin == 'https://ankiuser.net' && location.pathname == '/add'
-	getAnkiInfo()
-	addSkipButton()
-
-$(document).on 'click', 'button.btn-primary', () ->
+wordSavedCallback = (ev) ->
+	return if ev.target.classList.contains('btn-primary')
 	return if not currentWordItem?.w
 
 	try
@@ -83,6 +80,11 @@ $(document).on 'click', 'button.btn-primary', () ->
 		getAnkiInfo(currentWordItem.w)
 	catch 
 		console.error "Anki save failed on word: #{currentWordItem.w}"
+
+if location.origin == 'https://ankiuser.net' && location.pathname == '/add'
+	getAnkiInfo()
+	addSkipButton()
+	$("body")[0].addEventListener('click', wordSavedCallback, true)
 
 renderLookupInfo = (wordItem, followedWords) ->
 	(lookupInfo) ->
