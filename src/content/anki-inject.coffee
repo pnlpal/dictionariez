@@ -71,7 +71,7 @@ addSkipButton = () ->
 		getAnkiInfo(null, currentWordItem.w)
 
 wordSavedCallback = (ev) ->
-	return if ev.target.classList.contains('btn-primary')
+	return if not ev.target.classList.contains('btn-primary')
 	return if not currentWordItem?.w
 
 	try
@@ -80,11 +80,6 @@ wordSavedCallback = (ev) ->
 		getAnkiInfo(currentWordItem.w)
 	catch 
 		console.error "Anki save failed on word: #{currentWordItem.w}"
-
-if location.origin == 'https://ankiuser.net' && location.pathname == '/add'
-	getAnkiInfo()
-	addSkipButton()
-	$("body")[0].addEventListener('click', wordSavedCallback, true)
 
 renderLookupInfo = (wordItem, followedWords) ->
 	(lookupInfo) ->
@@ -244,3 +239,9 @@ getEnglishPronAudio = (w) ->
 			$('.field .fairydict-pron-audio-ame').attr('data-mp3', item.audio)
 		if item.type == 'bre' and item.audio
 			$('.field .fairydict-pron-audio-bre').attr('data-mp3', item.audio)
+
+export initAnkiInjection = () -> 
+	if location.origin == 'https://ankiuser.net' && location.pathname == '/add'
+		getAnkiInfo()
+		addSkipButton()
+		$("body")[0].addEventListener('click', wordSavedCallback, true)

@@ -118,6 +118,7 @@ export default {
                     @getNextWord(request.ankiSavedWord)
 
                 if request.ankiSkippedWord 
+                    console.info "Anki skipped word: #{request.ankiSkippedWord}"
                     @getNextWord(request.ankiSkippedWord)
 
                 if @anki.wordItem?.w 

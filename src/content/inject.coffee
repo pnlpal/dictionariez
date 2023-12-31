@@ -12,7 +12,6 @@ import debounce from 'lodash/debounce'
 
 import highlight from './editable-highlight'
 
-import './anki-inject.coffee'
 import './card-iframe.coffee'
 import './pnlpal-inject.coffee'
 import { initCaptionzInjection } from  './captionz-inject.coffee'
@@ -21,11 +20,13 @@ import { initOnLoadDynamicDict } from './dynamic-dict-inject.js'
 import {
   getSentenceFromSelection
 } from 'get-selection-more'
+import { initAnkiInjection } from './anki-inject.coffee'
 
 run = () =>
 	initYtbInjection()
 	initCaptionzInjection()
-
+	initAnkiInjection()
+	
 	isInDict = false
 
 	chrome.runtime.sendMessage {
