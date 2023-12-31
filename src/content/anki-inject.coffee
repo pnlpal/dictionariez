@@ -42,19 +42,19 @@ getAnkiInfo = (ankiSavedWord, ankiSkippedWord) ->
 		triggerInput($('.field:eq(1)')[0]);
 		
 
-		# $('.field:eq(0), .field:eq(1)').on 'input', debounce ((e) -> 
-		# 	$('img', e.target).each () ->
-		# 		$img = $(this)
-		# 		return if $img.attr('is-handling')
+		$('.field:eq(0), .field:eq(1)').on 'input', debounce ((e) -> 
+			$('img', e.target).each () ->
+				$img = $(this)
+				return if $img.attr('is-handling')
 
-		# 		$img.attr('is-handling', true)
-		# 		src = $img.attr('src')
-		# 		imageInfo = await utils.send 'image to data url', { src }
-		# 		$img.replaceWith renderImage imageInfo
-		# ), 1000
+				$img.attr('is-handling', true)
+				src = $img.attr('src')
+				imageInfo = await utils.send 'image to data url', { src }
+				$img.replaceWith renderImage imageInfo
+		), 1000
 
-		$('.field').on 'click', '.dictionariez-anki-image', (e) ->
-			this.remove()
+		$('.field').on 'click', '.dictionariez-anki-image-close', (e) ->
+			this.parentElement.remove()
 		
 
 addSkipButton = () ->
@@ -84,8 +84,8 @@ $(document).on 'click', 'button.btn-primary', () ->
 
 renderLookupInfo = (wordItem, followedWords) ->
 	(lookupInfo) ->
-		# if lookupInfo?.images?.length 
-		# 	$('.field:eq(0)').append renderImages lookupInfo.images
+		if lookupInfo?.images?.length 
+			$('.field:eq(0)').append renderImages lookupInfo.images
 
 		if lookupInfo?.w
 			$('.field:eq(0)').append renderLookupDefs lookupInfo, followedWords
@@ -115,18 +115,15 @@ renderQuoteInfo = (res) ->
 
 renderImage = (image) -> 
 	dataImgTpl = '''
-<div style='width: 100%; 
-	height: 0;
-	display: inline-block;
-	padding: 0;
-	padding-bottom: {ratio};
-	background-image: url("{dataUrl}");
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 100% auto;
-' class='dictionariez-anki-image'></div>
+<div class='dictionariez-anki-image-wrapper'>
+	<div class='dictionariez-anki-image-close'>X</div>
+	<div style='width: 100%; 
+		content: url("{dataUrl}");
+	' class='dictionariez-anki-image'>
+	</div>
+</div>
 	'''
-	return dataImgTpl.replace('{dataUrl}', image.dataUrl).replace('{ratio}', Math.ceil(image.height / image.width * 100) + '%')
+	return dataImgTpl.replace('{dataUrl}', image.dataUrl)
 
 renderImages = (images) ->
 	imgs = images.map((cur, i) ->
