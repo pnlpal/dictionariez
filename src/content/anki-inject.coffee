@@ -7,6 +7,10 @@ window.$ = $;
 
 currentWordItem = null 
 
+triggerInput = (el) -> 
+	event = new Event("input", { bubbles: true })
+	el.dispatchEvent(event)
+
 getAnkiInfo = (ankiSavedWord, ankiSkippedWord) ->
 	chrome.runtime.sendMessage {
 		type: 'get anki info',
@@ -33,6 +37,10 @@ getAnkiInfo = (ankiSavedWord, ankiSkippedWord) ->
 			utils.send 'look up', { w: res.lookupInfo.w } if res.lookupInfo?.w
 		
 		$('.field:eq(1)').append '<br><br>'
+
+		triggerInput($('.field:eq(0)')[0]);
+		triggerInput($('.field:eq(1)')[0]);
+		
 
 		# $('.field:eq(0), .field:eq(1)').on 'input', debounce ((e) -> 
 		# 	$('img', e.target).each () ->
