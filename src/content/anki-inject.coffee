@@ -40,7 +40,6 @@ getAnkiInfo = (ankiSavedWord, ankiSkippedWord) ->
 
 		triggerInput($('.field:eq(0)')[0]);
 		triggerInput($('.field:eq(1)')[0]);
-		
 
 		$('.field:eq(0), .field:eq(1)').on 'input', debounce ((e) -> 
 			$('img', e.target).each () ->
@@ -51,6 +50,9 @@ getAnkiInfo = (ankiSavedWord, ankiSkippedWord) ->
 				src = $img.attr('src')
 				imageInfo = await utils.send 'image to data url', { src }
 				$img.replaceWith renderImage imageInfo
+				
+				triggerInput($('.field:eq(0)')[0]);
+				triggerInput($('.field:eq(1)')[0]);
 		), 1000
 
 		$('.field').on 'click', '.dictionariez-anki-image-close', (e) ->
