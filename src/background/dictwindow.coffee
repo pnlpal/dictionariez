@@ -157,7 +157,7 @@ class DictWindow
             if @word != text || @sentence != sentence
                 @word = text
                 @sentence = sentence || null
-                result = await dict.query(text, @dictName) 
+                result = await dict.query(text, @dictName || setting.getValue('dictionary')) 
                 url = result?.windowUrl
                 @sendMessage({type: 'querying', text, sentence, languagePrompt})
             else 
