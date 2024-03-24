@@ -295,6 +295,7 @@
           "def": {
             "selector": ".quick-result-overview ul.sense-group-results>li",
             "toArray": true,
+            "excludeChild": ".sound-inline",
             "includeArrayIndex": true
           }
         }
