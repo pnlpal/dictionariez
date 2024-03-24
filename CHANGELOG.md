@@ -1,3 +1,8 @@
+# v4.2.0 Mar 24, 2024
+- Fix close-image icon on Anki.
+- Remove the volume icon when showing Thai definitions.
+- Dark theme for the dict according to system preference.
+
 # v4.1.0 Dec 31, 2023
 - Fix adding words on Anki.
 - Fix adding images on Anki.
