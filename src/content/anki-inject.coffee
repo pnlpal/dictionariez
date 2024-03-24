@@ -115,7 +115,7 @@ renderQuoteInfo = (res) ->
 renderImage = (image) -> 
 	dataImgTpl = '''
 <div class='dictionariez-anki-image-wrapper'>
-	<div class='dictionariez-anki-image-close'>X</div>
+	<div class='dictionariez-anki-image-close' style='display: none;'>X</div>
 	<div style='width: 100%; 
 		content: url("{dataUrl}");
 	' class='dictionariez-anki-image'>
