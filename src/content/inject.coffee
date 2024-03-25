@@ -41,7 +41,7 @@ run = () =>
 			isInDict = true
 			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict }, $)
 
-		if res?.cardUrl and res.word and not location.host.includes('wikipedia.org')
+		if res?.cardUrl and res.word and not location.host.includes('wikipedia.org') and window.self == window.top
 			comparedLoc = decodeURI(location.href).toLowerCase()
 			if res.word.split(/\s/).every (s) -> comparedLoc.includes(s.toLowerCase())
 				$("<iframe class='dictionaries-card dictionaries-card-wiki' src='#{res.cardUrl}?sys=wiki' style='display: none;'> </iframe>").appendTo('body')
