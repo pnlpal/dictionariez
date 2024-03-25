@@ -1,6 +1,28 @@
 body {
   position: relative;
 
+  background-color: var(--bkg-color);
+  color: var(--text-color);
+
+  a,
+  input.form-control,
+  textarea.form-control,
+  button.btn,
+  pre,
+  ul.dropdown-menu,
+  ul.dropdown-menu > li,
+  ul.dropdown-menu > li > a {
+    background-color: var(--bkg-color);
+    color: var(--text-color);
+    border-color: var(--lighten-bkg-color);
+  }
+  img {
+    filter: brightness(0.8) contrast(1.2);
+  }
+  .table > thead > tr > th {
+    border-bottom-color: var(--lighten-bkg-color);
+  }
+
   .nav-wrapper {
     @media screen and (max-width: 768px) {
       display: flex;
@@ -16,7 +38,7 @@ body {
         bottom: 20px;
         top: auto;
         z-index: 9999;
-        background-color: gainsboro;
+        background-color: var(--bkg-color);
 
         &.nav-stacked > li {
           float: left;

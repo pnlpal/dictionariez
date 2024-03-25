@@ -3,6 +3,34 @@
 	<head>
 		<meta charset="UTF-8" />
 		<style>
+			/* For the dark or light theme */
+			:root {
+				color-scheme: light dark; /* both supported */
+			}
+			body {
+				--text-color: #222;
+				--bkg-color: #fbfbfb;
+				--lighten-bkg-color: #cccccc;
+			}
+			body.dark-theme {
+				--text-color: #c5c5c5;
+				--bkg-color: #333333;
+				--lighten-bkg-color: #4c4c4c;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				/* defaults to dark theme */
+				body {
+				--text-color: #c5c5c5;
+				--bkg-color: #333333;
+				--lighten-bkg-color: #4c4c4c;
+				}
+				body.light-theme {
+				--text-color: #222;
+				--bkg-color: #fbfbfb;
+				--lighten-bkg-color: #cccccc;
+				}
+			}
 			img.pull-left {
 				width: 100px;
 				margin-right: 30px;
