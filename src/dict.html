@@ -3,24 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <title>Dictionariez</title>
-    <!-- <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
-  <link rel="stylesheet" type="text/css" href="../bower_components/angular-ui/build/angular-ui.css">
-  <link rel="stylesheet" type="text/css" href="../bower_components/angular-bootstrap/ui-bootstrap-csp.css">
-  <link rel="stylesheet" type="text/css" href="../css/font-awesome.css">
-  <link rel="stylesheet" type="text/css" href="../css/dictheader.css">
-  <link rel="stylesheet" type="text/css" href="../css/apidict.css">
+    <style>
+      /* For the dark or light theme */
+      :root {
+        color-scheme: light dark; /* both supported */
+      }
+      body {
+        --text-color: #222;
+        --bkg-color: #fbfbfb;
+        --lighten-bkg-color: #cccccc;
+      }
+      body.dark-theme {
+        --text-color: #c5c5c5;
+        --bkg-color: #333333;
+        --lighten-bkg-color: #4c4c4c;
+      }
 
-  <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
-  <script type="text/javascript" src="../bower_components/underscore/underscore.js"></script>
-  <script type="text/javascript" src="../bower_components/angular/angular.js"></script>
-  <script type="text/javascript" src="../bower_components/angular-ui/build/angular-ui.js"></script>
-  <script type="text/javascript" src="../bower_components/angular-sanitize/angular-sanitize.js"></script>
-  <script type="text/javascript" src="../bower_components/angular-bootstrap/ui-bootstrap.js"></script>
-  <script type="text/javascript" src="../utils.js"></script>
-  <script type="text/javascript" src="../js/starrr.js"></script>
-  <script type="text/javascript" src="../loader.js"></script>
-  <script type="text/javascript" src="../dict.js"></script>
-  <script type="text/javascript" src="apidict.js"></script> -->
+      @media (prefers-color-scheme: dark) {
+        /* defaults to dark theme */
+        body {
+          --text-color: #c5c5c5;
+          --bkg-color: #333333;
+          --lighten-bkg-color: #4c4c4c;
+        }
+        body.light-theme {
+          --text-color: #222;
+          --bkg-color: #fbfbfb;
+          --lighten-bkg-color: #cccccc;
+        }
+      }
+    </style>
   </head>
 
   <body></body>
