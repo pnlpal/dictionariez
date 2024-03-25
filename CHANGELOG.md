@@ -1,3 +1,7 @@
+# v4.2.1 Mar 25, 2024
+- Fix flickering dark theme at the opening of the dict.
+- Dark theme for the options page as well.
+
 # v4.2.0 Mar 24, 2024
 - Fix close-image icon on Anki.
 - Remove the volume icon when showing Thai definitions.
