@@ -83,6 +83,19 @@ export default {
         @allDicts = allDicts   
 
     addToDictionariez: (d) ->
+        if d.name 
+            d.dictName = d.name 
+            delete d.name
+        if d.url 
+            d.windowUrl = d.url 
+            delete d.url
+        
+        if not d.dictName 
+            return { error: 'the name of the dict is required' }
+        
+        if (not d.windowUrl) and (not d.chatgptPrompt)
+            return { error: 'the url of the dict is required' }
+
         locDict = @allDicts.find (d1) ->
             d1.dictName == d.dictName 
 

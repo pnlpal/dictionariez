@@ -22,10 +22,6 @@ addDictByParseContent = (contentNode) ->
 	pid = $(contentNode).closest('[component="post"]').data('pid')
 	dict.troveUrl = "#{location.origin}/post/#{pid}" if pid
 
-	if (!dict.dictName) 
-		throw new Error('dictName is required')
-	if (!dict.windowUrl) 
-		throw new Error('windowUrl is required')
 	await utils.send 'dictionary-add', { dict }
 	await utils.send 'look up', dict
 

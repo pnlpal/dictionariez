@@ -79,9 +79,13 @@ export default {
             callback = data
             data = {}
 
-        p = new Promise (resolve) ->
+        p = new Promise (resolve, reject) ->
             data.type = type
-            chrome.runtime.sendMessage data, resolve
+            chrome.runtime.sendMessage data, (ret) ->
+                if ret?.error
+                    reject (if typeof ret.error == 'string' then new Error(ret.error) else ret.error)
+                else 
+                    resolve ret
 
         if callback
             return p.then callback
