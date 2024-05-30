@@ -18,11 +18,19 @@ addDictByParseContent = (contentNode) ->
 	json = $(contentNode).find('code').text() if not json
 
 	dict = JSON.parse(json)
-	dict.troveUrl = "#{location.origin}#{topic.url}"
+
+	pid = $(contentNode).closest('[component="post"]').data('pid')
+	dict.troveUrl = "#{location.origin}/post/#{pid}" if pid
+
+	if (!dict.dictName) 
+		throw new Error('dictName is required')
+	if (!dict.windowUrl) 
+		throw new Error('windowUrl is required')
 	await utils.send 'dictionary-add', { dict }
 	await utils.send 'look up', dict
 
 if location.host == 'pnlpal.dev' or location.host == "localhost:4567"
+	$('body').attr('data-dictionariez-version', chrome.runtime.getManifest().version)
 	$(document).on 'click', '.add-to-dictionariez', () -> 
 		$(this).text('waiting...')
 		$(this).addClass('disabled')
@@ -36,7 +44,7 @@ if location.host == 'pnlpal.dev' or location.host == "localhost:4567"
 					console.error(err);
 				)
 		else 
-			addDictByParseContent($(this).closest('.content')).then (() => 
+			addDictByParseContent($(this).closest('.content, .preview')).then (() => 
 				$(this).text('Added!')
 				$(this).removeClass('disabled')), ((err) => 
 					alert("Your content has error: " + err.message);
