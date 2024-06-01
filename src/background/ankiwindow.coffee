@@ -14,7 +14,7 @@ class AnkiWindow
         @w = null
         @tid = null
         @wordItem = null
-        window.clearInterval(@savePosInterval) if @savePosInterval
+        clearInterval(@savePosInterval) if @savePosInterval
         @savePosInterval = null
 
     open: (useDefaultPosition)->
@@ -69,7 +69,7 @@ class AnkiWindow
                     @tid = @w.tabs[0].id
                     resolve()
 
-                    @savePosInterval = window.setInterval @saveWindowPosition.bind(this), 3000
+                    @savePosInterval = setInterval @saveWindowPosition.bind(this), 3000
                 )
             else
                 chrome.windows.update(@w.id, {

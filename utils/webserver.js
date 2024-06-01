@@ -1,19 +1,42 @@
-var WebpackDevServer = require("webpack-dev-server"),
+const WebpackDevServer = require("webpack-dev-server"),
   webpack = require("webpack"),
   config = require("../webpack.config"),
   env = require("./env"),
   path = require("path");
 
-var options = config.chromeExtensionBoilerplate || {};
-var excludeEntriesToHotReload = options.notHotReload || [];
+const options = config.chromeExtensionBoilerplate || {};
+const excludeEntriesToHotReload = options.notHotReload || [];
+
+const debounce = require("lodash").debounce;
+const SSEStream = require("ssestream").default;
 
 for (var entryName in config.entry) {
   if (excludeEntriesToHotReload.indexOf(entryName) === -1) {
     config.entry[entryName] = [
-      "webpack-dev-server/client?http://localhost:" + env.PORT,
-      "webpack/hot/dev-server"
+      "webpack/hot/dev-server",
+      `webpack-dev-server/client?hot=true&hostname=localhost&port=${env.PORT}`,
     ].concat(config.entry[entryName]);
   }
+}
+
+if (
+  options.enableBackgroundAutoReload ||
+  options.enableContentScriptsAutoReload
+) {
+  config.entry["background"] = [
+    path.resolve(
+      __dirname,
+      `autoReloadClients/backgroundClient.js?port=${env.PORT}`
+    ),
+  ].concat(config.entry["background"]);
+}
+if (options.enableContentScriptsAutoReload) {
+  config.entry["preinject"] = [
+    path.resolve(__dirname, "autoReloadClients/contentScriptClient.js"),
+  ].concat(config.entry["preinject"]);
+  config.entry["inject"] = [
+    path.resolve(__dirname, "autoReloadClients/contentScriptClient.js"),
+  ].concat(config.entry["inject"]);
 }
 
 config.plugins = [new webpack.HotModuleReplacementPlugin()].concat(
@@ -22,18 +45,126 @@ config.plugins = [new webpack.HotModuleReplacementPlugin()].concat(
 
 delete config.chromeExtensionBoilerplate;
 
-config.devtool = "cheap-module-eval-source-map";
-
 var compiler = webpack(config);
 
-var server = new WebpackDevServer(compiler, {
-  hot: true,
-  contentBase: path.join(__dirname, "../build"),
-  headers: { "Access-Control-Allow-Origin": "*" },
-  disableHostCheck: true
-  // before(app, server) {
-  //   server._watch("build/options.html");
-  // }
-});
+var server = new WebpackDevServer(
+  {
+    hot: false,
+    liveReload: false,
+    compress: false,
+    client: {
+      webSocketTransport: "ws",
+    },
+    webSocketServer: "ws",
+    host: "localhost",
+    port: env.PORT,
 
-server.listen(env.PORT);
+    static: {
+      directory: path.join(__dirname, "../build"),
+    },
+    devMiddleware: {
+      publicPath: `http://localhost:${env.PORT}/`,
+      writeToDisk: true,
+    },
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+    allowedHosts: "all",
+
+    setupMiddlewares: (middlewares, devServer) => {
+      // if auto-reload is not needed, this middleware is not needed.
+      if (
+        !options.enableBackgroundAutoReload &&
+        !options.enableContentScriptsAutoReload
+      ) {
+        return middlewares;
+      }
+
+      if (!devServer) {
+        throw new Error("webpack-dev-server is not defined");
+      }
+
+      // imagine you are using app.use(path, middleware) in express.
+      // in fact, devServer is an express server.
+      middlewares.push({
+        path: "/__server_sent_events__", // you can find this path requested by backgroundClient.js.
+        middleware: (req, res) => {
+          const sseStream = new SSEStream(req);
+          sseStream.pipe(res);
+
+          sseStream.write("message from webserver.");
+
+          let closed = false;
+
+          const compileDoneHook = debounce((stats) => {
+            const { modules } = stats.toJson({ all: false, modules: true });
+            const updatedJsModules = modules.filter(
+              (module) =>
+                module.type === "module" &&
+                module.moduleType === "javascript/auto"
+            );
+
+            const isBackgroundUpdated = updatedJsModules.some((module) =>
+              module.nameForCondition.startsWith(
+                path.resolve(__dirname, "../src/background")
+              )
+            );
+            const isContentScriptsUpdated = updatedJsModules.some((module) =>
+              module.nameForCondition.startsWith(
+                path.resolve(__dirname, "../src/content")
+              )
+            );
+
+            const shouldBackgroundReload =
+              !stats.hasErrors() &&
+              isBackgroundUpdated &&
+              options.enableBackgroundAutoReload;
+            const shouldContentScriptsReload =
+              !stats.hasErrors() &&
+              isContentScriptsUpdated &&
+              options.enableContentScriptsAutoReload;
+
+            if (shouldBackgroundReload) {
+              sseStream.writeMessage(
+                {
+                  event: "background-updated",
+                  data: {}, // "data" key should be reserved though it is empty.
+                },
+                "utf-8"
+              );
+            }
+            if (shouldContentScriptsReload) {
+              sseStream.writeMessage(
+                {
+                  event: "content-scripts-updated",
+                  data: {},
+                },
+                "utf-8"
+              );
+            }
+          }, 1000);
+
+          const plugin = (stats) => {
+            if (!closed) {
+              compileDoneHook(stats);
+            }
+          };
+
+          // a mini webpack plugin just born!
+          // this plugin will be triggered after each compilation done.
+          compiler.hooks.done.tap("extension-auto-reload-plugin", plugin);
+
+          res.on("close", () => {
+            closed = true;
+            sseStream.unpipe(res);
+          });
+        },
+      });
+
+      return middlewares;
+    },
+  },
+  compiler
+);
+
+server.start();

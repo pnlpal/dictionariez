@@ -25,7 +25,7 @@ export default () ->
         if not setting.getValue 'enableReadClipboard'
             return resolve()
         
-        chrome.tabs.executeScript {
+        chrome.scripting.executeScript {
             code: "(#{readClipboardText.toString()})()"
         }, (res) =>
             if not res and navigator.userAgent.toLowerCase().indexOf('firefox') == -1

@@ -1,10 +1,10 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
+  "minimum_chrome_version": "105",
   "name": "Dictionariez: one to rule them all",
-  "permissions": ["activeTab", "tabs", "storage", "contextMenus", "<all_urls>"],
+  "permissions": ["activeTab", "tabs", "storage", "contextMenus", "scripting"],
   "background": {
-    "persistent": true,
-    "page": "background.html"
+    "service_worker": "background.bundle.js"
   },
   "content_scripts": [
     {
@@ -18,8 +18,13 @@
     "page": "options.html",
     "open_in_tab": true
   },
-  "web_accessible_resources": ["*.js", "*.json", "*.html", "fonts/*"],
-  "browser_action": {
+  "web_accessible_resources": [
+    {
+      "resources": ["*.js", "*.json", "*.html", "fonts/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "action": {
     "default_title": "Dictionariez: one to rule them all"
   },
   "icons": {

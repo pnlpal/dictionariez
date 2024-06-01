@@ -8,32 +8,36 @@ import $ from "jquery"
 
 defaultWindowUrl = chrome.runtime.getURL('dict.html')
 
-getInfoOfSelectionCode = '''
-var getSentence = function() {
-    try {
-        var selection = window.getSelection();
-        var range = selection.getRangeAt(0);
-        if (!selection.toString()) return;
+screenWidth = 0 
+screenHeight = 0
 
-        var range1 = range.cloneRange();
-        range1.detach();
 
-        selection.modify('move', 'backward', 'sentence');
-        selection.modify('extend', 'forward', 'sentence');
+getInfoOfSelectionCode = () ->
+    getSentence = () ->
+        try
+            selection = window.getSelection()
+            range = selection.getRangeAt(0)
+            return unless selection.toString()
 
-        var text = selection.toString().trim();
+            range1 = range.cloneRange()
+            range1.detach()
 
-        selection.removeAllRanges();
-        selection.addRange(range1);
+            selection.modify('move', 'backward', 'sentence')
+            selection.modify('extend', 'forward', 'sentence')
 
-        return text;
-    } catch (err) {
-        // On firefox, unable to get sentence.
-    }
-};
+            text = selection.toString().trim()
 
-[window.getSelection().toString().trim(), getSentence()]
-'''
+            selection.removeAllRanges()
+            selection.addRange(range1)
+
+            return text
+        catch err
+            # On firefox, unable to get sentence.
+            return
+
+    return [window.getSelection().toString().trim(), getSentence(), screen.width, screen.height]
+    
+
 
 class DictWindow
     w: null
@@ -55,7 +59,7 @@ class DictWindow
         @word = null
         @sentence = null
         @dictName = null
-        window.clearInterval(@savePosInterval) if @savePosInterval
+        clearInterval(@savePosInterval) if @savePosInterval
         @savePosInterval = null
 
     open: (url, useDefaultPosition)->
@@ -67,8 +71,8 @@ class DictWindow
         width = 580 if !width or width < 300
         height = 600 if !height or height < 300
         
-        defaultLeft = Math.round((screen.width / 2) - (width / 2))
-        defaultTop = Math.round((screen.height / 2) - (height / 2))
+        defaultLeft = Math.round((screenWidth / 2) - (width / 2))
+        defaultTop = Math.round((screenHeight / 2) - (height / 2))
         left = setting.getValue('windowLeft', defaultLeft)
         top = setting.getValue('windowTop', defaultTop)
 
@@ -79,9 +83,9 @@ class DictWindow
         
         # fix on windows, if window is out of the screen. But On Mac, it's OK.
         if not utils.isMac() 
-            if left < 0 or left > screen.width 
+            if left < 0 or left > screenWidth 
                 left = defaultLeft
-            if top < 0 or top > screen.height
+            if top < 0 or top > screenHeight
                 top = defaultTop
 
         # fix top value on Linux, may be chrome's bug.
@@ -116,7 +120,7 @@ class DictWindow
                     resolve()
 
                     if @windex == 0  # only save the main window position
-                        @savePosInterval = window.setInterval @saveWindowPosition.bind(this), 3000
+                        @savePosInterval = setInterval @saveWindowPosition.bind(this), 3000
 
                     # Firefox can't remember top and left, opera can't remember at all.
                     if navigator.userAgent.toLowerCase().indexOf('firefox') > -1 or navigator.userAgent.toLowerCase().indexOf('opr') > -1
@@ -232,11 +236,12 @@ export default {
             # clear closed window
             @dictWindows = @dictWindows.filter (win, i)-> i == 0 or win.w 
 
-        chrome.browserAction.onClicked.addListener (tab) =>
-            chrome.tabs.executeScript {
-                code: getInfoOfSelectionCode 
+        chrome.action.onClicked.addListener (tab) =>
+            chrome.scripting.executeScript {
+                target : { tabId : tab.id },
+                func: getInfoOfSelectionCode 
             }, (res) =>
-                [w, sentence] = res?[0] or []
+                [w, sentence, screenWidth, screenHeight] = res?[0].result or []
 
                 if not w
                     w = await readClipboard() 
@@ -246,20 +251,22 @@ export default {
 
         if not setting.getValue "disableContextMenu"
             chrome.contextMenus.create {
+                id: "lookup",
                 title: "Look up '%s' in dictionaries",
                 contexts: ["selection"],
-                onclick: (info, tab) =>
+            }
+            chrome.contextMenus.onClicked.addListener (info, tab) =>
+                if info.menuItemId == "lookup"
                     w = info.selectionText?.trim()
                     if w 
-                        chrome.tabs.executeScript {
-                            code: getInfoOfSelectionCode 
+                        chrome.scripting.executeScript {
+                            target : { tabId : tab.id },
+                            func: getInfoOfSelectionCode 
                         }, (res) =>
-                            if res?[0]?.length
-                                w = res[0][0] or w 
-                                sentence = res[0][1]
+                            if res?[0]?.result.length
+                                [w, sentence, screenWidth, screenHeight] = res?[0].result or []
                             @lookup({ w, sentence, s: tab.url, sc: tab.title })
                             @focus()
-            }
 
         message.on "copy event triggered", ({s, sc, sentence}) => 
             w = await readClipboard()
@@ -365,18 +372,19 @@ export default {
                 .split('\n')
                 .filter((x) => x.trim())
                 .find((x) => sender.tab.url.match(new RegExp(x)))
-                    chrome.tabs.executeScript sender.tab.id, {
-                        allFrames: true,
-                        file: 'inject.bundle.js'
+                    chrome.scripting.executeScript {
+                        target: { tabId: sender.tab.id, allFrames: true},
+                        files: ['inject.bundle.js']
                     }
 
             win = @getByTab sender.tab.id 
             if win 
                 d = dict.getDict(win.dictName)
                 if d.css
-                    chrome.tabs.insertCSS win.tid, {
+                    chrome.scripting.insertCSS {
+                        target: { tabId: sender.tab.id },
                         runAt: "document_start",
-                        code: d.css
+                        css: d.css
                     }
                 
                 return {
@@ -391,9 +399,10 @@ export default {
                 if chatgptDict && sender.tab.url.startsWith(chatgptDict.windowUrl)
                     @create({ w: {id: sender.tab.windowId}, tid: sender.tab.id, url: sender.tab.url, dictName: chatgptDict.dictName })
                     if chatgptDict.css
-                        chrome.tabs.insertCSS sender.tab.id, {
+                        chrome.scripting.insertCSS {
+                            target: { tabId: sender.tab.id },
                             runAt: "document_start",
-                            code: chatgptDict.css
+                            css: chatgptDict.css
                         }
                     
                     return {

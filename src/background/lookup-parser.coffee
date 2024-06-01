@@ -429,8 +429,6 @@ test = () ->
     # parser.parse('ไทย').then console.log 
     # parser.parse('anhållen').then console.log 
 
-window.parser = new LookupParser(parsers)
-
 export default {
     parser: new LookupParser(parsers),
 
