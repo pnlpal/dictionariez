@@ -3,6 +3,7 @@
   "minimum_chrome_version": "105",
   "name": "Dictionariez: one to rule them all",
   "permissions": ["activeTab", "tabs", "storage", "contextMenus", "scripting"],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.bundle.js"
   },
