@@ -47,6 +47,7 @@ var options = {
     background: path.join(__dirname, "src", "background", "main.js"),
     examples: path.join(__dirname, "src", "other", "example.coffee"),
     share: path.join(__dirname, "src", "other", "share.coffee"),
+    speak: path.join(__dirname, "src", "other", "speak.js"),
   },
   chromeExtensionBoilerplate: {
     notHotReload: ["inject", "preinject", "background"],
@@ -173,6 +174,12 @@ var options = {
       template: path.join(__dirname, "src", "share.html"),
       filename: "share.html",
       chunks: ["share"],
+      cache: false,
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "src", "offscreen.html"),
+      filename: "offscreen.html",
+      chunks: ["speak"],
       cache: false,
     }),
 
