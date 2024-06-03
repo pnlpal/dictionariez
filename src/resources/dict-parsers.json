@@ -77,7 +77,8 @@
         {
           "symbol": {
             "selector": ".vmod[data-topic][data-hveid]",
-            "htmlRegex": "/<span>[^<>]*</span>/"
+            "htmlRegex": "<span>([^<>]*)</span>",
+            "regexIndex": 1
           },
           "type": "unknow"
         }

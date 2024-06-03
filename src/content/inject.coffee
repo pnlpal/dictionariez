@@ -21,11 +21,13 @@ import {
   getSentenceFromSelection
 } from 'get-selection-more'
 import { initAnkiInjection } from './anki-inject.coffee'
+import initLookupParser from './lookup-parser.js'
 
 run = () =>
 	initYtbInjection()
 	initCaptionzInjection()
 	initAnkiInjection()
+	initLookupParser()
 	
 	isInDict = false
 

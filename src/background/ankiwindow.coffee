@@ -2,7 +2,7 @@ import $ from "jquery"
 import message from "./message.coffee"
 import utils from "utils"
 import setting from "./setting.coffee"
-import plainLookup from "./lookup-parser.coffee"
+import plainLookup from "./plain-lookup.coffee"
 import storage from "./storage.coffee"
 
 class AnkiWindow 
@@ -122,7 +122,7 @@ export default {
                     @getNextWord(request.ankiSkippedWord)
 
                 if @anki.wordItem?.w 
-                    lookupInfo = await plainLookup.parser.parse(@anki.wordItem.w.toLowerCase())
+                    lookupInfo = await plainLookup.parse(@anki.wordItem.w.toLowerCase())
 
                     setDataToImages = (images) -> 
                         await Promise.all images.map (image) ->

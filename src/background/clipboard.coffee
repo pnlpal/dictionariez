@@ -1,6 +1,6 @@
 import message from "./message.coffee"
 import setting from "./setting.coffee"
-import lookupParser from "./lookup-parser.coffee"
+import plainLookup from "./plain-lookup.coffee"
 
 
 readClipboardText = () -> 
@@ -33,7 +33,7 @@ export default () ->
 
             message.on 'clipboard text', (request) ->
                 setting.setValue('readClipboardError', undefined)
-                return resolve(lookupParser.checkTypeOfSupport(request.text))
+                return resolve(plainLookup.checkTypeOfSupport(request.text))
             
             message.on 'read clipboard text error', (request) -> 
                 setting.setValue('enableReadClipboard', false)

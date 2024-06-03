@@ -4,28 +4,37 @@ import message from "./message.coffee"
 import storage from "./storage.coffee"
 import setting from "./setting.coffee"
 import utils from "utils"
-import parsers from '../resources/dict-parsers.json'
+import parserDescs from '../resources/dict-parsers.json'
 import langs from '../resources/langs.json'
 import stringSimilarity from 'string-similarity'
 
-trimWordPos = (pos) ->
-    pos = pos.toLowerCase()
-    specials = ["adjective", "adverb", "interjection", "numeral", "article", "determiner"]
-    
-    if specials.includes(pos) 
-        return pos.slice(0, 3)
+load = (url, credentials='omit') ->
+    utils.promiseInTime(fetch(url, {
+        method: 'GET', 
+        credentials,
+    }), 5000)
+    .then((resp) -> 
+        if not resp.ok
+            err = new Error(resp.statusText) 
+            err.status = resp.status
+            throw err
 
-    if pos.length > 4
-        return pos.slice(0, 4)
-    return pos 
+        return resp.text()
+    )
 
-virtualDom = undefined
+loadJson = (url, credentials) ->
+    utils.promiseInTime(fetch(url, {
+        method: 'GET', 
+        credentials
+    }), 5000)
+    .then((resp) -> 
+        if not resp.ok
+            err = new Error(resp.statusText) 
+            err.status = resp.status
+            throw err
 
-$clean = (html) ->
-    # To let jQuery parse HTML without loading resources.
-    # see: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
-    virtualDom ?= document.implementation.createHTMLDocument('virtual')
-    return $(html, virtualDom)
+        return resp.json()
+    )
 
 setEnglishProns = (result) ->
     result.prons = result.prons.concat [
@@ -41,20 +50,29 @@ setEnglishProns = (result) ->
         }
     ]
 
-class LookupParser 
-    constructor: (@data) ->
-        @typeCount = Object.keys(@data).length
+export default {
+    checkTypeOfSupport: (w) ->
+        w = w.trim()
+        return unless w
+        return if w.split(/\s/).length > 3
 
-        @otherSupportedLanguages = []
-        for dictDesc in Object.values(@data)
-            dictDesc.languages?.forEach (n) =>
-                @otherSupportedLanguages.push n if not @otherSupportedLanguages.includes(n)
-                
-        setting.configCache.otherSupportedLanguages = @otherSupportedLanguages
-        
+        # ignore one or two punctuation signs in the end
+        w = w.replace(/[,:;'"-?!.]{1,2}$/, '')
+
+        if @checkType(w)
+            return w
+
     isLangDisabled: (lang) ->
         setting.getValue("otherSupportedLanguages", []).includes(lang) \
             && setting.getValue("otherDisabledLanguages", []).includes(lang)
+    
+    checkLangs: (w) ->
+        res =  []
+        for lang, n of langs 
+            if w.match(new RegExp(n.regex, 'ug'))?.length == w.length \
+            and not @isLangDisabled(lang)
+                res.push lang 
+        return res 
 
     checkType: (w) ->
         if utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
@@ -63,7 +81,7 @@ class LookupParser
         if utils.hasKorean(w) and setting.getValue "enableLookupKorean"
             return setting.getValue "koreanLookupSource" # google, wiktionary, naver (korean only)
 
-        for name, dictDesc of @data
+        for name, dictDesc of parserDescs
             if dictDesc.supportChinese
                 return name if utils.isChinese(w) and setting.getValue "enableLookupChinese"
             
@@ -73,48 +91,52 @@ class LookupParser
                         and not @isLangDisabled(lang)
                         return name
 
-    checkLangs: (w) ->
-        res =  []
-        for lang, n of langs 
-            if w.match(new RegExp(n.regex, 'ug'))?.length == w.length \
-            and not @isLangDisabled(lang)
-                res.push lang 
-        return res 
+    init: () ->
+        @typeCount = Object.keys(parserDescs).length
+        @otherSupportedLanguages = []
+        for dictDesc in Object.values(parserDescs)
+            dictDesc.languages?.forEach (n) =>
+                @otherSupportedLanguages.push n if not @otherSupportedLanguages.includes(n)
+                
+        setting.configCache.otherSupportedLanguages = @otherSupportedLanguages
 
-    load: (url, credentials='omit') ->
-        utils.promiseInTime(fetch(url, {
-            method: 'GET', 
-            credentials,
-        }), 5000)
-        .then((resp) -> 
-            if not resp.ok
-                err = new Error(resp.statusText) 
-                err.status = resp.status
-                throw err
+        message.on 'check text supported', ({ w }) =>
+            return @checkTypeOfSupport(w)
 
-            return resp.text()
-        )
-        .then($clean)
+        message.on 'look up plain', ({w, s, sc, sentence}, sender) =>
+            w = w.trim().toLowerCase()
+            return unless w
 
-    loadJson: (url, credentials) ->
-        utils.promiseInTime(fetch(url, {
-            method: 'GET', 
-            credentials
-        }), 5000)
-        .then((resp) -> 
-            if not resp.ok
-                err = new Error(resp.statusText) 
-                err.status = resp.status
-                throw err
+            storage.addHistory({
+                w, s, sc, sentence
+            }) if s  # ignore lookup from options page
 
-            return resp.json()
-        )
+            @tabId = sender.tab.id
+            return @parse(w) 
+
+        message.on 'get real person voice', ({ w }, sender) =>
+            if setting.getValue 'enableRealPron'
+                @tabId = sender.tab.id
+                return @parse(w, 'ldoce') if w.split(' ').length == 1  # ignore phrase
+
+        message.on 'get english pron symbol', ({ w }, sender) =>
+            if setting.getValue "enableUSUKPron"
+                @tabId = sender.tab.id
+                return @parse(w, 'bing') if w.split(' ').length == 1 # ignore phrase
+        
+        message.on 'look up phonetic', ({ w, _counter }, sender) =>
+            @tabId = sender.tab.id
+            { prons } = await @parse(w, 'bing')
+            for n in prons 
+                if n.type == 'ame' and n.symbol
+                    ame = n.symbol.replace('US', '').trim()
+                    return { ame } 
 
     parse: (w, tname, prevResult, url) ->
         tname ?= @checkType(w)
         return unless tname 
 
-        dictDesc = @data[tname]
+        dictDesc = parserDescs[tname]
         url = (url or dictDesc.url).replace('<word>', w)
 
         # special handle Chinese
@@ -124,9 +146,9 @@ class LookupParser
 
         try
             if tname == "naver"
-                json = await @loadJson url, dictDesc.credentials
+                json = await loadJson url, dictDesc.credentials
             else
-                html = await @load url, dictDesc.credentials
+                html = await load url, dictDesc.credentials
         catch err 
             if err.message == 'timeout' \
                 and tname != 'wiktionary' \
@@ -145,8 +167,7 @@ class LookupParser
         if tname == "naver"
             result = @parseNaver json, dictDesc.result
         else
-            result = @parseResult html, dictDesc.result
-            # console.log "parsed from:", tname, "result:", result
+            result = await chrome.tabs.sendMessage @tabId, { type: 'parse lookup result', html, parserDesc: dictDesc.result }
 
         # special handle of bing when look up Chinese
         if tname == "bing"
@@ -303,172 +324,4 @@ class LookupParser
             result['defs'].push newDef
 
         return result
-
-
-    parseResult: ($el, obj) ->
-        result = {}
-        for key, desc of obj
-            if Array.isArray desc 
-                result[key] = []
-                result[key].push @parseResult($el, subObj) for subObj in desc
-            else 
-                $container = $el 
-                if desc.container 
-                    $container = $($el.find(desc.container).get(0))
-
-                if desc.groups 
-                    result[key] = []
-                    $nodes = $container.find desc.groups 
-                    if desc.extendPrev
-                        $nodes = $nodes.map (i, n) -> 
-                            _ctnr = $clean('<div></div>')
-                            _ctnr.append $(n).clone() 
-
-                            _p = $(n)
-                            for i in [1..20] 
-                                _p = _p.prev()
-                                if (_p.is(desc.extendPrev))
-                                    _ctnr.append _p.clone()
-                                    return _ctnr
-                            return _ctnr
-
-                    if desc.extendNextTo 
-                        $nodes = $nodes.map (i, n) -> 
-                            _ctnr = $clean('<div></div>')
-                            _ctnr.append $(n).clone()
-
-                            _p = $(n)
-                            for i in [1..20] 
-                                _p = _p.next()
-                                if (!_p.is(desc.extendNextTo))
-                                    _ctnr.append _p.clone()
-                                else
-                                    return _ctnr 
-                            return _ctnr 
-                        
-
-                    # Thai of Bab.la need to filter some related words
-                    if desc.filterRelatedWord
-                        firstWord = $nodes.find(desc.filterRelatedWord).get(0)?.innerText
-                        $nodes = $nodes.filter (i, el) =>
-                            $(el).find(desc.filterRelatedWord).text() == firstWord
-
-                    $nodes.each (i, el) =>
-                        if not $(el).parents(desc.groups).length  # hack: ignore groups inside another group
-                            result[key].push @parseResult($(el), desc.result)
-                        else 
-                            console.log "Find the group inside another group, ignore: ", $(el).parents(desc.groups).length
-                        
-                else
-                    value = @parseResultItem $container, desc
-
-                    if value and key == 'pos'
-                        value = trimWordPos value 
-
-                    result[key] = value 
-
-        return result 
-
-    parseResultItem: ($node, desc) ->
-        value = null
-
-        $el = $node 
-        if desc.selector or desc.selector1
-            if desc.selector1
-                $el = $node.find(desc.selector1)
-                if not $el.length 
-                    $el = $node.find(desc.selector)
-            else 
-                $el = $node.find(desc.selector)
-
-            if desc.singleParents 
-                $el = $el.filter (idx, item)->
-                    return $(item).parents(desc.singleParents).length == 1
-            if desc.excludeChild 
-                $el.find(desc.excludeChild).detach()
-
-            if desc.parents 
-                $el = $el.filter (idx, item)->
-                    return $(item).parents(desc.parents).length >= 1
-
-        if typeof desc == 'string'
-            value = desc 
-        else if desc.toArray 
-            value = $el.toArray().map((item) -> item.innerText?.trim()).filter((x) -> x)
-            if desc.max and value.length > desc.max 
-                value = value.filter (item, i) -> i < 2
-
-        else if desc.data
-            value = $el.data(desc.data)
-        else if desc.attr
-            value = $el.attr(desc.attr)
-        else if desc.attrOrText
-            value = $el.attr(desc.attrOrText) || $el.get(0)?.innerText?.trim()
-
-        else if desc.htmlRegex
-            value = $el.html()?.match(new RegExp(desc.htmlRegex))?[0]
-        else
-            value = $el.get(0)?.innerText?.trim()
-        
-        if desc.strFilter and value 
-            value = value.replace new RegExp(desc.strFilter, 'g'), ''
-        
-        return value
-
-test = () ->
-    parser = new LookupParser(parsers)
-    # parser.parse('most').then console.log 
-    # parser.parse('自由').then console.log 
-    # parser.parse('請').then console.log 
-    # parser.parse('請う').then console.log 
-    # parser.parse('あなた').then console.log 
-    # parser.parse('장소').then console.log 
-    # parser.parse('배').then console.log # this example is here because 배 has a lot of different definitions
-    # parser.parse('бештар').then console.log 
-    # parser.parse('бо').then console.log 
-    # parser.parse('ไทย').then console.log 
-    # parser.parse('anhållen').then console.log 
-
-export default {
-    parser: new LookupParser(parsers),
-
-    checkTypeOfSupport: (w) ->
-        w = w.trim()
-        return unless w
-        return if w.split(/\s/).length > 3
-
-        # ignore one or two punctuation signs in the end
-        w = w.replace(/[,:;'"-?!.]{1,2}$/, '')
-
-        if @parser.checkType(w)
-            return w
-
-    init: () ->
-        message.on 'check text supported', ({ w }) =>
-            return @checkTypeOfSupport(w)
-
-        message.on 'look up plain', ({w, s, sc, sentence}) =>
-            w = w.trim().toLowerCase()
-            return unless w
-
-            storage.addHistory({
-                w, s, sc, sentence
-            }) if s  # ignore lookup from options page
-
-            return @parser.parse(w) 
-
-        message.on 'get real person voice', ({ w }) =>
-            if setting.getValue 'enableRealPron'
-                return @parser.parse(w, 'ldoce') if w.split(' ').length == 1  # ignore phrase
-
-        message.on 'get english pron symbol', ({ w }) =>
-            if setting.getValue "enableUSUKPron"
-                return @parser.parse(w, 'bing') if w.split(' ').length == 1 # ignore phrase
-        
-        message.on 'look up phonetic', ({ w, _counter }) =>
-            { prons } = await @parser.parse(w, 'bing')
-            for n in prons 
-                if n.type == 'ame' and n.symbol
-                    ame = n.symbol.replace('US', '').trim()
-                    return { ame } 
 }
