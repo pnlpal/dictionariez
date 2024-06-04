@@ -212,9 +212,15 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
 ]
 
 import('../header.html').then ({ default: headerDom }) ->
-	$(document.body).append(headerDom)
-	angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])
+    $(document.body).append(headerDom)
+    angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])
 
-	$(window).on 'resize', debounce ((evt) ->
-		utils.send 'window resize'
-	), 300
+    window.addEventListener 'beforeunload', () ->
+        utils.send 'close dict window', {
+            x: window.screenX,
+            y: window.screenY,
+            width: window.innerWidth,
+            height: window.innerHeight
+        }
+
+    

@@ -10,6 +10,8 @@ defaultWindowUrl = chrome.runtime.getURL('dict.html')
 
 screenWidth = 0 
 screenHeight = 0
+screenAvailLeft = 0
+screenAvailTop = 0
 
 
 getInfoOfSelectionCode = () ->
@@ -35,7 +37,7 @@ getInfoOfSelectionCode = () ->
             # On firefox, unable to get sentence.
             return
 
-    return [window.getSelection().toString().trim(), getSentence(), screen.width, screen.height]
+    return [window.getSelection().toString().trim(), getSentence(), screen.width, screen.height, screen.availLeft, screen.availTop]
     
 
 
@@ -68,8 +70,8 @@ class DictWindow
         height = parseInt(setting.getValue('windowHeight'))
 
         # fix too small value
-        width = 580 if !width or width < 300
-        height = 600 if !height or height < 300
+        width = 580 if !width or width < 300 or width > screenWidth
+        height = 600 if !height or height < 300 or height > screenHeight
         
         defaultLeft = Math.round((screenWidth / 2) - (width / 2))
         defaultTop = Math.round((screenHeight / 2) - (height / 2))
@@ -83,16 +85,16 @@ class DictWindow
         
         # fix on windows, if window is out of the screen. But On Mac, it's OK.
         if not utils.isMac() 
-            if left < 0 or left > screenWidth 
+            if left < screenAvailLeft or (left + width) > screenWidth
                 left = defaultLeft
-            if top < 0 or top > screenHeight
+            if top < screenAvailTop or (top + height) > screenHeight
                 top = defaultTop
 
         # fix top value on Linux, may be chrome's bug.
         if utils.isLinux()
-            if top > screen.availTop
+            if top > screenAvailTop
                 top = defaultTop 
-            if left > screen.availLeft
+            if left > screenAvailLeft
                 left = defaultLeft
 
         if useDefaultPosition
@@ -127,8 +129,8 @@ class DictWindow
                         chrome.windows.update @w.id, {
                             width: width,
                             height: height,
-                            top: if utils.isLinux() then top - screen.availTop else top, # fix top value on Linux, may be chrome's bug.
-                            left: if utils.isLinux() then left - screen.availLeft else left, # fix left value on Linux, may be chrome's bug.
+                            top: if utils.isLinux() then top - screenAvailTop else top, # fix top value on Linux, may be chrome's bug.
+                            left: if utils.isLinux() then left - screenAvailLeft else left, # fix left value on Linux, may be chrome's bug.
                         }
                 )
             else
@@ -241,7 +243,7 @@ export default {
                 target : { tabId : tab.id },
                 func: getInfoOfSelectionCode 
             }, (res) =>
-                [w, sentence, screenWidth, screenHeight] = res?[0].result or []
+                [w, sentence, screenWidth, screenHeight, screenAvailLeft, screenAvailTop] = res?[0].result or []
 
                 if not w
                     w = await readClipboard() 
@@ -264,7 +266,7 @@ export default {
                             func: getInfoOfSelectionCode 
                         }, (res) =>
                             if res?[0]?.result.length
-                                [w, sentence, screenWidth, screenHeight] = res?[0].result or []
+                                [w, sentence, screenWidth, screenHeight, screenAvailLeft, screenAvailTop] = res?[0].result or []
                             @lookup({ w, sentence, s: tab.url, sc: tab.title })
                             @focus()
 
@@ -414,6 +416,8 @@ export default {
            
         message.on 'window resize', (request, sender) =>
             @getByTab(sender.tab.id)?.saveWindowPosition()
+        message.on 'close dict window', (request, sender) =>
+            console.log('close dict window', request)
 
         message.on 'sendToDict', ( request, sender ) =>
             @getByTab(sender.tab.id)?.sendMessage request
