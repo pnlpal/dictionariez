@@ -16,8 +16,6 @@ import('bootstrap/dist/css/bootstrap.min.css')
 import('../vendor/font-awesome.css')
 import('./options.less')
 
-import bootoast from 'bootoast/dist/bootoast.min.js'
-
 import "angularjs-color-picker/dist/angularjs-color-picker.min.css"
 import "angularjs-color-picker/dist/themes/angularjs-color-picker-bootstrap.min.css"
 import 'angularjs-color-picker'

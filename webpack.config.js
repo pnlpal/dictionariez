@@ -100,6 +100,17 @@ var options = {
         test: /\.coffee$/,
         loader: "coffee-loader",
       },
+      {
+        test: require.resolve("jquery"),
+        use: [
+          {
+            loader: "expose-loader",
+            options: {
+              exposes: ["$", "jQuery"],
+            },
+          },
+        ],
+      },
     ],
   },
   resolve: {
@@ -182,12 +193,6 @@ var options = {
       chunks: ["speak"],
       cache: false,
     }),
-
-    new webpack.ProvidePlugin({
-      jQuery: "jquery",
-    }),
-
-    // new WriteFilePlugin(),
   ],
   infrastructureLogging: {
     level: "info",
