@@ -1,4 +1,3 @@
-import $ from 'jquery'
 import storage from  "./storage.coffee"
 import message from "./message.coffee"
 import defaultDicts from "./default-dicts.coffee"
@@ -152,18 +151,18 @@ export default {
         return @allDicts[n-1]
 
     query: (word, dictName)->
-        dfd = $.Deferred()
-        dict = @getDict(dictName)
-        if dict.fixSpaceInWords
-            word = word.replace(/\s+/g, dict.fixSpaceInWords)
+        new Promise (resolve, reject) => 
+            dict = @getDict(dictName)
+            if dict.fixSpaceInWords
+                word = word.replace(/\s+/g, dict.fixSpaceInWords)
 
-        if dict.windowUrl
-            windowUrl = dict.windowUrl.replace('<word>', word.toLowerCase())
-        else if dict.chatgptPrompt 
-            windowUrl = 'https://chat.openai.com/'
+            if dict.windowUrl
+                windowUrl = dict.windowUrl.replace('<word>', word.toLowerCase())
+            else if dict.chatgptPrompt 
+                windowUrl = 'https://chat.openai.com/'
 
-        return dfd.resolve { windowUrl }
-    
+            return resolve { windowUrl }
+        
     searchDicts: (key) ->
         results = []
         for dict in @allDicts

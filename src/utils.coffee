@@ -164,4 +164,32 @@ export default {
         text[0].toUpperCase() + text.slice(1)
     
     isMobile: () -> /Mobi|Android/i.test(navigator.userAgent)
+
+    loadHTML: (url, credentials='omit') ->
+        @promiseInTime(fetch(url, {
+            method: 'GET', 
+            credentials,
+        }), 5000)
+        .then((resp) -> 
+            if not resp.ok
+                err = new Error(resp.statusText) 
+                err.status = resp.status
+                throw err
+
+            return resp.text()
+        )
+
+    loadJson: (url, credentials) ->
+        @promiseInTime(fetch(url, {
+            method: 'GET', 
+            credentials
+        }), 5000)
+        .then((resp) -> 
+            if not resp.ok
+                err = new Error(resp.statusText) 
+                err.status = resp.status
+                throw err
+
+            return resp.json()
+        )
 }

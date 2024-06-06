@@ -3,8 +3,6 @@ import debounce from 'lodash/debounce'
 import utils from "utils"
 import './anki-inject.less'
 
-window.$ = $;
-
 currentWordItem = null 
 
 triggerInput = (el) -> 

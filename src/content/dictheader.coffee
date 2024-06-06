@@ -96,7 +96,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             newDictWindow 
         }, (data) ->
             $scope.querying = false
-            if data.noUpdate
+            if data?.noUpdate
                 # current dict might be changed
                 initDict()
         )
@@ -105,12 +105,27 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         if $scope.inFrame
             window.top.postMessage { type: 'toggleDropdown', open }, '*'
 
+    
+    parseAutocomplete = (html) ->
+        return [] unless html
+        nodes = $(html)
+        list = []
+        nodes.find('li>.entry').each (i, item) ->
+            w = $(item).find('.word').text()
+            def = $(item).find('.definition').text()
+
+            list.push({ w, def }) unless i > 11  # at most 12 items
+            
+        return list
+
     $scope.autocomplete = debounce (() ->
         text = $scope.word.trim()
         if text
-            $scope.autocompletes = await utils.send 'autocomplete', { text }
+            {results, html} = await utils.send 'autocomplete', { text }
+            $scope.autocompletes = results.concat parseAutocomplete(html)
         else
             $scope.autocompletes = []
+
         $scope.$apply()
         $scope.toggleDropdown($scope.autocompletes.length > 0)
 

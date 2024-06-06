@@ -4,7 +4,6 @@ import dict from "./dict.coffee"
 import message from "./message.coffee"
 import readClipboard from "./clipboard.coffee"
 import utils from "utils"
-import $ from "jquery"
 
 defaultWindowUrl = chrome.runtime.getURL('dict.html')
 
@@ -429,11 +428,11 @@ export default {
             return if not win?.word 
             
             if utils.isEnglish win.word 
-                return $.get "https://en.m.wikipedia.org/api/rest_v1/page/summary/" + win.word
+                return utils.loadJson "https://en.m.wikipedia.org/api/rest_v1/page/summary/" + win.word
             else if utils.isChinese(win.word) and setting.getValue "enableLookupChinese"
-                return $.get "https://zh.wikipedia.org/api/rest_v1/page/summary/" + win.word
+                return utils.loadJson "https://zh.wikipedia.org/api/rest_v1/page/summary/" + win.word
             else if utils.isJapanese win.word
-                return $.get "https://ja.wikipedia.org/api/rest_v1/page/summary/" + win.word
+                return utils.loadJson "https://ja.wikipedia.org/api/rest_v1/page/summary/" + win.word
 
         message.on 'card setting', ( { sys, origin } ) =>
             if sys == 'wiki' 

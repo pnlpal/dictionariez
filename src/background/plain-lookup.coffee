@@ -1,4 +1,3 @@
-import $ from "jquery"
 import dict from "./dict.coffee"
 import message from "./message.coffee"
 import storage from "./storage.coffee"
@@ -8,33 +7,7 @@ import parserDescs from '../resources/dict-parsers.json'
 import langs from '../resources/langs.json'
 import stringSimilarity from 'string-similarity'
 
-load = (url, credentials='omit') ->
-    utils.promiseInTime(fetch(url, {
-        method: 'GET', 
-        credentials,
-    }), 5000)
-    .then((resp) -> 
-        if not resp.ok
-            err = new Error(resp.statusText) 
-            err.status = resp.status
-            throw err
 
-        return resp.text()
-    )
-
-loadJson = (url, credentials) ->
-    utils.promiseInTime(fetch(url, {
-        method: 'GET', 
-        credentials
-    }), 5000)
-    .then((resp) -> 
-        if not resp.ok
-            err = new Error(resp.statusText) 
-            err.status = resp.status
-            throw err
-
-        return resp.json()
-    )
 
 setEnglishProns = (result) ->
     result.prons = result.prons.concat [
@@ -146,9 +119,9 @@ export default {
 
         try
             if tname == "naver"
-                json = await loadJson url, dictDesc.credentials
+                json = await utils.loadJson url, dictDesc.credentials
             else
-                html = await load url, dictDesc.credentials
+                html = await utils.loadHTML url, dictDesc.credentials
         catch err 
             if err.message == 'timeout' \
                 and tname != 'wiktionary' \
