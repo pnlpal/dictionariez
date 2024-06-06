@@ -5,8 +5,6 @@ import message from "./message.coffee"
 import readClipboard from "./clipboard.coffee"
 import utils from "utils"
 
-defaultWindowUrl = chrome.runtime.getURL('dict.html')
-
 screenWidth = 0 
 screenHeight = 0
 screenAvailLeft = 0
@@ -102,6 +100,7 @@ class DictWindow
 
         return new Promise (resolve, reject) =>
             if !@w
+                defaultWindowUrl = chrome.runtime.getURL('dict.html')
                 chrome.windows.create({
                     url: url or defaultWindowUrl,
                     type: 'popup',
@@ -406,7 +405,7 @@ export default {
                     
                     return {
                         dictUrl: chrome.runtime.getURL('dict.html'),
-                        cardUrl: chrome.runtime.getURL('carchatgptDicthtml'),
+                        cardUrl: chrome.runtime.getURL('card.html'),
                         dict: chatgptDict
                     }
 
