@@ -200,8 +200,10 @@ var options = {
 };
 
 if (env.NODE_ENV === "development") {
+  console.log("Run in dev");
   options.devtool = "cheap-module-source-map";
 } else {
+  console.log("Run in prod");
   options.optimization = {
     minimize: true,
     minimizer: [
