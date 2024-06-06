@@ -39,7 +39,7 @@ getInfoOfSelectionCode = () ->
 
 
 class DictWindow
-    w: null
+    wid: null
     tid: null
     url: null
     word: null
@@ -48,11 +48,11 @@ class DictWindow
     savePosInterval: null
     windex: 0
 
-    constructor: ({ @w, @tid, @url, @word, @sentence, dictName } = {}) ->
+    constructor: ({ @wid, @tid, @url, @word, @sentence, dictName } = {}) ->
         @dictName = dictName || setting.getValue('dictionary') || dict.allDicts[0].dictName
 
     reset: ()->
-        @w = null
+        @wid = null
         @tid = null
         @url = null
         @word = null
@@ -99,7 +99,7 @@ class DictWindow
             left = defaultLeft
 
         return new Promise (resolve, reject) =>
-            if !@w
+            if !@wid
                 defaultWindowUrl = chrome.runtime.getURL('dict.html')
                 chrome.windows.create({
                     url: url or defaultWindowUrl,
@@ -114,8 +114,8 @@ class DictWindow
                         return @open(url, true) if not useDefaultPosition
                         return reject(new Error("Failed to create the popup lookup window!")) 
 
-                    @w = win
-                    @tid = @w.tabs[@w.tabs.length-1].id
+                    @wid = win.id
+                    @tid = win.tabs[win.tabs.length-1].id
                     @url = url or defaultWindowUrl
                     resolve()
 
@@ -124,7 +124,7 @@ class DictWindow
 
                     # Firefox can't remember top and left, opera can't remember at all.
                     if navigator.userAgent.toLowerCase().indexOf('firefox') > -1 or navigator.userAgent.toLowerCase().indexOf('opr') > -1
-                        chrome.windows.update @w.id, {
+                        chrome.windows.update @wid, {
                             width: width,
                             height: height,
                             top: if utils.isLinux() then top - screenAvailTop else top, # fix top value on Linux, may be chrome's bug.
@@ -143,9 +143,9 @@ class DictWindow
                     resolve({noUpdate: true})
                     
     focus: () ->
-        chrome.windows.update(@w.id, {
+        chrome.windows.update(@wid, {
             focused: true
-        }) if @w
+        }) if @wid
         chrome.tabs.update(@tid, {
             highlighted: true
         }) if @tid
@@ -170,8 +170,8 @@ class DictWindow
         @open(url)
 
     saveWindowPosition: ()->
-        if @w
-            chrome.windows.get @w.id, null, (w)=>
+        if @wid
+            chrome.windows.get @wid, null, (w)=>
                 if w?.width and w?.height
                     setting.setValue 'windowWidth', w.width
                     setting.setValue 'windowHeight', w.height
@@ -199,10 +199,10 @@ export default {
             @dictWindows[i].focus()
 
     create: (options) ->
-        if (@dictWindows[0] && !@dictWindows[0].w) 
+        if (@dictWindows[0] && !@dictWindows[0].wid) 
             win = @dictWindows[0]
             if options
-                win.w = options.w
+                win.wid = options.wid
                 win.tid = options.tid
                 win.url = options.url
                 win.word = options.word
@@ -226,7 +226,7 @@ export default {
 
         chrome.windows.onRemoved.addListener (wid)=>
             @dictWindows.forEach (win)->
-                if win.w?.id == wid
+                if win.wid == wid
                     win.reset()
         chrome.tabs.onRemoved.addListener (tid)=>
             @dictWindows.forEach (win)->
@@ -234,7 +234,7 @@ export default {
                     win.reset()
             
             # clear closed window
-            @dictWindows = @dictWindows.filter (win, i)-> i == 0 or win.w 
+            @dictWindows = @dictWindows.filter (win, i)-> i == 0 or win.wid
 
         chrome.action.onClicked.addListener (tab) =>
             chrome.scripting.executeScript {
@@ -396,7 +396,7 @@ export default {
             else if utils.isMobile()
                 chatgptDict = dict.getDict("chatgpt definition")
                 if chatgptDict && sender.tab.url.startsWith(chatgptDict.windowUrl)
-                    @create({ w: {id: sender.tab.windowId}, tid: sender.tab.id, url: sender.tab.url, dictName: chatgptDict.dictName })
+                    @create({ wid: sender.tab.windowId, tid: sender.tab.id, url: sender.tab.url, dictName: chatgptDict.dictName })
                     if chatgptDict.css
                         chrome.scripting.insertCSS {
                             target: { tabId: sender.tab.id },
