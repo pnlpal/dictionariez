@@ -384,7 +384,6 @@ export default {
                 if d.css
                     chrome.scripting.insertCSS {
                         target: { tabId: sender.tab.id },
-                        runAt: "document_start",
                         css: d.css
                     }
                 
@@ -402,7 +401,6 @@ export default {
                     if chatgptDict.css
                         chrome.scripting.insertCSS {
                             target: { tabId: sender.tab.id },
-                            runAt: "document_start",
                             css: chatgptDict.css
                         }
                     
