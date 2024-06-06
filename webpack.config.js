@@ -106,10 +106,16 @@ var options = {
           {
             loader: "expose-loader",
             options: {
-              exposes: {
-                globalName: "$",
-                override: true,
-              },
+              exposes: [
+                {
+                  globalName: "$",
+                  override: true,
+                },
+                {
+                  globalName: "jQuery",
+                  override: true,
+                },
+              ],
             },
           },
         ],
