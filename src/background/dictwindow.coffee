@@ -168,12 +168,17 @@ export default {
         storage.addHistory { w, s, sc, sentence } if w and s  # ignore lookup from options page
         
         if @dictWindows.length
-            res = null
-            @dictWindows.forEach (win)->
-                res = win.lookup(w, sentence, languagePrompt)
-            return res
+            result = null
+            for win in @dictWindows
+                if win.wid
+                    result = await win.lookup(w, sentence, languagePrompt)
+                    
+            @saveInStorage()
+            return result
         else 
-            return @create().lookup(w, sentence, languagePrompt)
+            result = await @create().lookup(w, sentence, languagePrompt)
+            @saveInStorage()
+            return result
 
     create: (options = {}) ->
         win = @dictWindows.find (win) -> win.wid == options.wid
@@ -219,7 +224,7 @@ export default {
         if data.dictWindows
             @dictWindows = data.dictWindows.map (options, i) -> 
                 new DictWindow({ ...options, windex: i })
-
+            @dictWindows = @dictWindows.filter (win) -> win.wid and win.tid
             # console.log "[dictWindow] restored from storage: ", @dictWindows
 
     mainDictWindow: ({ dictName }) ->
