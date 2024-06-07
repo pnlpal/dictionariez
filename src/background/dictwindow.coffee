@@ -45,7 +45,6 @@ class DictWindow
     word: null
     sentence: null
     dictName: null
-    savePosInterval: null
     windex: 0
 
     constructor: ({ @wid, @tid, @url, @word, @sentence, dictName } = {}) ->
@@ -58,8 +57,6 @@ class DictWindow
         @word = null
         @sentence = null
         @dictName = null
-        clearInterval(@savePosInterval) if @savePosInterval
-        @savePosInterval = null
 
     open: (url, useDefaultPosition)->
         # bugfix: dont know how why, windowWidth and windowHeight are saved as number, need integer here.
@@ -67,8 +64,8 @@ class DictWindow
         height = parseInt(setting.getValue('windowHeight'))
 
         # fix too small value
-        width = 580 if !width or width < 300 or width > screenWidth
-        height = 600 if !height or height < 300 or height > screenHeight
+        width = 580 if !width or width < 300
+        height = 600 if !height or height < 300
         
         defaultLeft = Math.round((screenWidth / 2) - (width / 2))
         defaultTop = Math.round((screenHeight / 2) - (height / 2))
@@ -80,13 +77,6 @@ class DictWindow
             top += 50 * @windex
             left += 50 * @windex 
         
-        # fix on windows, if window is out of the screen. But On Mac, it's OK.
-        if not utils.isMac() 
-            if left < screenAvailLeft or (left + width) > screenWidth
-                left = defaultLeft
-            if top < screenAvailTop or (top + height) > screenHeight
-                top = defaultTop
-
         # fix top value on Linux, may be chrome's bug.
         if utils.isLinux()
             if top > screenAvailTop
@@ -97,6 +87,8 @@ class DictWindow
         if useDefaultPosition
             top = defaultTop
             left = defaultLeft
+            width = screenWidth if width > screenWidth
+            height = screenHeight if height > screenHeight
 
         return new Promise (resolve, reject) =>
             if !@wid
@@ -119,9 +111,6 @@ class DictWindow
                     @url = url or defaultWindowUrl
                     resolve()
 
-                    if @windex == 0  # only save the main window position
-                        @savePosInterval = setInterval @saveWindowPosition.bind(this), 3000
-
                     # Firefox can't remember top and left, opera can't remember at all.
                     if navigator.userAgent.toLowerCase().indexOf('firefox') > -1 or navigator.userAgent.toLowerCase().indexOf('opr') > -1
                         chrome.windows.update @wid, {
@@ -132,6 +121,7 @@ class DictWindow
                         }
                 )
             else
+                @focus()
                 if url and url != @url
                     chrome.tabs.update(@tid, {
                         url: url
@@ -167,54 +157,53 @@ class DictWindow
             else 
                 url = @url 
 
-        @open(url)
-
-    saveWindowPosition: ()->
-        if @wid
-            chrome.windows.get @wid, null, (w)=>
-                if w?.width and w?.height
-                    setting.setValue 'windowWidth', w.width
-                    setting.setValue 'windowHeight', w.height
-                if w?.top? and w?.left?
-                    setting.setValue 'windowLeft', w.left
-                    setting.setValue 'windowTop', w.top
-
-
-    updateDict: (dictName) ->
-        if @dictName != dictName
-            @dictName = dictName
-            setting.setValue 'dictionary', dictName
+        return @open(url)
+            
 
 export default {
     dictWindows: [],
 
-    lookup: ({ w, s, sc, sentence } = {}) ->
+    lookup: ({ w, s, sc, sentence, languagePrompt } = {}) ->
         storage.addHistory { w, s, sc, sentence } if w and s  # ignore lookup from options page
-        @dictWindows.forEach (win)-> win.lookup(w, sentence)
+        
+        if @dictWindows.length
+            res = null
+            @dictWindows.forEach (win)->
+                res = win.lookup(w, sentence, languagePrompt)
+            return res
+        else 
+            return @create().lookup(w, sentence, languagePrompt)
     
-    focus: () ->
-        i = @dictWindows.length 
-        while i  
-            i -= 1 
-            @dictWindows[i].focus()
+    # focus: () ->
+    #     i = @dictWindows.length 
+    #     while i  
+    #         i -= 1 
+    #         @dictWindows[i].focus()
 
-    create: (options) ->
-        if (@dictWindows[0] && !@dictWindows[0].wid) 
-            win = @dictWindows[0]
-            if options
-                win.wid = options.wid
-                win.tid = options.tid
-                win.url = options.url
-                win.word = options.word
-                win.sentence = options.sentence 
-                win.dictName = options.dictName
+    create: (options = {}) ->
+        win = @dictWindows.find (win) -> win.wid == options.wid
+        if (win) 
+            win.url = options.url
+            win.word = options.word
+            win.sentence = options.sentence 
+            win.dictName = options.dictName
             return win
-
         else 
             win = new DictWindow(options)
             win.windex = @dictWindows.length
             @dictWindows.push win 
             return win 
+
+    destroyWin: ({ wid, tid } = {}) ->
+        @dictWindows.forEach (win)->
+                if win.wid == wid or win.tid == tid
+                    win.reset()
+        @dictWindows = @dictWindows.filter (win) -> win.wid
+
+    mainDictWindow: ({ dictName }) ->
+        win = @dictWindows[0] or @create({ dictName })
+        win.dictName = dictName if dictName
+        return win
     
     getByTab: (tid) ->
         for win in @dictWindows 
@@ -222,19 +211,11 @@ export default {
                 return win 
 
     init: () ->
-        @create()
-
         chrome.windows.onRemoved.addListener (wid)=>
-            @dictWindows.forEach (win)->
-                if win.wid == wid
-                    win.reset()
+            @destroyWin({ wid })
+
         chrome.tabs.onRemoved.addListener (tid)=>
-            @dictWindows.forEach (win)->
-                if win.tid == tid
-                    win.reset()
-            
-            # clear closed window
-            @dictWindows = @dictWindows.filter (win, i)-> i == 0 or win.wid
+            @destroyWin({ tid })
 
         chrome.action.onClicked.addListener (tab) =>
             chrome.scripting.executeScript {
@@ -247,7 +228,6 @@ export default {
                     w = await readClipboard() 
 
                 @lookup({ w, sentence, s: tab.url, sc: tab.title })
-                @focus()
 
         if not setting.getValue "disableContextMenu"
             chrome.contextMenus.create {
@@ -266,15 +246,14 @@ export default {
                             if res?[0]?.result.length
                                 [w, sentence, screenWidth, screenHeight, screenAvailLeft, screenAvailTop] = res?[0].result or []
                             @lookup({ w, sentence, s: tab.url, sc: tab.title })
-                            @focus()
 
         message.on "copy event triggered", ({s, sc, sentence}) => 
             w = await readClipboard()
             if w
                 @lookup({ w, s, sc, sentence })
-                @focus()
 
         message.on 'look up', ({ dictName, w, s, sc, sentence, means, newDictWindow }) =>
+            # 'look up' can be triggered by the context menu or the hotkey or any webpages
             if means == 'mouse'
                 if not setting.getValue('enableMinidict')
                     return
@@ -283,20 +262,17 @@ export default {
                 w = await readClipboard()
 
             if newDictWindow 
-                targetWin = @create()
-                targetWin.updateDict(dictName || @dictWindows[0].dictName)
+                targetWin = @create({ dictName })
                 targetWin.lookup(w || @dictWindows[0].word, sentence)
 
             else if dictName # only change the main window or in new window.
-                @dictWindows[0].updateDict dictName 
-                @dictWindows[0].lookup(w?.trim(), sentence)
-                @focus()
+                @mainDictWindow({ dictName }).lookup(w?.trim(), sentence)
 
             else  # This is more likely to happen.
                 @lookup({ w: w?.trim(), s, sc, sentence })
-                @focus()
 
         message.on 'query', (request, sender) =>
+            # query message only comes from the dict window.
             senderWin = @getByTab(sender.tab.id)
             dictName = request.dictName || senderWin.dictName
             w = request.w || senderWin.word
@@ -325,18 +301,11 @@ export default {
                 storage.addHistory { w, sentence }
 
             if request.newDictWindow
-                targetWin = @create()
-                targetWin.updateDict(dictName)
+                targetWin = @create({ dictName })
                 return targetWin.lookup(w, sentence, languagePrompt)
             else 
-                senderWin.updateDict(dictName)
-
-                result = null
-                @dictWindows.forEach (win)->
-                    res = win.lookup(w, sentence, languagePrompt)
-                    if win.tid == senderWin.tid 
-                        result = res 
-                return result
+                senderWin.dictName = dictName if dictName
+                return @lookup({ w, sentence, languagePrompt })
                 
         message.on 'dictionary', (request, sender) =>
             win = @getByTab(sender.tab.id)
@@ -409,11 +378,13 @@ export default {
                         dict: chatgptDict
                     }
 
-           
-        message.on 'window resize', (request, sender) =>
-            @getByTab(sender.tab.id)?.saveWindowPosition()
-        message.on 'close dict window', (request, sender) =>
-            console.log('close dict window', request)
+        
+        message.on 'beforeunload dict window', (request, sender) =>
+            setting.setValue 'windowWidth', request.width
+            setting.setValue 'windowHeight', request.height
+            setting.setValue 'windowLeft', request.left
+            setting.setValue 'windowTop', request.top
+            setting.setValue 'dictionary', request.dictName
 
         message.on 'sendToDict', ( request, sender ) =>
             @getByTab(sender.tab.id)?.sendMessage request

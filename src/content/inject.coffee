@@ -36,6 +36,7 @@ run = () =>
 		origin: location.origin,
 		url: location.href
 	}, (res) ->
+		console.log "injected", res
 		if res?.dictUrl and window.self == window.top
 			# append to html rather than body.
 			# some websites such as naver dict, may clear body when reload to another page. 
