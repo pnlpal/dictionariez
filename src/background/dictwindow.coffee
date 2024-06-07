@@ -211,12 +211,16 @@ export default {
         #         console.log "[dictWindow] saved to storage: ", data.dictWindows
 
     restoreFromStorage: () ->
-        chrome.storage.local.get 'dictWindows', (data) =>
-            if data.dictWindows
-                @dictWindows = data.dictWindows.map (options, i) -> 
-                    new DictWindow({ ...options, windex: i })
+        if @dictWindows.length
+            return
 
-                # console.log "[dictWindow] restored from storage: ", @dictWindows
+        data = await chrome.storage.local.get 'dictWindows'
+
+        if data.dictWindows
+            @dictWindows = data.dictWindows.map (options, i) -> 
+                new DictWindow({ ...options, windex: i })
+
+            # console.log "[dictWindow] restored from storage: ", @dictWindows
 
     mainDictWindow: ({ dictName }) ->
         win = @dictWindows[0] or @create({ dictName })
@@ -228,26 +232,22 @@ export default {
             if win.tid == tid 
                 return win 
 
+    triggerByActionClicked: (tab) ->
+        # console.log("[dictWindow] action clicked")
+
+        chrome.scripting.executeScript {
+            target : { tabId : tab.id },
+            func: getInfoOfSelectionCode 
+        }, (res) =>
+            [w, sentence, screenWidth, screenHeight, screenAvailLeft, screenAvailTop] = res?[0].result or []
+            if not w
+                w = await readClipboard() 
+            # console.log("[dictWindow] action clicked to lookup", w)
+            @lookup({ w, sentence, s: tab.url, sc: tab.title })
+
     init: () ->
+        # console.log("[dictWindow] init")
         await @restoreFromStorage()
-
-        chrome.windows.onRemoved.addListener (wid)=>
-            @destroyWin({ wid })
-
-        chrome.tabs.onRemoved.addListener (tid)=>
-            @destroyWin({ tid })
-
-        chrome.action.onClicked.addListener (tab) =>
-            chrome.scripting.executeScript {
-                target : { tabId : tab.id },
-                func: getInfoOfSelectionCode 
-            }, (res) =>
-                [w, sentence, screenWidth, screenHeight, screenAvailLeft, screenAvailTop] = res?[0].result or []
-
-                if not w
-                    w = await readClipboard() 
-
-                @lookup({ w, sentence, s: tab.url, sc: tab.title })
 
         if not setting.getValue "disableContextMenu"
             chrome.contextMenus.create {
