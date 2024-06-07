@@ -47,8 +47,9 @@ class DictWindow
     dictName: null
     windex: 0
 
-    constructor: ({ @wid, @tid, @url, @word, @sentence, dictName } = {}) ->
+    constructor: ({ @wid, @tid, @url, @word, @sentence, dictName, windex } = {}) ->
         @dictName = dictName || setting.getValue('dictionary') || dict.allDicts[0].dictName
+        @windex = windex || 0
 
     reset: ()->
         @wid = null
@@ -173,12 +174,6 @@ export default {
             return res
         else 
             return @create().lookup(w, sentence, languagePrompt)
-    
-    # focus: () ->
-    #     i = @dictWindows.length 
-    #     while i  
-    #         i -= 1 
-    #         @dictWindows[i].focus()
 
     create: (options = {}) ->
         win = @dictWindows.find (win) -> win.wid == options.wid
@@ -187,18 +182,41 @@ export default {
             win.word = options.word
             win.sentence = options.sentence 
             win.dictName = options.dictName
-            return win
         else 
             win = new DictWindow(options)
             win.windex = @dictWindows.length
             @dictWindows.push win 
-            return win 
+        
+        @saveInStorage()
+        return win 
 
     destroyWin: ({ wid, tid } = {}) ->
         @dictWindows.forEach (win)->
                 if win.wid == wid or win.tid == tid
                     win.reset()
         @dictWindows = @dictWindows.filter (win) -> win.wid
+        @saveInStorage()
+
+    saveInStorage: () ->
+        await chrome.storage.local.set { dictWindows: @dictWindows.map((win) -> { 
+            wid: win.wid, 
+            tid: win.tid, 
+            url: win.url, 
+            word: win.word, 
+            dictName: win.dictName 
+        }) }
+
+        # chrome.storage.local.get 'dictWindows', (data) =>
+        #     if data.dictWindows
+        #         console.log "[dictWindow] saved to storage: ", data.dictWindows
+
+    restoreFromStorage: () ->
+        chrome.storage.local.get 'dictWindows', (data) =>
+            if data.dictWindows
+                @dictWindows = data.dictWindows.map (options, i) -> 
+                    new DictWindow({ ...options, windex: i })
+
+                # console.log "[dictWindow] restored from storage: ", @dictWindows
 
     mainDictWindow: ({ dictName }) ->
         win = @dictWindows[0] or @create({ dictName })
@@ -211,6 +229,8 @@ export default {
                 return win 
 
     init: () ->
+        await @restoreFromStorage()
+
         chrome.windows.onRemoved.addListener (wid)=>
             @destroyWin({ wid })
 
@@ -263,13 +283,16 @@ export default {
 
             if newDictWindow 
                 targetWin = @create({ dictName })
-                targetWin.lookup(w || @dictWindows[0].word, sentence)
+                result = await targetWin.lookup(w || @dictWindows[0].word, sentence)
 
             else if dictName # only change the main window or in new window.
-                @mainDictWindow({ dictName }).lookup(w?.trim(), sentence)
+                result = await @mainDictWindow({ dictName }).lookup(w?.trim(), sentence)
 
             else  # This is more likely to happen.
-                @lookup({ w: w?.trim(), s, sc, sentence })
+                result = await @lookup({ w: w?.trim(), s, sc, sentence })
+
+            @saveInStorage()
+            return result
 
         message.on 'query', (request, sender) =>
             # query message only comes from the dict window.
@@ -302,10 +325,13 @@ export default {
 
             if request.newDictWindow
                 targetWin = @create({ dictName })
-                return targetWin.lookup(w, sentence, languagePrompt)
+                result = await targetWin.lookup(w, sentence, languagePrompt)
             else 
                 senderWin.dictName = dictName if dictName
-                return @lookup({ w, sentence, languagePrompt })
+                result = await @lookup({ w, sentence, languagePrompt })
+            
+            @saveInStorage()
+            return result
                 
         message.on 'dictionary', (request, sender) =>
             win = @getByTab(sender.tab.id)
@@ -417,6 +443,5 @@ export default {
             if minimal
                 arr.push sys 
             setting.setValue 'minimalCards', arr.join(',')
-
 
 }
