@@ -41,9 +41,7 @@ export function initYtbInjection() {
         languageCode: caption.languageCode,
         xml: await fetchCaption(caption.baseUrl),
       };
-      console.log(
-        `Got ${caption.name.simpleText} caption for video ${info.videoDetails.videoId}`
-      );
+
       result.push(item);
     }
 

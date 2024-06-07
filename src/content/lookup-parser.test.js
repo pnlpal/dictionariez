@@ -198,7 +198,6 @@ describe("lookup-parser", () => {
     };
     const $html = $(htmlString);
     const result = parseHTML($html, parserDesc);
-    console.log(result);
     expect(result).to.deep.equal({
       defs: [
         {
