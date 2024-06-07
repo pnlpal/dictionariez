@@ -41,6 +41,8 @@ openYtbOnCaptionz = (link) ->
 
 
 export default {
+    shareOnPnlpal,
+    openYtbOnCaptionz,
     init: () ->
         if not setting.getValue "disableSharePnlpal"
             chrome.contextMenus.create {
@@ -48,9 +50,6 @@ export default {
                 title: "Share with pals",
                 contexts: ["page"],
             }
-            chrome.contextMenus.onClicked.addListener (info, tab) ->
-                if info.menuItemId == "share-with-pals"
-                    shareOnPnlpal tab.title, tab.url
 
         if not setting.getValue "disableYtbCaptionz"
             chrome.contextMenus.create {
@@ -61,10 +60,7 @@ export default {
                     "https://www.youtube.com/watch*"
                 ]
             }
-            chrome.contextMenus.onClicked.addListener (info, tab) ->
-                if info.menuItemId == "open-ytb-video-on-captionz"
-                    openYtbOnCaptionz info.linkUrl
-
+            
         message.on 'share with pals', ({ title, link })->
             shareOnPnlpal title, link
 

@@ -51,5 +51,19 @@ chrome.tabs.onRemoved.addListener(async function (tid) {
 
 chrome.action.onClicked.addListener(async function (tab) {
   await initPromises;
-  dw.triggerByActionClicked(tab);
+  dw.triggerByAction(tab);
+});
+
+chrome.contextMenus.onClicked.addListener(async function (info, tab) {
+  await initPromises;
+  if (info.menuItemId === "lookup") {
+    const word = info.selectionText?.trim();
+    dw.triggerByAction(tab, word);
+  }
+  if (info.menuItemId === "share-with-pals") {
+    pnlpal.shareOnPnlpal(tab.title, tab.url);
+  }
+  if (info.menuItemId === "open-ytb-video-on-captionz") {
+    pnlpal.openYtbOnCaptionz(info.linkUrl);
+  }
 });

@@ -237,14 +237,14 @@ export default {
             if win.tid == tid 
                 return win 
 
-    triggerByActionClicked: (tab) ->
-        # console.log("[dictWindow] action clicked")
-
+    triggerByAction: (tab, word) ->
+        # console.log("[dictWindow] some action triggered to lookup", word)
         chrome.scripting.executeScript {
             target : { tabId : tab.id },
             func: getInfoOfSelectionCode 
         }, (res) =>
-            [w, sentence, screenWidth, screenHeight, screenAvailLeft, screenAvailTop] = res?[0].result or []
+            [word2, sentence, screenWidth, screenHeight, screenAvailLeft, screenAvailTop] = res?[0].result or []
+            w = word || word2
             if not w
                 w = await readClipboard() 
             # console.log("[dictWindow] action clicked to lookup", w)
@@ -260,17 +260,7 @@ export default {
                 title: "Look up '%s' in dictionaries",
                 contexts: ["selection"],
             }
-            chrome.contextMenus.onClicked.addListener (info, tab) =>
-                if info.menuItemId == "lookup"
-                    w = info.selectionText?.trim()
-                    if w 
-                        chrome.scripting.executeScript {
-                            target : { tabId : tab.id },
-                            func: getInfoOfSelectionCode 
-                        }, (res) =>
-                            if res?[0]?.result.length
-                                [w, sentence, screenWidth, screenHeight, screenAvailLeft, screenAvailTop] = res?[0].result or []
-                            @lookup({ w, sentence, s: tab.url, sc: tab.title })
+            
 
         message.on "copy event triggered", ({s, sc, sentence}) => 
             w = await readClipboard()
