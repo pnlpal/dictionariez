@@ -122,24 +122,25 @@ class DictWindow
                         }
                 )
             else
-                @focus()
-                if url and url != @url
-                    chrome.tabs.update(@tid, {
-                        url: url
-                    })
-                    @url = url
-               
-                    resolve()
-                else 
-                    resolve({noUpdate: true})
+                try 
+                    await @focus()
+                    if url and url != @url
+                        chrome.tabs.update(@tid, {
+                            url: url
+                        })
+                        @url = url
+                
+                        resolve()
+                    else 
+                        resolve({noUpdate: true})
+                catch err
+                    console.error("[dictWindow] open error: ", err)
+                    reject(err)
                     
     focus: () ->
         chrome.windows.update(@wid, {
             focused: true
-        }) if @wid
-        chrome.tabs.update(@tid, {
-            highlighted: true
-        }) if @tid
+        })
 
     sendMessage: (msg)->
         chrome.tabs.sendMessage(@tid, msg) if @tid
@@ -221,11 +222,17 @@ export default {
 
         data = await chrome.storage.local.get 'dictWindows'
 
-        if data.dictWindows
-            @dictWindows = data.dictWindows.map (options, i) -> 
-                new DictWindow({ ...options, windex: i })
-            @dictWindows = @dictWindows.filter (win) -> win.wid and win.tid
-            # console.log "[dictWindow] restored from storage: ", @dictWindows
+        i = 0
+        for options in data.dictWindows or []
+            if options.wid and options.tid
+                try 
+                    await chrome.windows.get(options.wid)
+                    win = new DictWindow({ ...options, windex: i })
+                    @dictWindows.push win
+                    i += 1
+                catch err 
+                    console.warn("[dictWindow] restore error: ", err.message, 'Ignored.')
+
 
     mainDictWindow: ({ dictName }) ->
         win = @dictWindows[0] or @create({ dictName })

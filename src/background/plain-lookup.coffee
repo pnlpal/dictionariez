@@ -104,6 +104,7 @@ export default {
                 if n.type == 'ame' and n.symbol
                     ame = n.symbol.replace('US', '').trim()
                     return { ame } 
+            return {}
 
     parse: (w, tname, prevResult, url) ->
         tname ?= @checkType(w)
