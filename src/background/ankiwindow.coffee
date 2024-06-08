@@ -113,9 +113,7 @@ export default {
 
         message.on 'image to data url', (request, sender) => 
             dataUrl = await utils.imageToDataUrl(request.src)
-            {width, height} =  await utils.imageSize(dataUrl)
-
-            return {dataUrl, width, height}
+            return { dataUrl }
 
         message.on 'beforeunload anki window', (request, sender) =>
             setting.setValue 'ankiWidth', request.width

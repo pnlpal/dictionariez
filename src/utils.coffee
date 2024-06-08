@@ -135,22 +135,19 @@ export default {
         s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
 
     imageToDataUrl: (src) ->
-        new Promise (resolve) -> 
+        new Promise (resolve, reject) -> 
             if src.startsWith('data:')
                 resolve src 
             else 
-                xhr = new XMLHttpRequest()
-                xhr.onload = () ->
-                    reader = new FileReader()
-
-                    reader.onloadend = () ->
-                        resolve reader.result
-                    
-                    reader.readAsDataURL(xhr.response)
-                
-                xhr.open('GET', src)
-                xhr.responseType = 'blob'
-                xhr.send()
+                fetch(src)
+                    .then (response) ->
+                        response.blob()
+                    .then (blob) ->
+                        reader = new FileReader()
+                        reader.onloadend = () ->
+                            resolve reader.result
+                        reader.onerror = reject
+                        reader.readAsDataURL blob
 
     imageSize: (src) -> 
         new Promise (resolve) ->
