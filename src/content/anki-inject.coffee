@@ -243,3 +243,11 @@ export initAnkiInjection = () ->
 		getAnkiInfo()
 		addSkipButton()
 		$("body")[0].addEventListener('click', wordSavedCallback, true)
+
+		window.addEventListener 'beforeunload', () ->
+			utils.send 'beforeunload anki window', {
+				left: window.screenX,
+				top: window.screenY,
+				width: window.outerWidth,
+				height: window.outerHeight,
+			}

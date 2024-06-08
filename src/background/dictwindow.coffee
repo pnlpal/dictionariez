@@ -5,8 +5,8 @@ import message from "./message.coffee"
 import readClipboard from "./clipboard.coffee"
 import utils from "utils"
 
-screenWidth = 0 
-screenHeight = 0
+screenWidth = 1280
+screenHeight = 800
 screenAvailLeft = 0
 screenAvailTop = 0
 
@@ -47,6 +47,8 @@ class DictWindow
     dictName: null
     windex: 0
 
+    defaultUrl: chrome.runtime.getURL('dict.html')
+
     constructor: ({ @wid, @tid, @url, @word, @sentence, dictName, windex } = {}) ->
         @dictName = dictName || setting.getValue('dictionary') || dict.allDicts[0].dictName
         @windex = windex || 0
@@ -59,10 +61,17 @@ class DictWindow
         @sentence = null
         @dictName = null
 
-    open: (url, useDefaultPosition)->
+    getStoredPosition: ()->
         # bugfix: dont know how why, windowWidth and windowHeight are saved as number, need integer here.
-        width = parseInt(setting.getValue('windowWidth'))
-        height = parseInt(setting.getValue('windowHeight'))
+        return {
+            width: parseInt setting.getValue('windowWidth')
+            height: parseInt setting.getValue('windowHeight')
+            left: parseInt setting.getValue('windowLeft')
+            top: parseInt setting.getValue('windowTop')
+        }
+
+    open: (url, useDefaultPosition)->
+        { width, height, left, top } = @getStoredPosition()
 
         # fix too small value
         width = 580 if !width or width < 300
@@ -70,8 +79,8 @@ class DictWindow
         
         defaultLeft = Math.round((screenWidth / 2) - (width / 2))
         defaultTop = Math.round((screenHeight / 2) - (height / 2))
-        left = setting.getValue('windowLeft', defaultLeft)
-        top = setting.getValue('windowTop', defaultTop)
+        left = defaultLeft if isNaN left
+        top = defaultTop if isNaN top 
 
         # setup the other cloned window 
         if @windex > 0
@@ -93,9 +102,8 @@ class DictWindow
 
         return new Promise (resolve, reject) =>
             if !@wid
-                defaultWindowUrl = chrome.runtime.getURL('dict.html')
                 chrome.windows.create({
-                    url: url or defaultWindowUrl,
+                    url: url or @defaultUrl,
                     type: 'popup',
                     width: width,
                     height: height,
@@ -109,7 +117,7 @@ class DictWindow
 
                     @wid = win.id
                     @tid = win.tabs[win.tabs.length-1].id
-                    @url = url or defaultWindowUrl
+                    @url = url or @defaultUrl
                     resolve()
 
                     # Firefox can't remember top and left, opera can't remember at all.
@@ -163,6 +171,7 @@ class DictWindow
             
 
 export default {
+    DictWindow,
     dictWindows: [],
 
     lookup: ({ w, s, sc, sentence, languagePrompt } = {}) ->

@@ -4,95 +4,66 @@ import utils from "utils"
 import setting from "./setting.coffee"
 import plainLookup from "./plain-lookup.coffee"
 import storage from "./storage.coffee"
+import dw from "./dictwindow.coffee";
 
-class AnkiWindow 
-    url: 'https://ankiuser.net/add'
-    w: null,
-    tid: null, 
-    wordItem: null, 
-    reset: ()->
-        @w = null
-        @tid = null
+
+class AnkiWindow extends dw.DictWindow
+    defaultUrl: 'https://ankiuser.net/add'
+    wordItem: null
+
+    constructor: () ->
+        super({ dictName: 'none'})
+
+    reset: () ->
+        super.reset()
         @wordItem = null
-        clearInterval(@savePosInterval) if @savePosInterval
-        @savePosInterval = null
 
-    open: (useDefaultPosition)->
-        # bugfix: dont know how why, windowWidth and windowHeight are saved as number, need integer here.
-        width = parseInt(setting.getValue('ankiWidth'))
-        height = parseInt(setting.getValue('ankiHeight'))
-
-        # fix too small value
-        width = 580 if !width or width < 300
-        height = 600 if !height or height < 300
-        
-        defaultLeft = Math.round((screen.width / 2) - (width / 2))
-        defaultTop = Math.round((screen.height / 2) - (height / 2))
-        left = setting.getValue('ankiLeft', defaultLeft)
-        top = setting.getValue('ankiTop', defaultTop)
-        
-        # fix on windows, if window is out of the screen. But On Mac, it's OK.
-        if not utils.isMac() 
-            if left < 0 or left > screen.width 
-                left = defaultLeft
-            if top < 0 or top > screen.height
-                top = defaultTop
-
-        # fix top value on Linux, may be chrome's bug.
-        if utils.isLinux()
-            if top > screen.availTop
-                top = defaultTop 
-            if left > screen.availLeft
-                left = defaultLeft
-
-        if useDefaultPosition
-            top = defaultTop
-            left = defaultLeft
-
-        return new Promise (resolve, reject) =>
-            if !@w
-                # console.log "[dictWindow] create window position: top: #{top}, left: #{left}, width: #{width}, height: #{height}"
-                chrome.windows.create({
-                    url: @url,
-                    type: 'popup',
-                    width: width,
-                    height: height,
-                    top: if utils.isLinux() then top - screen.availTop else top, # fix top value on Linux, may be chrome's bug.
-                    left: if utils.isLinux() then left - screen.availLeft else left, # fix left value on Linux, may be chrome's bug.
-                    state: 'normal',
-                }, (win)=>
-                    if not win
-                        return @open(true) if not useDefaultPosition
-                        return reject(new Error("Failed to create the popup anki window!")) 
-
-                    @w = win
-                    @tid = @w.tabs[0].id
-                    resolve()
-
-                    @savePosInterval = setInterval @saveWindowPosition.bind(this), 3000
-                )
-            else
-                chrome.windows.update(@w.id, {
-                    focused: true
-                })
-                resolve()
-
-    saveWindowPosition: ()->
-        if @w
-            chrome.windows.get @w.id, null, (w)=>
-                if w?.width and w?.height
-                    # console.log "[dictWindow] update window position: top: #{w.top}, left: #{w.left}, width: #{w.width}, height: #{w.height}"
-                    setting.setValue 'ankiWidth', w.width
-                    setting.setValue 'ankiHeight', w.height
-                if w?.top? and w?.left?
-                    setting.setValue 'ankiLeft', w.left
-                    setting.setValue 'ankiTop', w.top
-    sendMessage: (msg)->
-        chrome.tabs.sendMessage(@tid, msg) if @tid
+    getStoredPosition: ()->
+        # bugfix: dont know how why, ankiWidth and ankiHeight are saved as number, need integer here.
+        return {
+            width: parseInt setting.getValue('ankiWidth')
+            height: parseInt setting.getValue('ankiHeight')
+            left: parseInt setting.getValue('ankiLeft')
+            top: parseInt setting.getValue('ankiTop')
+        }
 
 
 export default {
     anki: new AnkiWindow(),
+
+    destroyWin: ({wid}) ->
+        if @anki.wid == wid
+            @anki.reset()
+            @saveInStorage()
+
+    saveInStorage: () ->
+        await chrome.storage.local.set { ankiWindow: { 
+            wid: @anki.wid, 
+            tid: @anki.tid, 
+            wordItem: @anki.wordItem
+        } }
+
+        chrome.storage.local.get 'ankiWindow', (data) =>
+            if data.ankiWindow
+                console.log "[ankiWindow] saved to storage: ", data.ankiWindow
+
+    restoreFromStorage: () ->
+        if @anki.wid
+            return
+
+        data = await chrome.storage.local.get 'ankiWindow'
+
+        ankiWindow = data.ankiWindow
+        if ankiWindow?.wid and ankiWindow.tid
+            try 
+                await chrome.windows.get(ankiWindow.wid)
+                @anki.wid = ankiWindow.wid
+                @anki.tid = ankiWindow.tid
+                @anki.wordItem = ankiWindow.wordItem
+                console.log "[ankiWindow] restored from storage: ", ankiWindow
+            catch err 
+                console.warn("[ankiWindow] restore error: ", err.message, 'Ignored.')
+
 
     getNextWord: (prevWord) ->
         item = storage.getPreviousAnkiUnsaved prevWord
@@ -100,14 +71,17 @@ export default {
             @anki.wordItem = item 
             console.info "Anki to save next word: #{item.w}"
 
+    focus: () -> 
+        if @anki.wid 
+            @anki.focus()
+
     init: () ->
-        chrome.windows.onRemoved.addListener (wid) =>
-            if @anki.w?.id == wid
-                @anki.reset()
+        await @restoreFromStorage()
 
         message.on 'open anki', (request) =>
-            @anki.open()
             @anki.wordItem = request
+            await @anki.open()
+            @saveInStorage()
         
         message.on 'get anki info', (request, sender) =>
             if sender.tab.id == @anki.tid 
@@ -122,7 +96,7 @@ export default {
                     @getNextWord(request.ankiSkippedWord)
 
                 if @anki.wordItem?.w 
-                    lookupInfo = await plainLookup.parse(@anki.wordItem.w.toLowerCase())
+                    lookupInfo = await plainLookup.parse(sender.tab.id, @anki.wordItem.w.toLowerCase())
 
                     setDataToImages = (images) -> 
                         await Promise.all images.map (image) ->
@@ -142,5 +116,11 @@ export default {
             {width, height} =  await utils.imageSize(dataUrl)
 
             return {dataUrl, width, height}
+
+        message.on 'beforeunload anki window', (request, sender) =>
+            setting.setValue 'ankiWidth', request.width
+            setting.setValue 'ankiHeight', request.height
+            setting.setValue 'ankiLeft', request.left
+            setting.setValue 'ankiTop', request.top
 
 }       

@@ -84,29 +84,25 @@ export default {
                 w, s, sc, sentence
             }) if s  # ignore lookup from options page
 
-            @tabId = sender.tab.id
-            return @parse(w) 
+            return @parse(sender.tab.id, w) 
 
         message.on 'get real person voice', ({ w }, sender) =>
             if setting.getValue 'enableRealPron'
-                @tabId = sender.tab.id
-                return @parse(w, 'ldoce') if w.split(' ').length == 1  # ignore phrase
+                return @parse(sender.tab.id, w, 'ldoce') if w.split(' ').length == 1  # ignore phrase
 
         message.on 'get english pron symbol', ({ w }, sender) =>
             if setting.getValue "enableUSUKPron"
-                @tabId = sender.tab.id
-                return @parse(w, 'bing') if w.split(' ').length == 1 # ignore phrase
+                return @parse(sender.tab.id, w, 'bing') if w.split(' ').length == 1 # ignore phrase
         
         message.on 'look up phonetic', ({ w, _counter }, sender) =>
-            @tabId = sender.tab.id
-            { prons } = await @parse(w, 'bing')
+            { prons } = await @parse(sender.tab.id, w, 'bing')
             for n in prons 
                 if n.type == 'ame' and n.symbol
                     ame = n.symbol.replace('US', '').trim()
                     return { ame } 
             return {}
 
-    parse: (w, tname, prevResult, url) ->
+    parse: (tabId, w, tname, prevResult, url) ->
         tname ?= @checkType(w)
         return unless tname 
 
@@ -127,13 +123,13 @@ export default {
             if err.message == 'timeout' \
                 and tname != 'wiktionary' \
                 and utils.isEnglish(w)
-                return @parse(w, 'wiktionary')
+                return @parse(tabId, w, 'wiktionary')
 
             else if (err.status == 404 \
                 and tname == 'wiktionary' \
                 and (not url.includes('sv.wiktionary.org')) \
                 and @checkLangs(w).includes('Swedish')) 
-                return @parse(w, 'wiktionary', prevResult, url.replace('en.wiktionary.org', 'sv.wiktionary.org'))
+                return @parse(tabId, w, 'wiktionary', prevResult, url.replace('en.wiktionary.org', 'sv.wiktionary.org'))
 
             console.error "Failed to parse: ", url, err.message
             return prevResult
@@ -141,7 +137,7 @@ export default {
         if tname == "naver"
             result = @parseNaver json, dictDesc.result
         else
-            result = await chrome.tabs.sendMessage @tabId, { type: 'parse lookup result', html, parserDesc: dictDesc.result }
+            result = await chrome.tabs.sendMessage tabId, { type: 'parse lookup result', html, parserDesc: dictDesc.result }
 
         # special handle of bing when look up Chinese
         if tname == "bing"
@@ -154,7 +150,7 @@ export default {
             if result.w 
                 result.w = result.w.replaceAll '·', ''
             else 
-                return @parse.call this, w, 'wiktionary'
+                return @parse(tabId, w, 'wiktionary')
             
             if result.langSymbol == 'en'
                 result.lang = 'English'
@@ -184,7 +180,7 @@ export default {
             # parse the second language if possible.
             possibleLangs = @checkLangs(w).filter((l) -> l != result?.lang)
             if possibleLangs.length
-                return @parse w, 'wiktionary', result 
+                return @parse(tabId, w, 'wiktionary', result)
 
 
         if tname == 'wiktionary'
@@ -224,17 +220,17 @@ export default {
                         targetLang.w = result.w 
 
                         if targetLang.lang == 'Tajik'
-                            return @parseOtherLang w, 'Tajik', targetLang, prevResult
+                            return @parseOtherLang tabId, w, 'Tajik', targetLang, prevResult
 
                         if targetLang.lang == 'Indonesian' 
-                            return @parseOtherLang w, 'Indonesian', targetLang, prevResult
+                            return @parseOtherLang tabId, w, 'Indonesian', targetLang, prevResult
 
                         # use followWord fist, then try optionalFollowWord
                         if targetLang.defs?.length >= 1 and targetLang.defs[0].followWord and !prevResult
-                            return @parse targetLang.defs[0].followWord, 'wiktionary', targetLang
+                            return @parse(tabId, targetLang.defs[0].followWord, 'wiktionary', targetLang)
                         else if targetLang.defs?.length >= 1 and targetLang.defs[0].optionalFollowWord and !prevResult
                             if stringSimilarity.compareTwoStrings(w, targetLang.defs[0].optionalFollowWord) > 0.7
-                                return @parse targetLang.defs[0].optionalFollowWord, 'wiktionary', targetLang
+                                return @parse(tabId, targetLang.defs[0].optionalFollowWord, 'wiktionary', targetLang)
 
                         multipleResult.push targetLang if multipleResult.length < 3
                         
@@ -242,18 +238,18 @@ export default {
             if !multipleResult.length
                 # merge Tajik
                 if @checkLangs(w).includes('Tajik')
-                    return @parseTajik w
+                    return @parseOtherLang tabId, w, 'Tajik', null, prevResult
 
                 upperFirst = utils.toUpperFirst w 
                 if !result and upperFirst != w and html.find("a[href='/wiki/#{upperFirst}']").get(0)
-                    return @parse(upperFirst, 'wiktionary')
+                    return @parse(tabId, upperFirst, 'wiktionary')
 
             return multipleResult
 
         return result
 
-    parseOtherLang: (w, lang, wiktionaryResult, prevResult) ->
-        result = await @parse(w, lang)
+    parseOtherLang: (tabId, w, lang, wiktionaryResult, prevResult) ->
+        result = await @parse(tabId, w, lang)
 
         # wiktionary result is first.
         if wiktionaryResult and result.w != wiktionaryResult.w 

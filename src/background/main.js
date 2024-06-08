@@ -43,6 +43,7 @@ chrome.runtime.onMessage.addListener(function (...args) {
 chrome.windows.onRemoved.addListener(async function (wid) {
   await initPromises;
   dw.destroyWin({ wid });
+  ankiWindow.destroyWin({ wid });
 });
 chrome.tabs.onRemoved.addListener(async function (tid) {
   await initPromises;
@@ -52,6 +53,7 @@ chrome.tabs.onRemoved.addListener(async function (tid) {
 chrome.action.onClicked.addListener(async function (tab) {
   await initPromises;
   dw.triggerByAction(tab);
+  ankiWindow.focus();
 });
 
 chrome.contextMenus.onClicked.addListener(async function (info, tab) {

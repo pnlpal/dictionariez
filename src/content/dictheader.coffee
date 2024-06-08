@@ -158,7 +158,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             setTimeout (() -> 
                 $scope.querying = false
                 $scope.$apply()
-            ), 2000
+            ), 1000
 
         if request.type == 'sendToDict'
             if request.action == 'keypress focus'
