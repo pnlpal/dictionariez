@@ -1,3 +1,11 @@
+# v5.0.0 Jun 09, 2024
+- Upgrade to Google's new manifest v3 standard, which involves a lot of hassle.
+- Be able to parse dict from any code block on pnlpal.dev.
+- Fix dict positions on multiple screens.
+- Fix chatgpt dict.
+- Fix getting definitions from wiktionary.
+- Better positioning images on Anki editor.
+
 # v4.2.1 Mar 25, 2024
 - Fix flickering dark theme at the opening of the dict.
 - Dark theme for the options page as well.
