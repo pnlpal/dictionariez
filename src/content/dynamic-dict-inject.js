@@ -1,26 +1,5 @@
 import utils from "utils";
 
-async function chatgptSpecific($) {
-  await utils.promisify($(document).ready);
-
-  $(document).on(
-    "mouseenter mouseover",
-    ".markdown ul, .markdown ol",
-    function (e) {
-      const $li = $(this).find("li");
-      const pronAudioTpl =
-        "<a class='fairydict-pron-audio for-chatgpt-audio' href='javascript:void(0)'><i class='icon-fairydict-volume'></i></a>";
-
-      if (!$li.find(".fairydict-pron-audio").length) {
-        $li.append(pronAudioTpl);
-      }
-    }
-  );
-  $(document).on("mouseleave", ".markdown ul, .markdown ol", function (e) {
-    $(this).find("li .fairydict-pron-audio").remove();
-  });
-}
-
 async function doQuery(w, sentence, languagePrompt, dict) {
   if (!w) return;
 
@@ -29,6 +8,8 @@ async function doQuery(w, sentence, languagePrompt, dict) {
       document.querySelector(dict.inputSelector) &&
       document.querySelector(dict.submitButtonSelector)
   );
+  await utils.promisifiedTimeout(500);
+
   const prompt =
     sentence && dict.chatgptPromptWithContext
       ? dict.chatgptPromptWithContext
@@ -39,8 +20,6 @@ async function doQuery(w, sentence, languagePrompt, dict) {
           .replaceAll("<word>", w)
           .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "");
 
-  await utils.promisifiedTimeout(500);
-
   const textarea = document.querySelector(dict.inputSelector);
   // var nativeTextAreaValueSetter = Object.getOwnPropertyDescriptor(
   //   window.HTMLTextAreaElement.prototype,
@@ -49,7 +28,7 @@ async function doQuery(w, sentence, languagePrompt, dict) {
   // nativeTextAreaValueSetter.call(textarea, prompt);
   textarea.value = prompt;
 
-  await utils.promisifiedTimeout(1000);
+  await utils.promisifiedTimeout(200);
 
   const event = new Event("input", { bubbles: true });
   textarea.dispatchEvent(event);
@@ -70,9 +49,5 @@ export async function initOnLoadDynamicDict({ word, sentence, dict }, $) {
         doQuery(request.text, request.sentence, request.languagePrompt, dict);
       }
     });
-
-    if (location.host === "chat.openai.com") {
-      chatgptSpecific($);
-    }
   }
 }

@@ -51,7 +51,7 @@ export default {
 
         _check = () =>
             new Promise (resolve, reject) =>
-                await @promisifiedTimeout(500)
+                await @promisifiedTimeout(200)
                 if func()
                     resolve()
                 else if timeIsUp

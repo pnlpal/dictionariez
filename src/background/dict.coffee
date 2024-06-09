@@ -3,10 +3,10 @@ import message from "./message.coffee"
 import defaultDicts from "./default-dicts.coffee"
 
 chatgptDefault = {
-    "windowUrl": "https://chat.openai.com",
+    "windowUrl": "https://chatgpt.com",
     "css": "body {margin-top: 50px !important;}",
     "inputSelector": "main form textarea",
-    "submitButtonSelector": "main form textarea+button"
+    "submitButtonSelector": "main form button.mb-1"
 }
 
 export default {
@@ -78,6 +78,10 @@ export default {
 
         allDicts.forEach (d, oi) => 
             d.sequence = oi 
+
+            # fix old settings
+            if d.windowUrl == 'https://chat.openai.com'
+                Object.assign d, chatgptDefault
 
         @allDicts = allDicts   
 
@@ -159,7 +163,7 @@ export default {
             if dict.windowUrl
                 windowUrl = dict.windowUrl.replace('<word>', word.toLowerCase())
             else if dict.chatgptPrompt 
-                windowUrl = 'https://chat.openai.com/'
+                windowUrl = chatgptDefault.windowUrl
 
             return resolve { windowUrl }
         
