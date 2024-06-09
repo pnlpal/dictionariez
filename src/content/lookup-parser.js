@@ -195,6 +195,7 @@ export default () => {
     ({ type, html, parserDesc }, sender, sendResponse) => {
       if (type == "parse lookup result") {
         const parsedResult = parseHTML(html, parserDesc);
+        // console.log("parsedResult", parsedResult);
         sendResponse(parsedResult);
       }
     }

@@ -109,6 +109,8 @@ export default {
         dictDesc = parserDescs[tname]
         url = (url or dictDesc.url).replace('<word>', w)
 
+        # console.log "Look up #{w} from #{tname} with url: #{url}"
+
         # special handle Chinese
         if tname == 'google' 
             if setting.getValue('showOtherLang')

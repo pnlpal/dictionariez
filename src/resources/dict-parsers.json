@@ -144,12 +144,12 @@
         "selector": "h1#firstHeading"
       },
       "langTargets": {
-        "groups": ".mw-parser-output h2:has('.mw-headline')",
-        "extendNextTo": "h2",
+        "groups": ".mw-parser-output .mw-heading2",
+        "extendNextTo": ".mw-heading2",
         "result": {
           "lang": {
-            "selector": "span.mw-headline",
-            "parents": "h2"
+            "selector": "h2",
+            "parents": ".mw-heading"
           },
           "prons": [
             {
@@ -161,11 +161,11 @@
           ],
           "defs": {
             "groups": "p~ol",
-            "extendPrev": "h3,h4",
+            "extendPrev": ".mw-heading3, .mw-heading4",
             "result": {
               "pos": {
-                "selector1": "h4 span.mw-headline",
-                "selector": "h3 span.mw-headline"
+                "selector1": ".mw-heading4 h4",
+                "selector": ".mw-heading3 h3"
               },
               "def": {
                 "selector": "ol>li",
