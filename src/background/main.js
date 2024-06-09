@@ -18,6 +18,11 @@ const initPromises = (async function () {
   await lookup.init();
   await speak.init();
   await pnlpal.init();
+
+  global.dw = dw;
+  global.storage = storage;
+  global.dict = dict;
+  global.setting = setting;
 })();
 
 chrome.runtime.onInstalled.addListener(function (details) {
