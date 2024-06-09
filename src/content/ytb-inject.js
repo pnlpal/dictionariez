@@ -104,7 +104,7 @@ export function initYtbInjection() {
               "var ytInitialPlayerResponse = "
           )[1]
           .split("</script>")[0];
-        return eval("(function() {return " + scriptPt1 + "})();");
+        return scriptPt1;
       } catch (e) {
         console.error("[ytb-inject]", e);
         return;
@@ -115,27 +115,34 @@ export function initYtbInjection() {
   window.addEventListener("message", async (event) => {
     if (
       event.data &&
-      (event.data.type === "getCaptions" ||
-        event.data.type === "getVideoInfo") &&
       ["http://localhost:4200", "https://pnlpal.dev"].includes(event.origin)
     ) {
       // console.log("event", event.data, event.origin);
-      const videoData = await parse(event.data.videoLink);
-      // console.log("parsed video data", videoData);
-      const response = {
-        type: "captions",
-        videoId: event.data.videoId,
-      };
-      if (!event.data.noCaptions) {
-        response.captions = await getVideoCaptions(videoData);
-        // console.log("Got captions:", response.captions.length);
+      if (event.data.getRawVideoDataFirst) {
+        const videoData = await parse(event.data.videoLink);
+        window.parent.postMessage(
+          { videoData, videoId: event.data.videoId, type: "rawVideoData" },
+          event.origin
+        );
+      } else if (
+        event.data.type === "getCaptions" ||
+        event.data.type === "getVideoInfo"
+      ) {
+        // console.log("parsed video data", videoData);
+        const response = {
+          type: "captions",
+          videoId: event.data.videoId,
+        };
+        if (!event.data.noCaptions) {
+          response.captions = await getVideoCaptions(event.data.videoData);
+          // console.log("Got captions:", response.captions.length);
+        }
+        if (!event.data.noVideoInfo) {
+          response.videoInfo = getVideoInfo(event.data.videoData);
+          // console.log("Got videoInfo: ", response.videoInfo);
+        }
+        window.parent.postMessage(response, event.origin);
       }
-      if (!event.data.noVideoInfo) {
-        response.videoInfo = getVideoInfo(videoData);
-        // console.log("Got videoInfo: ", response.videoInfo);
-      }
-
-      window.parent.postMessage(response, event.origin);
     }
   });
 }
