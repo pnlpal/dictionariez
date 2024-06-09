@@ -14,10 +14,10 @@ const initPromises = (async function () {
   await storage.init();
   await dict.init();
   await dw.init();
-  lookup.init();
-  speak.init();
-  ankiWindow.init();
-  pnlpal.init();
+  await ankiWindow.init();
+  await lookup.init();
+  await speak.init();
+  await pnlpal.init();
 })();
 
 chrome.runtime.onInstalled.addListener(function (details) {

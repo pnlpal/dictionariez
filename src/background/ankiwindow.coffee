@@ -43,9 +43,9 @@ export default {
             wordItem: @anki.wordItem
         } }
 
-        chrome.storage.local.get 'ankiWindow', (data) =>
-            if data.ankiWindow
-                console.log "[ankiWindow] saved to storage: ", data.ankiWindow
+        # chrome.storage.local.get 'ankiWindow', (data) =>
+        #     if data.ankiWindow
+        #         console.log "[ankiWindow] saved to storage: ", data.ankiWindow
 
     restoreFromStorage: () ->
         if @anki.wid
@@ -60,7 +60,7 @@ export default {
                 @anki.wid = ankiWindow.wid
                 @anki.tid = ankiWindow.tid
                 @anki.wordItem = ankiWindow.wordItem
-                console.log "[ankiWindow] restored from storage: ", ankiWindow
+                # console.log "[ankiWindow] restored from storage: ", @anki.wid, @anki.wordItem
             catch err 
                 console.warn("[ankiWindow] restore error: ", err.message, 'Ignored.')
 
