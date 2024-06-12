@@ -180,8 +180,7 @@ export default {
         if @dictWindows.length
             result = null
             for win in @dictWindows
-                if win.wid
-                    result = await win.lookup(w, sentence, languagePrompt)
+                result = await win.lookup(w, sentence, languagePrompt)
                     
             @saveInStorage()
             return result
@@ -200,7 +199,7 @@ export default {
         else 
             win = new DictWindow(options)
             win.windex = @dictWindows.length
-            @dictWindows.push win 
+            @dictWindows.push win
         
         @saveInStorage()
         return win 
@@ -259,11 +258,17 @@ export default {
             target : { tabId : tab.id },
             func: getInfoOfSelectionCode 
         }, (res) =>
-            [word2, sentence, screenWidth, screenHeight, screenAvailLeft, screenAvailTop] = res?[0].result or []
-            w = word || word2
+            # [word2, sentence, screenWidth, screenHeight, screenAvailLeft, screenAvailTop] = 
+            result = res?[0].result or []
+            w = word || result[0]
             if not w
                 w = await readClipboard() 
-            # console.log("[dictWindow] action clicked to lookup", w)
+            
+            sentence = result[1]
+            screenWidth = result[2] || screenWidth
+            screenHeight = result[3] || screenHeight 
+            screenAvailLeft = result[4] || screenAvailLeft 
+            screenAvailTop = result[5] || screenAvailTop
             @lookup({ w, sentence, s: tab.url, sc: tab.title })
 
     init: () ->
