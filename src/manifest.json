@@ -12,7 +12,8 @@
   ],
   "host_permissions": ["<all_urls>"],
   "background": {
-    "service_worker": "background.bundle.js"
+    "service_worker": "background.bundle.js",
+    "scripts": ["background.bundle.js"]
   },
   "content_scripts": [
     {

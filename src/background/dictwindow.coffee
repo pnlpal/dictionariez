@@ -259,7 +259,7 @@ export default {
             func: getInfoOfSelectionCode 
         }, (res) =>
             # [word2, sentence, screenWidth, screenHeight, screenAvailLeft, screenAvailTop] = 
-            result = res?[0].result or []
+            result = res?[0]?.result or []
             w = word || result[0]
             if not w
                 w = await readClipboard() 
