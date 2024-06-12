@@ -38,11 +38,27 @@ async function doQuery(w, sentence, languagePrompt, dict) {
   btn.click();
 }
 
+async function fixQueryingOnEnterForChatGPT(dict) {
+  if (!utils.isMobile() && location.href.startsWith("https://chatgpt.com")) {
+    await utils.promisifiedTimeout(1000);
+    const textarea = document.querySelector(dict.inputSelector);
+    textarea.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey && textarea.value) {
+        event.preventDefault();
+        const btn = document.querySelector(dict.submitButtonSelector);
+        btn.click();
+      }
+    });
+  }
+}
+
 export async function initOnLoadDynamicDict({ word, sentence, dict }, $) {
   if (location.href.startsWith(dict.windowUrl)) {
     if (dict && word) {
       doQuery(word, sentence, "", dict);
     }
+
+    fixQueryingOnEnterForChatGPT(dict);
 
     chrome.runtime.onMessage.addListener((request) => {
       if (request.type == "querying") {
