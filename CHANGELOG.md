@@ -1,3 +1,7 @@
+# v5.0.1 Jun 12, 2024
+- Fix opening dict window when a second screen is removed while the dict was open on it before. 
+- Fix using Enter to submit on ChatGPT.
+
 # v5.0.0 Jun 09, 2024
 - Upgrade to Google's new manifest v3 standard, which involves a lot of hassle.
 - Be able to parse dict from any code block on pnlpal.dev.
