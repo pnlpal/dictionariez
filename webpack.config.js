@@ -145,12 +145,6 @@ var options = {
               ...JSON.parse(content.toString()),
             };
 
-            if (env.NODE_ENV === "development") {
-              json["content_security_policy"] = {
-                extension_pages: `script-src 'self'; object-src 'self'; connect-src 'self' http://localhost:${env.PORT} ws:;`,
-              };
-            }
-
             return Buffer.from(JSON.stringify(json));
           },
         },
