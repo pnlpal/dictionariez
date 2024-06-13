@@ -44,7 +44,8 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "revir.qing@gmail.com"
+      "id": "revir.qing@gmail.com",
+      "strict_min_version": "109.0"
     }
   }
 }
