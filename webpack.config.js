@@ -145,12 +145,11 @@ var options = {
               ...JSON.parse(content.toString()),
             };
 
-            //   if (options.devtool === "cheap-module-eval-source-map") {
-            //     json["content_security_policy"] = {
-            //       extension_pages:
-            //         "script-src 'self' 'unsafe-eval'; object-src 'self'",
-            //     };
-            //   }
+            if (env.NODE_ENV === "development") {
+              json["content_security_policy"] = {
+                extension_pages: `script-src 'self'; object-src 'self'; connect-src 'self' http://localhost:${env.PORT} ws:;`,
+              };
+            }
 
             return Buffer.from(JSON.stringify(json));
           },
