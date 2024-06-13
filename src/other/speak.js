@@ -71,11 +71,16 @@ function playSynthesis({ text, lang, name, voice } = {}) {
   window.speechSynthesis.speak(msg);
 }
 
-chrome.runtime.onMessage.addListener(
-  ({ type, ameSrc, breSrc, otherSrc, synthesisObj }) => {
-    if (type === "speak") {
-      playAudios([ameSrc, breSrc, otherSrc]);
-      playSynthesis(synthesisObj);
+if (!navigator.userAgent.includes("Gecko/")) {
+  // not Firefox, Firefox doesn't support offscreen.
+  chrome.runtime.onMessage.addListener(
+    ({ type, ameSrc, breSrc, otherSrc, synthesisObj }) => {
+      if (type === "speak") {
+        playAudios([ameSrc, breSrc, otherSrc]);
+        playSynthesis(synthesisObj);
+      }
     }
-  }
-);
+  );
+}
+
+export { playAudios, playSynthesis };
