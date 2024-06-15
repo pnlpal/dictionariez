@@ -1,3 +1,8 @@
+# v5.0.2 Jun 15, 2024
+- Rename to Dictionariez: Your Dictionary, Your Language.
+- Fix not querying word again when click on the dict but word is not changed.
+- Fix dict name changing when querying.
+
 # v5.0.1 Jun 12, 2024
 - Fix opening dict window when a second screen is removed while the dict was open on it before. 
 - Fix using Enter to submit on ChatGPT.
