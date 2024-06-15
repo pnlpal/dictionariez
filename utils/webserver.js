@@ -5,19 +5,9 @@ const WebpackDevServer = require("webpack-dev-server"),
   path = require("path");
 
 const options = config.chromeExtensionBoilerplate || {};
-const excludeEntriesToHotReload = options.notHotReload || [];
 
 const debounce = require("lodash").debounce;
 const SSEStream = require("ssestream").default;
-
-for (var entryName in config.entry) {
-  if (excludeEntriesToHotReload.indexOf(entryName) === -1) {
-    config.entry[entryName] = [
-      "webpack/hot/dev-server",
-      `webpack-dev-server/client?hot=true&hostname=localhost&port=${env.PORT}`,
-    ].concat(config.entry[entryName]);
-  }
-}
 
 if (
   options.enableBackgroundAutoReload ||
@@ -31,12 +21,13 @@ if (
   ].concat(config.entry["background"]);
 }
 if (options.enableContentScriptsAutoReload) {
-  config.entry["preinject"] = [
-    path.resolve(__dirname, "autoReloadClients/contentScriptClient.js"),
-  ].concat(config.entry["preinject"]);
   config.entry["inject"] = [
     path.resolve(__dirname, "autoReloadClients/contentScriptClient.js"),
   ].concat(config.entry["inject"]);
+
+  config.entry["dictheader"] = [
+    path.resolve(__dirname, "autoReloadClients/contentScriptClient.js"),
+  ].concat(config.entry["dictheader"]);
 }
 
 config.plugins = [new webpack.HotModuleReplacementPlugin()].concat(

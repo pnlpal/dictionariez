@@ -50,7 +50,6 @@ var options = {
     speak: path.join(__dirname, "src", "other", "speak.js"),
   },
   chromeExtensionBoilerplate: {
-    notHotReload: ["inject", "preinject", "background"],
     enableBackgroundAutoReload: true, // always true when "enableContentScriptsAutoReload" is set true
     enableContentScriptsAutoReload: true,
   },
@@ -59,12 +58,6 @@ var options = {
     filename: "[name].bundle.js",
     clean: true,
     publicPath: "/",
-    // filename: chunkData => {
-    // 	return chunkData.chunk.name === "inject"
-    // 		? "[name].bundle.js"
-    // 		: "[name].[hash].bundle.js";
-    // },
-    // chunkFilename: "[name].[hash].bundle.js"
   },
   module: {
     rules: [
