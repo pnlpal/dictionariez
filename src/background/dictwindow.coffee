@@ -153,19 +153,20 @@ class DictWindow
     sendMessage: (msg)->
         chrome.tabs.sendMessage(@tid, msg) if @tid
 
-    lookup: (text, sentence, languagePrompt)->
-        url = ''
+    lookup: (text, sentence, languagePrompt, dictName)->
+        url = @url
         text = @word if not text
 
         if text
-            if @word != text || @sentence != sentence
+            if @word != text || @sentence != sentence || @dictName != dictName
                 @word = text
                 @sentence = sentence || null
+                @dictName = dictName || @dictName
                 result = await dict.query(text, @dictName || setting.getValue('dictionary')) 
                 url = result?.windowUrl
                 @sendMessage({type: 'querying', text, sentence, languagePrompt})
-            else 
-                url = @url 
+        else 
+            @dictName = dictName || @dictName
 
         return @open(url)
             
@@ -242,10 +243,8 @@ export default {
                     console.warn("[dictWindow] restore error: ", err.message, 'Ignored.')
 
 
-    mainDictWindow: ({ dictName }) ->
-        win = @dictWindows[0] or @create({ dictName })
-        win.dictName = dictName if dictName
-        return win
+    mainDictWindow: () ->
+        return @dictWindows[0] or @create()
     
     getByTab: (tid) ->
         for win in @dictWindows 
@@ -302,7 +301,7 @@ export default {
                 result = await targetWin.lookup(w || @dictWindows[0].word, sentence)
 
             else if dictName # only change the main window or in new window.
-                result = await @mainDictWindow({ dictName }).lookup(w?.trim(), sentence)
+                result = await @mainDictWindow().lookup(w?.trim(), sentence, null, dictName)
 
             else  # This is more likely to happen.
                 result = await @lookup({ w: w?.trim(), s, sc, sentence })
@@ -343,8 +342,10 @@ export default {
                 targetWin = @create({ dictName })
                 result = await targetWin.lookup(w, sentence, languagePrompt)
             else 
-                senderWin.dictName = dictName if dictName
-                result = await @lookup({ w, sentence, languagePrompt })
+                if senderWin.dictName != dictName
+                    result = await senderWin.lookup(w, sentence, languagePrompt, dictName)
+                else
+                    result = await @lookup({ w, sentence, languagePrompt })
             
             @saveInStorage()
             return result
