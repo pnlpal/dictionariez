@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "minimum_chrome_version": "105",
-  "name": "Dictionariez: learn a language with your favorite dictionary",
+  "name": "Dictionariez: Your Dictionary, Your Language",
   "permissions": [
     "activeTab",
     "tabs",
