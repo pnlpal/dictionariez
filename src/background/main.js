@@ -47,7 +47,6 @@ chrome.runtime.onMessage.addListener(function (...args) {
 });
 chrome.windows.onRemoved.addListener(async function (wid) {
   await initPromises;
-  console.log("window removed", wid);
   dw.destroyWin({ wid });
   ankiWindow.destroyWin({ wid });
 });

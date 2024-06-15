@@ -155,18 +155,21 @@ class DictWindow
 
     lookup: (text, sentence, languagePrompt, dictName)->
         url = @url
+
         text = @word if not text
+        sentence = @sentence if not sentence
+        dictName = @dictName if not dictName
 
         if text
             if @word != text || @sentence != sentence || @dictName != dictName
                 @word = text
-                @sentence = sentence || null
-                @dictName = dictName || @dictName
+                @sentence = sentence
+                @dictName = dictName
                 result = await dict.query(text, @dictName || setting.getValue('dictionary')) 
                 url = result?.windowUrl
                 @sendMessage({type: 'querying', text, sentence, languagePrompt})
         else 
-            @dictName = dictName || @dictName
+            @dictName = dictName
 
         return @open(url)
             
