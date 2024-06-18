@@ -250,5 +250,3 @@ describe("lookup-parser", () => {
     });
   });
 });
-
-mocha.run();
