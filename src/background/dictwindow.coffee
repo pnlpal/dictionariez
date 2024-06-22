@@ -368,7 +368,7 @@ export default {
                 win.dictName = currentDictName
 
             previous = storage.getPrevious(w)
-            history = storage.getHistory(w, 10) # at most show 10 words in the history list on dictionary header.
+            history = await storage.getHistory(10) # at most show 10 words in the history list on dictionary header.
 
             nextDictName = dict.getNextDict(currentDictName).dictName
             previousDictName = dict.getPreviousDict(currentDictName).dictName
@@ -376,7 +376,7 @@ export default {
             return { allDicts: dict.allDicts, history, currentDictName, nextDictName, previousDictName, previous, w, r }
         
         message.on 'dictionary history', (request, sender) =>
-            history = storage.getHistory(request.word, 10) # at most show 8 words in the history list on dictionary header.
+            history = await storage.getHistory(10) # at most show 8 words in the history list on dictionary header.
             return { history }
 
         message.on 'injected', (request, sender) =>

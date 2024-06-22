@@ -1,5 +1,7 @@
 import message from "./message.coffee"
 import setting from "./setting.coffee"
+import proHelper from "./pro-helper.js"
+
 
 class Item
 	constructor: ({ @w, @s, @sc, @r, @t = Date.now(), @sentence, @ankiSaved}) ->
@@ -39,16 +41,19 @@ export default {
 	maxLength: 500,
 	history: [],
 	init: ()->
-		@history = await Item.getAll()
+		if !proHelper.isProUser()
+			@history = await Item.getAll()
 
 		message.on 'history', () =>
-			@history
+			@getHistory()
 
 		message.on 'remove history', ({ w }) =>
 			@removeHistory w
 
 		message.on 'rating', ({ text, value }) =>
 			@addRating text, value
+
+	
 
 	getInHistory: (word) ->
 		return @history.find (item) ->
@@ -61,15 +66,27 @@ export default {
 		return @history[idx - 1] if idx > 0
 		return @history[@history.length - 1]
 
-	getHistory: (w, length) ->
-		end = @history.length
+	getHistory: (length) ->
+		if (proHelper.isProUser())
+			return await proHelper.get( '/api/user/words').then((res) => 
+				res.data.map((item) => new Item({
+					w: item.word,
+					s: item.source,
+					sc: item.sourceContent,
+					r: item.rate,
+					t: item.timestamp,
+					sentence: item.sentence,
+					ankiSaved: item.ankiSaved
+				})))
+		else 
+			end = @history.length
 
-		if length
-			begin = end - length 
-			if begin < 0
-				begin = 0
-		
-		return @history.slice(begin, end)
+			if length
+				begin = end - length 
+				if begin < 0
+					begin = 0
+			
+			return @history.slice(begin, end)
 
 
 	getNext: (w, circle = false) ->
@@ -82,13 +99,26 @@ export default {
 		@getInHistory(word)?.r
 
 	addRating: (word, rating)->
-		item = @getInHistory(word)
-		if item
-			await item.update {r: rating}
+		if proHelper.isProUser()
+			await proHelper.post("/api/user/words/#{encodeURIComponent(word)}/rate", {
+				word: word,
+				rate: rating
+			})
+		else
+			item = @getInHistory(word)
+			if item
+				await item.update {r: rating}
 	savedAnki: (word, saved = true)->
-		item = @getInHistory(word)
-		if item
-			await item.update {ankiSaved: saved}
+		if proHelper.isProUser()
+			await proHelper.post("/api/user/words/#{encodeURIComponent(word)}/saved-to-anki", {
+				word: word,
+				ankiSaved: saved
+			})
+		else
+			item = @getInHistory(word)
+			if item
+				await item.update {ankiSaved: saved}
+
 	getPreviousAnkiUnsaved: (w) ->
 		return if setting.getValue "disableWordHistory"
 		idx = @history.findIndex (item) ->
@@ -103,15 +133,23 @@ export default {
 
 	addHistory: ({w, s, sc, r, t, sentence})->
 		return if setting.getValue "disableWordHistory"
-		item = @getInHistory(w)
-		if not item
-			if @history.length >= @maxLength
-				@history.shift()
+		if proHelper.isProUser()
+			await proHelper.post('/api/user/words', {
+				word: w,
+				sentence: sentence,
+				rate: r,
+				source: s,
+				sourceContent: sc,
+			})
+		else 
+			item = @getInHistory(w)
+			if not item
+				if @history.length >= @maxLength
+					@history.shift()
 
-			item = new Item({w, s, sc, r, t, sentence})
-			@history.push(item)
-			await item.save()
-		return item
+				item = new Item({w, s, sc, r, t, sentence})
+				@history.push(item)
+				await item.save()
 
 	removeHistory: (words)->
 		unless Array.isArray(words)
