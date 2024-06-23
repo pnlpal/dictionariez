@@ -331,7 +331,7 @@ export default {
                 dictName = d.dictName
             
             if request.previousWord
-                prev = storage.getPrevious(w)
+                prev = await storage.getPrevious(w)
                 w = prev?.w
                 sentence = prev?.sentence
             else if request.nextWord
@@ -361,13 +361,19 @@ export default {
 
             if win 
                 w = win.word
-                r = storage.getRating(w)
+                if w 
+                    wordDetail = await storage.getWordDetail(w)
+                    r = wordDetail?.r
+                    previous = wordDetail?.previous
+                else 
+                    previous = await storage.getPrevious()
+                    
             else if !win && !request.optionsPage 
                 win = @create()
                 win.tid = sender.tab.id
                 win.dictName = currentDictName
+                previous = await storage.getPrevious()
 
-            previous = storage.getPrevious(w)
             history = await storage.getHistory(10) # at most show 10 words in the history list on dictionary header.
 
             nextDictName = dict.getNextDict(currentDictName).dictName

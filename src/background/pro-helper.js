@@ -31,7 +31,7 @@ export default {
   },
 
   getConfig() {
-    return this.get("/config").then((data) => {
+    return this.get("/api/config").then((data) => {
       this.config = data;
     });
   },

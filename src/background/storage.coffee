@@ -37,6 +37,17 @@ class Item
 			k = if Array.isArray(w) then w.map((x) -> "w-#{x}") else "w-#{w}"
 			chrome.storage.sync.remove k, resolve
 
+convertProItem = (item) ->
+	return {
+		w: item.word,
+		s: item.source,
+		sc: item.sourceContent,
+		r: item.rate,
+		t: item.timestamp,
+		sentence: item.sentence,
+		ankiSaved: item.ankiSaved
+	}
+
 export default {
 	maxLength: 500,
 	history: [],
@@ -53,31 +64,51 @@ export default {
 		message.on 'rating', ({ text, value }) =>
 			@addRating text, value
 
-	
 
-	getInHistory: (word) ->
-		return @history.find (item) ->
-			return item.w == word
+	getWordDetail: (word) ->
+		if proHelper.isProUser()
+			return await proHelper.get('/api/user/words/'+encodeURIComponent(word))
+				.then((res) => 
+					if res?.word
+						return {
+							...convertProItem(res),
+							previous: convertProItem(res.previous)
+						} 
+					else 
+						return null
+				)
+		else 
+			detail = @history.find (item) ->
+				return item.w == word
+			
+			detail.previous = @getPrevious(word) if detail
+			return detail
 
 	getPrevious: (w) ->
 		return if setting.getValue "disableWordHistory"
-		idx = @history.findIndex (item) ->
-			return item.w == w
-		return @history[idx - 1] if idx > 0
-		return @history[@history.length - 1]
+
+		if proHelper.isProUser()
+			if (w)
+				wordDetail = await @getWordDetail(w)
+				return wordDetail?.previous
+			else 
+				return await proHelper.get('/api/user/latest-word')
+					.then((res) => 
+						if res?.word
+							return convertProItem(res)
+						else 
+							return null
+					)
+		else
+			idx = @history.findIndex (item) ->
+				return item.w == w
+			return @history[idx - 1] if idx > 0
+			return @history[@history.length - 1]
 
 	getHistory: (length) ->
 		if (proHelper.isProUser())
 			return await proHelper.get( '/api/user/words').then((res) => 
-				res.data.map((item) => new Item({
-					w: item.word,
-					s: item.source,
-					sc: item.sourceContent,
-					r: item.rate,
-					t: item.timestamp,
-					sentence: item.sentence,
-					ankiSaved: item.ankiSaved
-				})))
+				res.data.map((item) => new Item(convertProItem(item))))
 		else 
 			end = @history.length
 
@@ -95,9 +126,6 @@ export default {
 		return @history[idx + 1] if idx < @history.length - 1
 		return @history[0] if circle or !w
 
-	getRating: (word) ->
-		@getInHistory(word)?.r
-
 	addRating: (word, rating)->
 		if proHelper.isProUser()
 			await proHelper.post("/api/user/words/#{encodeURIComponent(word)}/rate", {
@@ -105,7 +133,7 @@ export default {
 				rate: rating
 			})
 		else
-			item = @getInHistory(word)
+			item = await @getWordDetail(word)
 			if item
 				await item.update {r: rating}
 	savedAnki: (word, saved = true)->
@@ -115,7 +143,7 @@ export default {
 				ankiSaved: saved
 			})
 		else
-			item = @getInHistory(word)
+			item = await @getWordDetail(word)
 			if item
 				await item.update {ankiSaved: saved}
 
@@ -142,7 +170,7 @@ export default {
 				sourceContent: sc,
 			})
 		else 
-			item = @getInHistory(w)
+			item = await @getWordDetail(w)
 			if not item
 				if @history.length >= @maxLength
 					@history.shift()
