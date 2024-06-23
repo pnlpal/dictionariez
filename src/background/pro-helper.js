@@ -20,6 +20,23 @@ export default {
         .catch((error) => reject(error));
     });
   },
+  async delete(url, data) {
+    if (!this.config.csrf_token) await this.getConfig();
+
+    return new Promise((resolve, reject) => {
+      fetch(pnlpalBaseUrl + url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "x-csrf-token": this.config.csrf_token,
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((data) => resolve(data))
+        .catch((error) => reject(error));
+    });
+  },
 
   get(url) {
     return new Promise((resolve, reject) => {

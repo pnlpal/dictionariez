@@ -183,14 +183,19 @@ export default {
 		unless Array.isArray(words)
 			words = [words]
 
-		valids = []
-		words.forEach (w) =>
-			idx = @history.findIndex (item) -> item.w == w
-			if idx >= 0
-				@history.splice(idx, 1)
-				valids.push(w)
+		if proHelper.isProUser()
+			await proHelper.delete('/api/user/words', {
+				words: words
+			})
+		else
+			valids = []
+			words.forEach (w) =>
+				idx = @history.findIndex (item) -> item.w == w
+				if idx >= 0
+					@history.splice(idx, 1)
+					valids.push(w)
 
-		await Item.remove(valids) if valids.length
+			await Item.remove(valids) if valids.length
 
 	clearAll: () ->
 		new Promise (resolve) ->
