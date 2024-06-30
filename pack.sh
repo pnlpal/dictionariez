@@ -14,4 +14,4 @@ cd ../
 
 echo
 echo "pack to ${srcname}: "
-zip -x '*.DS_Store*' -x '*build/*' -x '*readme_images/*' -x '*.git*' -x 'test/*' -x 'node_modules/*' -x "bower_components/*" -x "build.*" -x "${name}" -r ${srcname} .
+zip -x '*.DS_Store*' -x '*build/*' -x '*readme_images/*' -x '*.git*' -x '*.zip' -x 'test/*' -x 'node_modules/*' -x "bower_components/*" -x "build.*" -x "${name}" -r ${srcname} .
