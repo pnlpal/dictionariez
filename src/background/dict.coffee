@@ -1,5 +1,5 @@
-import storage from  "./storage.coffee"
-import message from "./message.coffee"
+import storage from  "./storage.js"
+import message from "./message.js"
 import defaultDicts from "./default-dicts.coffee"
 
 chatgptDefault = {

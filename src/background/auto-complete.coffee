@@ -1,7 +1,7 @@
 import dict from "./dict.coffee"
-import message from "./message.coffee"
-import storage from "./storage.coffee"
-import setting from "./setting.coffee"
+import message from "./message.js"
+import storage from "./storage.js"
+import setting from "./setting.js"
 import utils from "utils"
 
 message.on 'autocomplete', ({ text })->

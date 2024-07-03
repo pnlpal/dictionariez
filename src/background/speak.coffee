@@ -1,6 +1,6 @@
 import utils from "utils"
-import message from "./message.coffee"
-import setting from "./setting.coffee"
+import message from "./message.js"
+import setting from "./setting.js"
 import { playAudios, playSynthesis } from "../other/speak.js"
 
 creating = null  # A global promise to avoid concurrency issues

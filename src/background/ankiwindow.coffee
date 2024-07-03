@@ -1,9 +1,9 @@
 import $ from "jquery"
-import message from "./message.coffee"
+import message from "./message.js"
 import utils from "utils"
-import setting from "./setting.coffee"
+import setting from "./setting.js"
 import plainLookup from "./plain-lookup.coffee"
-import storage from "./storage.coffee"
+import storage from "./storage.js"
 import dw from "./dictwindow.coffee";
 
 

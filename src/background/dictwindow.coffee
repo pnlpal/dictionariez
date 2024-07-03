@@ -1,7 +1,7 @@
-import setting from "./setting.coffee"
-import storage from  "./storage.coffee"
+import setting from "./setting.js"
+import storage from  "./storage.js"
 import dict from "./dict.coffee"
-import message from "./message.coffee"
+import message from "./message.js"
 import readClipboard from "./clipboard.coffee"
 import utils from "utils"
 

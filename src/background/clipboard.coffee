@@ -1,5 +1,5 @@
-import message from "./message.coffee"
-import setting from "./setting.coffee"
+import message from "./message.js"
+import setting from "./setting.js"
 import plainLookup from "./plain-lookup.coffee"
 
 

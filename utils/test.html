@@ -10,8 +10,11 @@
 
     <script type="module">
       import * as chai from "../node_modules/chai/chai.js";
+      import * as sinon from "../node_modules/sinon/pkg/sinon-esm.js";
       window.chai = chai;
       window.expect = chai.expect;
+      window.sinon = sinon;
+    </script>
     </script>
 
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
@@ -20,6 +23,7 @@
     </script>
 
     <script type="module" src="../src/content/lookup-parser.test.js"></script>
+    <script type="module" src="../src/background/storage.test.js"></script>
     <script type="module">
       mocha.run();
     </script>

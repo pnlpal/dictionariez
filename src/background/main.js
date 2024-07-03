@@ -1,5 +1,5 @@
-import setting from "./setting.coffee";
-import storage from "./storage.coffee";
+import setting from "./setting.js";
+import storage from "./storage.js";
 import dict from "./dict.coffee";
 import dw from "./dictwindow.coffee";
 import "./auto-complete.coffee";
@@ -7,7 +7,7 @@ import lookup from "./plain-lookup.coffee";
 import speak from "./speak.coffee";
 import ankiWindow from "./ankiwindow.coffee";
 import pnlpal from "./pnlpal.coffee";
-import message from "./message.coffee";
+import message from "./message.js";
 
 const initPromises = (async function () {
   await setting.init();
@@ -39,7 +39,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
 
 chrome.runtime.onMessage.addListener(function (...args) {
   initPromises.then(() => {
-    message.handleAll(...args);
+    message.handle(...args);
   });
   // sendResponse becomes invalid when the event listener returns,
   // unless you return true from the event listener to indicate you wish to send a response asynchronously
