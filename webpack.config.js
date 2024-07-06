@@ -48,6 +48,7 @@ var options = {
     examples: path.join(__dirname, "src", "other", "example.coffee"),
     share: path.join(__dirname, "src", "other", "share.coffee"),
     speak: path.join(__dirname, "src", "other", "speak.js"),
+    test: path.join(__dirname, "src", "other", "test.js"),
   },
   chromeExtensionBoilerplate: {
     enableBackgroundAutoReload: true, // always true when "enableContentScriptsAutoReload" is set true
@@ -123,7 +124,7 @@ var options = {
     new CleanWebpackPlugin({ verbose: false }),
     new webpack.ProgressPlugin(),
     // expose and write the allowed env vars on the compiled bundle
-    new webpack.EnvironmentPlugin(["NODE_ENV"]),
+    new webpack.EnvironmentPlugin(["NODE_ENV", "UNIT_TEST"]),
     new CopyWebpackPlugin({
       patterns: [
         {
@@ -186,6 +187,13 @@ var options = {
       template: path.join(__dirname, "src", "offscreen.html"),
       filename: "offscreen.html",
       chunks: ["speak"],
+      cache: false,
+    }),
+
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "src", "test.html"),
+      filename: "test.html",
+      chunks: ["test"],
       cache: false,
     }),
   ],

@@ -9,7 +9,7 @@
   "scripts": {
     "build": "node utils/build.js",
     "start": "node utils/webserver.js",
-    "test": "(sleep 1; echo 'To run all tests, visit:\u001b[0;32m http://localhost:8080/utils/test.html\u001b[0m') & http-server"
+    "test": "UNIT_TEST=true node utils/webserver.js"
   },
   "author": "River Yang",
   "license": "GPL2",

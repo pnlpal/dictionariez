@@ -22,7 +22,7 @@ describe("storage", () => {
     sinon.restore();
   });
 
-  it("should add the word to local history for non-pro users if history is not full", async function () {
+  it("should add the word to local history for non-pro users", async function () {
     sinon.stub(setting, "getValue").returns(false);
     sinon.stub(proHelper, "isProUser").returns(false);
     chrome.storage.sync.set.resolves({});
@@ -35,5 +35,17 @@ describe("storage", () => {
 
     expect(storage.history[0].w).to.equal("test");
     expect(storage.history[0].sentence).to.equal("example sentence");
+  });
+
+  it("should add the word to pnlpal for pro users", async function () {
+    sinon.stub(setting, "getValue").returns(false);
+    sinon.stub(proHelper, "isProUser").returns(true);
+    storage.history = [];
+    await storage.addHistory({
+      w: "test",
+      sentence: "example sentence",
+    });
+    expect(storage.history.length).to.equal(0);
+    expect(chrome.storage.sync.set.calledOnce).to.be.false;
   });
 });
