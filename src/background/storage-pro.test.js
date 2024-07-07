@@ -58,6 +58,46 @@ describe("storage for pro user", () => {
     expect(createdWord.t).to.be.lessThan(updatedWord.t);
     await storage.removeHistory([wordDetail.w, wordDetail2.w]);
   });
+  it("should not update the existing word if the new word is the same", async function () {
+    await storage.addHistory(wordDetail);
+    expect(storage.history.length).to.equal(0);
+    const createdWord = await storage.getWordDetail(wordDetail.w);
+
+    const wordDetail2 = {
+      ...wordDetail,
+    };
+    await storage.addHistory(wordDetail2);
+    const updatedWord = await storage.getWordDetail(wordDetail2.w);
+    expect(storage.history.length).to.equal(0);
+    expect(updatedWord.t).to.equal(createdWord.t);
+    await storage.removeHistory(wordDetail.w);
+  });
+  it("should not update the existing word if the new word is the same but only sentence or source is null", async function () {
+    await storage.addHistory(wordDetail);
+    expect(storage.history.length).to.equal(0);
+    const createdWord = await storage.getWordDetail(wordDetail.w);
+
+    const wordDetail2 = {
+      ...wordDetail,
+      sentence: null,
+    };
+    await storage.addHistory(wordDetail2);
+    const updatedWord = await storage.getWordDetail(wordDetail2.w);
+    expect(storage.history.length).to.equal(0);
+    expect(updatedWord.t).to.equal(createdWord.t);
+
+    const wordDetail3 = {
+      ...wordDetail,
+      s: null,
+      sc: null,
+    };
+    await storage.addHistory(wordDetail3);
+    const updatedWord3 = await storage.getWordDetail(wordDetail3.w);
+    expect(storage.history.length).to.equal(0);
+    expect(updatedWord3.t).to.equal(createdWord.t);
+
+    await storage.removeHistory(wordDetail.w);
+  });
 
   it("remove the word from pnlpal", async function () {
     await storage.addHistory(wordDetail);
