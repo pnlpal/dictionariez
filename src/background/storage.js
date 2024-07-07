@@ -3,7 +3,7 @@ import setting from "./setting.js";
 import proHelper from "./pro-helper.js";
 
 class Item {
-  constructor({ w, s, sc, r, t = Date.now(), sentence, ankiSaved }) {
+  constructor({ w, s, sc, r, t = Date.now(), sentence, ankiSaved } = {}) {
     this.w = w;
     this.s = s;
     this.sc = sc;
@@ -64,6 +64,7 @@ class Item {
 }
 
 function convertProItem(item) {
+  if (!item?.word) return null;
   return {
     w: item.word,
     s: item.source,
@@ -127,11 +128,7 @@ export default {
         return wordDetail?.previous;
       } else {
         const res = await proHelper.get("/api/user/latest-word");
-        if (res?.word) {
-          return convertProItem(res);
-        } else {
-          return null;
-        }
+        return convertProItem(res);
       }
     } else {
       const idx = this.history.findIndex((item) => item.w === w);
@@ -162,12 +159,21 @@ export default {
     }
   },
 
-  getNext(w, circle = false) {
-    const idx = this.history.findIndex((item) => item.w === w);
-    if (idx < this.history.length - 1) {
-      return this.history[idx + 1];
-    } else if (circle || !w) {
-      return this.history[0];
+  async getNext(w, circle = false) {
+    if (setting.getValue("disableWordHistory")) return;
+
+    if (proHelper.isProUser()) {
+      const res = await proHelper.get(
+        `/api/user/words/${encodeURIComponent(w)}/next`
+      );
+      return convertProItem(res);
+    } else {
+      const idx = this.history.findIndex((item) => item.w === w);
+      if (idx < this.history.length - 1) {
+        return this.history[idx + 1];
+      } else if (circle || !w) {
+        return this.history[0];
+      }
     }
   },
 

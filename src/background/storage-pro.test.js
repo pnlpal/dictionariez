@@ -10,7 +10,6 @@ const wordDetail = {
   sentence: "this is a test sentence.",
   s: "http://test.com",
   sc: "test source content",
-  r: 0,
 };
 
 describe("storage for pro user", () => {
@@ -33,7 +32,6 @@ describe("storage for pro user", () => {
     expect(createdWord.sentence).to.equal(wordDetail.sentence);
     expect(createdWord.s).to.equal(wordDetail.s);
     expect(createdWord.sc).to.equal(wordDetail.sc);
-    expect(createdWord.r).to.equal(wordDetail.r);
     expect(createdWord.t).to.is.a("number");
   });
 
@@ -55,7 +53,6 @@ describe("storage for pro user", () => {
     expect(updatedWord.sentence).to.equal(wordDetail2.sentence);
     expect(updatedWord.s).to.equal(wordDetail2.s);
     expect(updatedWord.sc).to.equal(wordDetail2.sc);
-    expect(updatedWord.r).to.equal(wordDetail2.r);
     expect(updatedWord.t).to.is.a("number");
     expect(createdWord.t).to.be.lessThan(updatedWord.t);
   });
@@ -108,5 +105,36 @@ describe("storage for pro user", () => {
 
     const latest = await storage.getPrevious();
     expect(latest.w).to.equal(wordDetail2.w);
+  });
+  it("should get the next word", async function () {
+    await storage.addHistory(wordDetail);
+    const wordDetail2 = {
+      ...wordDetail,
+      w: "test2",
+    };
+    await storage.addHistory(wordDetail2);
+
+    const next = await storage.getNext(wordDetail.w);
+    expect(next.w).to.equal(wordDetail2.w);
+  });
+  it("should add rating to the word", async function () {
+    await storage.addHistory(wordDetail);
+    await storage.addRating(wordDetail.w, 3);
+    const updatedWord = await storage.getWordDetail(wordDetail.w);
+    expect(updatedWord.r).to.equal(3);
+  });
+  it("should not change rating when updating the word", async function () {
+    await storage.addHistory(wordDetail);
+    await storage.addRating(wordDetail.w, 3);
+    const updatedWord = await storage.getWordDetail(wordDetail.w);
+    expect(updatedWord.r).to.equal(3);
+    await storage.addHistory({
+      ...wordDetail,
+      r: undefined,
+      sentence: "new sentence",
+    });
+    const updatedWord2 = await storage.getWordDetail(wordDetail.w);
+    expect(updatedWord2.sentence).to.equal("new sentence");
+    expect(updatedWord2.r).to.equal(3);
   });
 });
