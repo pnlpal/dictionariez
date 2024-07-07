@@ -85,7 +85,7 @@ export default {
     }
 
     message.on("history", () => {
-      this.getHistory();
+      return this.getHistory();
     });
 
     message.on("remove history", ({ w }) => {
@@ -143,7 +143,7 @@ export default {
   async getHistory(length) {
     if (proHelper.isProUser()) {
       const res = await proHelper.get("/api/user/words");
-      return res.data.map((item) => new Item(convertProItem(item)));
+      return res.data.map((item) => convertProItem(item));
     } else {
       let begin = 0;
       let end = this.history.length;

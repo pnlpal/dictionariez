@@ -35,7 +35,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
       url: chrome.runtime.getURL("share.html"),
     });
   }
-  if (process.env.UNIT_TEST)
+  if (process.env.UNIT_TEST === "true")
     chrome.tabs.create({
       url: chrome.runtime.getURL("test.html"),
     });

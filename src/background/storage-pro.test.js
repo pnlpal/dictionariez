@@ -136,5 +136,18 @@ describe("storage for pro user", () => {
     const updatedWord2 = await storage.getWordDetail(wordDetail.w);
     expect(updatedWord2.sentence).to.equal("new sentence");
     expect(updatedWord2.r).to.equal(3);
+    await storage.removeHistory(wordDetail.w);
+  });
+
+  it("should mark the word as ankiSaved", async function () {
+    await storage.addHistory(wordDetail);
+    const createdWord = await storage.getWordDetail(wordDetail.w);
+    expect(!!createdWord.ankiSaved).to.be.false;
+
+    await storage.savedAnki(wordDetail.w);
+    const updatedWord = await storage.getWordDetail(wordDetail.w);
+    expect(updatedWord.ankiSaved).to.be.true;
+
+    await storage.removeHistory(wordDetail.w);
   });
 });
