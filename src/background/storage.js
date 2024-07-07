@@ -89,11 +89,11 @@ export default {
     });
 
     message.on("remove history", ({ w }) => {
-      this.removeHistory(w);
+      return this.removeHistory(w);
     });
 
     message.on("rating", ({ text, value }) => {
-      this.addRating(text, value);
+      return this.addRating(text, value);
     });
   },
 

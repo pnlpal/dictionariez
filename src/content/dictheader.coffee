@@ -49,7 +49,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             $scope.previous = previous
             $scope.word = w
             $scope._lastQueryWord = $scope.word
-            $scope.history = history.reverse()
+            $scope.history = history
             $scope.$apply()
 
             if !$scope.setting?.disableWordHistory
@@ -72,7 +72,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     $scope.deleteHistory = (item, i) ->
         await utils.send 'remove history', item
         {history} = await utils.send 'dictionary history', { word: $scope.word }
-        $scope.history = history.reverse()
+        $scope.history = history
         $scope.$apply()
 
     $scope.query = ({ nextDict, previousDict, dictNumber, nextWord, previousWord, queryText, dictName, w, newDictWindow } = {}) ->

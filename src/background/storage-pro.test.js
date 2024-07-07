@@ -33,6 +33,7 @@ describe("storage for pro user", () => {
     expect(createdWord.s).to.equal(wordDetail.s);
     expect(createdWord.sc).to.equal(wordDetail.sc);
     expect(createdWord.t).to.is.a("number");
+    await storage.removeHistory(wordDetail.w);
   });
 
   it("should update the existing word", async function () {
@@ -55,6 +56,7 @@ describe("storage for pro user", () => {
     expect(updatedWord.sc).to.equal(wordDetail2.sc);
     expect(updatedWord.t).to.is.a("number");
     expect(createdWord.t).to.be.lessThan(updatedWord.t);
+    await storage.removeHistory([wordDetail.w, wordDetail2.w]);
   });
 
   it("remove the word from pnlpal", async function () {
@@ -94,6 +96,7 @@ describe("storage for pro user", () => {
 
     const previous = await storage.getPrevious(wordDetail2.w);
     expect(previous.w).to.equal(wordDetail.w);
+    await storage.removeHistory([wordDetail.w, wordDetail2.w]);
   });
   it("should get the latest word", async function () {
     await storage.addHistory(wordDetail);
@@ -105,6 +108,7 @@ describe("storage for pro user", () => {
 
     const latest = await storage.getPrevious();
     expect(latest.w).to.equal(wordDetail2.w);
+    await storage.removeHistory([wordDetail.w, wordDetail2.w]);
   });
   it("should get the next word", async function () {
     await storage.addHistory(wordDetail);
@@ -116,12 +120,14 @@ describe("storage for pro user", () => {
 
     const next = await storage.getNext(wordDetail.w);
     expect(next.w).to.equal(wordDetail2.w);
+    await storage.removeHistory([wordDetail.w, wordDetail2.w]);
   });
   it("should add rating to the word", async function () {
     await storage.addHistory(wordDetail);
     await storage.addRating(wordDetail.w, 3);
     const updatedWord = await storage.getWordDetail(wordDetail.w);
     expect(updatedWord.r).to.equal(3);
+    await storage.removeHistory(wordDetail.w);
   });
   it("should not change rating when updating the word", async function () {
     await storage.addHistory(wordDetail);
