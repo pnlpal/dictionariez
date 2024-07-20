@@ -3,8 +3,6 @@ bower_components
 build
 secrets.*.js
 *.log
-
-dictionaries.zip
-dictionaries-src.zip
+*.zip
 
 .DS_Store
