@@ -138,6 +138,31 @@ var options = {
               version: process.env.npm_package_version,
               ...JSON.parse(content.toString()),
             };
+            if (env.BROWSER === "Firefox") {
+              json.manifest_version = 2; // Firefox has host permission issue with manifest v3
+              json.browser_action = json.action;
+              delete json.action;
+              delete json.minimum_chrome_version;
+              delete json.host_permissions;
+              json["browser_specific_settings"] = {
+                gecko: {
+                  id: "revir.qing@gmail.com",
+                  strict_min_version: "109.0",
+                },
+              };
+              json.background = {
+                scripts: ["background.bundle.js"],
+              };
+              json.permissions = json.permissions.filter(
+                (x) => x !== "offscreen"
+              );
+              json["web_accessible_resources"] = [
+                "*.js",
+                "*.json",
+                "*.html",
+                "fonts/*",
+              ];
+            }
 
             return Buffer.from(JSON.stringify(json));
           },
