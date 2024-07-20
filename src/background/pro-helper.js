@@ -2,7 +2,7 @@ const pnlpalBaseUrl = "http://localhost:4567";
 
 export default {
   config: {},
-  isProUser: () => true,
+  isProUser: () => false,
   async post(url, data) {
     if (!this.config.csrf_token) await this.getConfig();
 
