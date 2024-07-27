@@ -40,6 +40,9 @@ run = () =>
 			# append to html rather than body.
 			# some websites such as naver dict, may clear body when reload to another page. 
 			$("<iframe id='dictionaries-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('html')
+			if res.dict?.css
+				$('head').append('<style type="text/css">' + res.dict.css + '</style>')
+			
 			isInDict = true
 			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict }, $)
 

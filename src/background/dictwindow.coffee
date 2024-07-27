@@ -388,29 +388,12 @@ export default {
         message.on 'injected', (request, sender) =>
             return unless sender.tab 
 
-            if request.preinject and sender.tab.url
-                if not setting.getValue('excludedSites')
-                .split('\n')
-                .filter((x) => x.trim())
-                .find((x) => sender.tab.url.match(new RegExp(x)))
-                    chrome.scripting.executeScript {
-                        target: { tabId: sender.tab.id, allFrames: true},
-                        files: ['inject.bundle.js']
-                    }
-
             win = @getByTab sender.tab.id 
             if win 
-                d = dict.getDict(win.dictName)
-                if d.css
-                    chrome.scripting.insertCSS {
-                        target: { tabId: sender.tab.id },
-                        css: d.css
-                    }
-                
                 return {
                     dictUrl: chrome.runtime.getURL('dict.html'),
                     cardUrl: chrome.runtime.getURL('card.html'),
-                    dict: d,
+                    dict: dict.getDict(win.dictName),
                     word: win.word,
                     sentence: win.sentence 
                 }
@@ -418,12 +401,6 @@ export default {
                 chatgptDict = dict.getDict("chatgpt definition")
                 if chatgptDict && sender.tab.url.startsWith(chatgptDict.windowUrl)
                     @create({ wid: sender.tab.windowId, tid: sender.tab.id, url: sender.tab.url, dictName: chatgptDict.dictName })
-                    if chatgptDict.css
-                        chrome.scripting.insertCSS {
-                            target: { tabId: sender.tab.id },
-                            css: chatgptDict.css
-                        }
-                    
                     return {
                         dictUrl: chrome.runtime.getURL('dict.html'),
                         cardUrl: chrome.runtime.getURL('card.html'),

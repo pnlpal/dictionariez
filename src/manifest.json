@@ -10,7 +10,6 @@
     "scripting",
     "offscreen"
   ],
-  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.bundle.js",
     "scripts": ["background.bundle.js"]
@@ -19,7 +18,11 @@
     {
       "js": ["preinject.bundle.js"],
       "matches": ["<all_urls>"],
-      "run_at": "document_start",
+      "run_at": "document_start"
+    },
+    {
+      "js": ["inject.bundle.js"],
+      "matches": ["<all_urls>"],
       "all_frames": true
     }
   ],
