@@ -113,7 +113,7 @@ export default {
     } else {
       const detail = this.history.find((item) => item.w === word);
       if (detail) {
-        detail.previous = this.getPrevious(word);
+        detail.previous = await this.getPrevious(word);
       }
       return detail;
     }
@@ -155,7 +155,7 @@ export default {
         }
       }
 
-      return this.history.slice(begin, end);
+      return this.history.slice(begin, end).reverse();
     }
   },
 

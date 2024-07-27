@@ -322,7 +322,7 @@ export default {
                 w = prev?.w
                 sentence = prev?.sentence
             else if request.nextWord
-                next = storage.getNext(w, true)
+                next = await storage.getNext(w, true)
                 w = next?.w 
                 sentence = next?.sentence
             else if w
