@@ -80,7 +80,7 @@ export default {
             d.sequence = oi 
 
             # fix old settings
-            if d.windowUrl == 'https://chat.openai.com'
+            if d.windowUrl == 'https://chat.openai.com' || d.submitButtonSelector == "main form button.mb-1"
                 Object.assign d, chatgptDefault
 
         @allDicts = allDicts   
