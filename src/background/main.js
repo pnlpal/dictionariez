@@ -8,6 +8,7 @@ import speak from "./speak.coffee";
 import ankiWindow from "./ankiwindow.coffee";
 import pnlpal from "./pnlpal.coffee";
 import message from "./message.js";
+import readClipboard from "./clipboard.coffee";
 
 const initPromises = (async function () {
   await setting.init();
@@ -61,15 +62,44 @@ chrome.tabs.onRemoved.addListener(async function (tid) {
 
 chrome.action.onClicked.addListener(async function (tab) {
   await initPromises;
-  dw.triggerByAction(tab);
   ankiWindow.focus();
+
+  if (tab.url.startsWith("http")) {
+    chrome.tabs.sendMessage(
+      tab.id,
+      {
+        type: "get info before open dict",
+      },
+      async (res) => {
+        dw.lookup({
+          w: res?.w || (await readClipboard(tab)),
+          ...res,
+        });
+      }
+    );
+  } else {
+    dw.lookup({
+      w: await readClipboard(tab),
+    });
+  }
 });
 
 chrome.contextMenus.onClicked.addListener(async function (info, tab) {
   await initPromises;
   if (info.menuItemId === "lookup") {
     const word = info.selectionText?.trim();
-    dw.triggerByAction(tab, word);
+    chrome.tabs.sendMessage(
+      tab.id,
+      {
+        type: "get info before open dict",
+      },
+      async (res) => {
+        dw.lookup({
+          w: word || res?.w || (await readClipboard(tab)),
+          ...res,
+        });
+      }
+    );
   }
   if (info.menuItemId === "share-with-pals") {
     pnlpal.shareOnPnlpal(tab.title, tab.url);

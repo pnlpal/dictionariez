@@ -178,7 +178,7 @@ export default {
     DictWindow,
     dictWindows: [],
 
-    lookup: ({ w, s, sc, sentence, languagePrompt } = {}) ->
+    lookup: ({ w, s, sc, sentence, languagePrompt, screen } = {}) ->
         storage.addHistory { w, s, sc, sentence } if w and s  # ignore lookup from options page
         
         if @dictWindows.length
@@ -189,6 +189,12 @@ export default {
             @saveInStorage()
             return result
         else 
+            if (screen) 
+                screenWidth = screen.with 
+                screenHeight = screen.height
+                screenAvailLeft = screen.availLeft
+                screenAvailTop = screen.availTop
+
             result = await @create().lookup(w, sentence, languagePrompt)
             @saveInStorage()
             return result
@@ -253,25 +259,6 @@ export default {
         for win in @dictWindows 
             if win.tid == tid 
                 return win 
-
-    triggerByAction: (tab, word) ->
-        # console.log("[dictWindow] some action triggered to lookup", word)
-        chrome.scripting.executeScript {
-            target : { tabId : tab.id },
-            func: getInfoOfSelectionCode 
-        }, (res) =>
-            # [word2, sentence, screenWidth, screenHeight, screenAvailLeft, screenAvailTop] = 
-            result = res?[0]?.result or []
-            w = word || result[0]
-            if not w
-                w = await readClipboard(tab) 
-            
-            sentence = result[1]
-            screenWidth = result[2] || screenWidth
-            screenHeight = result[3] || screenHeight 
-            screenAvailLeft = result[4] || screenAvailLeft 
-            screenAvailTop = result[5] || screenAvailTop
-            @lookup({ w, sentence, s: tab.url, sc: tab.title })
 
     init: () ->
         # console.log("[dictWindow] init")
