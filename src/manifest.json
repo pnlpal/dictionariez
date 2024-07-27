@@ -2,14 +2,7 @@
   "manifest_version": 3,
   "minimum_chrome_version": "105",
   "name": "Dictionariez: Your Dictionary, Your Language",
-  "permissions": [
-    "activeTab",
-    "tabs",
-    "storage",
-    "contextMenus",
-    "scripting",
-    "offscreen"
-  ],
+  "permissions": ["activeTab", "tabs", "storage", "contextMenus", "offscreen"],
   "background": {
     "service_worker": "background.bundle.js",
     "scripts": ["background.bundle.js"]
