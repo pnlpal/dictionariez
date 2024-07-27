@@ -264,7 +264,7 @@ export default {
             result = res?[0]?.result or []
             w = word || result[0]
             if not w
-                w = await readClipboard() 
+                w = await readClipboard(tab) 
             
             sentence = result[1]
             screenWidth = result[2] || screenWidth
@@ -285,19 +285,19 @@ export default {
             }
             
 
-        message.on "copy event triggered", ({s, sc, sentence}) => 
-            w = await readClipboard()
+        message.on "copy event triggered", ({s, sc, sentence}, sender) => 
+            w = await readClipboard(sender.tab)
             if w
                 @lookup({ w, s, sc, sentence })
 
-        message.on 'look up', ({ dictName, w, s, sc, sentence, means, newDictWindow }) =>
+        message.on 'look up', ({ dictName, w, s, sc, sentence, means, newDictWindow }, sender) =>
             # 'look up' can be triggered by the context menu or the hotkey or any webpages
             if means == 'mouse'
                 if not setting.getValue('enableMinidict')
                     return
 
             if !w 
-                w = await readClipboard()
+                w = await readClipboard(sender.tab)
 
             if newDictWindow 
                 targetWin = @create({ dictName })
