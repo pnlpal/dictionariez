@@ -604,27 +604,6 @@
 								<em>{{setting.readClipboardError}}</em>
 							</label>
 						</div>
-
-						<div>
-							<label for="excluded-websites">
-								<span>Don't run on these websites:</span> <em class="text-new">New!</em>
-							</label>
-							<br>
-							<em>
-								This extension injects a script on the webpages so that when you select a word or use the keyboard shortcut, it can
-								look up the word for you. But some websites may not be compatible with it. You can add the exceptions here. Regex is supported.
-							</em>
-							<div>
-								<textarea name="excluded-webistes" 
-									id="excluded-websites" 
-									class="form-control"
-									ng-model="setting.excludedSites" 
-									ng-change="changeKey('excludedSites')" 
-									cols="10" 
-									rows="5">
-								</textarea>
-							</div>
-						</div>
 					</div>
 
 					<br />
