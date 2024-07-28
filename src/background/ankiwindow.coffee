@@ -53,7 +53,7 @@ export default {
 
         data = await chrome.storage.local.get 'ankiWindow'
 
-        ankiWindow = data.ankiWindow
+        ankiWindow = data?.ankiWindow
         if ankiWindow?.wid and ankiWindow.tid
             try 
                 await chrome.windows.get(ankiWindow.wid)

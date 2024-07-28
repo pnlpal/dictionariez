@@ -4,8 +4,7 @@
   "name": "Dictionariez: Your Dictionary, Your Language",
   "permissions": ["activeTab", "tabs", "storage", "contextMenus", "offscreen"],
   "background": {
-    "service_worker": "background.bundle.js",
-    "scripts": ["background.bundle.js"]
+    "service_worker": "background.bundle.js"
   },
   "content_scripts": [
     {
@@ -37,11 +36,5 @@
     "32": "images/library-32.png",
     "64": "images/library-64.png",
     "128": "images/library-128.png"
-  },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "revir.qing@gmail.com",
-      "strict_min_version": "109.0"
-    }
   }
 }

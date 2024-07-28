@@ -241,7 +241,7 @@ export default {
         data = await chrome.storage.local.get 'dictWindows'
 
         i = 0
-        for options in data.dictWindows or []
+        for options in data?.dictWindows or []
             if options.wid and options.tid
                 try 
                     await chrome.windows.get(options.wid)

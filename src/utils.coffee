@@ -162,6 +162,22 @@ export default {
     
     isMobile: () -> /Mobi|Android/i.test(navigator.userAgent)
 
+    getBrowserName: () ->
+        if navigator.userAgent.toLowerCase().indexOf('firefox') > -1
+            return 'Firefox'
+        if navigator.userAgent.toLowerCase().indexOf('edg') > -1
+            return 'Edge'
+        if navigator.userAgent.toLowerCase().indexOf('chromium') > -1
+            return 'Chromium'
+        if navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('chrome') == -1
+            return 'Safari'
+        if navigator.userAgent.toLowerCase().indexOf('opera') > -1
+            return 'Opera'
+        if navigator.userAgent.toLowerCase().indexOf('chrome') > -1
+            return 'Chrome'
+        
+        return 'Unkown Browser'
+
     loadHTML: (url, credentials='omit') ->
         @promiseInTime(fetch(url, {
             method: 'GET', 

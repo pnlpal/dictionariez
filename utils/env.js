@@ -5,4 +5,5 @@ module.exports = {
   NODE_ENV: process.env.NODE_ENV,
   PORT: process.env.PORT || 3355,
   UNIT_TEST: process.env.UNIT_TEST,
+  BROWSER: process.env.BROWSER || "Chrome",
 };

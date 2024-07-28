@@ -1,7 +1,8 @@
-name="dictionaries.zip"
-srcname="dictionaries-src.zip" 
+browser="${BROWSER:-Chrome}"
+name="dictionaries_${browser}.zip"
+srcname="dictionaries-src_${browser}.zip" 
 
-npm run build
+BROWSER=${browser} npm run build
 
 rm -f ${name}
 rm -f ${srcname}

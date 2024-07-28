@@ -60,7 +60,9 @@ chrome.tabs.onRemoved.addListener(async function (tid) {
   dw.destroyWin({ tid });
 });
 
-chrome.action.onClicked.addListener(async function (tab) {
+(chrome.action || chrome.browserAction).onClicked.addListener(async function (
+  tab
+) {
   await initPromises;
   ankiWindow.focus();
 
