@@ -99,6 +99,23 @@ export default {
         
         return @send 'sendToDict', data, callback
 
+    sendToTab: (tabId, data={}, callback = null) ->
+        if typeof data == 'function'
+            callback = data
+            data = {}
+        else if typeof data == 'string'
+            data = { type: data }
+        
+        p = new Promise (resolve, reject) ->
+            chrome.tabs.sendMessage tabId, data, (ret) ->
+                if ret?.error
+                    reject (if typeof ret.error == 'string' then new Error(ret.error) else ret.error)
+                else 
+                    resolve ret
+        if callback
+            return p.then callback
+        return p
+
     hasJapanese: (str) ->
         REGEX_JAPANESE = /[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]/
         REGEX_JAPANESE.test(str)

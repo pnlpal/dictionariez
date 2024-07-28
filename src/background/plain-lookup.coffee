@@ -139,7 +139,7 @@ export default {
         if tname == "naver"
             result = @parseNaver json, dictDesc.result
         else
-            result = await chrome.tabs.sendMessage tabId, { type: 'parse lookup result', html, parserDesc: dictDesc.result }
+            result = await utils.sendToTab tabId, { type: 'parse lookup result', html, parserDesc: dictDesc.result }
 
         # special handle of bing when look up Chinese
         if tname == "bing"

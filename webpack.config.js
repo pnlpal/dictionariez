@@ -156,6 +156,7 @@ var options = {
               json.permissions = json.permissions.filter(
                 (x) => x !== "offscreen"
               );
+              json.permissions.push("<all_urls>");
               json["web_accessible_resources"] = [
                 "*.js",
                 "*.json",
