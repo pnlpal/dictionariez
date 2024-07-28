@@ -13,12 +13,12 @@ async function playAudios(urls) {
     if (audio.ended) {
       return true;
     }
-    await promisifiedTimeout(200);
+    await promisifiedTimeout(100);
     return _checkEnd(audio);
   };
 
   const _play = (url) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (!url) {
         return resolve();
       }
@@ -40,7 +40,7 @@ async function playAudios(urls) {
 }
 
 function playSynthesis({ text, lang, name, voice } = {}) {
-  if (window.speechSynthesis.speaking || !text) {
+  if (!text) {
     return;
   }
 
