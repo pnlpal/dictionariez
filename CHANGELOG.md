@@ -1,3 +1,13 @@
+# v5.1.0 Jul 28, 2024
+- Change to Manifest V2 for Firefox, as Firefox Manifest V3 uses opt-in for site permissions which makes Dictionariez not work at all.
+- Remove Scripting and all host permissions, use activeTab permission instead, which is more restricted but much safer. 
+- excludedSites option is removed now as the content-scripts injection is specified in manifest, couldn't be filtered anymore. 
+- Fix the submit button selector for the ChatGPT dict.
+- Quicker pronounciation of word. 
+- Some minor style changes in the anki editor. 
+- Change the default key shortcut to open options to H instead of D as D on browsers is for bookmarks by default. 
+- Add the notice for Dictionariez Pro.
+
 # v5.0.2 Jun 15, 2024
 - Rename to Dictionariez: Your Dictionary, Your Language.
 - Fix not querying word again when click on the dict but word is not changed.
