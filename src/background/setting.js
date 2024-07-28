@@ -58,7 +58,7 @@ export default {
 
     openOptionSK1: "Ctrl",
     openOptionSK2: "Shift",
-    openOptionKey: "D",
+    openOptionKey: "H",
 
     prevDictSK1: "Ctrl",
     prevDictKey: "ArrowLeft",
