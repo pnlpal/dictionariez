@@ -111,9 +111,12 @@ export default {
         return null;
       }
     } else {
-      const detail = this.history.find((item) => item.w === word);
+      let detail = this.history.find((item) => item.w === word);
       if (detail) {
-        detail.previous = await this.getPrevious(word);
+        detail = {
+          ...detail,
+          previous: await this.getPrevious(word),
+        };
       }
       return detail;
     }
@@ -155,7 +158,7 @@ export default {
         }
       }
 
-      return this.history.slice(begin, end).reverse();
+      return this.history.slice(begin, end).toReversed();
     }
   },
 
