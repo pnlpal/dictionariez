@@ -189,7 +189,7 @@ export default {
             @saveInStorage()
             return result
         else 
-            if (screen) 
+            if (screen?.width and screen?.height) 
                 screenWidth = screen.with 
                 screenHeight = screen.height
                 screenAvailLeft = screen.availLeft
