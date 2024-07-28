@@ -112,7 +112,7 @@ renderQuoteInfo = (res) ->
 
 renderImage = (image) -> 
 	dataImgTpl = '''
-<div class='dictionariez-anki-image-wrapper'>
+<div class='dictionariez-anki-image-wrapper' contenteditable='false'>
 	<div class='dictionariez-anki-image-close' style='display: none;'>X</div>
 	<div style='max-width: 100%; max-height: 700px;
 		content: url("{dataUrl}");
