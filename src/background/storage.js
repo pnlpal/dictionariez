@@ -111,12 +111,9 @@ export default {
         return null;
       }
     } else {
-      let detail = this.history.find((item) => item.w === word);
+      const detail = this.history.find((item) => item.w === word);
       if (detail) {
-        detail = {
-          ...detail,
-          previous: await this.getPrevious(word),
-        };
+        detail.previous = await this.getPrevious(word);
       }
       return detail;
     }
@@ -135,11 +132,10 @@ export default {
       }
     } else {
       const idx = this.history.findIndex((item) => item.w === w);
-      if (idx > 0) {
-        return this.history[idx - 1];
-      } else {
-        return this.history[this.history.length - 1];
-      }
+      const previous =
+        idx > 0 ? this.history[idx - 1] : this.history[this.history.length - 1];
+      if (previous) delete previous.previous;
+      return previous;
     }
   },
 
