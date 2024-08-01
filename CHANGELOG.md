@@ -1,3 +1,6 @@
+# v5.1.2 Aug 01, 2024
+- Auto focus on the search input on the dict 
+
 # v5.1.1 Aug 01, 2024
 - Fix rating the word.
 - Fix exporting to Anki on Firefox.
