@@ -60,10 +60,8 @@ export async function initOnLoadDynamicDict({ word, sentence, dict }, $) {
 
     fixQueryingOnEnterForChatGPT(dict);
 
-    chrome.runtime.onMessage.addListener((request) => {
-      if (request.type == "querying") {
-        doQuery(request.text, request.sentence, request.languagePrompt, dict);
-      }
+    utils.listenToBackground("querying", (request) => {
+      doQuery(request.text, request.sentence, request.languagePrompt, dict);
     });
   }
 }

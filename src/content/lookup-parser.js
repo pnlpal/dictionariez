@@ -1,3 +1,5 @@
+import utils from "utils";
+
 let virtualDom;
 
 const $clean = (html) => {
@@ -191,13 +193,12 @@ const getValueFromNode = ($node, desc) => {
 export { parseHTML };
 
 export default () => {
-  chrome.runtime.onMessage.addListener(
-    ({ type, html, parserDesc }, sender, sendResponse) => {
-      if (type == "parse lookup result") {
-        const parsedResult = parseHTML(html, parserDesc);
-        // console.log("parsedResult", parsedResult);
-        sendResponse(parsedResult);
-      }
+  utils.listenToBackground(
+    "parse lookup result",
+    ({ html, parserDesc }, sender, sendResponse) => {
+      const parsedResult = parseHTML(html, parserDesc);
+      // console.log("parsedResult", parsedResult);
+      sendResponse(parsedResult);
     }
   );
 };

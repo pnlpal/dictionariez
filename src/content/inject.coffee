@@ -517,29 +517,27 @@ run = () =>
 						sc: document.title
 					},  handlePlainResult
 
-	if window.self == window.top
-		chrome.runtime.onMessage.addListener (request, sender, sendResponse)->
-			if request.type == 'get info before open dict'
-				try 
-					sentence = getSentenceOfSelection()
-				catch
-					sentence = null
-				
-				word = window.getSelection().toString().trim()
-				word = '' if word.split(/\s/).length > 3
+	utils.listenToBackground 'get info before open dict', (request, sender, sendResponse)->
+		try 
+			sentence = getSentenceOfSelection()
+		catch
+			sentence = null
+		
+		word = window.getSelection().toString().trim()
+		word = '' if word.split(/\s/).length > 3
 
-				sendResponse({
-					w: word,
-					s: location.href,
-					sc: document.title,
-					sentence: sentence,
-					screen: {
-						width: screen.width,
-						height: screen.height,
-						availLeft: screen.availLeft,
-						availTop: screen.availTop
-					}
-				})
+		sendResponse({
+			w: word,
+			s: location.href,
+			sc: document.title,
+			sentence: sentence,
+			screen: {
+				width: screen.width,
+				height: screen.height,
+				availLeft: screen.availLeft,
+				availTop: screen.availTop
+			}
+		})
 
 if !window.dictionariezInjected 
 	run()
