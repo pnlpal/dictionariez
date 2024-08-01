@@ -1,3 +1,8 @@
+# v5.1.1 Aug 01, 2024
+- Fix rating the word.
+- Fix exporting to Anki on Firefox.
+- Fix pasting images that got duplicated on Firefox when exporting to Anki.
+
 # v5.1.0 Jul 28, 2024
 - Change to Manifest V2 for Firefox, as Firefox Manifest V3 uses opt-in for site permissions which makes Dictionariez not work at all.
 - Remove Scripting and all host permissions, use activeTab permission instead, which is more restricted but much safer. 
