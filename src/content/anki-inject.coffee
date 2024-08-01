@@ -44,6 +44,11 @@ getAnkiInfo = (ankiSavedWord, ankiSkippedWord) ->
 				$img = $(this)
 				return if $img.attr('is-handling')
 
+				if this.style.visibility == 'hidden'
+					# Firefox will copy the hidden image esp from Google image search.
+					$img.remove()
+					return
+
 				$img.attr('is-handling', true)
 				src = $img.attr('src')
 				imageInfo = await utils.send 'image to data url', { src }
