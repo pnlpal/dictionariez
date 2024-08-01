@@ -51,6 +51,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             $scope._lastQueryWord = $scope.word
             $scope.history = history
             $scope.$apply()
+            $('#fairy-dict input.dict-input').focus()
 
             if !$scope.setting?.disableWordHistory
                 await import('../starrr.js')
@@ -157,6 +158,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             $scope.word = request.text
             setTimeout (() -> 
                 $scope.querying = false
+                $('#fairy-dict input.dict-input').focus()
                 $scope.$apply()
             ), 1000
 
