@@ -48,7 +48,7 @@ export default {
     enablePlainSK1: false,
     plainSK1: "Ctrl",
 
-    enableMinidict: false,
+    enableMinidict: true,
     enableMouseSK1: false,
     mouseSK1: "Alt",
 
