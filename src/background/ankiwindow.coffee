@@ -7,12 +7,9 @@ import storage from "./storage.js"
 import dw from "./dictwindow.coffee";
 
 
-class AnkiWindow extends dw.DictWindow
+class AnkiWindow 
     defaultUrl: 'https://ankiuser.net/add'
     wordItem: null
-
-    constructor: () ->
-        super({ dictName: 'none'})
 
     reset: () ->
         super.reset()

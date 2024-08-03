@@ -176,9 +176,7 @@ initHistory = () ->
                 title: 'Action',
                 render: (data, type, row) ->
                     if type == 'display'
-                        if row.ankiSaved 
-                            return buildActionIcon('saved in Anki') + buildActionIcon('remove')
-                        return buildActionIcon('export to Anki') + buildActionIcon('remove')
+                        return  buildActionIcon('remove')
                     return ''
             }
         ],

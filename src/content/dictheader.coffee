@@ -11,16 +11,12 @@ import('../vendor/font-awesome.css')
 import('./dictheader.less')
 
 import('./card-iframe.coffee')
-import initLookupParser from './lookup-parser.js'
 
 inFrame = window.self != window.top
 # some ui need bootstrap, like dropdown.
 dictApp = angular.module('fairyDictApp', ['ui.bootstrap'])
 
-if (!inFrame) 
-    initLookupParser()
-
-dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
+dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
     # change Bing dictionary's title
     document.title = 'Dictionariez'
     baseNode = '#fairy-dict'
@@ -30,6 +26,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     $scope.previous = null
 
     $scope.version = chrome.runtime.getManifest().version
+
 
     if not $scope.inFrame
         import(### webpackChunkName: "github-badge"  ###'../vendor/github-badge.js')
@@ -41,7 +38,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             type: 'dictionary',
             # origin: window.top?.location?.origin,
             # url: window.top?.location?.href
-        }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, history, w, r})->
+        }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, history, w, r, windowUrl})->
             $scope.allDicts = allDicts
             $scope.currentDictName = currentDictName
             $scope.nextDictName = nextDictName
@@ -50,6 +47,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             $scope.word = w
             $scope._lastQueryWord = $scope.word
             $scope.history = history
+            $scope.windowUrl = $sce.trustAsResourceUrl(windowUrl) if windowUrl
             $scope.$apply()
             $('#fairy-dict input.dict-input').focus()
 
@@ -100,10 +98,11 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             previousWord,
             newDictWindow 
         }, (data) ->
+            # console.log 'query result', data
             $scope.querying = false
-            if data?.noUpdate
-                # current dict might be changed
-                initDict()
+            $scope.windowUrl = $sce.trustAsResourceUrl(data.windowUrl) if data?.windowUrl
+            $scope.$apply()
+            
         )
 
     $scope.toggleDropdown = (open) ->
@@ -242,7 +241,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
 ]
 
 import('../header.html').then ({ default: headerDom }) ->
-    $(document.body).append(headerDom)
+    $(document.body).prepend(headerDom)
     angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])
 
     

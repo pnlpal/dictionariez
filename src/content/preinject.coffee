@@ -4,7 +4,8 @@ chrome.runtime.sendMessage {
 	origin: location.origin,
 	url: location.href
 }, (res) ->
-	if res?.dictUrl
+	# console.log "preinjected", res
+	if res?.isInDict
 		if res.dict?.resources?.styles?
 			for style in res.dict.resources.styles
 				require("./css/#{style}")

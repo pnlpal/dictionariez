@@ -14,21 +14,15 @@ import highlight from './editable-highlight'
 
 import './card-iframe.coffee'
 import './pnlpal-inject.coffee'
-import { initCaptionzInjection } from  './captionz-inject.coffee'
-import { initYtbInjection } from './ytb-inject.js'
 import { initOnLoadDynamicDict } from './dynamic-dict-inject.js'
 import {
   getSentenceFromSelection
 } from 'get-selection-more'
-import { initAnkiInjection } from './anki-inject.coffee'
-import initLookupParser from './lookup-parser.js'
+# import { initAnkiInjection } from './anki-inject.coffee'
 import { initClipboardReader } from './read-clipboard.coffee'
 
 run = () =>
-	initYtbInjection()
-	initCaptionzInjection()
-	initAnkiInjection()
-	initLookupParser()
+	# initAnkiInjection()
 	initClipboardReader()
 	
 	isInDict = false
@@ -38,17 +32,15 @@ run = () =>
 		origin: location.origin,
 		url: location.href
 	}, (res) ->
-		if res?.dictUrl and window.self == window.top
-			# append to html rather than body.
-			# some websites such as naver dict, may clear body when reload to another page. 
-			$("<iframe id='dictionaries-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('html')
+		# console.log "injected response", res
+		if res?.isInDict
 			if res.dict?.css
 				$('head').append('<style type="text/css">' + res.dict.css + '</style>')
 			
 			isInDict = true
 			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict }, $)
 
-		if res?.cardUrl and res.word and not location.host.includes('wikipedia.org') and window.self == window.top
+		if res?.cardUrl and res.word and not location.host.includes('wikipedia.org') and window.self != window.top
 			comparedLoc = decodeURI(location.href).toLowerCase()
 			if res.word.split(/\s/).every (s) -> comparedLoc.includes(s.toLowerCase())
 				$("<iframe class='dictionaries-card dictionaries-card-wiki' src='#{res.cardUrl}?sys=wiki' style='display: none;'> </iframe>").appendTo('body')

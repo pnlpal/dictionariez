@@ -235,7 +235,7 @@
     </div> -->
   </nav>
 
-  <div class="dict-body" ng-hide="inFrame">
+  <div class="dict-body" ng-hide="inFrame || word">
     <div class="dict-wait text-center" ng-show="querying">
       <i class="fa fa-spinner fa-spin fa-4x" title="Querying..."></i>
     </div>
@@ -319,11 +319,14 @@
         Dictionariez Pro is coming, your input is needed!
       </a>
     </h1>
-
-    <div
-      class="dict_result"
-      ng-bind-html="queryResult"
-      ng-hide="querying || initial"
-    ></div>
   </div>
+  <iframe
+    ng-src="{{windowUrl}}"
+    ng-hide="!windowUrl"
+    id="dict-result"
+    width="100%"
+    height="100%"
+    style="height: 100vh"
+    frameborder="0"
+  ></iframe>
 </div>

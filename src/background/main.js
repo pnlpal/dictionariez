@@ -3,10 +3,6 @@ import storage from "./storage.js";
 import dict from "./dict.coffee";
 import dw from "./dictwindow.coffee";
 import "./auto-complete.coffee";
-import lookup from "./plain-lookup.coffee";
-import speak from "./speak.coffee";
-import ankiWindow from "./ankiwindow.coffee";
-import pnlpal from "./pnlpal.coffee";
 import message from "./message.js";
 import readClipboard from "./clipboard.coffee";
 
@@ -15,10 +11,6 @@ const initPromises = (async function () {
   await storage.init();
   await dict.init();
   await dw.init();
-  await ankiWindow.init();
-  await lookup.init();
-  await speak.init();
-  await pnlpal.init();
 
   global.dw = dw;
   global.storage = storage;
@@ -26,21 +18,21 @@ const initPromises = (async function () {
   global.setting = setting;
 })();
 
-chrome.runtime.onInstalled.addListener(function (details) {
-  const manifestData = chrome.runtime.getManifest();
-  if (
-    [chrome.runtime.OnInstalledReason.INSTALL].includes(details.reason) &&
-    details.previousVersion != manifestData.version
-  ) {
-    chrome.tabs.create({
-      url: chrome.runtime.getURL("share.html"),
-    });
-  }
-  if (process.env.UNIT_TEST === "true")
-    chrome.tabs.create({
-      url: chrome.runtime.getURL("test.html"),
-    });
-});
+// chrome.runtime.onInstalled.addListener(function (details) {
+//   const manifestData = chrome.runtime.getManifest();
+//   if (
+//     [chrome.runtime.OnInstalledReason.INSTALL].includes(details.reason) &&
+//     details.previousVersion != manifestData.version
+//   ) {
+//     chrome.tabs.create({
+//       url: chrome.runtime.getURL("share.html"),
+//     });
+//   }
+//   if (process.env.UNIT_TEST === "true")
+//     chrome.tabs.create({
+//       url: chrome.runtime.getURL("test.html"),
+//     });
+// });
 
 chrome.runtime.onMessage.addListener(function (...args) {
   initPromises.then(() => {
@@ -50,21 +42,13 @@ chrome.runtime.onMessage.addListener(function (...args) {
   // unless you return true from the event listener to indicate you wish to send a response asynchronously
   return true;
 });
-chrome.windows.onRemoved.addListener(async function (wid) {
-  await initPromises;
-  dw.destroyWin({ wid });
-  ankiWindow.destroyWin({ wid });
-});
-chrome.tabs.onRemoved.addListener(async function (tid) {
-  await initPromises;
-  dw.destroyWin({ tid });
-});
 
 (chrome.action || chrome.browserAction).onClicked.addListener(async function (
   tab
 ) {
+  chrome.sidePanel.open({ tabId: tab.id });
+
   await initPromises;
-  ankiWindow.focus();
 
   if (tab.url.startsWith("http")) {
     chrome.tabs.sendMessage(
@@ -87,6 +71,8 @@ chrome.tabs.onRemoved.addListener(async function (tid) {
 });
 
 chrome.contextMenus.onClicked.addListener(async function (info, tab) {
+  chrome.sidePanel.open({ tabId: tab.id });
+
   await initPromises;
   if (info.menuItemId === "lookup") {
     const word = info.selectionText?.trim();
@@ -103,10 +89,13 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
       }
     );
   }
-  if (info.menuItemId === "share-with-pals") {
-    pnlpal.shareOnPnlpal(tab.title, tab.url);
-  }
-  if (info.menuItemId === "open-ytb-video-on-captionz") {
-    pnlpal.openYtbOnCaptionz(info.linkUrl);
-  }
 });
+
+chrome.sidePanel.setOptions({
+  path: "dict.html",
+});
+
+// // Allows users to open the side panel by clicking on the action toolbar icon
+// chrome.sidePanel
+//   .setPanelBehavior({ openPanelOnActionClick: false })
+//   .catch((error) => console.error(error));
