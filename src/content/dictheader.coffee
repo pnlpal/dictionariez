@@ -150,7 +150,6 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
     ), 500
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
-        # console.log(request)
         if request.type == 'querying'
             $scope.initial = false
             $scope.querying = true
@@ -164,6 +163,13 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
         if request.type == 'sendToDict'
             if request.action == 'keypress focus'
                 $('input.dict-input', baseNode)[0].select()
+
+        if request.type == 'look up result'
+            $scope.querying = false
+            $scope.word = request.word
+            $scope._lastQueryWord = request.word
+            $scope.windowUrl = $sce.trustAsResourceUrl(request.windowUrl) if request.windowUrl
+            $scope.$apply()
 
         $scope.$apply()
 

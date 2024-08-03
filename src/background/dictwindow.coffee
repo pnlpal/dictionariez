@@ -13,12 +13,12 @@ export default {
     lookup: ({ w, s, sc, sentence, languagePrompt, screen, dictName } = {}) ->
         storage.addHistory { w, s, sc, sentence } if w and s  # ignore lookup from options page
 
-        @word = w 
-        @sentence = sentence
+        @word = w || @word
+        @sentence = sentence || @sentence
         @dictName = dictName || @dictName || setting.getValue('dictionary')
 
-        if w 
-            result = await dict.query(w, @dictName) 
+        if @word
+            result = await dict.query(@word, @dictName) 
             return result
 
 
@@ -37,7 +37,7 @@ export default {
                 @lookup({ w, s, sc, sentence })
 
         message.on 'look up', ({ dictName, w, s, sc, sentence, means, newDictWindow }, sender) =>
-            # 'look up' can be triggered by the context menu or the hotkey or any webpages
+            # 'look up' can be triggered by the context menu or the hotkey or any webpages or in the options page
             if means == 'mouse'
                 if not setting.getValue('enableMinidict')
                     return
@@ -45,14 +45,8 @@ export default {
             if !w 
                 w = await readClipboard(sender.tab)
 
-           
-            if dictName # only change the main window or in new window.
-                result = await @lookup({w: w?.trim(), sentence, dictName})
-
-            else  # This is more likely to happen.
-                result = await @lookup({ w: w?.trim(), s, sc, sentence })
-
-            return result
+            result = await @lookup({ w: w?.trim(), s, sc, sentence })
+            utils.send 'look up result', { word: @word, ...result }
 
         message.on 'query', (request, sender) =>
             # query message only comes from the dict window.
