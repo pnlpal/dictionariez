@@ -60,8 +60,15 @@ export async function initOnLoadDynamicDict({ word, sentence, dict }, $) {
 
     fixQueryingOnEnterForChatGPT(dict);
 
-    utils.listenToBackground("querying", (request) => {
-      doQuery(request.text, request.sentence, request.languagePrompt, dict);
+    window.addEventListener("message", (event) => {
+      if (event.data.type === "look up in dynamic dict") {
+        doQuery(
+          event.data.word,
+          event.data.sentence,
+          event.data.languagePrompt,
+          dict
+        );
+      }
     });
   }
 }

@@ -1,18 +1,7 @@
 import $ from 'jquery'
 import utils from "utils"
-
-import "./inject.less"
-
-# Interesting: font url is embedded, for some websites' security setting font-src,
-# it might be forbidden to load the font url.
-# but after webpack build, it not a problem any more.
-import "./inject-fontello.css"
-
 import debounce from 'lodash/debounce'
 
-import highlight from './editable-highlight'
-
-import './card-iframe.coffee'
 import './pnlpal-inject.coffee'
 import { initOnLoadDynamicDict } from './dynamic-dict-inject.js'
 import {
@@ -39,11 +28,6 @@ run = () =>
 			
 			isInDict = true
 			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict }, $)
-
-		if res?.cardUrl and res.word and not location.host.includes('wikipedia.org') and window.self != window.top
-			comparedLoc = decodeURI(location.href).toLowerCase()
-			if res.word.split(/\s/).every (s) -> comparedLoc.includes(s.toLowerCase())
-				$("<iframe class='dictionaries-card dictionaries-card-wiki' src='#{res.cardUrl}?sys=wiki' style='display: none;'> </iframe>").appendTo('body')
 
 	chrome.runtime.sendMessage {
 		type: 'setting',
@@ -517,6 +501,8 @@ run = () =>
 		
 		word = window.getSelection().toString().trim()
 		word = '' if word.split(/\s/).length > 3
+
+		console.log "get info before open dict", word, sentence, window
 
 		sendResponse({
 			w: word,

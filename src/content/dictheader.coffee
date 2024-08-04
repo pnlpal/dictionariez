@@ -103,6 +103,9 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
         if $scope.inFrame
             window.top.postMessage { type: 'toggleDropdown', open }, '*'
 
+    sendMessageToDictPage = (message) ->
+        document.getElementById('dict-result')?.contentWindow.postMessage(message, '*')
+
     
     parseAutocomplete = (html) ->
         return [] unless html
@@ -162,6 +165,8 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.querying = false
             $scope.windowUrl = $sce.trustAsResourceUrl(request.windowUrl) if request.windowUrl
             initDict()
+
+            sendMessageToDictPage({ ...request,  type: 'look up in dynamic dict' })
 
         $scope.$apply()
 

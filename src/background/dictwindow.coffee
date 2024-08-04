@@ -19,7 +19,14 @@ export default {
 
         if @word
             result = await dict.query(@word, @dictName) 
-            utils.send 'look up result', { word: @word, dictName: @dictName, ...result }
+            utils.send 'look up result', { 
+                word: @word, 
+                dictName: @dictName, 
+                sentence: @sentence,
+                languagePrompt,
+                ...result 
+            }
+            
             return result
 
 
