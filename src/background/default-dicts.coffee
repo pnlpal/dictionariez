@@ -33,7 +33,7 @@ export default [{
 }, {
     "dictName": "Merriam-webster Dictionary",
     "windowUrl": "https://www.merriam-webster.com/dictionary/<word>",
-    "css": "header, .home-top-creative-cont, .mw-ad-slot-top {display: none !important; }"
+    "css": "header, .home-top-creative-cont, .mw-ad-slot-top, #main-banner-ad-container, .container-top-ads {display: none !important; }"
 }, {
   "dictName": "Google Translate (Auto -> EN)", 
   "windowUrl": "https://translate.google.com/?sl=auto&tl=en&text=<word>&op=translate",
