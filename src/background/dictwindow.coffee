@@ -11,7 +11,7 @@ export default {
     dictName: '',
 
     lookup: ({ w, s, sc, sentence, languagePrompt, screen, dictName } = {}) ->
-        storage.addHistory { w, s, sc, sentence } if w and s  # ignore lookup from options page
+        storage.addHistory { w, s, sc, sentence } if w and s and w.split(/\s/).length <= 3  # ignore lookup from options page
 
         @word = w || @word
         @sentence = sentence || @sentence
@@ -54,7 +54,10 @@ export default {
             if !w 
                 w = await readClipboard(sender.tab)
 
-            
+            if w 
+                if w.split(/\s/).length > 3 and @dictName?.toLowerCase().indexOf('translate') == -1
+                    return
+               
             @lookup({ w: w?.trim(), s, sc, sentence, dictName })
             
 
@@ -83,8 +86,8 @@ export default {
                 next = await storage.getNext(w, true)
                 w = next?.w 
                 sentence = next?.sentence
-            else if w
-                storage.addHistory { w, sentence }
+            else if w and w.split(/\s/).length <= 3
+                storage.addHistory { w, sentence } 
 
             return @lookup({ w, sentence, languagePrompt, dictName })
                             
