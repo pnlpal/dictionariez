@@ -100,9 +100,11 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
         }, (data) ->
             # console.log 'query result', data
             $scope.querying = false
+            $scope.currentDictName = dictName or $scope.currentDictName
             $scope.windowUrl = $sce.trustAsResourceUrl(data.windowUrl) if data?.windowUrl
             $scope.$apply()
             
+            initDict()
         )
 
     $scope.toggleDropdown = (open) ->
