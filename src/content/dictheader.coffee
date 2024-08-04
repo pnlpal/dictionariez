@@ -97,15 +97,7 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             nextWord,
             previousWord,
             newDictWindow 
-        }, (data) ->
-            # console.log 'query result', data
-            $scope.querying = false
-            $scope.currentDictName = dictName or $scope.currentDictName
-            $scope.windowUrl = $sce.trustAsResourceUrl(data.windowUrl) if data?.windowUrl
-            $scope.$apply()
-            
-            initDict()
-        )
+        })
 
     $scope.toggleDropdown = (open) ->
         if $scope.inFrame
@@ -172,7 +164,7 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope._lastQueryWord = request.word
             $scope.windowUrl = $sce.trustAsResourceUrl(request.windowUrl) if request.windowUrl
             $scope.$apply()
-            
+
             if (request.dictName and request.dictName != $scope.currentDictName)
                 initDict()
 

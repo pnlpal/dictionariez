@@ -19,6 +19,7 @@ export default {
 
         if @word
             result = await dict.query(@word, @dictName) 
+            utils.send 'look up result', { word: @word, dictName: @dictName, ...result }
             return result
 
 
@@ -45,8 +46,9 @@ export default {
             if !w 
                 w = await readClipboard(sender.tab)
 
-            result = await @lookup({ w: w?.trim(), s, sc, sentence, dictName })
-            utils.send 'look up result', { word: @word, dictName, ...result }
+            
+            @lookup({ w: w?.trim(), s, sc, sentence, dictName })
+            
 
         message.on 'query', (request, sender) =>
             # query message only comes from the dict window.
