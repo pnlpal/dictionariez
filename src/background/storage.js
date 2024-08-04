@@ -133,7 +133,11 @@ export default {
     } else {
       const idx = this.history.findIndex((item) => item.w === w);
       const previous =
-        idx > 0 ? this.history[idx - 1] : this.history[this.history.length - 1];
+        idx > 0
+          ? this.history[idx - 1]
+          : idx === -1
+          ? this.history[this.history.length - 1]
+          : undefined;
       if (previous) delete previous.previous;
       return previous;
     }
