@@ -58,6 +58,9 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
                 else
                     $('.starrr', baseNode).starrr({numStars: 3, rating: r})
 
+            if $scope.dictFrameIsNotLoaded 
+                $scope.checkIfFrameIsLoaded()
+
     initDict()
     chrome.runtime.sendMessage {
         type: 'setting'
@@ -163,12 +166,33 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
         if request.type == 'look up result'
             $scope.querying = false
-            $scope.windowUrl = $sce.trustAsResourceUrl(request.windowUrl) if request.windowUrl
-            initDict()
+            if request.windowUrl
+                newUrl = $sce.trustAsResourceUrl(request.windowUrl)
+                if $scope.windowUrl != newUrl
+                    $scope.windowUrl = newUrl
+                    $scope.checkIfFrameIsLoaded()
 
+            initDict()
             sendMessageToDictPage({ ...request,  type: 'look up in dynamic dict' })
 
         $scope.$apply()
+    
+    window.addEventListener "message", (event) -> 
+        if (event?.data?.type == 'injectedInDict') 
+            $scope.dictFrameIsLoaded = true
+    
+    $scope.checkIfFrameIsLoaded = () ->
+        $scope.dictFrameIsLoaded = false
+        clearTimeout $scope._checkFrameTimer
+
+        $scope._checkFrameTimer = setTimeout (() ->
+            if $scope.dictFrameIsLoaded
+                $scope.dictFrameIsNotLoaded = false
+            else
+                $scope.dictFrameIsNotLoaded = true
+            
+            $scope.$apply()
+        ), 2000
 
     $(baseNode).on 'starrr:change', (e, value)->
         if $scope.word
@@ -230,15 +254,6 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             evt.preventDefault()
             evt.stopPropagation()
             $scope.$apply()
-
-    window.addEventListener 'beforeunload', () ->
-        utils.send 'beforeunload dict window', {
-            left: window.screenX,
-            top: window.screenY,
-            width: window.outerWidth,
-            height: window.outerHeight,
-            dictName: $scope.currentDictName,
-        }
 
     return
 ]

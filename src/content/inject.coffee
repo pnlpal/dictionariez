@@ -29,6 +29,8 @@ run = () =>
 			isInDict = true
 			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict }, $)
 
+			window.top.postMessage { type: 'injectedInDict' }, '*'
+
 	chrome.runtime.sendMessage {
 		type: 'setting',
 	}, (setting)->
