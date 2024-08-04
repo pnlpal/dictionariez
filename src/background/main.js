@@ -18,21 +18,17 @@ const initPromises = (async function () {
   global.setting = setting;
 })();
 
-// chrome.runtime.onInstalled.addListener(function (details) {
-//   const manifestData = chrome.runtime.getManifest();
-//   if (
-//     [chrome.runtime.OnInstalledReason.INSTALL].includes(details.reason) &&
-//     details.previousVersion != manifestData.version
-//   ) {
-//     chrome.tabs.create({
-//       url: chrome.runtime.getURL("share.html"),
-//     });
-//   }
-//   if (process.env.UNIT_TEST === "true")
-//     chrome.tabs.create({
-//       url: chrome.runtime.getURL("test.html"),
-//     });
-// });
+chrome.runtime.onInstalled.addListener(function (details) {
+  const manifestData = chrome.runtime.getManifest();
+  if (
+    [chrome.runtime.OnInstalledReason.INSTALL].includes(details.reason) &&
+    details.previousVersion != manifestData.version
+  ) {
+    chrome.tabs.create({
+      url: chrome.runtime.getURL("share.html"),
+    });
+  }
+});
 
 chrome.runtime.onMessage.addListener(function (...args) {
   initPromises.then(() => {
