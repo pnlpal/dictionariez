@@ -45,50 +45,6 @@ run = () =>
 			# See issue #45
 			return
 
-		$('''
-			<div class="dictionaries-tooltip">
-				<div class="fairydict-spinner">
-				<div class="fairydict-bounce1"></div>
-				<div class="fairydict-bounce2"></div>
-				<div class="fairydict-bounce3"></div>
-				</div>
-				<div class="dictionaries-tooltip-content">
-				</div>
-			</div>
-				''').appendTo('body')
-
-		setupPlainContentPosition = (e) ->
-			$el = $('.dictionaries-tooltip')
-			if e.pageX && e.pageY
-				pageX = e.pageX
-				pageY = e.pageY
-			else 
-				pageX = e.changedTouches?[0].pageX
-				pageY = e.changedTouches?[0].pageY
-
-			if $el.length and pageY
-				mousex = pageX + 20
-				mousey = pageY + 10
-				top = mousey
-				left = mousex
-
-				# console.log e
-				# console.log top, left, window.innerHeight, window.innerWidth
-
-				# bugfix: here we can't use document.body.getBoundingClientRect()
-				# because some websites are not using body to scroll, thus there body rect is 0.
-				# for example: https://www.wired.com/story/russias-disinformation-war-is-just-getting-started/
-				rect = window.document.scrollingElement.getBoundingClientRect()
-				domW = window.innerWidth - rect.left
-				domH = window.innerHeight - rect.top
-
-				if domW - left < 300
-					left = domW - 300
-				if domH - top < 200
-					top = domH - 200
-
-				$el.css({ top, left })
-		
 		if setting.enableReadClipboard
 			document.addEventListener('copy', (() -> 
 				try 
@@ -104,28 +60,9 @@ run = () =>
 			), true) 
 
 		$(document).mousemove debounce ((e) ->
-			if $(e.target).hasClass('dictionariez-w')
-				w = $(e.target).data('w') || $(e.target).text()
-				w = w.trim()
-				return if w == plainQuerying
-
-				$('.dictionaries-tooltip').fadeIn('slow')
-				$('.dictionaries-tooltip .fairydict-spinner').show()
-				$('.dictionaries-tooltip .dictionaries-tooltip-content').empty()
-
-				setupPlainContentPosition(e)
-
-				plainQuerying = w
-
-				utils.send 'look up plain', {
-					w
-				}, (res) ->
-					handlePlainResult(res)
-
-			else
-				if setting.enableSelectionOnMouseMove
-					if !setting.enableSelectionSK1 or utils.checkEventKey(e, setting.selectionSK1)
-						handleSelectionWord(e)
+			if setting.enableSelectionOnMouseMove
+				if !setting.enableSelectionSK1 or utils.checkEventKey(e, setting.selectionSK1)
+					handleSelectionWord(e)
 
 			), 200
 
@@ -200,35 +137,6 @@ run = () =>
 						dictNumber: parseInt(event.key.match(/\d/)[0])
 					})
 					return false 
-
-
-		$(document).on 'click mouseover', '.fairydict-pron-audio', debounce(((e) ->
-			e.stopPropagation()
-
-			return if utils.isMobile() and e.type == 'mouseover'  # on mobile mouseover will be triggered when click.
-
-			synthesisObj = null
-
-			if $(this).data('mp3')
-				utils.send 'play audios', { otherSrc: $(this).data('mp3') }
-
-			else if $(this).data('synthesis') 
-				synthesisObj = {
-					text: $(this).data('w'),
-					name: $(this).data('lang'),
-					lang: $(this).data('synthesis')
-				}
-				utils.send 'play audios', { synthesisObj }
-			
-			else if $(this).hasClass('for-chatgpt-audio')
-				synthesisObj = {
-					text: $(this).parent().text(),
-					lang: 'en-US'
-				}
-				utils.send 'play audios', { synthesisObj }
-
-			return false
-		), 1000, {leading: true})
 
 		handleSelectionWord = (e)->
 			selObj = window.getSelection()
@@ -334,116 +242,6 @@ run = () =>
 			if event.which == 0 or event.which == 1 # left mouse or touchend
 				handleLookupByMouse(event, text)
 
-		renderQueryResult = (res) ->
-			wTpl = (w) -> "<strong class='fairydict-w'> #{w} </strong>"
-			defTpl = (def) -> "<span class='fairydict-def'> #{def} </span>"
-			defsTpl = (defs) -> "<span class='fairydict-defs'> #{defs} </span>"
-			labelsTpl = (labels) -> "<div class='fairydict-labels'> #{labels} </div>"
-			labelTpl = (label) -> "<span class='fairydict-label'> #{label} </span>"
-			posTpl = (pos) -> "<span class='fairydict-pos'> #{pos} </span>"
-			contentTpl = (content) -> "<div class='fairydict-content'> #{content} </div>"
-			pronSymbolTpl = (symbol='', type='') -> "<span class='fairydict-symbol fairydict-symbol-#{type}'> <em> #{symbol} </em> </span>"
-			pronAudioTpl = (w, src='', type='', synthesis='', lang='') -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' data-mp3='#{src}' data-synthesis='#{synthesis}' data-lang='#{lang}' data-w='#{w}'><i class='icon-fairydict-volume'></i></a>"
-			pronsTpl = (w, prons) -> "<div class='fairydict-prons'> #{w} #{prons} </div>"
-
-			# console.log res 
-
-			html = ''
-
-			wHtml = ''
-			pronHtml = ''
-			if res?.w
-				wHtml = wTpl res.w
-
-				if res?.prons
-					pronHtml = res.prons.reduce ((prev, cur)->
-						if cur.synthesis or cur.audio or cur.symbol
-							prev += pronSymbolTpl(cur.symbol, cur.type)
-							prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis, res.lang) if cur.synthesis or cur.audio
-						return prev
-					), ''
-			
-			html += pronsTpl wHtml, pronHtml if pronHtml or wHtml
-			
-			labelsCon = res?.labels?.map(({ name }) -> labelTpl name if name).reduce ((prev, cur) ->
-				prev += cur if cur 
-				return prev
-			), ''
-			
-			html += labelsTpl labelsCon if labelsCon
-			
-			renderItem = (item) ->
-				posHtml = ''
-				defsHtml = ''
-
-				posHtml = posTpl item.pos if item.pos 
-				defs = if Array.isArray(item.def) then item.def else [item.def]
-				defsCon = defs.map((def, i) -> 
-					if def
-						if defs.length == 1
-							return defTpl def 
-						else 
-							return defTpl("#{i+1}. #{def}")
-					return ""
-				).reduce (prev, next) ->
-					return prev + '<br>' + next if next 
-					return prev 
-				defsHtml = defsTpl defsCon if defsCon
-
-				html += contentTpl posHtml + defsHtml if defsHtml
-
-			res.defs.forEach renderItem if res?.defs
-			res.defs2.forEach renderItem if res?.defs2
-			return html
-
-		getEnglishPronSymbol = (w) ->
-			res = await utils.send 'get english pron symbol', { w }
-			if res?.prons
-				for item in res.prons 
-					if item.type == 'ame' and item.symbol 
-						$('.dictionaries-tooltip .fairydict-symbol-ame em').text(item.symbol)
-					if item.type == 'bre' and item.symbol
-						$('.dictionaries-tooltip .fairydict-symbol-bre em').text(item.symbol)
-					$('.dictionaries-tooltip .fairydict-symbol-unknow').hide()
-
-		getEnglishPronAudio = (w) ->
-			res = await utils.send 'get real person voice', { w }
-			if res?.prons
-				ameSrc = ''
-				breSrc = ''
-				for item in res.prons 
-					if item.type == 'ame' and item.audio 
-						ameSrc = item.audio 
-						$('.dictionaries-tooltip .fairydict-pron-audio-ame').attr('data-mp3', ameSrc)
-					if item.type == 'bre' and item.audio
-						breSrc = item.audio
-						$('.dictionaries-tooltip .fairydict-pron-audio-bre').attr('data-mp3', breSrc)
-
-				utils.send 'play audios', { ameSrc, breSrc, checkSetting: true}
-		
-		handlePlainResult = (res) ->
-			html = ''
-			res = if Array.isArray(res) then res else [res]
-			for item in res 
-				html += renderQueryResult item
-		
-				if item?.prons?.length and item.w
-
-					if item.prons.some (v)->['US', 'UK'].includes(v.symbol)
-						getEnglishPronSymbol item.w 
-
-					if item.prons.some (v)->['bre', 'ame'].includes(v.type) 
-						getEnglishPronAudio item.w 
-			
-			if html 
-				$('.dictionaries-tooltip').fadeIn('slow')
-				$('.dictionaries-tooltip .fairydict-spinner').hide()
-				$('.dictionaries-tooltip .dictionaries-tooltip-content').append(html)
-			else 
-				plainQuerying = null
-				$('.dictionaries-tooltip').fadeOut().hide()
-
-			return html
 
 		handleLookupByMouse = (event, text)->
 			return unless text
@@ -464,35 +262,6 @@ run = () =>
 					sc: document.title
 				})
 
-			# floating definition
-			text = await utils.send 'check text supported', { w: text }
-			return unless text
-
-			# highlight selected words is a special feature
-			# even if the floating definition is turned off, still highlight can be working.
-			if setting.markWords and !setting.enableMarkWordsSK1
-					highlight(setting.markColor) 
-
-			if setting.enablePlainLookup && text != plainQuerying
-				if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
-					clickInside = $('.dictionaries-tooltip').has(event.target).length
-
-					$('.dictionaries-tooltip').fadeIn('slow')
-					$('.dictionaries-tooltip .fairydict-spinner').show()
-					$('.dictionaries-tooltip .dictionaries-tooltip-content').empty()
-
-					unless clickInside
-						setupPlainContentPosition(event)
-
-					plainQuerying = text
-
-					isOk = await utils.send 'look up plain', {
-						means: 'mouse',
-						sentence,
-						w: text,
-						s: location.href,
-						sc: document.title
-					},  handlePlainResult
 
 	utils.listenToBackground 'get info before open dict', (request, sender, sendResponse)->
 		try 
