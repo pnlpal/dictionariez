@@ -99,7 +99,7 @@ initHistory = () ->
                     utils.send 'remove history', { w: rowsData.map((item) -> item.w) }
                     rows.remove().draw()
 
-        },{
+        }, {
             extend: 'csv',
             extension: '.csv',
             bom: true,
@@ -110,12 +110,6 @@ initHistory = () ->
                 columns: ['w:name', 'r:name', 'sentence:name', 's:name', 't:name'],
                 orthogonal: 'download'
             }
-        }, {
-            text: 'Start Anki Study',
-            className: 'btn btn-success',
-            action: () ->
-                href = 'https://ankiuser.net/study/'
-                window.open(href, '_blank')
         }],
         order: [[4, 'desc']],
         columns: [
