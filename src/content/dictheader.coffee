@@ -160,13 +160,8 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
         if request.type == 'look up result'
             $scope.querying = false
-            $scope.word = request.word
-            $scope._lastQueryWord = request.word
             $scope.windowUrl = $sce.trustAsResourceUrl(request.windowUrl) if request.windowUrl
-            $scope.$apply()
-
-            if (request.dictName and request.dictName != $scope.currentDictName)
-                initDict()
+            initDict()
 
         $scope.$apply()
 
