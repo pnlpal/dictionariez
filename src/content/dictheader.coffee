@@ -172,6 +172,9 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope._lastQueryWord = request.word
             $scope.windowUrl = $sce.trustAsResourceUrl(request.windowUrl) if request.windowUrl
             $scope.$apply()
+            
+            if (request.dictName and request.dictName != $scope.currentDictName)
+                initDict()
 
         $scope.$apply()
 
