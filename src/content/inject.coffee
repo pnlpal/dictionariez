@@ -519,7 +519,7 @@ run = () =>
 			}
 		})
 
-if !window.dictionariezInjected 
+if !window.sidePalInjected 
 	run()
-	window.dictionariezInjected = true
+	window.sidePalInjected = true
 
