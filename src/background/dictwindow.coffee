@@ -55,7 +55,9 @@ export default {
                 w = await readClipboard(sender.tab)
 
             if w 
-                if w.split(/\s/).length > 3 and @dictName?.toLowerCase().indexOf('translate') == -1
+                if w.split(/\s/).length > 3 and 
+                @dictName?.toLowerCase().indexOf('translate') == -1 and 
+                @dictName?.toLowerCase().indexOf('deepl') == -1
                     return
                
             @lookup({ w: w?.trim(), s, sc, sentence, dictName })

@@ -38,5 +38,8 @@ export default [{
   "dictName": "Google Translate (Auto -> EN)", 
   "windowUrl": "https://translate.google.com/?sl=auto&tl=en&text=<word>&op=translate",
   "css":".navbar {display: none !important;}"
+}, {
+    "dictName": "DeepL (Auto -> EN)",
+    "windowUrl": "https://www.deepl.com/translator#auto/en-us/<word>"
 }
 ]
