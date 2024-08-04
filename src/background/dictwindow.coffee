@@ -35,7 +35,7 @@ export default {
         if not setting.getValue "disableContextMenu"
             chrome.contextMenus.create {
                 id: "lookup",
-                title: "Look up '%s' in dictionaries",
+                title: "Look up '%s' in SidePal",
                 contexts: ["selection"],
             }
             
