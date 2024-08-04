@@ -18,7 +18,7 @@ dictApp = angular.module('fairyDictApp', ['ui.bootstrap'])
 
 dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
     # change Bing dictionary's title
-    document.title = 'Dictionariez'
+    document.title = 'SidePal'
     baseNode = '#fairy-dict'
     $scope.initial = true
     $scope.inFrame = inFrame
