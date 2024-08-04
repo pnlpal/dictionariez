@@ -16,6 +16,7 @@ export default {
         @word = w || @word
         @sentence = sentence || @sentence
         @dictName = dictName || @dictName || setting.getValue('dictionary')
+        setting.setValue 'dictionary', @dictName
 
         if @word
             result = await dict.query(@word, @dictName) 
