@@ -47,7 +47,8 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.word = w
             $scope._lastQueryWord = $scope.word
             $scope.history = history
-            $scope.windowUrl = $sce.trustAsResourceUrl(windowUrl) if windowUrl
+            $scope.windowUrl = windowUrl if windowUrl
+            $scope.trustedWindowUrl = $sce.trustAsResourceUrl(windowUrl) if windowUrl
             $scope.$apply()
             $('#fairy-dict input.dict-input').focus()
 
@@ -58,7 +59,7 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
                 else
                     $('.starrr', baseNode).starrr({numStars: 3, rating: r})
 
-            if $scope.dictFrameIsNotLoaded 
+            if $scope.querying  
                 $scope.checkIfFrameIsLoaded()
 
     initDict()
@@ -166,11 +167,10 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
         if request.type == 'look up result'
             $scope.querying = false
-            if request.windowUrl
-                newUrl = $sce.trustAsResourceUrl(request.windowUrl)
-                if $scope.windowUrl != newUrl
-                    $scope.windowUrl = newUrl
-                    $scope.checkIfFrameIsLoaded()
+            if request.windowUrl and $scope.windowUrl != request.windowUrl
+                $scope.windowUrl = request.windowUrl
+                $scope.trustedWindowUrl = $sce.trustAsResourceUrl(request.windowUrl)
+                $scope.querying = true
 
             initDict()
             sendMessageToDictPage({ ...request,  type: 'look up in dynamic dict' })
@@ -180,6 +180,9 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
     window.addEventListener "message", (event) -> 
         if (event?.data?.type == 'injectedInDict') 
             $scope.dictFrameIsLoaded = true
+            $scope.dictFrameIsNotLoaded = false
+            $scope.querying = false
+            $scope.$apply()
     
     $scope.checkIfFrameIsLoaded = () ->
         $scope.dictFrameIsLoaded = false
