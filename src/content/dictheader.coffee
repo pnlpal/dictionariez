@@ -80,10 +80,10 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
         #     return
 
         $scope.initial = false
-        $scope.querying = true
-
+        $scope.querying = true if w
         $scope.word = w if w
-    
+        $scope.currentDictName = dictName if dictName
+
         if dictName and queryText?
             $scope.word = queryText || $scope._lastQueryWord
 
