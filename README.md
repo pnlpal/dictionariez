@@ -11,6 +11,8 @@ A browser extension that helps you look up words in multiple dictionaries. With 
 
 - [Download the crx file](build.crx)
 
+- [SidePal on Chrome](https://chromewebstore.google.com/detail/sidepal-your-language-and/oildocdoabpmedpnpefhccjdjghdggbl)
+
 - Android: Install [Kiwi] or [Flow] to use Dictionariez on cellphone.
 
 # TL;DR
