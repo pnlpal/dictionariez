@@ -179,7 +179,7 @@ export default {
     dictWindows: [],
 
     lookup: ({ w, s, sc, sentence, languagePrompt, screen } = {}) ->
-        storage.addHistory { w, s, sc, sentence } if w and s  # ignore lookup from options page
+        storage.addHistory { w, s, sc, sentence } if w and s and w.split(/\s/).length <= 3  # ignore lookup from options page
         
         if @dictWindows.length
             result = null
@@ -325,7 +325,7 @@ export default {
                 next = await storage.getNext(w, true)
                 w = next?.w 
                 sentence = next?.sentence
-            else if w
+            else if w and w.split(/\s/).length <= 3
                 storage.addHistory { w, sentence }
 
             if request.newDictWindow
