@@ -6,7 +6,7 @@ chatgptDefault = {
     "windowUrl": "https://chatgpt.com",
     "css": "body {margin-top: 50px !important;}",
     "inputSelector": "main form textarea",
-    "submitButtonSelector": "main form button[data-testid='send-button']"
+    "submitButtonSelector": "main form button[data-testid='send-button'], main form button[data-testid='stop-button']"
 }
 
 export default {
