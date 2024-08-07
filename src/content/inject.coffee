@@ -153,7 +153,7 @@ run = () =>
 
 		# 对 mouseup 事件做一个延时处理，
 		# 	# 以避免取消选中后getSelection依然能获得文字。
-		$(document).on 'mouseup', debounce(((e) -> handleMouseUp(e)), 100)
+		$(document).on 'mouseup', debounce(((e) -> handleMouseUp(e)), 100, {leading: true})
 		$(document).on 'touchstart', debounce(((e) -> 
 			try 
 				await utils.checkInTime (() -> window.getSelection()?.getRangeAt(0)?.toString()), 3000
