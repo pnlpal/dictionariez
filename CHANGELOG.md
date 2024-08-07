@@ -1,3 +1,12 @@
+# v5.1.3 Aug 07, 2024 
+- No save translation sentence(> 3 words) esp on Google translate.
+- Refresh(focus) all opened dicts even when open a new dict.
+- Fix looping the previous property when there is only one word in history.
+- Fix the options page on small screens like macbook air.
+- Fix some styles for thefreedictionary, urban, and merriamwebster.
+- Fix chatgpt button selector so that it could stop responding.
+- Fix looking up through context menu in pdf, issue#136.
+
 # v5.1.2 Aug 01, 2024
 - Auto focus on the search input on the dict 
 
