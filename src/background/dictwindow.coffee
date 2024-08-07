@@ -286,16 +286,15 @@ export default {
             if !w 
                 w = await readClipboard(sender.tab)
 
+            result = await @lookup({ w: w?.trim(), s, sc, sentence })
+
             if newDictWindow 
                 targetWin = @create({ dictName })
                 result = await targetWin.lookup(w || @dictWindows[0].word, sentence)
 
             else if dictName # only change the main window or in new window.
                 result = await @mainDictWindow().lookup(w?.trim(), sentence, null, dictName)
-
-            else  # This is more likely to happen.
-                result = await @lookup({ w: w?.trim(), s, sc, sentence })
-
+                
             @saveInStorage()
             return result
 
