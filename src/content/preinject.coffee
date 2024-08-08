@@ -8,5 +8,9 @@ chrome.runtime.sendMessage {
 		if res.dict?.resources?.styles?
 			for style in res.dict.resources.styles
 				require("./css/#{style}")
-		
+		if res.dict?.css
+			style = document.createElement('style')
+			style.innerHTML = res.dict.css
+			document.head.appendChild(style)
+
 		require('./scrollbar.less')
