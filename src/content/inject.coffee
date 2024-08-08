@@ -23,12 +23,8 @@ run = () =>
 	}, (res) ->
 		# console.log "injected response", res
 		if res?.isInDict
-			if res.dict?.css
-				$('head').append('<style type="text/css">' + res.dict.css + '</style>')
-			
 			isInDict = true
 			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict }, $)
-
 			window.top.postMessage { type: 'injectedInDict' }, '*'
 
 	chrome.runtime.sendMessage {
