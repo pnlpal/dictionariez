@@ -27,7 +27,7 @@ export default {
     checkTypeOfSupport: (w) ->
         w = w.trim()
         return unless w
-        return if w.split(/\s/).length > 3
+        return if utils.isSentence(w)
 
         # ignore one or two punctuation signs in the end
         w = w.replace(/[,:;'"-?!.]{1,2}$/, '')

@@ -521,7 +521,6 @@ run = () =>
 			sentence = null
 		
 		word = window.getSelection().toString().trim()
-		word = '' if word.split(/\s/).length > 3
 
 		sendResponse({
 			w: word,
