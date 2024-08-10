@@ -11,17 +11,18 @@ async function doQuery(w, sentence, languagePrompt, dict) {
   await utils.promisifiedTimeout(500);
 
   const prompt =
-    sentence && dict.chatgptPromptWithContext
-      ? dict.chatgptPromptWithContext
+    sentence && (dict.chatgptPromptWithContext || dict.promptWithContext)
+      ? (dict.chatgptPromptWithContext || dict.promptWithContext)
           .replaceAll("<word>", w)
           .replaceAll("<sentence>", sentence)
           .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "")
-      : dict.chatgptPrompt
+      : (dict.chatgptPrompt || dict.prompt)
           .replaceAll("<word>", w)
           .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "");
 
   const textarea = document.querySelector(dict.inputSelector);
-  if (dict.isRichEditor) {
+  const isRichEditor = dict.isRichEditor || textarea.contentEditable === "true";
+  if (isRichEditor) {
     textarea.innerHTML = `<p>${prompt}</p>`;
   } else {
     textarea.value = prompt;
@@ -45,7 +46,7 @@ async function doQuery(w, sentence, languagePrompt, dict) {
   while (maxLoops--) {
     await utils.promisifiedTimeout(500);
 
-    const inputValue = dict.isRichEditor ? textarea.innerHTML : textarea.value;
+    const inputValue = isRichEditor ? textarea.innerHTML : textarea.value;
     if (inputValue.includes(prompt)) {
       triggerClick();
     } else {
