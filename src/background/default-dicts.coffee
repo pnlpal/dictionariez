@@ -60,6 +60,14 @@ export default [{
         styles: ['wiktionary.less']
     }
 }, {
+    "dictName": "Gemini Definition",
+    "prompt": "Give me the full definitions of \"<word>\"<language>, if possible try to include IPA, definitions each with at least two examples, etymology, conjugations, related words with explanations etc. And make a pretty output with formatting like bold, italics etc.",
+    "promptWithContext": "Give me the full definitions of \"<word>\"<language>, which is used in the context \"<sentence>\", if possible try to include IPA, definitions each with at least two examples, etymology, conjugations, related words with explanations etc. And make a pretty output with formatting like bold, italics etc.",
+    "windowUrl": "https://gemini.google.com/app",
+    "inputSelector": "chat-window .textarea[contenteditable]",
+    "isRichEditor": true, 
+    "submitButtonSelector": "chat-window button.send-button"
+}, {
   "dictName": "Google Image",
   "windowUrl": "https://www.google.com/search?tbm=isch&q=<word>",
   "css": "c-wiz[jsdata='deferred-i3']>div:first-child {display: none;} body {margin-top: 50px !important;}"
