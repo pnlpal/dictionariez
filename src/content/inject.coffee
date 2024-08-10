@@ -266,9 +266,7 @@ run = () =>
 			sentence = null
 		
 		word = window.getSelection().toString().trim()
-		word = '' if word.split(/\s/).length > 3
-
-		console.log "get info before open dict", word, sentence, window
+		word = '' if utils.isSentence(w)
 
 		sendResponse({
 			w: word,

@@ -11,7 +11,7 @@ export default {
     dictName: '',
 
     lookup: ({ w, s, sc, sentence, languagePrompt, screen, dictName } = {}) ->
-        storage.addHistory { w, s, sc, sentence } if w and s and w.split(/\s/).length <= 3  # ignore lookup from options page
+        storage.addHistory { w, s, sc, sentence } if w and s and (not utils.isSentence(w))  # ignore lookup from options page
 
         @word = w || @word
         @sentence = sentence || @sentence
@@ -55,7 +55,7 @@ export default {
                 w = await readClipboard(sender.tab)
 
             if w 
-                if w.split(/\s/).length > 3 and 
+                if utils.isSentence(w) and 
                 @dictName?.toLowerCase().indexOf('translate') == -1 and 
                 @dictName?.toLowerCase().indexOf('deepl') == -1 and 
                 @dictName?.toLowerCase().indexOf('chatgpt') == -1
@@ -89,7 +89,7 @@ export default {
                 next = await storage.getNext(w, true)
                 w = next?.w 
                 sentence = next?.sentence
-            else if w and w.split(/\s/).length <= 3
+            else if w and (not utils.isSentence(w))
                 storage.addHistory { w, sentence } 
 
             return @lookup({ w, sentence, languagePrompt, dictName })

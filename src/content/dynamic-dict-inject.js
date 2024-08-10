@@ -14,17 +14,16 @@ async function doQuery(w, sentence, languagePrompt, dict) {
     dict.translationPrompt ||
     'Translate this text, keep it simple, clear and natural: "<word>"';
 
-  const prompt =
-    w.split(/\s/).length > 3
-      ? translationPrompt.replaceAll("<word>", w)
-      : sentence && (dict.chatgptPromptWithContext || dict.promptWithContext)
-      ? (dict.chatgptPromptWithContext || dict.promptWithContext)
-          .replaceAll("<word>", w)
-          .replaceAll("<sentence>", sentence)
-          .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "")
-      : (dict.chatgptPrompt || dict.prompt)
-          .replaceAll("<word>", w)
-          .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "");
+  const prompt = utils.isSentence(w)
+    ? translationPrompt.replaceAll("<word>", w)
+    : sentence && (dict.chatgptPromptWithContext || dict.promptWithContext)
+    ? (dict.chatgptPromptWithContext || dict.promptWithContext)
+        .replaceAll("<word>", w)
+        .replaceAll("<sentence>", sentence)
+        .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "")
+    : (dict.chatgptPrompt || dict.prompt)
+        .replaceAll("<word>", w)
+        .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "");
 
   const textarea = document.querySelector(dict.inputSelector);
   const isRichEditor = dict.isRichEditor || textarea.contentEditable === "true";
