@@ -82,8 +82,20 @@ export async function initOnLoadDynamicDict({ word, sentence, dict }, $) {
 
     fixQueryingOnEnterForChatGPT(dict);
 
+    let lastWord = word;
+    let lastSentence = sentence;
+
     window.addEventListener("message", (event) => {
       if (event.data.type === "look up in dynamic dict") {
+        if (
+          lastWord === event.data.word &&
+          lastSentence === event.data.sentence
+        ) {
+          return;
+        }
+        lastWord = event.data.word;
+        lastSentence = event.data.sentence;
+
         doQuery(
           event.data.word,
           event.data.sentence,
