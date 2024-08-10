@@ -57,7 +57,8 @@ export default {
             if w 
                 if w.split(/\s/).length > 3 and 
                 @dictName?.toLowerCase().indexOf('translate') == -1 and 
-                @dictName?.toLowerCase().indexOf('deepl') == -1
+                @dictName?.toLowerCase().indexOf('deepl') == -1 and 
+                @dictName?.toLowerCase().indexOf('chatgpt') == -1
                     return
                
             @lookup({ w: w?.trim(), s, sc, sentence, dictName })

@@ -10,8 +10,14 @@ async function doQuery(w, sentence, languagePrompt, dict) {
   );
   await utils.promisifiedTimeout(500);
 
+  const translationPrompt =
+    dict.translationPrompt ||
+    'Translate this text, keep it simple, clear and natural: "<word>"';
+
   const prompt =
-    sentence && (dict.chatgptPromptWithContext || dict.promptWithContext)
+    w.split(/\s/).length > 3
+      ? translationPrompt.replaceAll("<word>", w)
+      : sentence && (dict.chatgptPromptWithContext || dict.promptWithContext)
       ? (dict.chatgptPromptWithContext || dict.promptWithContext)
           .replaceAll("<word>", w)
           .replaceAll("<sentence>", sentence)
