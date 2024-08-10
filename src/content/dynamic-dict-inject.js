@@ -82,7 +82,14 @@ export async function initOnLoadDynamicDict({ word, sentence, dict }, $) {
 
     fixQueryingOnEnterForChatGPT(dict);
 
+    let lastWord = word;
+    let lastSentence = sentence;
+
     utils.listenToBackground("querying", (request) => {
+      if (request.text === lastWord && request.sentence === lastSentence) {
+        return;
+      }
+
       doQuery(request.text, request.sentence, request.languagePrompt, dict);
     });
   }
