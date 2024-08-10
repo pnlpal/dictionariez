@@ -21,21 +21,37 @@ async function doQuery(w, sentence, languagePrompt, dict) {
           .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "");
 
   const textarea = document.querySelector(dict.inputSelector);
-  // var nativeTextAreaValueSetter = Object.getOwnPropertyDescriptor(
-  //   window.HTMLTextAreaElement.prototype,
-  //   "value"
-  // ).set;
-  // nativeTextAreaValueSetter.call(textarea, prompt);
-  textarea.value = prompt;
+  if (dict.isRichEditor) {
+    textarea.innerHTML = `<p>${prompt}</p>`;
+  } else {
+    textarea.value = prompt;
+  }
 
   await utils.promisifiedTimeout(200);
 
   const event = new Event("input", { bubbles: true });
   textarea.dispatchEvent(event);
 
-  const btn = document.querySelector(dict.submitButtonSelector);
-  btn.removeAttribute("disabled");
-  btn.click();
+  const triggerClick = () => {
+    const btn = document.querySelector(dict.submitButtonSelector);
+    btn.removeAttribute("disabled");
+    btn.click();
+  };
+
+  triggerClick();
+
+  // For gemini and claude, when the previous query is still responding, it needs double(or even more) clicks to stop the previous query first then send the request.
+  let maxLoops = 5;
+  while (maxLoops--) {
+    await utils.promisifiedTimeout(500);
+
+    const inputValue = dict.isRichEditor ? textarea.innerHTML : textarea.value;
+    if (inputValue.includes(prompt)) {
+      triggerClick();
+    } else {
+      break;
+    }
+  }
 }
 
 async function fixQueryingOnEnterForChatGPT(dict) {
