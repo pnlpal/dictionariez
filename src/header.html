@@ -17,7 +17,8 @@
           class="btn-group history"
           uib-dropdown
           keyboard-nav
-          on-toggle="toggleDropdown(open)"
+          is-open="isHistoryDropdownOpen"
+          on-toggle="toggleHistoryDropdown(open)"
         >
           <button
             id="history-btn"
@@ -28,7 +29,12 @@
           >
             {{ previous.w }}
           </button>
-          <button type="button" class="btn btn-default" uib-dropdown-toggle>
+          <button
+            type="button"
+            class="btn btn-default"
+            uib-dropdown-toggle
+            ng-mouseenter="toggleHistoryDropdown(true)"
+          >
             <i class="fa fa-history fa-lg" aria-hidden="true"></i>
             <span class="sr-only">History</span>
           </button>
@@ -113,7 +119,9 @@
             class="btn-group"
             uib-dropdown
             keyboard-nav
-            on-toggle="toggleDropdown(open)"
+            on-toggle="toggleDictDropdown(open)"
+            is-open="isDictDropdownOpen"
+            ng-mouseenter="toggleDictDropdown(true)"
           >
             <button
               uib-dropdown-toggle
@@ -165,7 +173,10 @@
         </div>
       </div>
 
-      <div class="form-group search-group">
+      <div
+        class="form-group search-group"
+        ng-mouseenter="isHistoryDropdownOpen = isDictDropdownOpen = false"
+      >
         <div
           class="search-wrapper pull-left"
           keyboard-nav
