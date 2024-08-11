@@ -1,7 +1,16 @@
 import utils from "utils";
 
 async function doQuery(w, sentence, languagePrompt, dict) {
-  if (!w) return;
+  if (!w || !dict.inputSelector) return;
+  if (
+    w === localStorage.lastWord &&
+    (sentence || "") === localStorage.lastSentence
+  ) {
+    return;
+  }
+
+  localStorage.lastWord = w;
+  localStorage.lastSentence = sentence || "";
 
   await utils.checkInTime(
     () =>
@@ -21,16 +30,16 @@ async function doQuery(w, sentence, languagePrompt, dict) {
         .replaceAll("<word>", w)
         .replaceAll("<sentence>", sentence)
         .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "")
-    : (dict.chatgptPrompt || dict.prompt)
+    : (dict.chatgptPrompt || dict.prompt || "")
         .replaceAll("<word>", w)
         .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "");
 
   const textarea = document.querySelector(dict.inputSelector);
   const isRichEditor = dict.isRichEditor || textarea.contentEditable === "true";
   if (isRichEditor) {
-    textarea.innerHTML = `<p>${prompt}</p>`;
+    textarea.innerHTML = `<p>${prompt || w}</p>`;
   } else {
-    textarea.value = prompt;
+    textarea.value = prompt || w;
   }
 
   await utils.promisifiedTimeout(200);
@@ -82,14 +91,7 @@ export async function initOnLoadDynamicDict({ word, sentence, dict }, $) {
 
     fixQueryingOnEnterForChatGPT(dict);
 
-    let lastWord = word;
-    let lastSentence = sentence;
-
     utils.listenToBackground("querying", (request) => {
-      if (request.text === lastWord && request.sentence === lastSentence) {
-        return;
-      }
-
       doQuery(request.text, request.sentence, request.languagePrompt, dict);
     });
   }
