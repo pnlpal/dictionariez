@@ -103,12 +103,22 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             newDictWindow 
         })
 
+    sendMessageToDictPage = (message) ->
+        document.getElementById('dict-result')?.contentWindow.postMessage(message, '*')
+    
     $scope.toggleDropdown = (open) ->
         if $scope.inFrame
             window.top.postMessage { type: 'toggleDropdown', open }, '*'
 
-    sendMessageToDictPage = (message) ->
-        document.getElementById('dict-result')?.contentWindow.postMessage(message, '*')
+    $scope.toggleHistoryDropdown = (open) ->
+        $scope.isHistoryDropdownOpen = open
+        if $scope.inFrame
+            window.top.postMessage { type: 'toggleDropdown', open }, '*'
+
+    $scope.toggleDictDropdown = (open, event) ->
+        $scope.isDictDropdownOpen = open
+        if $scope.inFrame
+            window.top.postMessage { type: 'toggleDropdown', open }, '*'
 
     
     parseAutocomplete = (html) ->
@@ -163,10 +173,15 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
         $scope.$apply()
     
     window.addEventListener "message", (event) -> 
-        if (event?.data?.type == 'injectedInDict') 
+        if event.data?.type == 'injectedInDict'
             $scope.dictFrameIsLoaded = true
             $scope.dictFrameIsNotLoaded = false
             $scope.querying = false
+            $scope.$apply()
+        
+        if event.data?.type == 'toggleDropdown'
+            $scope.isHistoryDropdownOpen = event.data.open
+            $scope.isDictDropdownOpen = event.data.open
             $scope.$apply()
     
     $scope.checkIfFrameIsLoaded = () ->
