@@ -1,3 +1,11 @@
+# v5.1.4 Aug 11, 2024
+* Inject css for dict sooner.
+* Use ChatGPT, Gemini and Claude for translation too.
+* Auto fill word for websites not accepting word query in their url, such as Aryanpour.com. issue#135
+* Auto open the dropdown list when mouse hovered on it. issue#134
+* Fix sentence checking for CJK languages.
+* Fix duplicate lookups on ChatGPT and other AIs.
+
 # v5.1.3 Aug 07, 2024 
 - No save translation sentence(> 3 words) esp on Google translate.
 - Refresh(focus) all opened dicts even when open a new dict.
