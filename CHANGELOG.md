@@ -2,6 +2,7 @@
 * Inject css for dict sooner.
 * Use ChatGPT for translation too.
 * Auto fill word for websites not accepting word query in their url, such as Aryanpour.com.
+* Auto open the dropdown list when mouse hovered on it.
 * Fix sentence checking for CJK languages.
 * Fix duplicate lookups on ChatGPT.
 
