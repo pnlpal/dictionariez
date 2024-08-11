@@ -1,6 +1,7 @@
 # v1.0.1 Aug 10, 2024
 * Inject css for dict sooner.
 * Use ChatGPT for translation too.
+* Auto fill word for websites not accepting word query in their url, such as Aryanpour.com.
 * Fix sentence checking for CJK languages.
 * Fix duplicate lookups on ChatGPT.
 
