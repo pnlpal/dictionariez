@@ -114,12 +114,11 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         $scope.isHistoryDropdownOpen = open
         if $scope.inFrame
             window.top.postMessage { type: 'toggleDropdown', open }, '*'
-
-    $scope.toggleDictDropdown = (open, event) ->
+    
+    $scope.toggleDictDropdown = (open) ->
         $scope.isDictDropdownOpen = open
         if $scope.inFrame
             window.top.postMessage { type: 'toggleDropdown', open }, '*'
-
     
     parseAutocomplete = (html) ->
         return [] unless html

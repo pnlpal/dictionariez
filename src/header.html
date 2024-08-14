@@ -43,6 +43,7 @@
             uib-dropdown-menu
             role="menu"
             aria-labelledby="history-btn"
+            ng-mouseleave="toggleHistoryDropdown(false)"
           >
             <li role="menuitem" ng-repeat="item in history track by $index">
               <a
@@ -139,6 +140,7 @@
               class="dropdown-menu dict-list pull-right"
               role="menu"
               aria-labelledby="dropdownMenu1"
+              ng-mouseleave="toggleDictDropdown(false)"
             >
               <li role="menuitem" ng-repeat="dict in allDicts">
                 <a
