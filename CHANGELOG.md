@@ -1,3 +1,7 @@
+# v5.1.5 Aug 28, 2024
+* Auto close the dropdown menu when mouse moved out. issues#137
+* Open share page when update.
+
 # v5.1.4 Aug 11, 2024
 * Inject css for dict sooner.
 * Use ChatGPT, Gemini and Claude for translation too.
