@@ -29,7 +29,7 @@ const initPromises = (async function () {
 chrome.runtime.onInstalled.addListener(function (details) {
   const manifestData = chrome.runtime.getManifest();
   if (
-    [chrome.runtime.OnInstalledReason.INSTALL].includes(details.reason) &&
+    [chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason) &&
     details.previousVersion != manifestData.version
   ) {
     chrome.tabs.create({
