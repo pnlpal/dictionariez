@@ -14,8 +14,6 @@ import highlight from './editable-highlight'
 
 import './card-iframe.coffee'
 import './pnlpal-inject.coffee'
-import { initCaptionzInjection } from  './captionz-inject.coffee'
-import { initYtbInjection } from './ytb-inject.js'
 import { initOnLoadDynamicDict } from './dynamic-dict-inject.js'
 import {
   getSentenceFromSelection
@@ -25,8 +23,6 @@ import initLookupParser from './lookup-parser.js'
 import { initClipboardReader } from './read-clipboard.coffee'
 
 run = () =>
-	initYtbInjection()
-	initCaptionzInjection()
 	initAnkiInjection()
 	initLookupParser()
 	initClipboardReader()

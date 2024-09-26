@@ -32,17 +32,8 @@ shareOnPnlpal = (title, link) ->
             left: Math.round(popupLeft)
         }
 
-openYtbOnCaptionz = (link) ->
-    url = "https://pnlpal.dev/cats-love-youtube?link="+encodeURIComponent(link)
-
-    chrome.tabs.create {
-        url
-    }
-
-
 export default {
     shareOnPnlpal,
-    openYtbOnCaptionz,
     init: () ->
         if not setting.getValue "disableSharePnlpal"
             chrome.contextMenus.create {
@@ -50,24 +41,8 @@ export default {
                 title: "Share with pals",
                 contexts: ["page"],
             }
-
-        if not setting.getValue "disableYtbCaptionz"
-            chrome.contextMenus.create {
-                id: "open-ytb-video-on-captionz",
-                title: "Watch this video on CatsLoveYouTube",
-                contexts: ["link"],
-                targetUrlPatterns: [
-                    "https://www.youtube.com/watch*"
-                ]
-            }
             
         message.on 'share with pals', ({ title, link })->
             shareOnPnlpal title, link
 
-        message.on 'setting of ytb captionz', () ->
-            return { disableYtbCaptionz: setting.getValue("disableYtbCaptionz") }
-
-        message.on 'open ytb video on captionz', ({ link })->
-            if link.startsWith "https://www.youtube.com/watch"
-                openYtbOnCaptionz link 
 }

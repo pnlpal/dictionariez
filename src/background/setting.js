@@ -22,7 +22,6 @@ export default {
     disableWikipediaCard: false,
     minimalCards: "",
     disableContextMenu: false,
-    disableYtbCaptionz: false,
     disableSharePnlpal: false,
 
     enableSelectionOnMouseMove: true,
