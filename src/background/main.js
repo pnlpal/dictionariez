@@ -6,7 +6,6 @@ import "./auto-complete.coffee";
 import lookup from "./plain-lookup.coffee";
 import speak from "./speak.coffee";
 import ankiWindow from "./ankiwindow.coffee";
-import pnlpal from "./pnlpal.coffee";
 import message from "./message.js";
 import readClipboard from "./clipboard.coffee";
 
@@ -18,7 +17,6 @@ const initPromises = (async function () {
   await ankiWindow.init();
   await lookup.init();
   await speak.init();
-  await pnlpal.init();
 
   global.dw = dw;
   global.storage = storage;
@@ -104,8 +102,5 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
         });
       }
     );
-  }
-  if (info.menuItemId === "share-with-pals") {
-    pnlpal.shareOnPnlpal(tab.title, tab.url);
   }
 });
