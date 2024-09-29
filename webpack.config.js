@@ -165,6 +165,13 @@ var options = {
                 "fonts/*",
               ];
             }
+            if (env.NODE_ENV === "development") {
+              if (env.BROWSER === "Firefox") {
+                json.web_accessible_resources.push("*.js.map");
+              } else {
+                json.web_accessible_resources[0].resources.push("*.js.map");
+              }
+            }
 
             return Buffer.from(JSON.stringify(json));
           },
