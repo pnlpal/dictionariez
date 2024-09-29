@@ -8,6 +8,7 @@ import speak from "./speak.coffee";
 import ankiWindow from "./ankiwindow.coffee";
 import message from "./message.js";
 import readClipboard from "./clipboard.coffee";
+import pnlpal from "./pnlpal.coffee";
 
 const initPromises = (async function () {
   await setting.init();
@@ -17,6 +18,7 @@ const initPromises = (async function () {
   await ankiWindow.init();
   await lookup.init();
   await speak.init();
+  await pnlpal.init();
 
   global.dw = dw;
   global.storage = storage;
@@ -117,5 +119,8 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
         });
       }
     );
+  }
+  if (info.menuItemId === "open-ytb-video-on-captionz") {
+    pnlpal.openYtbOnCaptionz(info.linkUrl);
   }
 });
