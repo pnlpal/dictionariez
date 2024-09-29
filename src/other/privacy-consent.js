@@ -22,7 +22,7 @@ acceptBtn.onclick = function () {
     key: "privacyConsent",
     value: "v1",
   });
-  window.close();
+  location.pathname = "/share.html";
 };
 
 // When the user clicks on decline button, prompt the user for confirmation

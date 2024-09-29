@@ -26,6 +26,11 @@ const initPromises = (async function () {
 
 chrome.runtime.onInstalled.addListener(async function (details) {
   const manifestData = chrome.runtime.getManifest();
+  if (process.env.UNIT_TEST === "true")
+    chrome.tabs.create({
+      url: chrome.runtime.getURL("test.html"),
+    });
+
   if (
     [
       chrome.runtime.OnInstalledReason.UPDATE,
@@ -33,10 +38,12 @@ chrome.runtime.onInstalled.addListener(async function (details) {
     ].includes(details.reason)
   ) {
     await initPromises;
-    if (!setting.getValue("privacyConsent"))
+    if (!setting.getValue("privacyConsent")) {
       chrome.tabs.create({
         url: chrome.runtime.getURL("privacy-consent.html"),
       });
+      return;
+    }
   }
   if (
     [chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason) &&
@@ -46,10 +53,6 @@ chrome.runtime.onInstalled.addListener(async function (details) {
       url: chrome.runtime.getURL("share.html"),
     });
   }
-  if (process.env.UNIT_TEST === "true")
-    chrome.tabs.create({
-      url: chrome.runtime.getURL("test.html"),
-    });
 });
 
 chrome.runtime.onMessage.addListener(function (...args) {
