@@ -12,11 +12,7 @@ async function doQuery(w, sentence, languagePrompt, dict) {
   localStorage.lastWord = w;
   localStorage.lastSentence = sentence || "";
 
-  await utils.checkInTime(
-    () =>
-      document.querySelector(dict.inputSelector) &&
-      document.querySelector(dict.submitButtonSelector)
-  );
+  await utils.checkInTime(() => document.querySelector(dict.inputSelector));
   await utils.promisifiedTimeout(500);
 
   const translationPrompt =
