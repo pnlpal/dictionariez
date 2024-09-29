@@ -5,7 +5,7 @@ import defaultDicts from "./default-dicts.coffee"
 chatgptDefault = {
     "windowUrl": "https://chatgpt.com",
     "css": "body {margin-top: 50px !important;}",
-    "inputSelector": "main form textarea",
+    "inputSelector": "main form div[contenteditable]",
     "submitButtonSelector": "main form button[data-testid='send-button'], main form button[data-testid='stop-button']"
 }
 
@@ -82,6 +82,9 @@ export default {
             # fix old settings
             if d.windowUrl == 'https://chat.openai.com' || d.submitButtonSelector == "main form button.mb-1"
                 Object.assign d, chatgptDefault
+            if d.windowUrl == 'https://chatgpt.com' and d.inputSelector == 'main form textarea'
+                Object.assign d, chatgptDefault
+                
 
         @allDicts = allDicts   
 
