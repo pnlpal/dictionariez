@@ -1,3 +1,10 @@
+# v5.2.0 Sep 29, 2024
+* Address the privacy policy and require user consent at the beging of INSTALL or UPDATE this plugin as Firefox required. 
+* Removed the functionality of CatsLoveYoutube as it might violate user privacy. 
+* Removed the functionality of ShareWithPals as it might violate user privacy. 
+* Fix the dict of ChatGPT.
+* Fix the dict of Claude.   
+
 # v5.1.5 Aug 28, 2024
 * Auto close the dropdown menu when mouse moved out. issues#137
 * Open share page when update.
