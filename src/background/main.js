@@ -24,8 +24,20 @@ const initPromises = (async function () {
   global.setting = setting;
 })();
 
-chrome.runtime.onInstalled.addListener(function (details) {
+chrome.runtime.onInstalled.addListener(async function (details) {
   const manifestData = chrome.runtime.getManifest();
+  if (
+    [
+      chrome.runtime.OnInstalledReason.UPDATE,
+      chrome.runtime.OnInstalledReason.INSTALL,
+    ].includes(details.reason)
+  ) {
+    await initPromises;
+    if (!setting.getValue("privacyConsent"))
+      chrome.tabs.create({
+        url: chrome.runtime.getURL("privacy-consent.html"),
+      });
+  }
   if (
     [chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason) &&
     details.previousVersion != manifestData.version

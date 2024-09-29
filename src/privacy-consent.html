@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Consent</title>
+    <style>
+      /* Basic styling for the modal */
+
+      .header {
+        text-align: center;
+        p {
+          font-size: 16px;
+          a {
+            vertical-align: middle;
+          }
+        }
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        font-size: 16px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 220px;
+      }
+      .modal-content {
+        background-color: #fff;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        width: 50%;
+        max-width: 400px;
+        text-align: center;
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #declineBtn {
+        background-color: #f44336;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>
+        <!-- http://patorjk.com/software/taag/#p=display&h=1&v=1&f=Swan&t=Dictionariez -->
+        <pre class="ascii-title">
+.--.        .                                    
+|   : o    _|_   o                    o          
+|   | .  .-.|    .  .-. .--. .-.  .--..  .-. ---.
+|   ; | (   |    | (   )|  |(   ) |   | (.-'  .' 
+'--'-' `-`-'`-'-' `-`-' '  `-`-'`-' -' `-`--''---
+							</pre
+        >
+      </h1>
+      <p>One app to rule them all.</p>
+
+      <p>
+        Thanks for using. It's open-sourced on
+        <a
+          href="https://github.com/pnlpal/dictionariez"
+          target="_blank"
+          class="link-github"
+          ><i class="fa fa-github fa-2x" title="Bla Bla, it's Open Source."></i
+        ></a>
+      </p>
+    </div>
+
+    <!-- The Modal -->
+    <div id="privacyModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>
+          Your privacy is important to us. At present, we do not collect any
+          personal data. All your search history and settings are stored locally
+          in your browser and synchronized using the browser's built-in sync
+          service. In the future, if you choose to register and use our premium
+          features, we will collect only the necessary information required to
+          deliver those services.
+        </p>
+        <button id="acceptBtn">Accept</button>
+        <button id="declineBtn">Decline and Uninstall</button>
+      </div>
+    </div>
+  </body>
+</html>

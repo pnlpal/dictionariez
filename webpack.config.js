@@ -49,6 +49,7 @@ var options = {
     share: path.join(__dirname, "src", "other", "share.coffee"),
     speak: path.join(__dirname, "src", "other", "speak.js"),
     test: path.join(__dirname, "src", "other", "test.js"),
+    privacy: path.join(__dirname, "src", "other", "privacy-consent.js"),
   },
   chromeExtensionBoilerplate: {
     enableBackgroundAutoReload: true, // always true when "enableContentScriptsAutoReload" is set true
@@ -178,6 +179,12 @@ var options = {
           force: true,
         },
       ],
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "src", "privacy-consent.html"),
+      filename: "privacy-consent.html",
+      chunks: ["privacy"],
+      cache: false,
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "src", "options.html"),

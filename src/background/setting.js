@@ -68,6 +68,8 @@ export default {
     nextHistoryKey: "ArrowRight",
     dictionary: "",
     enableReadClipboard: false,
+
+    privacyConsent: "",
   },
 
   init() {
