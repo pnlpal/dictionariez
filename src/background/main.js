@@ -120,7 +120,4 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
       }
     );
   }
-  if (info.menuItemId === "open-ytb-video-on-captionz") {
-    pnlpal.openYtbOnCaptionz(info.linkUrl);
-  }
 });
