@@ -1,3 +1,7 @@
+# v1.1.0 Oct 06, 2024
+* Fix loading dicts such as ChatGPT, vocabulary.com, deepl etc.
+* Auto close dropdown menu when mouse moveout.
+
 # v1.0.1 Aug 10, 2024
 * Inject css for dict sooner.
 * Use ChatGPT for translation too.
