@@ -21,8 +21,10 @@ const initPromises = (async function () {
 chrome.runtime.onInstalled.addListener(function (details) {
   const manifestData = chrome.runtime.getManifest();
   if (
-    [chrome.runtime.OnInstalledReason.INSTALL].includes(details.reason) &&
-    details.previousVersion != manifestData.version
+    [
+      chrome.runtime.OnInstalledReason.INSTALL,
+      chrome.runtime.OnInstalledReason.UPDATE,
+    ].includes(details.reason)
   ) {
     chrome.tabs.create({
       url: chrome.runtime.getURL("share.html"),
