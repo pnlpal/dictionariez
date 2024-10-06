@@ -95,3 +95,24 @@ chrome.sidePanel.setOptions({
 // chrome.sidePanel
 //   .setPanelBehavior({ openPanelOnActionClick: false })
 //   .catch((error) => console.error(error));
+
+const RULE = {
+  id: 1,
+  condition: {
+    initiatorDomains: [chrome.runtime.id],
+    requestDomains: ["chatgpt.com", "vocabulary.com", "deepl.com"],
+    resourceTypes: ["sub_frame"],
+  },
+  action: {
+    type: "modifyHeaders",
+    responseHeaders: [
+      { header: "X-Frame-Options", operation: "remove" },
+      { header: "Frame-Options", operation: "remove" },
+      { header: "Content-Security-Policy", operation: "remove" },
+    ],
+  },
+};
+chrome.declarativeNetRequest.updateDynamicRules({
+  removeRuleIds: [RULE.id],
+  addRules: [RULE],
+});

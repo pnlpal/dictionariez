@@ -2,10 +2,22 @@
   "manifest_version": 3,
   "minimum_chrome_version": "116",
   "name": "SidePal: Your Language and AI Ally in Side Panel",
-  "permissions": ["activeTab", "tabs", "storage", "contextMenus", "sidePanel"],
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "storage",
+    "contextMenus",
+    "sidePanel",
+    "declarativeNetRequestWithHostAccess"
+  ],
   "background": {
     "service_worker": "background.bundle.js"
   },
+  "host_permissions": [
+    "https://*.chatgpt.com/",
+    "https://*.vocabulary.com/",
+    "https://*.deepl.com/"
+  ],
   "content_scripts": [
     {
       "js": ["preinject.bundle.js"],
