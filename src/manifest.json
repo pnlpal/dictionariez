@@ -16,7 +16,13 @@
   "host_permissions": [
     "https://*.chatgpt.com/",
     "https://*.vocabulary.com/",
-    "https://*.deepl.com/"
+    "https://*.deepl.com/",
+    "https://*.ldoceonline.com/",
+    "https://*.collinsdictionary.com/",
+    "https://*.cambridge.org/",
+    "https://youglish.com/",
+    "https://*.reverso.net/",
+    "https://glosbe.com/"
   ],
   "content_scripts": [
     {

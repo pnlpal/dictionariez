@@ -100,7 +100,17 @@ const RULE = {
   id: 1,
   condition: {
     initiatorDomains: [chrome.runtime.id],
-    requestDomains: ["chatgpt.com", "vocabulary.com", "deepl.com"],
+    requestDomains: [
+      "chatgpt.com",
+      "vocabulary.com",
+      "deepl.com",
+      "ldoceonline.com",
+      "collinsdictionary.com",
+      "cambridge.org",
+      "youglish.com",
+      "reverso.net",
+      "glosbe.com",
+    ],
     resourceTypes: ["sub_frame"],
   },
   action: {
