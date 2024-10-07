@@ -147,7 +147,7 @@ var options = {
               json.name = "SidePal: Your Language Ally in Side Panel";
               json["browser_specific_settings"] = {
                 gecko: {
-                  id: "revir.qing@gmail.com",
+                  id: "revir.qing_sidepal@gmail.com",
                   strict_min_version: "109.0",
                 },
               };
