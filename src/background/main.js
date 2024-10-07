@@ -44,7 +44,11 @@ chrome.runtime.onMessage.addListener(function (...args) {
 (chrome.action || chrome.browserAction).onClicked.addListener(async function (
   tab
 ) {
-  chrome.sidePanel.open({ tabId: tab.id });
+  if (chrome.sidePanel) {
+    chrome.sidePanel.open({ tabId: tab.id });
+  } else {
+    browser.sidebarAction.open();
+  }
 
   await initPromises;
 
@@ -69,7 +73,11 @@ chrome.runtime.onMessage.addListener(function (...args) {
 });
 
 chrome.contextMenus.onClicked.addListener(async function (info, tab) {
-  chrome.sidePanel.open({ tabId: tab.id });
+  if (chrome.sidePanel) {
+    chrome.sidePanel.open({ tabId: tab.id });
+  } else {
+    browser.sidebarAction.open();
+  }
 
   await initPromises;
   if (info.menuItemId === "lookup") {
@@ -89,9 +97,12 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
   }
 });
 
-chrome.sidePanel.setOptions({
-  path: "dict.html",
-});
+if (chrome.sidePanel) {
+  // Chrome
+  chrome.sidePanel.setOptions({
+    path: "dict.html",
+  });
+}
 
 // // Allows users to open the side panel by clicking on the action toolbar icon
 // chrome.sidePanel
@@ -101,7 +112,7 @@ chrome.sidePanel.setOptions({
 const RULE = {
   id: 1,
   condition: {
-    initiatorDomains: [chrome.runtime.id],
+    initiatorDomains: [chrome.sidePanel ? chrome.runtime.id : location.host],
     requestDomains: [
       "chatgpt.com",
       "vocabulary.com",

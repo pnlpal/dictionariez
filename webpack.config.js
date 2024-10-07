@@ -154,7 +154,7 @@ var options = {
                 scripts: ["background.bundle.js"],
               };
               json.permissions = json.permissions.filter(
-                (x) => x !== "offscreen"
+                (x) => x !== "offscreen" && x !== "sidePanel"
               );
               json.permissions.push("<all_urls>");
               json["web_accessible_resources"] = [
@@ -163,6 +163,11 @@ var options = {
                 "*.html",
                 "fonts/*",
               ];
+              json["sidebar_action"] = {
+                default_title: "SidePal",
+                default_panel: "dict.html",
+                default_icon: "images/library-128.png",
+              };
             }
 
             return Buffer.from(JSON.stringify(json));
