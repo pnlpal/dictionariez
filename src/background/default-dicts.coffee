@@ -59,8 +59,5 @@ export default [{
     "resources": {
         styles: ['thefreedictionary.less']
     }
-}, {
-    "dictName": "DeepL (Auto -> EN)",
-    "windowUrl": "https://www.deepl.com/translator#auto/en-us/<word>"
 }
 ]
