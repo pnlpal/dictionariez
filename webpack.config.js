@@ -144,6 +144,7 @@ var options = {
               delete json.action;
               delete json.minimum_chrome_version;
               delete json.host_permissions;
+              json.name = "SidePal: Your Language Ally in Side Panel";
               json["browser_specific_settings"] = {
                 gecko: {
                   id: "revir.qing@gmail.com",
