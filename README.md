@@ -5,13 +5,14 @@ A browser extension that helps you look up words in multiple dictionaries. With 
 # Install
 
 - [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc)
-- [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/)
+-  ~~[firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/)~~
 
 - [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/dictionaries-one-to-rule/jdgglojanbnghagoeffacmjodigadoof)
 
 - [Download the crx file](build.crx)
 
 - [SidePal on Chrome](https://chromewebstore.google.com/detail/sidepal-your-language-and/oildocdoabpmedpnpefhccjdjghdggbl)
+- [SidePal on Firefox](https://addons.mozilla.org/en-US/firefox/addon/sidepal/)
 
 - Android: Install [Kiwi] or [Flow] to use Dictionariez on cellphone.
 
