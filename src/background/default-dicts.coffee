@@ -59,5 +59,10 @@ export default [{
     "resources": {
         styles: ['thefreedictionary.less']
     }
+}, {
+    "dictName": "DeepL Translator (Auto - English)",
+    "windowUrl": "https://www.deepl.com/en/translator/en-us/",
+    "inputSelector": "#textareasContainer div[contenteditable]",
+    "translationPrompt": "<word>"
 }
 ]

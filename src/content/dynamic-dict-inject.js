@@ -44,6 +44,7 @@ async function doQuery(w, sentence, languagePrompt, dict) {
   textarea.dispatchEvent(event);
 
   const triggerClick = () => {
+    if (!dict.submitButtonSelector) return;
     const btn = document.querySelector(dict.submitButtonSelector);
     btn.removeAttribute("disabled");
     btn.click();
