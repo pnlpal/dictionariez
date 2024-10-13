@@ -132,7 +132,10 @@ export default {
                 and (not url.includes('sv.wiktionary.org')) \
                 and @checkLangs(w).includes('Swedish')) 
                 return @parse(tabId, w, 'wiktionary', prevResult, url.replace('en.wiktionary.org', 'sv.wiktionary.org'))
-
+            
+            else if tname == 'google'
+                return @parse(tabId, w, 'wiktionary', prevResult)
+            
             console.error "Failed to parse: ", url, err.message
             return prevResult
 
