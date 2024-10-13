@@ -1,3 +1,6 @@
+# v5.2.2 Oct 13, 2024
+- Fix styles on the privacy notice page.
+
 # v5.2.1 Oct 13, 2024
 - Support more dynamic dicts like textpixie.
 - Rewrite the privacy notice according to Firefox's review.
