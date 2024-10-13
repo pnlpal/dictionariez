@@ -36,8 +36,8 @@
         border-radius: 10px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         width: 50%;
-        max-width: 400px;
-        h2 {
+        max-width: 480px;
+        .center {
           text-align: center;
         }
       }
@@ -90,7 +90,7 @@
     <div id="privacyModal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Privacy Notice</h2>
+        <h2 class="center">Privacy Notice</h2>
         <p>
           Your privacy is our priority. Dictionriez collects data in the
           following ways:
@@ -119,8 +119,10 @@
           parties.
         </p>
 
-        <button id="acceptBtn">Agree to continue</button>
-        <button id="declineBtn">Decline and Uninstall</button>
+        <div class="center">
+          <button id="acceptBtn">Agree to continue</button>
+          <button id="declineBtn">Decline and Uninstall</button>
+        </div>
       </div>
     </div>
   </body>

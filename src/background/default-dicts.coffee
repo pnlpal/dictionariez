@@ -60,13 +60,12 @@ export default [{
         styles: ['wiktionary.less']
     }
 }, {
-    "dictName": "Gemini Definition",
-    "prompt": "Give me the full definitions of \"<word>\"<language>, if possible try to include IPA, definitions each with at least two examples, etymology, conjugations, related words with explanations etc. And make a pretty output with formatting like bold, italics etc.",
-    "promptWithContext": "Give me the full definitions of \"<word>\"<language>, which is used in the context \"<sentence>\", if possible try to include IPA, definitions each with at least two examples, etymology, conjugations, related words with explanations etc. And make a pretty output with formatting like bold, italics etc.",
-    "windowUrl": "https://gemini.google.com/app",
-    "inputSelector": "chat-window .textarea[contenteditable]",
-    "isRichEditor": true, 
-    "submitButtonSelector": "chat-window button.send-button"
+    "dictName": "TextPixie (AI translator)",
+    "windowUrl": "https://textpixie.com/",
+    "translationPrompt": "<word>",
+    "inputSelector": ".flex textarea",
+    "submitButtonSelector": ".flex button[data-action]:not([disabled])",
+    "css": ".pt-8 .container {display: none;} body {margin-top: -80px;} .flex textarea {min-height: 120px !important;}"
 }, {
   "dictName": "Google Image",
   "windowUrl": "https://www.google.com/search?tbm=isch&q=<word>",
