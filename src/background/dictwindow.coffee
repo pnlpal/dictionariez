@@ -101,8 +101,9 @@ class DictWindow
             height = screenHeight if height > screenHeight
 
         if !@wid
-            try 
-                win = await browser.windows.create({
+            try     
+                createFn = if utils.isFirefox() then browser.windows.create else chrome.windows.create
+                win = await createFn({
                     url: url or @defaultUrl,
                     type: 'popup',
                     width: width,

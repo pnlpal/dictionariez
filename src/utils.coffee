@@ -199,6 +199,7 @@ export default {
         text[0].toUpperCase() + text.slice(1)
     
     isMobile: () -> /Mobi|Android/i.test(navigator.userAgent)
+    isFirefox: () -> @getBrowserName() == 'Firefox'
 
     getBrowserName: () ->
         if navigator.userAgent.toLowerCase().indexOf('firefox') > -1
