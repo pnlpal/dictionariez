@@ -240,7 +240,7 @@ if (env.NODE_ENV === "development") {
 } else {
   console.log("Run in prod");
   options.optimization = {
-    minimize: true,
+    minimize: env.BROWSER === "Firefox" ? false : true,
     minimizer: [
       new TerserPlugin({
         extractComments: false,
