@@ -102,7 +102,7 @@ class DictWindow
 
         if !@wid
             try 
-                win = await chrome.windows.create({
+                win = await browser.windows.create({
                     url: url or @defaultUrl,
                     type: 'popup',
                     width: width,
@@ -115,15 +115,6 @@ class DictWindow
                 @wid = win.id
                 @tid = win.tabs[win.tabs.length-1].id
                 @url = url or @defaultUrl
-
-                # Firefox can't remember top and left, opera can't remember at all.
-                if navigator.userAgent.toLowerCase().indexOf('firefox') > -1 or navigator.userAgent.toLowerCase().indexOf('opr') > -1
-                    chrome.windows.update @wid, {
-                        width: width,
-                        height: height,
-                        top: if utils.isLinux() then top - screenAvailTop else top, # fix top value on Linux, may be chrome's bug.
-                        left: if utils.isLinux() then left - screenAvailLeft else left, # fix left value on Linux, may be chrome's bug.
-                    }
 
             catch err
                 console.error("[dictWindow] create popup window error: ", err)
