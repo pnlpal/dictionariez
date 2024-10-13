@@ -44,24 +44,35 @@ async function doQuery(w, sentence, languagePrompt, dict) {
   textarea.dispatchEvent(event);
 
   const triggerClick = () => {
+    if (!dict.submitButtonSelector) return;
     const btn = document.querySelector(dict.submitButtonSelector);
     btn.removeAttribute("disabled");
     btn.click();
   };
 
+  const triggerMoreClicks = async () => {
+    let maxLoops = 5;
+    while (maxLoops--) {
+      await utils.promisifiedTimeout(500);
+
+      const inputValue = isRichEditor ? textarea.innerHTML : textarea.value;
+      if (inputValue.includes(prompt)) {
+        triggerClick();
+      } else {
+        break;
+      }
+    }
+  };
+
   triggerClick();
 
   // For gemini and claude, when the previous query is still responding, it needs double(or even more) clicks to stop the previous query first then send the request.
-  let maxLoops = 5;
-  while (maxLoops--) {
-    await utils.promisifiedTimeout(500);
-
-    const inputValue = isRichEditor ? textarea.innerHTML : textarea.value;
-    if (inputValue.includes(prompt)) {
-      triggerClick();
-    } else {
-      break;
-    }
+  if (
+    dict.doubleClickForMore ||
+    dict.windowUrl.includes("gemini") ||
+    dict.windowUrl.includes("claude")
+  ) {
+    triggerMoreClicks();
   }
 }
 
