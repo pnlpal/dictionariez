@@ -3,7 +3,7 @@ import angular from 'angular'
 import utils from "utils"
 import debounce from 'lodash/debounce'
 
-# import '../needsharebutton.min.js'
+# import '../needsharebutton.js'
 import 'angular-ui-bootstrap'
 
 import('bootstrap/dist/css/bootstrap.min.css')
@@ -33,8 +33,8 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
 
     if not $scope.inFrame
         import(### webpackChunkName: "github-badge"  ###'../vendor/github-badge.js')
-        import(### webpackChunkName: "needsharebutton-js"  ###'../vendor/needsharebutton.min.js')
-        import(### webpackChunkName: "needsharebutton-css"  ###'../vendor/needsharebutton.min.css')
+        import(### webpackChunkName: "needsharebutton-js"  ###'../vendor/needsharebutton.js')
+        import(### webpackChunkName: "needsharebutton-css"  ###'../vendor/needsharebutton.css')
 
     initDict = () ->
         chrome.runtime.sendMessage {

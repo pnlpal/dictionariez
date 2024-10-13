@@ -1,13 +1,12 @@
 
-# import '../needsharebutton.min.css'
 import angular from 'angular'
 import utils from "utils"
 import debounce from 'lodash/debounce'
 
 import 'angular-ui-bootstrap'
 
-import '../vendor/needsharebutton.min.js'
-import '../vendor/needsharebutton.min.css'
+import '../vendor/needsharebutton.js'
+import '../vendor/needsharebutton.css'
 
 import(### webpackChunkName: "github-badge"  ###'../vendor/github-badge.js')
 import(### webpackChunkName: "inject-options"  ###'../content/inject.coffee')

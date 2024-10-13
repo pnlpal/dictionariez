@@ -1,3 +1,3 @@
-import '../vendor/needsharebutton.min.js'
-import '../vendor/needsharebutton.min.css'
+import '../vendor/needsharebutton.js'
+import '../vendor/needsharebutton.css'
 import '../vendor/github-badge.js'

@@ -30,10 +30,6 @@ if (fileSystem.existsSync(secretsPath)) {
   alias["secrets"] = secretsPath;
 }
 alias.utils = path.join(__dirname, "src/utils.coffee");
-// alias['needsharebutton.m ``in.js'] = path.join(__dirname, 'needsharebutton.min.js');
-// alias['needsharebutton.css'] = path.join(__dirname, 'needsharebutton.css');
-// alias['font-awesome.css'] = path.join(__dirname, 'css/font-awesome.css');
-// alias['needsharebutton.css'] = path.join(__dirname, 'needsharebutton.css');
 
 var options = {
   mode: process.env.NODE_ENV || "development",
