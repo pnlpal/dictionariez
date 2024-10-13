@@ -5,7 +5,7 @@ import message from "./message.js"
 import readClipboard from "./clipboard.coffee"
 import utils from "utils"
 
-screenWidth = 1280
+screenWidth = 1080
 screenHeight = 800
 screenAvailLeft = 0
 screenAvailTop = 0
@@ -74,7 +74,7 @@ class DictWindow
         { width, height, left, top } = @getStoredPosition()
 
         # fix too small value
-        width = 580 if !width or width < 300
+        width = 580 if !width or width < 300 
         height = 600 if !height or height < 300
         
         defaultLeft = Math.round((screenWidth / 2) - (width / 2))
@@ -100,9 +100,9 @@ class DictWindow
             width = screenWidth if width > screenWidth
             height = screenHeight if height > screenHeight
 
-        return new Promise (resolve, reject) =>
-            if !@wid
-                chrome.windows.create({
+        if !@wid
+            try 
+                win = await chrome.windows.create({
                     url: url or @defaultUrl,
                     type: 'popup',
                     width: width,
@@ -110,40 +110,40 @@ class DictWindow
                     top: top, 
                     left: left, 
                     state: 'normal',
-                }, (win)=>
-                    if not win
-                        return @open(url, true) if not useDefaultPosition
-                        return reject(new Error("Failed to create the popup lookup window!")) 
+                })
 
-                    @wid = win.id
-                    @tid = win.tabs[win.tabs.length-1].id
-                    @url = url or @defaultUrl
-                    resolve()
+                @wid = win.id
+                @tid = win.tabs[win.tabs.length-1].id
+                @url = url or @defaultUrl
 
-                    # Firefox can't remember top and left, opera can't remember at all.
-                    if navigator.userAgent.toLowerCase().indexOf('firefox') > -1 or navigator.userAgent.toLowerCase().indexOf('opr') > -1
-                        chrome.windows.update @wid, {
-                            width: width,
-                            height: height,
-                            top: if utils.isLinux() then top - screenAvailTop else top, # fix top value on Linux, may be chrome's bug.
-                            left: if utils.isLinux() then left - screenAvailLeft else left, # fix left value on Linux, may be chrome's bug.
-                        }
-                )
-            else
-                try 
-                    await @focus()
-                    if url and url != @url
-                        chrome.tabs.update(@tid, {
-                            url: url
-                        })
-                        @url = url
-                
-                        resolve()
-                    else 
-                        resolve({noUpdate: true})
-                catch err
-                    console.error("[dictWindow] open error: ", err)
-                    reject(err)
+                # Firefox can't remember top and left, opera can't remember at all.
+                if navigator.userAgent.toLowerCase().indexOf('firefox') > -1 or navigator.userAgent.toLowerCase().indexOf('opr') > -1
+                    chrome.windows.update @wid, {
+                        width: width,
+                        height: height,
+                        top: if utils.isLinux() then top - screenAvailTop else top, # fix top value on Linux, may be chrome's bug.
+                        left: if utils.isLinux() then left - screenAvailLeft else left, # fix left value on Linux, may be chrome's bug.
+                    }
+
+            catch err
+                console.error("[dictWindow] create popup window error: ", err)
+                return @open(url, true) if not useDefaultPosition
+                throw new Error("Failed to create the popup lookup window!")
+            
+        else
+            try 
+                await @focus()
+                if url and url != @url
+                    chrome.tabs.update(@tid, {
+                        url: url
+                    })
+                    @url = url
+        
+                else 
+                    return ({noUpdate: true})
+            catch err
+                console.error("[dictWindow] open error: ", err)
+                throw err
                     
     focus: () ->
         chrome.windows.update(@wid, {
@@ -189,7 +189,7 @@ export default {
             @saveInStorage()
             return result
         else 
-            if (screen?.width and screen?.height) 
+            if (screen?.width > 1080 and screen?.height > 800) 
                 screenWidth = screen.with 
                 screenHeight = screen.height
                 screenAvailLeft = screen.availLeft
