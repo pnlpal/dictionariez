@@ -1,3 +1,10 @@
+# v5.2.1 Oct 13, 2024
+- Support more dynamic dicts like textpixie.
+- Rewrite the privacy notice according to Firefox's review.
+- Try to use wiktionary when google dict is unavailable. 
+- Remove the window move for Firefox as Firefox has fixed the issue of setting window's position.
+- Close the dropdown list when query word from suggestions.
+
 # v5.2.0 Sep 29, 2024
 * Address the privacy policy and require user consent at the beging of INSTALL or UPDATE this plugin as Firefox required. 
 * Removed the functionality of CatsLoveYoutube as it might violate user privacy. 
