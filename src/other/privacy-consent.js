@@ -1,5 +1,3 @@
-import("../vendor/github-badge.js");
-
 // Get the modal
 const modal = document.getElementById("privacyModal");
 

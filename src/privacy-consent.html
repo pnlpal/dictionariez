@@ -27,7 +27,7 @@
         height: 100%;
         overflow: auto;
         background-color: rgba(0, 0, 0, 0.4);
-        padding-top: 200px;
+        padding-top: 90px;
       }
       .modal-content {
         background-color: #fff;
@@ -37,7 +37,9 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         width: 50%;
         max-width: 400px;
-        text-align: center;
+        h2 {
+          text-align: center;
+        }
       }
       .close {
         color: #aaa;
@@ -82,32 +84,42 @@
 							</pre
         >
       </h1>
-      <p>One app to rule them all.</p>
-
-      <p>
-        Thanks for using. It's open-sourced on
-        <a
-          href="https://github.com/pnlpal/dictionariez"
-          target="_blank"
-          class="link-github"
-          ><i class="fa fa-github fa-2x" title="Bla Bla, it's Open Source."></i
-        ></a>
-      </p>
     </div>
 
     <!-- The Modal -->
     <div id="privacyModal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
+        <h2>Privacy Notice</h2>
         <p>
-          Your privacy is important to us. At present, we do not collect any
-          personal data. All your search history and settings are stored locally
-          in your browser and synchronized using the browser's built-in sync
-          service. In the future, if you choose to register and use our premium
-          features, we will collect only the necessary information required to
-          deliver those services.
+          Your privacy is our priority. Dictionriez collects data in the
+          following ways:
         </p>
-        <button id="acceptBtn">Accept</button>
+        <ul>
+          <li>
+            <strong>Word Lookups:</strong> When you look up a word on a webpage,
+            the word and the webpage URL are stored locally in the extension for
+            providing the service. You can disable this history feature in the
+            settings.
+          </li>
+          <li>
+            <strong>Settings Storage:</strong> Your preferences are stored
+            locally in your browser.
+          </li>
+          <li>
+            <strong>Clipboard Access:</strong> If you enable the "read
+            clipboard" feature, the extension will access clipboard content for
+            word lookups.
+          </li>
+        </ul>
+        <p>
+          All data, including your search history and settings, is stored
+          locally and synchronized using your browser's built-in sync service.
+          We do not transmit your data to our servers or share it with third
+          parties.
+        </p>
+
+        <button id="acceptBtn">Agree to continue</button>
         <button id="declineBtn">Decline and Uninstall</button>
       </div>
     </div>
