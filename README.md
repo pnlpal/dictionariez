@@ -52,6 +52,7 @@ We look forward to hearing from you and helping you achieve your language learni
 2. `npm start` to start a webpack dev-server, add the `build/` directory in your browser's extension page to load the extension.
 3. To build for Firefox, please use the environment variable `BROWSER=Firefox`. So `BROWSER=Firefox npm start` will build a development version of this add-on for Firefox.
 4. `npm run build` to build the release version. The dest path is `build/`. And `BROWSER=Firefox npm run build` to build the Firefox release version.  
+5. `./pack.sh` to pack the extension to zip file. For Firefox, use `BROWSER=Firefox ./pack.sh`.
 
 # Privacy Policy
 
