@@ -1,3 +1,10 @@
+# v1.1.1 Oct 18, 2024
+* Fix and add back deepL to the default dicts.
+* Close the dropdown list when query word from suggestions.
+* Change the padding for Bing dict.
+* Fix dictName when it's restarted in the backend. 
+* Add TextPixie to default dicts.
+
 # v1.1.0 Oct 06, 2024
 * Fix loading dicts such as ChatGPT, vocabulary.com, deepl etc.
 * Auto close dropdown menu when mouse moveout.
