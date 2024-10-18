@@ -15,7 +15,7 @@ export default {
 
         @word = w || @word
         @sentence = sentence || @sentence
-        @dictName = dictName || @dictName || setting.getValue('dictionary')
+        @dictName = dictName || @dictName || setting.getValue('dictionary') || dict.allDicts[0].dictName
         setting.setValue 'dictionary', @dictName
 
         if @word
@@ -32,6 +32,8 @@ export default {
 
 
     init: () ->
+        @dictName = @dictName || setting.getValue('dictionary') || dict.allDicts[0].dictName
+        
         if not setting.getValue "disableContextMenu"
             chrome.contextMenus.create {
                 id: "lookup",
