@@ -60,6 +60,13 @@ export default [{
         styles: ['thefreedictionary.less']
     }
 }, {
+    "dictName": "TextPixie (AI translator)",
+    "windowUrl": "https://textpixie.com/",
+    "translationPrompt": "<word>",
+    "inputSelector": ".flex textarea",
+    "submitButtonSelector": ".flex button[data-action]:not([disabled])",
+    "css": ".pt-8 .container {display: none;} body {margin-top: -80px;} .flex textarea {min-height: 120px !important;}"
+}, {
     "dictName": "DeepL Translator (Auto - English)",
     "windowUrl": "https://www.deepl.com/en/translator/en-us/",
     "inputSelector": "#textareasContainer div[contenteditable]",
