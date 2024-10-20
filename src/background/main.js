@@ -47,14 +47,14 @@ chrome.runtime.onInstalled.addListener(async function (details) {
       return;
     }
   }
-  if (
-    [chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason) &&
-    details.previousVersion != manifestData.version
-  ) {
-    chrome.tabs.create({
-      url: chrome.runtime.getURL("share.html"),
-    });
-  }
+  // if (
+  //   [chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason) &&
+  //   details.previousVersion != manifestData.version
+  // ) {
+  //   chrome.tabs.create({
+  //     url: chrome.runtime.getURL("share.html"),
+  //   });
+  // }
 });
 
 chrome.runtime.onMessage.addListener(function (...args) {
