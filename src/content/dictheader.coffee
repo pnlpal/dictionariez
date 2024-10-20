@@ -235,6 +235,9 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             $scope.query({ dictNumber: parseInt(event.key.match(/\d/)[0]) })
             stop = true 
 
+        if (evt.key == 'Escape')
+            $scope.toggleDropdown false
+
         if stop
             evt.preventDefault()
             evt.stopPropagation()
