@@ -254,6 +254,9 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.query({ dictNumber: parseInt(event.key.match(/\d/)[0]) })
             stop = true 
 
+        if (evt.key == 'Escape')
+            $scope.toggleDropdown false
+
         if stop
             evt.preventDefault()
             evt.stopPropagation()
