@@ -1,3 +1,11 @@
+# v5.2.3 Oct 20, 2024
+- Increase the default dict window size.
+- Close the dropdown list when ESC is pressed.
+- No open the share page when update.
+- Add Captionz to the default dicts.
+- Update TextPixie in the defualt dicts.
+- Fix opening dict window when somehow the screenWith can be undefined. 
+
 # v5.2.2 Oct 13, 2024
 - Fix styles on the privacy notice page.
 
