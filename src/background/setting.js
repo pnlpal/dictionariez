@@ -4,12 +4,12 @@ export default {
   configCache: {
     windowLeft: undefined,
     windowTop: undefined,
-    windowWidth: 580,
-    windowHeight: 600,
+    windowWidth: 600,
+    windowHeight: 800,
     ankiLeft: undefined,
     ankiTop: undefined,
-    ankiWidth: 580,
-    ankiHeight: 700,
+    ankiWidth: 600,
+    ankiHeight: 800,
 
     markWords: false,
     markColor: "yellow",

@@ -74,8 +74,8 @@ class DictWindow
         { width, height, left, top } = @getStoredPosition()
 
         # fix too small value
-        width = 580 if !width or width < 300 
-        height = 600 if !height or height < 300
+        width = 600 if !width or width < 300 
+        height = 800 if !height or height < 300
         
         defaultLeft = Math.round((screenWidth / 2) - (width / 2))
         defaultTop = Math.round((screenHeight / 2) - (height / 2))

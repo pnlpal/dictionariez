@@ -54,20 +54,18 @@ export default [{
         styles: ['thefreedictionary.less']
     }
 }, {
-    'dictName': "Wiktionary",
-    'windowUrl': 'https://en.m.wiktionary.org/wiki/<word>',
-    "resources": {
-        styles: ['wiktionary.less']
-    }
-}, {
     "dictName": "TextPixie (AI translator)",
     "windowUrl": "https://textpixie.com/",
     "translationPrompt": "<word>",
-    "inputSelector": ".flex textarea",
-    "submitButtonSelector": ".flex button[data-action]:not([disabled])",
-    "css": ".pt-8 .container {display: none;} body {margin-top: -80px;} .flex textarea {min-height: 120px !important;}"
+    "inputSelector": "#trtxt-inputTextArea",
+    "submitButtonSelector": "#trtxt-translateBtn",
+    "css": "#global-nav, #page-heading, #howto-section, #benefits-section, #user-cases-section, #faq-section, #popular-langpairs-section, #global-footer { display: none;} #converter-tabbar { padding-top: 32px; }"
 }, {
   "dictName": "Google Image",
   "windowUrl": "https://www.google.com/search?tbm=isch&q=<word>",
   "css": "c-wiz[jsdata='deferred-i3']>div:first-child {display: none;} body {margin-top: 50px !important;}"
+}, {
+    "dictName": "Captionz (examples on YouTube)",
+    "windowUrl": "https://pnlpal.dev/captionz-ii/?NO_REDIRECT=true",
+    "inputSelector": ".search-container input.text-search"
 }]
