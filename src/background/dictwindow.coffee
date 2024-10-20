@@ -79,8 +79,8 @@ class DictWindow
         
         defaultLeft = Math.round((screenWidth / 2) - (width / 2))
         defaultTop = Math.round((screenHeight / 2) - (height / 2))
-        left = defaultLeft if isNaN left
-        top = defaultTop if isNaN top 
+        left = (defaultLeft || 600) if isNaN left
+        top = (defaultTop || 300) if isNaN top 
 
         # setup the other cloned window 
         if @windex > 0
