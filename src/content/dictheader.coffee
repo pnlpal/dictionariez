@@ -103,6 +103,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             newDictWindow 
         }, (data) ->
             $scope.querying = false
+            $scope._lastQueryWord = $scope.word
             if data?.noUpdate
                 # current dict might be changed
                 initDict()
@@ -148,15 +149,26 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         return list
 
     $scope.autocomplete = debounce (() ->
+        cancelAutoCompleteIfQuerying = () ->
+            if $scope.querying or $scope.word == $scope._lastQueryWord
+                $scope.autocompletes = []
+                $scope.toggleDropdown(false)
+                $scope.$apply()
+                return true
+            return false
+
+        return if cancelAutoCompleteIfQuerying()
         text = $scope.word.trim()
         if text
             {results, html} = await utils.send 'autocomplete', { text }
+            if cancelAutoCompleteIfQuerying()
+                return
             $scope.autocompletes = results.concat parseAutocomplete(html)
         else
             $scope.autocompletes = []
 
-        $scope.$apply()
         $scope.toggleDropdown($scope.autocompletes.length > 0)
+        $scope.$apply()
 
         # get phonetic of word in autocompletes
         $scope.autocompleteCounter ?= 0
@@ -166,6 +178,9 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         _counter = $scope.autocompleteCounter
         for item in $scope.autocompletes or []
             if item.w and _counter == $scope.autocompleteCounter and item.w.match(/\w+/g)[0] == item.w and $dropdown.hasClass('open')
+                if cancelAutoCompleteIfQuerying()
+                    return
+
                 { ame } = await utils.send 'look up phonetic', { w: item.w, _counter }
                 item.ame = ame
                 $scope.$apply()
