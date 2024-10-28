@@ -112,15 +112,28 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
         if $scope.inFrame
             window.top.postMessage { type: 'toggleDropdown', open }, '*'
 
-    $scope.toggleHistoryDropdown = (open) ->
-        $scope.isHistoryDropdownOpen = open
-        if $scope.inFrame
-            window.top.postMessage { type: 'toggleDropdown', open }, '*'
+    $scope.scheduleDropdown = (dropdownType, open) ->
+        clearTimeout $scope.openDropdownTimer
+        clearTimeout $scope.closeDropdownTimer 
+
+        $scope.openDropdownTimer = setTimeout (() -> 
+            if dropdownType == 'history'
+                $scope.isHistoryDropdownOpen = open;
+            else if dropdownType == 'dict'
+                $scope.isDictDropdownOpen = open;
+            window.top.postMessage { type: 'toggleDropdown', open: open }, '*'
+            $scope.$apply()
+        ), 400
     
-    $scope.toggleDictDropdown = (open) ->
-        $scope.isDictDropdownOpen = open
-        if $scope.inFrame
-            window.top.postMessage { type: 'toggleDropdown', open }, '*'
+    $scope.scheduleCloseDropdown = () ->
+        clearTimeout $scope.closeDropdownTimer 
+        clearTimeout $scope.openDropdownTimer
+        $scope.closeDropdownTimer = setTimeout (() -> 
+            $scope.isHistoryDropdownOpen = false
+            $scope.isDictDropdownOpen = false
+            window.top.postMessage { type: 'toggleDropdown', open: false }, '*'
+            $scope.$apply()
+        ), 200
     
     parseAutocomplete = (html) ->
         return [] unless html
