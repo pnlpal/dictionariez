@@ -148,15 +148,27 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
         return list
 
     $scope.autocomplete = debounce (() ->
+        cancelAutoCompleteIfQuerying = () ->
+            if $scope.querying or $scope.word == $scope._lastQueryWord
+                $scope.autocompletes = []
+                $scope.toggleDropdown(false)
+                $scope.$apply()
+                return true
+            return false
+
+        return if cancelAutoCompleteIfQuerying()
         text = $scope.word.trim()
         if text
             {results, html} = await utils.send 'autocomplete', { text }
+            if cancelAutoCompleteIfQuerying()
+                return
             $scope.autocompletes = results.concat parseAutocomplete(html)
         else
             $scope.autocompletes = []
 
-        $scope.$apply()
         $scope.toggleDropdown($scope.autocompletes.length > 0)
+        $scope.$apply()
+
     ), 500
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
@@ -166,6 +178,7 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.word = request.text
             setTimeout (() -> 
                 $scope.querying = false
+                $scope._lastQueryWord = $scope.word
                 $('#fairy-dict input.dict-input').focus()
                 $scope.$apply()
             ), 1000
@@ -176,6 +189,7 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
 
         if request.type == 'look up result'
             $scope.querying = false
+            $scope._lastQueryWord = $scope.word
             if request.windowUrl and $scope.windowUrl != request.windowUrl
                 $scope.windowUrl = request.windowUrl
                 $scope.trustedWindowUrl = $sce.trustAsResourceUrl(request.windowUrl)
