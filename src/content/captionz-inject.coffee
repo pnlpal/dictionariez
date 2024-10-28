@@ -3,7 +3,7 @@ import utils from "utils"
 
 setYtb = () => 
     return if $('#captionz-ytb-btn').length > 0
-    sbtn = '<a href="" id="captionz-ytb-btn">Watch on CatsLoveYouTube</a>'
+    sbtn = '<a href="" id="captionz-ytb-btn">Watch on Captionz</a>'
 
     await utils.checkInTime () ->
         $('#above-the-fold').length > 0

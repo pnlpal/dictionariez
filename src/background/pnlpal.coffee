@@ -33,7 +33,7 @@ shareOnPnlpal = (title, link) ->
         }
 
 openYtbOnCaptionz = (link) ->
-    url = "https://pnlpal.dev/cats-love-youtube?link="+encodeURIComponent(link)
+    url = "https://pnlpal.dev/captionz?link="+encodeURIComponent(link)
 
     chrome.tabs.create {
         url
