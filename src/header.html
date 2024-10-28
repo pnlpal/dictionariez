@@ -18,7 +18,7 @@
           uib-dropdown
           keyboard-nav
           is-open="isHistoryDropdownOpen"
-          on-toggle="toggleHistoryDropdown(open)"
+          on-toggle="scheduleDropdown('history', open)"
         >
           <button
             id="history-btn"
@@ -33,7 +33,8 @@
             type="button"
             class="btn btn-default"
             uib-dropdown-toggle
-            ng-mouseenter="toggleHistoryDropdown(true)"
+            ng-mouseenter="scheduleDropdown('history', true)"
+            ng-mouseleave="scheduleCloseDropdown()"
           >
             <i class="fa fa-history fa-lg" aria-hidden="true"></i>
             <span class="sr-only">History</span>
@@ -43,7 +44,8 @@
             uib-dropdown-menu
             role="menu"
             aria-labelledby="history-btn"
-            ng-mouseleave="toggleHistoryDropdown(false)"
+            ng-mouseenter="scheduleDropdown('history', true)"
+            ng-mouseleave="scheduleCloseDropdown()"
           >
             <li role="menuitem" ng-repeat="item in history track by $index">
               <a
@@ -120,9 +122,10 @@
             class="btn-group"
             uib-dropdown
             keyboard-nav
-            on-toggle="toggleDictDropdown(open)"
+            on-toggle="scheduleDropdown('dict', open)"
             is-open="isDictDropdownOpen"
-            ng-mouseenter="toggleDictDropdown(true)"
+            ng-mouseenter="scheduleDropdown('dict', true)"
+            ng-mouseleave="scheduleCloseDropdown()"
           >
             <button
               uib-dropdown-toggle
@@ -140,7 +143,8 @@
               class="dropdown-menu dict-list pull-right"
               role="menu"
               aria-labelledby="dropdownMenu1"
-              ng-mouseleave="toggleDictDropdown(false)"
+              ng-mouseenter="scheduleDropdown('dict', true)"
+              ng-mouseleave="scheduleCloseDropdown()"
             >
               <li role="menuitem" ng-repeat="dict in allDicts">
                 <a
