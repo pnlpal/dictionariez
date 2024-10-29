@@ -10,7 +10,7 @@ import bootoast from 'bootoast/dist/bootoast.min.js'
 version = chrome.runtime.getManifest().version
 
 bootoast.toast({
-    message: 'Bravo! You have successfully upgraded Dictionariez to v' + version,
+    message: 'Bravo! You have successfully upgraded SidePal to v' + version,
     type: 'info',
     position: 'top',
     timeout: 5,
