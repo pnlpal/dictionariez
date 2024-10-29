@@ -206,11 +206,6 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.dictFrameIsNotLoaded = false
             $scope.querying = false
             $scope.$apply()
-        
-        if event.data?.type == 'toggleDropdown'
-            $scope.isHistoryDropdownOpen = event.data.open
-            $scope.isDictDropdownOpen = event.data.open
-            $scope.$apply()
     
     $scope.checkIfFrameIsLoaded = () ->
         $scope.dictFrameIsLoaded = false
