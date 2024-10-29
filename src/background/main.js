@@ -19,7 +19,6 @@ const initPromises = (async function () {
 })();
 
 chrome.runtime.onInstalled.addListener(function (details) {
-  const manifestData = chrome.runtime.getManifest();
   if (
     [
       chrome.runtime.OnInstalledReason.INSTALL,

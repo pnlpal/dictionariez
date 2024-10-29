@@ -1,3 +1,9 @@
+# v1.1.2 Oct 29, 2024
+- Add a delay to toggle the dropdown lists so that it's less sensitive. 
+- No autocomplete after the word is searched.
+- Fix getting the word and it's context from iframe embeded page.
+- Fix TextPixie.
+
 # v1.1.1 Oct 18, 2024
 * Fix and add back deepL to the default dicts.
 * Close the dropdown list when query word from suggestions.
