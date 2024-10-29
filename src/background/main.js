@@ -112,10 +112,10 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
       },
       async (res) => {
         dw.lookup({
-          w: word || res?.w || (await readClipboard(tab)),
-          s: info.frameUrl || tab.url,
-          sc: tab.title,
           ...res,
+          w: word || res?.w || (await readClipboard(tab)),
+          s: res?.s || info.frameUrl || tab.url,
+          sc: res?.sc || tab.title,
         });
       }
     );
