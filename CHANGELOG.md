@@ -1,3 +1,9 @@
+# v5.2.4 Oct 29, 2024
+- CatsLoveYouTube has changed to Captionz.
+- Add a delay to toggle the dropdown lists so that it's less sensitive. 
+- No autocomplete after the word is searched.
+- Fix getting the word and it's context from iframe embeded page.
+
 # v5.2.3 Oct 20, 2024
 - Increase the default dict window size.
 - Close the dropdown list when ESC is pressed.
