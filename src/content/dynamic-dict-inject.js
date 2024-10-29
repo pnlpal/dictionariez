@@ -91,7 +91,7 @@ async function fixQueryingOnEnterForChatGPT(dict) {
 }
 
 export async function initOnLoadDynamicDict({ word, sentence, dict }, $) {
-  if (location.href.startsWith(dict.windowUrl)) {
+  if (dict.windowUrl.includes(location.origin)) {
     if (dict && word) {
       doQuery(word, sentence, "", dict);
     }
