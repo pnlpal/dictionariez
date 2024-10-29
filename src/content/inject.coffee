@@ -303,8 +303,8 @@ run = () =>
 						range.detach()
 			return
 		
-		getSentenceOfSelection = () ->
-			selection = window.getSelection()
+		getSentenceOfSelection = (window_ = window) ->
+			selection = window_.getSelection()
 			try
 				range = selection.getRangeAt(0)
 
@@ -519,26 +519,39 @@ run = () =>
 						sc: document.title
 					},  handlePlainResult
 
-	utils.listenToBackground 'get info before open dict', (request, sender, sendResponse)->
-		try 
-			sentence = getSentenceOfSelection()
-		catch
-			sentence = null
-		
-		word = window.getSelection().toString().trim()
+		utils.listenToBackground 'get info before open dict', (request, sender, sendResponse) =>
+			try 
+				sentence = getSentenceOfSelection()
+			catch
+				sentence = null
+			
+			if !sentence 
+				for frame in window.frames 
+					try 
+						sentence = getSentenceOfSelection(frame)
+						break if sentence 
+					catch
+			
+			word = window.getSelection().toString().trim()
+			if !word 
+				for frame in window.frames 
+					try 
+						word = frame.getSelection().toString().trim()
+						break if word 
+					catch
 
-		sendResponse({
-			w: word,
-			s: location.href,
-			sc: document.title,
-			sentence: sentence,
-			screen: {
-				width: screen.width,
-				height: screen.height,
-				availLeft: screen.availLeft,
-				availTop: screen.availTop
-			}
-		})
+			sendResponse({
+				w: word,
+				s: location.href,
+				sc: document.title,
+				sentence: sentence,
+				screen: {
+					width: screen.width,
+					height: screen.height,
+					availLeft: screen.availLeft,
+					availTop: screen.availTop
+				}
+			})
 
 if !window.dictionariezInjected 
 	run()
