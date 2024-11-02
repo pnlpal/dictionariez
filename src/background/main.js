@@ -27,7 +27,6 @@ const initPromises = (async function () {
 })();
 
 chrome.runtime.onInstalled.addListener(async function (details) {
-  const manifestData = chrome.runtime.getManifest();
   if (process.env.UNIT_TEST === "true")
     chrome.tabs.create({
       url: chrome.runtime.getURL("test.html"),
@@ -46,14 +45,6 @@ chrome.runtime.onInstalled.addListener(async function (details) {
       });
       return;
     }
-  }
-  if (
-    [chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason) &&
-    details.previousVersion != manifestData.version
-  ) {
-    chrome.tabs.create({
-      url: chrome.runtime.getURL("share.html"),
-    });
   }
 });
 
