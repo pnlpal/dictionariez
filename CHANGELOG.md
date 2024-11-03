@@ -1,3 +1,9 @@
+
+# v5.2.5 Nov 03, 2024
+- Not showing the share page after every update.
+- Add back the excludedSites setting so that it won't run on some websites.
+- Update the privacy notice regarding tab url.
+
 # v5.2.4 Oct 29, 2024
 - CatsLoveYouTube has changed to Captionz.
 - Add a delay to toggle the dropdown lists so that it's less sensitive. 
