@@ -32,3 +32,8 @@ declineBtn.onclick = function () {
 window.onload = function () {
   modal.style.display = "block";
 };
+
+if (!navigator.userAgent.includes("Gecko/")) {
+  // not Firefox
+  document.querySelector("#link-to-mozilla").style.display = "none";
+}
