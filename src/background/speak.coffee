@@ -30,7 +30,7 @@ setupOffscreenDocument = () ->
 export default {
     init: () ->
         message.on 'play audios', ({ ameSrc, breSrc, otherSrc, checkSetting, synthesisObj}) ->
-            if (!navigator.userAgent.includes('Gecko/')) 
+            if (!await utils.isFirefox()) 
                 await setupOffscreenDocument()
             if checkSetting 
                 if not setting.getValue 'enableAmeAudio'
@@ -38,7 +38,7 @@ export default {
                 if not setting.getValue 'enableBreAudio'
                     breSrc = null
 
-            if (!navigator.userAgent.includes('Gecko/')) 
+            if (!await utils.isFirefox()) 
                 chrome.runtime.sendMessage({
                     type: 'speak',
                     ameSrc,
@@ -48,7 +48,7 @@ export default {
                 playAudios([ameSrc, breSrc]);
             
             if otherSrc
-                if (!navigator.userAgent.includes('Gecko/')) 
+                if (!await utils.isFirefox()) 
                     chrome.runtime.sendMessage({
                         type: 'speak',
                         otherSrc 
@@ -57,7 +57,7 @@ export default {
                     playAudios([otherSrc]);
             
             if synthesisObj
-                if (!navigator.userAgent.includes('Gecko/')) 
+                if (!await utils.isFirefox()) 
                     chrome.runtime.sendMessage({
                         type: 'speak',
                         synthesisObj

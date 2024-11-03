@@ -102,7 +102,7 @@ class DictWindow
 
         if !@wid
             try     
-                createFn = if utils.isFirefox() then browser.windows.create else chrome.windows.create
+                createFn = if (await utils.isFirefox()) then browser.windows.create else chrome.windows.create
                 win = await createFn({
                     url: url or @defaultUrl,
                     type: 'popup',
