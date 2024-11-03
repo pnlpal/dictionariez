@@ -66,6 +66,6 @@ export default [{
   "css": "c-wiz[jsdata='deferred-i3']>div:first-child {display: none;} body {margin-top: 50px !important;}"
 }, {
     "dictName": "Captionz (examples on YouTube)",
-    "windowUrl": "https://pnlpal.dev/captionz-ii/?NO_REDIRECT=true&search=<word>",
+    "windowUrl": "https://pnlpal.dev/captionz-ii/?NO_REDIRECT=true",
     "inputSelector": ".search-container input.text-search"
 }]
