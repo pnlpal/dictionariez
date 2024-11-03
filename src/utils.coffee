@@ -215,7 +215,7 @@ export default {
         if navigator.userAgent.toLowerCase().indexOf('chrome') > -1
             return 'Chrome'
         
-        return 'Unkown Browser'
+        return 'Unknown Browser'
 
     loadHTML: (url, credentials='omit') ->
         @promiseInTime(fetch(url, {

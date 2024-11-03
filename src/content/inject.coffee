@@ -62,6 +62,13 @@ run = () =>
 		plainQuerying = null
 		lastAutoSelection = ''
 
+		checkExcludedSites = () ->
+			for sitePattern in setting.excludedSites.split('\n')
+				if sitePattern and location.href.match(new RegExp(sitePattern))
+					return true
+			return false
+		
+		return if checkExcludedSites()
 		await utils.promisify($(document).ready)
 
 		if document.body.isContentEditable
