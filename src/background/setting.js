@@ -68,6 +68,8 @@ export default {
     nextHistorySK1: "Alt",
     nextHistoryKey: "ArrowRight",
     dictionary: "",
+
+    excludedSites: "freecodecamp.org/",
     enableReadClipboard: false,
 
     privacyConsent: "",
