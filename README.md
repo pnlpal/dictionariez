@@ -5,7 +5,7 @@ A browser extension that helps you look up words in multiple dictionaries. With 
 # Install
 
 - [chrome web store](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc)
--  ~~[firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/)~~
+- [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/)
 
 - [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/dictionaries-one-to-rule/jdgglojanbnghagoeffacmjodigadoof)
 
