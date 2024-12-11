@@ -76,6 +76,8 @@ run = () =>
 			# See issue #45
 			return
 
+		$dictionariezTooltipContainer = if $('#dictionariez-tooltip-container').length then $('#dictionariez-tooltip-container') else $('body')
+
 		$('''
 			<div class="dictionaries-tooltip">
 				<div class="fairydict-spinner">
@@ -86,7 +88,7 @@ run = () =>
 				<div class="dictionaries-tooltip-content">
 				</div>
 			</div>
-				''').appendTo('body')
+				''').appendTo($dictionariezTooltipContainer)
 
 		setupPlainContentPosition = (e) ->
 			$el = $('.dictionaries-tooltip')
@@ -96,20 +98,20 @@ run = () =>
 			else 
 				pageX = e.changedTouches?[0].pageX
 				pageY = e.changedTouches?[0].pageY
-
+			
+			containerOffset = $dictionariezTooltipContainer.offset()
 			if $el.length and pageY
-				mousex = pageX + 20
-				mousey = pageY + 10
+				mousex = pageX - containerOffset.left + 25 + ($dictionariezTooltipContainer.data('dictionariezTooltipOffsetLeft') || 0)
+				mousey = pageY - containerOffset.top + 20 + ($dictionariezTooltipContainer.data('dictionariezTooltipOffsetTop') || 0)
 				top = mousey
 				left = mousex
 
-				# console.log e
 				# console.log top, left, window.innerHeight, window.innerWidth
 
 				# bugfix: here we can't use document.body.getBoundingClientRect()
 				# because some websites are not using body to scroll, thus there body rect is 0.
 				# for example: https://www.wired.com/story/russias-disinformation-war-is-just-getting-started/
-				rect = window.document.scrollingElement.getBoundingClientRect()
+				rect = if $('#dictionariez-tooltip-container').length then $('#dictionariez-tooltip-container')[0].getBoundingClientRect() else window.document.scrollingElement.getBoundingClientRect()
 				domW = window.innerWidth - rect.left
 				domH = window.innerHeight - rect.top
 
