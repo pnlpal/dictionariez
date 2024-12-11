@@ -28,7 +28,7 @@ export default {
         w = w.trim()
         return unless w
         return if utils.isSentence(w)
-        
+        return if utils.hasEnglish(w) && w.length == 1
         # ignore one or two punctuation signs in the end
         w = w.replace(/[,:;'"-?!.]{1,2}$/, '')
 
