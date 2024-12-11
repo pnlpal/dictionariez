@@ -4,6 +4,7 @@ import dict from "./dict.coffee"
 import message from "./message.js"
 import readClipboard from "./clipboard.coffee"
 import utils from "utils"
+import contextMenu from "./contextMenu.js"
 
 screenWidth = 1080
 screenHeight = 800
@@ -257,12 +258,7 @@ export default {
         await @restoreFromStorage()
 
         if not setting.getValue "disableContextMenu"
-            chrome.contextMenus.create {
-                id: "lookup",
-                title: "Look up '%s' in dictionaries",
-                contexts: ["selection"],
-            }
-            
+            contextMenu.createLookupItem()
 
         message.on "copy event triggered", ({s, sc, sentence}, sender) => 
             w = await readClipboard(sender.tab)

@@ -9,6 +9,7 @@ import ankiWindow from "./ankiwindow.coffee";
 import message from "./message.js";
 import readClipboard from "./clipboard.coffee";
 import pnlpal from "./pnlpal.coffee";
+import contextMenu from "./contextMenu.js";
 
 const initPromises = (async function () {
   await setting.init();
@@ -94,21 +95,5 @@ chrome.tabs.onRemoved.addListener(async function (tid) {
 
 chrome.contextMenus.onClicked.addListener(async function (info, tab) {
   await initPromises;
-  if (info.menuItemId === "lookup") {
-    const word = info.selectionText?.trim();
-    chrome.tabs.sendMessage(
-      tab.id >= 0 ? tab.id : 0, // tab.id is -1 when the context menu is clicked in a local pdf file
-      {
-        type: "get info before open dict",
-      },
-      async (res) => {
-        dw.lookup({
-          ...res,
-          w: word || res?.w || (await readClipboard(tab)),
-          s: res?.s || info.frameUrl || tab.url,
-          sc: res?.sc || tab.title,
-        });
-      }
-    );
-  }
+  contextMenu.handler(info, tab);
 });

@@ -1,3 +1,4 @@
+import contextMenu from "./contextMenu.js";
 import message from "./message.js";
 
 export default {
@@ -80,6 +81,13 @@ export default {
       return this.configCache;
     });
     message.on("save setting", (request) => {
+      if (request.key === "disableContextMenu") {
+        if (request.value) {
+          contextMenu.removeLookupItem();
+        } else {
+          contextMenu.createLookupItem();
+        }
+      }
       return this.setValue(request.key, request.value);
     });
 
