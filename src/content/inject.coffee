@@ -480,7 +480,6 @@ run = () =>
 
 		handleLookupByMouse = (event, text)->
 			return unless text
-			return if text.split(/\s/).length > 3
 
 			try 
 				sentence = getSentenceOfSelection()

@@ -149,7 +149,10 @@ export default {
         if @hasChinese(str) or @hasJapanese(str) or @hasKorean(str)
             return str.length > 4
         else 
-            str.split(/\s/).length > 3
+            simpleStopWords = ['a', 'an', 'en', 'ett', 'the', 'to', 'in', 'on', 'at', 'of', 'for', 'with', 'by', 'and', 'or', 'but', 'nor', 'so', 'yet', 'as', 'if']
+            str.split(/\s/)
+                .filter (w) -> w.length > 1 and not simpleStopWords.includes(w.toLowerCase())
+                .length > 3
 
     hasEnglish: (str) ->
         /\w/.test(str)

@@ -28,7 +28,7 @@ export default {
         w = w.trim()
         return unless w
         return if utils.isSentence(w)
-
+        
         # ignore one or two punctuation signs in the end
         w = w.replace(/[,:;'"-?!.]{1,2}$/, '')
 
