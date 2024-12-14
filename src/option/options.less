@@ -7,13 +7,13 @@ body {
   a,
   input.form-control,
   textarea.form-control,
-  button.btn,
+  button.btn-default,
   pre,
   ul.dropdown-menu,
   ul.dropdown-menu > li,
   ul.dropdown-menu > li > a,
-  .modal-content,
   .modal-header,
+  .modal-body,
   .modal-footer {
     background-color: var(--bkg-color);
     color: var(--text-color);
@@ -137,6 +137,38 @@ body {
         input {
           width: 150px;
         }
+      }
+    }
+  }
+
+  #captionz-promo-modal {
+    .modal-dialog {
+      top: 80px;
+      width: 80%;
+      .modal-header {
+        background-color: #666;
+        .avatar {
+          position: absolute;
+          margin-top: -5px;
+          img {
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+          }
+        }
+        .promo-text {
+          margin-left: 60px;
+        }
+      }
+      .modal-body {
+        background-color: white;
+        iframe {
+          border-radius: 4px;
+          overflow-y: hidden;
+        }
+      }
+      .modal-footer {
+        background-color: white;
       }
     }
   }
