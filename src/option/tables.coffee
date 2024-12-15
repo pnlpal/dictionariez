@@ -356,6 +356,7 @@ promoteCaptionz = () ->
             $('#captionz-promo-modal').modal('hide')
 
         $('#captionz-promo-modal').off('hide.bs.modal').on 'hide.bs.modal', (ev) ->
+            $('#captionz-promo-modal iframe').remove()
             if (localStorage.visitOptionsCounter > 2)
                 localStorage.hasPromotedCaptionz = true
 
