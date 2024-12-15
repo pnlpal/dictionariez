@@ -1,4 +1,12 @@
 
+# v5.3.0 Dec 15, 2024
+- Inject the lookup popover to customized container so that it's able to look up word on Captionz even in fullscreen. 
+- Add/remove the lookup item from contextmenu without needing to restart, fix issue#145.
+- Ignore stopwords when checking sentence to support phrase like "get it in the bag".
+- Remove info about dictionariez pro.
+- Ignore single letter and words contain special characters in the middle when selected.
+- Promote Captionz.
+
 # v5.2.5 Nov 03, 2024
 - Not showing the share page after every update.
 - Add back the excludedSites setting so that it won't run on some websites.
