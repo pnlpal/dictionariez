@@ -35,12 +35,11 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
                            'middleLeft', 'middleCenter', 'middleRight',
                            'bottomLeft', 'bottomCenter', 'bottomRight']
     $scope.englishLookupSources = {
-        'google': 'Google Dict',
-        'bing': 'Bing Dict',
+        'bing': 'Bing',
+        'bingCN': 'Bing Dict CN',
         'wiktionary': 'Wiktionary'
     };
     $scope.koreanLookupSources = {
-        'google': 'Google Dict',
         'wiktionary': 'Wiktionary',
         'naver': 'Naver Dict',
     }

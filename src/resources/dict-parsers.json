@@ -91,65 +91,6 @@
   "naver": {
     "url": "https://ko.dict.naver.com/api3/koko/search?query=<word>&m=pc&range=all&lang=ko"
   },
-  "google": {
-    "url": "https://www.google.com/search?hl=en-US&q=define+<word>",
-    "languages": ["German", "Spanish", "French", "Italian"],
-    "result": {
-      "w": {
-        "selector": "[data-dobid='hdw']"
-      },
-      "langSymbol": {
-        "selector": "[data-language]",
-        "attr": "data-language"
-      },
-      "prons": [
-        {
-          "symbol": {
-            "selector": ".vmod[data-topic][data-hveid]",
-            "htmlRegex": "<span>([^<>]*)</span>",
-            "regexIndex": 1
-          },
-          "type": "unknow"
-        }
-      ],
-      "defs": {
-        "groups": ".vmod>.vmod[data-topic]",
-        "result": {
-          "pos": {
-            "selector": "i"
-          },
-          "def": {
-            "selector": "[data-dobid='dfn']",
-            "toArray": true,
-            "includeArrayIndex": true
-          }
-        }
-      },
-
-      "defs2": {
-        "groups": "[data-tae]>[data-mh='-1']",
-        "result": {
-          "pos": {
-            "selector": "div"
-          },
-          "def": {
-            "selector": "ol>li",
-            "max": 2,
-            "toArray": true
-          }
-        }
-      },
-      "images": {
-        "groups": ".vmod [data-topic] g-img",
-        "result": {
-          "src": {
-            "selector": "img",
-            "attr": "title"
-          }
-        }
-      }
-    }
-  },
   "wiktionary": {
     "url": "https://en.wiktionary.org/wiki/<word>",
     "languages": [

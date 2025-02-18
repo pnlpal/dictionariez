@@ -49,11 +49,10 @@ export default {
 
     checkType: (w) ->
         if utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
-            _setting =  setting.getValue "englishLookupSource" # google, bing, wiktionary
-            return "bing" if _setting == 'google'
+            return setting.getValue "englishLookupSource" # bing, bingCN, wiktionary
 
         if utils.hasKorean(w) and setting.getValue "enableLookupKorean"
-            return setting.getValue "koreanLookupSource" # google, wiktionary, naver (korean only)
+            return setting.getValue "koreanLookupSource" # wiktionary, naver (korean only)
 
         for name, dictDesc of parserDescs
             if dictDesc.supportChinese
@@ -110,13 +109,6 @@ export default {
         dictDesc = parserDescs[tname]
         url = (url or dictDesc.url).replace('<word>', w)
 
-        # console.log "Look up #{w} from #{tname} with url: #{url}"
-
-        # special handle Chinese
-        if tname == 'google' 
-            if setting.getValue('showOtherLang')
-                url = url.replace 'hl=en-US', 'hl='+setting.getValue('otherLang')
-
         try
             if tname == "naver"
                 json = await utils.loadJson url, dictDesc.credentials
@@ -134,7 +126,7 @@ export default {
                 and @checkLangs(w).includes('Swedish')) 
                 return @parse(tabId, w, 'wiktionary', prevResult, url.replace('en.wiktionary.org', 'sv.wiktionary.org'))
             
-            else if tname == 'google'
+            else if tname == 'bing'
                 return @parse(tabId, w, 'wiktionary', prevResult)
             
             console.error "Failed to parse: ", url, err.message
@@ -152,43 +144,6 @@ export default {
             else 
                 result.prons = result.prons.filter (n)->n.type != 'pinyin'
             
-        if tname == 'google'
-            if result.w 
-                result.w = result.w.replaceAll '·', ''
-            else 
-                return @parse(tabId, w, 'wiktionary')
-            
-            if result.langSymbol == 'en'
-                result.lang = 'English'
-                setEnglishProns(result)
-                if not setting.getValue "enableLookupEnglish"
-                    result = null 
-
-            else if result.langSymbol == 'ko'
-                result.lang = 'Korean'
-                if not setting.getValue "enableLookupKorean"
-                    result = null
-
-            else if result.langSymbol
-                for lang, n of langs 
-                    if n.symbol == result?.langSymbol and result
-                        result.lang = lang 
-
-                        if @isLangDisabled(lang)
-                            result = null 
-                        else 
-                            synthesis = if n.synthesis? then n.synthesis else "#{result.langSymbol}-#{result.langSymbol.toUpperCase()}"
-                            result.prons = [{
-                                "symbol": result.langSymbol.toUpperCase(),
-                                "synthesis": synthesis
-                            }]
-
-            # parse the second language if possible.
-            possibleLangs = @checkLangs(w).filter((l) -> l != result?.lang)
-            if possibleLangs.length
-                return @parse(tabId, w, 'wiktionary', result)
-
-
         if tname == 'wiktionary'
             multipleResult = []
             if prevResult

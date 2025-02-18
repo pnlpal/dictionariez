@@ -35,8 +35,8 @@ export default {
     otherDisabledLanguages: [],
 
     enablePlainLookup: true,
-    englishLookupSource: "google", // google, bing, wiktionary
-    koreanLookupSource: "google", // google, naver, wiktionary
+    englishLookupSource: "bing", // bing, bingCN, wiktionary
+    koreanLookupSource: "naver", // naver, wiktionary
     enableAmeAudio: false,
     enableBreAudio: false,
     enableUSUKPron: false,
@@ -96,6 +96,14 @@ export default {
         if (obj && obj.config) {
           Object.assign(this.configCache, obj.config);
         }
+        //migration:
+        if (this.configCache.englishLookupSource === "google") {
+          this.configCache.englishLookupSource = "bing";
+        }
+        if (this.configCache.koreanLookupSource === "google") {
+          this.configCache.koreanLookupSource = "naver";
+        }
+        // migration done.
         resolve(this.configCache);
       });
     });
