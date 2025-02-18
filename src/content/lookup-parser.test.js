@@ -1,4 +1,7 @@
 import { parseHTML } from "./lookup-parser.js";
+import utils from "../utils.coffee";
+import parserDesc from "../resources/dict-parsers.json";
+import { expect } from "chai";
 
 describe("lookup-parser", () => {
   it("should return an empty object for empty input", () => {
@@ -248,5 +251,39 @@ describe("lookup-parser", () => {
         },
       ],
     });
+  });
+
+  it("should get and parse the word lecture from Bing", async () => {
+    const html = await utils.loadHTML(
+      "https://www.bing.com/search?q=define%20lecture"
+    );
+    const result = await parseHTML(html, parserDesc.bing.result);
+    expect(JSON.stringify(result, null, 2)).to.equal(
+      `{
+  "w": "lec·ture",
+  "prons": [
+    {
+      "symbol": "[ˈlɛktʃə]",
+      "type": "unknow"
+    }
+  ],
+  "defs": [
+    {
+      "pos": "noun",
+      "def": [
+        "an educational talk to an audience, especially one of students in a university:",
+        "a long serious speech, especially one given as a scolding or reprimand:"
+      ]
+    },
+    {
+      "pos": "verb",
+      "def": [
+        "deliver an educational lecture or lectures:",
+        "talk seriously or reprovingly to (someone):"
+      ]
+    }
+  ]
+}`
+    );
   });
 });

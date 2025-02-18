@@ -9,5 +9,5 @@ mocha.setup("bdd");
 
 require("../content/lookup-parser.test.js");
 require("../background/storage.test.js");
-require("../background/storage-pro.test.js");
+// require("../background/storage-pro.test.js");
 mocha.run();

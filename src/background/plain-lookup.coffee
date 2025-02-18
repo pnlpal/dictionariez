@@ -49,7 +49,8 @@ export default {
 
     checkType: (w) ->
         if utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
-            return setting.getValue "englishLookupSource" # google, bing, wiktionary
+            _setting =  setting.getValue "englishLookupSource" # google, bing, wiktionary
+            return "bing" if _setting == 'google'
 
         if utils.hasKorean(w) and setting.getValue "enableLookupKorean"
             return setting.getValue "koreanLookupSource" # google, wiktionary, naver (korean only)

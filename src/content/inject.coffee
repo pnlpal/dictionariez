@@ -76,7 +76,7 @@ run = () =>
 			# See issue #45
 			return
 
-		$dictionariezTooltipContainer = if $('#dictionariez-tooltip-container').length then $('#dictionariez-tooltip-container') else $('body')
+		$dictionariezTooltipContainer = if $('#dictionariez-tooltip-container').length then $('#dictionariez-tooltip-container') else $('html')
 
 		$('''
 			<div class="dictionaries-tooltip">
@@ -475,7 +475,7 @@ run = () =>
 			else 
 				plainQuerying = null
 				$('.dictionaries-tooltip').fadeOut().hide()
-
+			console.log("render plain result", html)
 			return html
 
 		handleLookupByMouse = (event, text)->
