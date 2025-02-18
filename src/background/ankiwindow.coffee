@@ -75,6 +75,18 @@ export default {
         if @anki.wid 
             @anki.focus()
 
+    lookupInDicts: (wordItem, lookupInfo) ->
+        if not lookupInfo 
+            w = wordItem.w 
+        else if lookupInfo.length 
+            w = lookupInfo.at(-1)?.w || wordItem.w 
+        else 
+            w = lookupInfo.w || wordItem.w
+
+        return if not w 
+        w = w.replaceAll('·', '')
+        return dw.lookup { w }
+
     init: () ->
         await @restoreFromStorage()
 
@@ -109,6 +121,7 @@ export default {
                     if lookupInfo?.images?.length
                         await setDataToImages(lookupInfo.images)
 
+                    @lookupInDicts @anki.wordItem, lookupInfo
                     return {wordItem: @anki.wordItem, lookupInfo, followedWords: lookupInfo?.map?((n) -> n.w)}
 
         message.on 'image to data url', (request, sender) => 
