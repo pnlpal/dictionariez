@@ -219,18 +219,9 @@ renderLookupWords = (wordItem, res) ->
 
 		if res.prons.every (v)->['bre', 'ame'].includes(v.type)
 			getEnglishPronAudio res.w 
-			getEnglishPronSymbol res.w 
 		
 	return pronsTpl wHtml, pronHtml if pronHtml or wHtml
 
-getEnglishPronSymbol = (w) ->
-	{ prons } = await utils.send 'get english pron symbol', { w }
-
-	for item in prons 
-		if item.type == 'ame' and item.symbol 
-			$('.field .fairydict-symbol-ame em').text(item.symbol)
-		if item.type == 'bre' and item.symbol
-			$('.field .fairydict-symbol-bre em').text(item.symbol)
 
 getEnglishPronAudio = (w) ->
 	{ prons } = await utils.send 'get real person voice', { w }

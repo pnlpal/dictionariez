@@ -90,12 +90,8 @@ export default {
             if setting.getValue 'enableRealPron'
                 return @parse(sender.tab.id, w, 'ldoce') if w.split(' ').length == 1  # ignore phrase
 
-        message.on 'get english pron symbol', ({ w }, sender) =>
-            if setting.getValue "enableUSUKPron"
-                return @parse(sender.tab.id, w, 'bing') if w.split(' ').length == 1 # ignore phrase
-        
         message.on 'look up phonetic', ({ w, _counter }, sender) =>
-            { prons } = await @parse(sender.tab.id, w, 'bing')
+            { prons } = await @parse(sender.tab.id, w, 'bingCN')
             for n in prons 
                 if n.type == 'ame' and n.symbol
                     ame = n.symbol.replace('US', '').trim()
@@ -138,7 +134,7 @@ export default {
             result = await utils.sendToTab tabId, { type: 'parse lookup result', html, parserDesc: dictDesc.result }
 
         # special handle of bing when look up Chinese
-        if tname == "bing"
+        if tname == "bingCN"
             if utils.isChinese(w) 
                 result.prons.push({'synthesis': 'zh-CN'})
             else 

@@ -39,7 +39,6 @@ export default {
     koreanLookupSource: "naver", // naver, wiktionary
     enableAmeAudio: false,
     enableBreAudio: false,
-    enableUSUKPron: false,
     enableRealPron: false,
 
     showOtherLang: "",

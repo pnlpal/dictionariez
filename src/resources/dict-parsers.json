@@ -10,7 +10,12 @@
           "symbol": {
             "selector": ".WordContainer .dc_prn"
           },
-          "type": "unknow"
+          "type": "bre",
+          "audio": {
+            "selector": ".WordContainer audio",
+            "attr": "src",
+            "srcOrigin": "https://www.bing.com"
+          }
         }
       ],
       "defs": {

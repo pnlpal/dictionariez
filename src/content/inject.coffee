@@ -429,16 +429,6 @@ run = () =>
 			res.defs2.forEach renderItem if res?.defs2
 			return html
 
-		getEnglishPronSymbol = (w) ->
-			res = await utils.send 'get english pron symbol', { w }
-			if res?.prons
-				for item in res.prons 
-					if item.type == 'ame' and item.symbol 
-						$('.dictionaries-tooltip .fairydict-symbol-ame em').text(item.symbol)
-					if item.type == 'bre' and item.symbol
-						$('.dictionaries-tooltip .fairydict-symbol-bre em').text(item.symbol)
-					$('.dictionaries-tooltip .fairydict-symbol-unknow').hide()
-
 		getEnglishPronAudio = (w) ->
 			res = await utils.send 'get real person voice', { w }
 			if res?.prons
@@ -461,10 +451,6 @@ run = () =>
 				html += renderQueryResult item
 		
 				if item?.prons?.length and item.w
-
-					if item.prons.some (v)->['US', 'UK'].includes(v.symbol)
-						getEnglishPronSymbol item.w 
-
 					if item.prons.some (v)->['bre', 'ame'].includes(v.type) 
 						getEnglishPronAudio item.w 
 			

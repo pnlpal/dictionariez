@@ -171,6 +171,9 @@ const getValueFromNode = ($node, desc) => {
     value = $el.data(desc.data);
   } else if (desc.attr) {
     value = $el.attr(desc.attr);
+    if (desc.attr === "src" && value?.startsWith("/") && desc.srcOrigin) {
+      value = desc.srcOrigin + value;
+    }
   } else if (desc.attrOrText) {
     value =
       $el.attr(desc.attrOrText) ||

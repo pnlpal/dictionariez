@@ -258,13 +258,15 @@ describe("lookup-parser", () => {
       "https://www.bing.com/search?q=define%20lecture"
     );
     const result = await parseHTML(html, parserDesc.bing.result);
+    console.log(JSON.stringify(result, null, 2));
     expect(JSON.stringify(result, null, 2)).to.equal(
       `{
   "w": "lec·ture",
   "prons": [
     {
       "symbol": "[ˈlɛktʃə]",
-      "type": "unknow"
+      "type": "bre",
+      "audio": "https://www.bing.com/th?id=ODT.135401A448B8B91B5A0CF3DB78E0386E&pid=Dictionary"
     }
   ],
   "defs": [
