@@ -36,7 +36,6 @@ const parseHTML = (htmlString, parserDesc) => {
   let result = {};
   const $html =
     typeof htmlString === "string" ? $clean(htmlString) : htmlString;
-
   for (let key in parserDesc) {
     let desc = parserDesc[key];
     if (Array.isArray(desc)) {
@@ -171,7 +170,7 @@ const getValueFromNode = ($node, desc) => {
     value = $el.data(desc.data);
   } else if (desc.attr) {
     value = $el.attr(desc.attr);
-    if (desc.attr === "src" && value?.startsWith("/") && desc.srcOrigin) {
+    if (value?.startsWith("/") && desc.srcOrigin) {
       value = desc.srcOrigin + value;
     }
   } else if (desc.attrOrText) {
@@ -180,7 +179,7 @@ const getValueFromNode = ($node, desc) => {
       ($el.get(0) ? $el.get(0).innerText.trim() : null);
   } else if (desc.htmlRegex) {
     value = $el.html()
-      ? $el.html().match(new RegExp(desc.htmlRegex))[desc.regexIndex || 0]
+      ? $el.html().match(new RegExp(desc.htmlRegex))?.[desc.regexIndex || 0]
       : null;
   } else {
     value = $el.get(0) ? $el.get(0).innerText.trim() : null;

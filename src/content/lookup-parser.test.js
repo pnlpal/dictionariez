@@ -288,4 +288,51 @@ describe("lookup-parser", () => {
 }`
     );
   });
+  it.only("should get and parse the word dynasty from Bing CN Dict", async () => {
+    const html = await utils.loadHTML(
+      "https://cn.bing.com/dict/search?mkt=zh-cn&q=dynasty"
+    );
+    const result = await parseHTML(html, parserDesc.bingCN.result);
+    console.log(JSON.stringify(result, null, 2));
+    expect(JSON.stringify(result, null, 2)).to.equal(
+      `{
+  "w": "dynasty",
+  "prons": [
+    {
+      "symbol": "US [ˈdaɪnəsti]",
+      "audio": "https://cn.bing.com/dict/mediamp3?blob=audio%2Ftom%2Ffe%2F8c%2FFE8C4738352470D5F2099A7A016F934C.mp3",
+      "type": "ame"
+    },
+    {
+      "symbol": "UK [ˈdɪnəsti]",
+      "audio": "https://cn.bing.com/dict/mediamp3?blob=audio%2Fgeorge%2Ffe%2F8c%2FFE8C4738352470D5F2099A7A016F934C.mp3",
+      "type": "bre"
+    },
+    {
+      "symbol": "US [ˈdaɪnəsti] UK [ˈdɪnəsti]",
+      "type": "pinyin"
+    }
+  ],
+  "defs": [
+    {
+      "pos": "n.",
+      "def": [
+        "1.a family whose members rule a country or region for a long period of time; a period of time during which members of the same family rule a country or region",
+        "2.a family whose members are very successful in business or politics for a long period of time"
+      ]
+    }
+  ],
+  "defs2": [
+    {
+      "pos": "n.",
+      "def": "代；王朝；朝代"
+    },
+    {
+      "pos": "web",
+      "def": "豪门恩怨；皇朝；大内群英"
+    }
+  ]
+}`
+    );
+  });
 });

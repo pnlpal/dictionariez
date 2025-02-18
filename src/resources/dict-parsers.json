@@ -38,7 +38,7 @@
     "supportChinese": true,
     "result": {
       "w": {
-        "selector": ".hd_area #headword"
+        "selector": "#headword"
       },
       "prons": [
         {
@@ -46,8 +46,9 @@
             "selector": ".hd_area .hd_prUS"
           },
           "audio": {
-            "selector": ".hd_area .hd_prUS + .hd_tf",
-            "htmlRegex": "https:.*?\\.mp3"
+            "selector": ".hd_area .hd_prUS + .hd_tf a",
+            "attr": "data-mp3link",
+            "srcOrigin": "https://cn.bing.com"
           },
           "type": "ame"
         },
@@ -56,8 +57,9 @@
             "selector": ".hd_area .hd_pr"
           },
           "audio": {
-            "selector": ".hd_area .hd_pr + .hd_tf",
-            "htmlRegex": "https:.*?\\.mp3"
+            "selector": ".hd_area .hd_pr + .hd_tf a",
+            "attr": "data-mp3link",
+            "srcOrigin": "https://cn.bing.com"
           },
           "type": "bre"
         },
