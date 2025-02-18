@@ -139,6 +139,14 @@ export default {
                 result.prons.push({'synthesis': 'zh-CN'})
             else 
                 result.prons = result.prons.filter (n)->n.type != 'pinyin'
+
+        # add American pronunciation to English
+        if tname == 'bing' 
+            result.prons.push({
+                "symbol": "US",
+                "type": "ame",
+                "synthesis": "en-US"
+            })
             
         if tname == 'wiktionary'
             multipleResult = []

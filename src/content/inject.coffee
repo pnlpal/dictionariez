@@ -430,7 +430,7 @@ run = () =>
 			return html
 
 		getEnglishPronAudio = (w) ->
-			res = await utils.send 'get real person voice', { w }
+			res = await utils.send 'get real person voice', { w: w.replaceAll('·', '') }
 			if res?.prons
 				ameSrc = ''
 				breSrc = ''
@@ -461,7 +461,6 @@ run = () =>
 			else 
 				plainQuerying = null
 				$('.dictionaries-tooltip').fadeOut().hide()
-			console.log("render plain result", html)
 			return html
 
 		handleLookupByMouse = (event, text)->
