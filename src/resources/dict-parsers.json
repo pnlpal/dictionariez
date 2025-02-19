@@ -145,7 +145,7 @@
               },
               "def": {
                 "selector": "ol>li",
-                "excludeChild": "div,ul,dl",
+                "excludeChild": "div,ul,dl,ol",
                 "toArray": true,
                 "includeArrayIndex": true
               },

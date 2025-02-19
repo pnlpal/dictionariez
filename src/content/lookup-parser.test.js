@@ -368,6 +368,48 @@ describe("lookup-parser", () => {
 }`);
   });
 
+  it("should get and parse the Swedish word förvissade from Wiktionary", async () => {
+    const html = await utils.loadHTML(
+      `https://en.wiktionary.org/wiki/${encodeURIComponent("förvissade")}`
+    );
+    const result = await parseHTML(html, parserDesc.wiktionary.result);
+    // console.log(JSON.stringify(result, null, 2));
+    expect(JSON.stringify(result, null, 2)).to.equal(`{
+  "w": "förvissade",
+  "langTargets": [
+    {
+      "lang": "Swedish",
+      "prons": [
+        {
+          "symbol": null,
+          "type": "unknow"
+        }
+      ],
+      "defs": [
+        {
+          "pos": "adj",
+          "def": [
+            "inflection of förvissad:",
+            "definite singular",
+            "plural"
+          ],
+          "followWord": "förvissad",
+          "optionalFollowWord": "förvissad"
+        },
+        {
+          "pos": "verb",
+          "def": [
+            "preterite of förvissa"
+          ],
+          "followWord": "förvissa",
+          "optionalFollowWord": "preterite"
+        }
+      ]
+    }
+  ]
+}`);
+  });
+
   it("should get and parse the Japanese word 十分 from japandict", async () => {
     const html = await utils.loadHTML(
       `https://www.japandict.com/${encodeURIComponent("十分")}`

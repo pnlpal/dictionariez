@@ -150,7 +150,7 @@ export default {
             # parse the second language if possible.
             possibleLangs = @checkLangs(w).filter((l) -> l != result?.lang)
             if possibleLangs.length
-                return @parse(tabId, w, 'wiktionary', result)
+                return @parse(tabId, w, 'wiktionary', if result.w then result else null)
 
             
         if tname == 'wiktionary'
@@ -194,13 +194,25 @@ export default {
                             return @parseOtherLang tabId, w, 'Indonesian', targetLang, prevResult
 
                         # use followWord fist, then try optionalFollowWord
-                        if targetLang.defs?.length >= 1 and targetLang.defs[0].followWord and !prevResult
-                            return @parse(tabId, targetLang.defs[0].followWord, 'wiktionary', targetLang)
-                        else if targetLang.defs?.length >= 1 and targetLang.defs[0].optionalFollowWord and !prevResult
-                            if stringSimilarity.compareTwoStrings(w, targetLang.defs[0].optionalFollowWord) > 0.7
-                                return @parse(tabId, targetLang.defs[0].optionalFollowWord, 'wiktionary', targetLang)
+                        followWords = targetLang.defs?.map((n) -> n.followWord).filter((n) -> n)
+                        followWords = [...new Set(followWords)] # remove duplicate
+                        optionalFollowWord = targetLang.defs?[0]?.optionalFollowWord
+                        if followWords?.length and !prevResult
+                            if followWords[0] != w
+                                followWordResults_0 = await @parse(tabId, followWords[0], 'wiktionary', targetLang)
+                            if followWords[1] and followWords[1] != w
+                                followWordResults_1 = await @parse(tabId, followWords[1], 'wiktionary', targetLang)
+
+                        if optionalFollowWord and !prevResult
+                            if optionalFollowWord != w and !followWords.includes(optionalFollowWord) and stringSimilarity.compareTwoStrings(w, optionalFollowWord) > 0.7
+                                optionalFollowWordResults = await @parse(tabId, optionalFollowWord, 'wiktionary', targetLang)
 
                         multipleResult.push targetLang if multipleResult.length < 3
+
+                        # merge the followWords result.
+                        multipleResult.push followWordResults_0[1] if followWordResults_0?.length > 1 and multipleResult.length < 3
+                        multipleResult.push followWordResults_1[1] if followWordResults_1?.length > 1 and multipleResult.length < 3
+                        multipleResult.push optionalFollowWordResults[1] if optionalFollowWordResults?.length > 1 and multipleResult.length < 3
                         
             
             if !multipleResult.length
