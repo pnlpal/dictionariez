@@ -91,8 +91,7 @@ renderLookupInfo = (wordItem, followedWords) ->
 			$('.field:eq(0)').append renderLookupDefs lookupInfo, followedWords
 			$('.field:eq(0)').append '<br>'
 
-		if lookupInfo
-			$('.field:eq(1)').append renderTTS lookupInfo.w
+			$('.field:eq(1)').append renderTTS lookupInfo.w.replaceAll('·', '')
 			$('.field:eq(1)').append renderLookupWords wordItem, lookupInfo
 			
 replaceW = (text, w) ->
@@ -150,7 +149,7 @@ renderLookupDefs = (res, followedWords = []) ->
 		pronHtml = res.prons.reduce ((prev, cur)->
 			if cur.synthesis or cur.audio
 				# prev += pronSymbolTpl(cur.symbol, cur.type)
-				prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis)
+				prev += pronAudioTpl(res.w.replaceAll('·', ''), cur.audio, cur.type, cur.synthesis)
 			return prev
 		), ''
 
@@ -213,7 +212,7 @@ renderLookupWords = (wordItem, res) ->
 		pronHtml = res.prons.reduce ((prev, cur)->
 			if cur.synthesis or cur.audio or cur.symbol
 				prev += pronSymbolTpl(cur.symbol, cur.type)
-				prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis) if cur.synthesis or cur.audio
+				prev += pronAudioTpl(res.w.replaceAll('·', ''), cur.audio, cur.type, cur.synthesis) if cur.synthesis or cur.audio
 			return prev
 		), ''
 

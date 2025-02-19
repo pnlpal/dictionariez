@@ -84,8 +84,8 @@ export default {
             return @parse(sender.tab.id, w) 
 
         message.on 'get real person voice', ({ w }, sender) =>
-            if setting.getValue 'enableRealPron'
-                return @parse(sender.tab.id, w, 'ldoce') if w.split(' ').length == 1  # ignore phrase
+            if w and setting.getValue 'enableRealPron'
+                return @parse(sender.tab.id, w.replaceAll('·', ''), 'ldoce') if w.split(' ').length == 1  # ignore phrase
 
         message.on 'look up phonetic', ({ w, _counter }, sender) =>
             { prons } = await @parse(sender.tab.id, w, 'bingCN')

@@ -392,7 +392,7 @@ run = () =>
 					pronHtml = res.prons.reduce ((prev, cur)->
 						if cur.synthesis or cur.audio or cur.symbol
 							prev += pronSymbolTpl(cur.symbol, cur.type)
-							prev += pronAudioTpl(res.w, cur.audio, cur.type, cur.synthesis, res.lang) if cur.synthesis or cur.audio
+							prev += pronAudioTpl(res.w.replaceAll('·', ''), cur.audio, cur.type, cur.synthesis, res.lang) if cur.synthesis or cur.audio
 						return prev
 					), ''
 			
@@ -429,7 +429,7 @@ run = () =>
 			return html
 
 		getEnglishPronAudio = (w) ->
-			res = await utils.send 'get real person voice', { w: w.replaceAll('·', '') }
+			res = await utils.send 'get real person voice', { w }
 			if res?.prons
 				ameSrc = ''
 				breSrc = ''
