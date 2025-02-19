@@ -136,8 +136,8 @@ renderImages = (images) ->
 renderLookupDefs = (res, followedWords = []) ->
 	defTpl = (def) -> "<span class='fairydict-def' style='display: inline-flex;margin-bottom: 3px;'> #{def} </span>"
 	defsTpl = (defs) -> "<span class='fairydict-defs' style='display: table-cell;padding-top: 1px;'> #{defs} </span>"
-	labelsTpl = (labels) -> "<div class='fairydict-labels'> #{labels} </div>"
-	labelTpl = (label) -> "<span class='fairydict-label'> #{label} </span>"
+	labelsTpl = (labels) -> "<div class='fairydict-labels' style='margin: 8px 0px;'> #{labels} </div>"
+	labelTpl = (label) -> "<span class='fairydict-label' style='border: 1px solid;border-radius: 3px;padding: 1px 2px;margin-right: 3px;border-color: dimgray;'> #{label} </span>"
 	posTpl = (pos) -> "<span class='fairydict-pos' style='display: table-cell;width: 40px;padding-top: 1px;'> #{pos} </span>"
 	contentTpl = (content) -> "<div class='fairydict-content' style='font-size: 15px;line-height: 15px; padding: 0 5px; border-left:5px solid gold;'> #{content} </div>"
 	pronSymbolTpl = (symbol='', type='') -> "<span class='fairydict-symbol fairydict-symbol-#{type}'> <em> #{symbol} </em> </span>"
@@ -158,13 +158,6 @@ renderLookupDefs = (res, followedWords = []) ->
 			$('.field tts').attr('voice', res.prons[res.prons.length - 1].synthesis)
 
 	html += pronsTpl pronHtml if pronHtml
-	
-	labelsCon = res?.labels?.map(({ name }) -> labelTpl name if name).reduce ((prev, cur) ->
-		prev += cur if cur 
-		return prev
-	), ''
-
-	html += labelsTpl labelsCon if labelsCon
 
 	renderDef = (def) ->
 		defTpl followedWords.reduce ((res, fw) -> 
@@ -174,8 +167,15 @@ renderLookupDefs = (res, followedWords = []) ->
 	renderItem = (item) ->
 		posHtml = ''
 		defsHtml = ''
+		labelsHtml = ''
 
 		posHtml = posTpl item.pos if item.pos 
+		labelsCon = (item.labels || []).map((name) -> labelTpl name if name).reduce ((prev, cur) ->
+			prev += cur if cur 
+			return prev
+		), ''
+		labelsHtml = labelsTpl labelsCon if labelsCon
+			
 		defs = if Array.isArray(item.def) then item.def else [item.def]
 		defsCon = defs.map((def, i) -> 
 			if def 
@@ -190,7 +190,7 @@ renderLookupDefs = (res, followedWords = []) ->
 			
 		defsHtml = defsTpl defsCon if defsCon
 
-		html += contentTpl posHtml + defsHtml if defsHtml
+		html += contentTpl posHtml + labelsHtml + defsHtml if defsHtml
 
 	res.defs.forEach renderItem if res?.defs
 	res.defs2.forEach renderItem if res?.defs2

@@ -398,18 +398,17 @@ run = () =>
 			
 			html += pronsTpl wHtml, pronHtml if pronHtml or wHtml
 			
-			labelsCon = res?.labels?.map(({ name }) -> labelTpl name if name).reduce ((prev, cur) ->
-				prev += cur if cur 
-				return prev
-			), ''
-			
-			html += labelsTpl labelsCon if labelsCon
-			
 			renderItem = (item) ->
 				posHtml = ''
 				defsHtml = ''
+				labelsHtml = ''
 
 				posHtml = posTpl item.pos if item.pos 
+				labelsCon = (item.labels || []).map((name) -> labelTpl name if name).reduce ((prev, cur) ->
+					prev += cur if cur 
+					return prev
+				), ''
+				labelsHtml = labelsTpl labelsCon if labelsCon
 				defs = if Array.isArray(item.def) then item.def else [item.def]
 				defsCon = defs.map((def, i) -> 
 					if def
@@ -423,7 +422,7 @@ run = () =>
 					return prev 
 				defsHtml = defsTpl defsCon if defsCon
 
-				html += contentTpl posHtml + defsHtml if defsHtml
+				html += contentTpl posHtml + labelsHtml + defsHtml if defsHtml
 
 			res.defs.forEach renderItem if res?.defs
 			res.defs2.forEach renderItem if res?.defs2

@@ -193,24 +193,21 @@
       "prons": [
         {
           "symbol": {
-            "selector": ".d-inline-block span.small"
+            "selector": ".justify-content-center .xxsmall"
           },
           "synthesis": "ja-JP"
         }
       ],
-      "labels": {
-        "container": ".tab-pane[id^='eng']",
-        "groups": "ul>li.list-group-item span.label",
-        "result": {
-          "name": {}
-        }
-      },
       "defs": {
         "container": ".tab-pane[id^='eng']",
         "groups": "ul>li.list-group-item",
         "result": {
           "def": {
             "selector": "div[lang='en']"
+          },
+          "labels": {
+            "selector": "span.badge",
+            "toArray": true
           }
         }
       }
