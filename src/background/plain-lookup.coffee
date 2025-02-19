@@ -218,7 +218,7 @@ export default {
         result = await @parse(tabId, w, lang)
 
         # wiktionary result is first.
-        if wiktionaryResult and result.w != wiktionaryResult.w 
+        if wiktionaryResult and result?.w != wiktionaryResult.w 
             return wiktionaryResult
         
         # merge 
