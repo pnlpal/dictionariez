@@ -138,6 +138,8 @@ export default {
 
         # add American pronunciation to English
         if tname == 'bing' 
+            # Bing only supports English and has only British pronunciation.
+            result.lang = 'English'
             result.prons?.push({
                 "symbol": "US",
                 "type": "ame",
@@ -147,7 +149,7 @@ export default {
             possibleLangs = @checkLangs(w).filter((l) -> l != result?.lang)
             if possibleLangs.length
                 return @parse(tabId, w, 'wiktionary', result)
-                
+
             
         if tname == 'wiktionary'
             multipleResult = []
@@ -156,7 +158,7 @@ export default {
 
             for targetLang in (result.langTargets || [])
                 if targetLang.lang 
-                    if prevResult?.lang == targetLang.lang && prevResult.w == w 
+                    if prevResult?.lang == targetLang.lang && (prevResult.w == w or prevResult.w?.replaceAll('·', '') == w)
                         continue 
 
                     # Special handle for Norwegian on Wiktionary
