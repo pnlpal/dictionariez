@@ -19,6 +19,8 @@
           keyboard-nav
           is-open="isHistoryDropdownOpen"
           on-toggle="scheduleDropdown('history', open)"
+          ng-mouseenter="scheduleDropdown('history', true)"
+          ng-mouseleave="scheduleCloseDropdown()"
         >
           <button
             id="history-btn"
@@ -29,13 +31,7 @@
           >
             {{ previous.w }}
           </button>
-          <button
-            type="button"
-            class="btn btn-default"
-            uib-dropdown-toggle
-            ng-mouseenter="scheduleDropdown('history', true)"
-            ng-mouseleave="scheduleCloseDropdown()"
-          >
+          <button type="button" class="btn btn-default" uib-dropdown-toggle>
             <i class="fa fa-history fa-lg" aria-hidden="true"></i>
             <span class="sr-only">History</span>
           </button>

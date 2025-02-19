@@ -124,7 +124,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
                 $scope.isDictDropdownOpen = open;
             window.top.postMessage { type: 'toggleDropdown', open: open }, '*'
             $scope.$apply()
-        ), 400
+        ), 100
     
     $scope.scheduleCloseDropdown = () ->
         clearTimeout $scope.closeDropdownTimer 
@@ -134,7 +134,7 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
             $scope.isDictDropdownOpen = false
             window.top.postMessage { type: 'toggleDropdown', open: false }, '*'
             $scope.$apply()
-        ), 200
+        ), 100
     
     parseAutocomplete = (html) ->
         return [] unless html
