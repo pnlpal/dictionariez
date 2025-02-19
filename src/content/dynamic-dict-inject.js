@@ -65,11 +65,12 @@ async function doQuery(w, sentence, languagePrompt, dict) {
 
   triggerClick();
 
-  // For gemini and claude, when the previous query is still responding, it needs double(or even more) clicks to stop the previous query first then send the request.
+  // For chatgpt, gemini and claude, when the previous query is still responding, it needs double(or even more) clicks to stop the previous query first then send the request.
   if (
     dict.doubleClickForMore ||
     dict.windowUrl.includes("gemini") ||
-    dict.windowUrl.includes("claude")
+    dict.windowUrl.includes("claude") ||
+    dict.windowUrl.includes("chatgpt")
   ) {
     triggerMoreClicks();
   }
