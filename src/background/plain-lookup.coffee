@@ -92,14 +92,6 @@ export default {
             if w and setting.getValue 'enableRealPron'
                 return @parse(sender.tab.id, w.replaceAll('·', ''), 'ldoce') if w.split(' ').length == 1  # ignore phrase
 
-        message.on 'look up phonetic', ({ w, _counter }, sender) =>
-            { prons } = await @parse(sender.tab.id, w, 'bingCN')
-            for n in prons 
-                if n.type == 'ame' and n.symbol
-                    ame = n.symbol.replace('US', '').trim()
-                    return { ame } 
-            return {}
-
     parse: (tabId, w, tname, prevResult, url) ->
         tname ?= @checkType(w)
         return unless tname 

@@ -17,7 +17,7 @@ message.on 'autocomplete', ({ text })->
 
     html = ''
     if text.length > 1 and utils.isEnglish(text)
-        url = "https://www.vocabulary.com/dictionary/autocomplete?search=#{text}"
+        url = "https://www.vocabulary.com/dictionary/autocomplete-ss?search=#{text}"
         html = await utils.loadHTML url 
 
     return {results, html}

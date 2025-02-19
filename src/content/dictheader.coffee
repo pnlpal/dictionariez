@@ -140,11 +140,12 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
         return [] unless html
         nodes = $(html)
         list = []
-        nodes.find('li>.entry').each (i, item) ->
+        nodes.find('.word-result-entry').each (i, item) ->
             w = $(item).find('.word').text()
             def = $(item).find('.definition').text()
+            ipa = $(item).find('.word').attr('data-ipa')
 
-            list.push({ w, def }) unless i > 11  # at most 12 items
+            list.push({ w, def, ipa }) unless i > 11  # at most 12 items
             
         return list
 
@@ -169,24 +170,6 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
 
         $scope.toggleDropdown($scope.autocompletes.length > 0)
         $scope.$apply()
-
-        # get phonetic of word in autocompletes
-        $scope.autocompleteCounter ?= 0
-        $scope.autocompleteCounter += 1
-        $dropdown = $('.search-wrapper[uib-dropdown]')
-
-        _counter = $scope.autocompleteCounter
-        for item in $scope.autocompletes or []
-            if item.w and _counter == $scope.autocompleteCounter and item.w.match(/\w+/g)[0] == item.w and $dropdown.hasClass('open')
-                if cancelAutoCompleteIfQuerying()
-                    return
-
-                { ame } = await utils.send 'look up phonetic', { w: item.w, _counter }
-                item.ame = ame
-                $scope.$apply()
-                # console.log "[#{_counter}]", item.w, ame 
-                await utils.promisifiedTimeout 300
-
     ), 500
 
     chrome.runtime.onMessage?.addListener (request, sender, sendResponse)->
