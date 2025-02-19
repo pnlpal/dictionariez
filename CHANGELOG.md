@@ -1,3 +1,15 @@
+# v5.3.1 Feb 19, 2025
+- Google word lookup for the floating definitions is no longer available; use Bing instead.
+- English floating definitions now include dots for pronunciation.
+- Naver is no longer available for Korean; use Wiktionary instead.
+- Improved word conjugation tracking, especially for Swedish.
+- Ignore selected words with punctuation in the middle, except for hyphens.
+- Faster dropdown list opening in the popup dictionary.
+- Fixed real person pronunciation issue (#148).
+- Fixed floating definitions for German, Tajik, Thai, Japanese, Indonesian, etc.
+- Fixed ChatGPT dictionary lookup when a previous word is still processing.
+- Fixed word auto-completions in the popup dictionary.
+
 
 # v5.3.0 Dec 15, 2024
 - Inject the lookup popover to customized container so that it's able to look up word on Captionz even in fullscreen. 
