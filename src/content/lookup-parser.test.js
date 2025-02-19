@@ -406,4 +406,52 @@ describe("lookup-parser", () => {
   ]
 }`);
   });
+
+  it("should get and parse the Tajik word дигар from vazhaju.tj", async () => {
+    const html = await utils.loadHTML(
+      `https://vazhaju.tj/search/${encodeURIComponent("дигар")}`
+    );
+    const result = await parseHTML(html, parserDesc.Tajik.result);
+    // console.log(JSON.stringify(result, null, 2));
+    expect(JSON.stringify(result, null, 2)).to.equal(`{
+  "w": "дигар",
+  "prons": [
+    {
+      "symbol": "دیگر"
+    }
+  ],
+  "defs": [
+    {
+      "pos": "сифа",
+      "def": [
+        "соир, ғайр, дуюмӣ",
+        "бори дувум, баъд аз ин, минбаъд, боз"
+      ]
+    }
+  ]
+}`);
+  });
+
+  it("should get and parse the Indonesian word pabrikan from kamus.net", async () => {
+    const html = await utils.loadHTML(
+      `https://www.kamus.net/indonesia/${encodeURIComponent("pabrikan")}`
+    );
+    const result = await parseHTML(html, parserDesc.Indonesian.result);
+    // console.log(JSON.stringify(result, null, 2));
+    expect(JSON.stringify(result, null, 2)).to.equal(`{
+  "w": "pabrikan",
+  "prons": [
+    {
+      "synthesis": "id-ID"
+    }
+  ],
+  "defs": [
+    {
+      "def": [
+        "manufacturer (n)"
+      ]
+    }
+  ]
+}`);
+  });
 });

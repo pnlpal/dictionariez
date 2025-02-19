@@ -109,21 +109,23 @@ export default {
                 and tname != 'wiktionary' \
                 and utils.isEnglish(w)
                 return @parse(tabId, w, 'wiktionary')
-
-            else if (err.status == 404 \
-                and tname == 'wiktionary' \
-                and (not url.includes('sv.wiktionary.org')) \
-                and @checkLangs(w).includes('Swedish')) 
-                return @parse(tabId, w, 'wiktionary', prevResult, url.replace('en.wiktionary.org', 'sv.wiktionary.org'))
-            else if (err.status == 404 \
-                and tname == 'wiktionary' \
-                and (not url.includes('de.wiktionary.org')) \
-                and @checkLangs(w).includes('German')) 
-                return @parse(tabId, w, 'wiktionary', prevResult, url.replace('en.wiktionary.org', 'de.wiktionary.org'))
-            
             else if tname == 'bing'
                 return @parse(tabId, w, 'wiktionary', prevResult)
+
+            else if err.status == 404 \
+                and tname == 'wiktionary'
+                if (not url.includes('sv.wiktionary.org')) \
+                    and @checkLangs(w).includes('Swedish') 
+                    return @parse(tabId, w, 'wiktionary', prevResult, url.replace('en.wiktionary.org', 'sv.wiktionary.org'))
+                else if (not url.includes('de.wiktionary.org')) \
+                    and @checkLangs(w).includes('German')
+                    return @parse(tabId, w, 'wiktionary', prevResult, url.replace('en.wiktionary.org', 'de.wiktionary.org'))
+                else if @checkLangs(w).includes('Tajik')
+                    return @parseOtherLang tabId, w, 'Tajik', null, prevResult
+                else if @checkLangs(w).includes('Indonesian')
+                    return @parseOtherLang tabId, w, 'Indonesian', null, prevResult
             
+    
             console.error "Failed to parse: ", url, err.message
             return prevResult
 
@@ -225,7 +227,7 @@ export default {
         if not result?.defs?.length
             result.defs = wiktionaryResult.defs 
         
-        if not result?.prons?[0]?.symbol and wiktionaryResult.prons?.length
+        if not result?.prons?[0]?.symbol and wiktionaryResult?.prons?.length
             result.prons = wiktionaryResult.prons
         
         return if prevResult then [prevResult, result] else result 
