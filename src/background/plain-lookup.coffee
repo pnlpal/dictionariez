@@ -143,6 +143,11 @@ export default {
                 "type": "ame",
                 "synthesis": "en-US"
             })
+            # parse the second language if possible.
+            possibleLangs = @checkLangs(w).filter((l) -> l != result?.lang)
+            if possibleLangs.length
+                return @parse(tabId, w, 'wiktionary', result)
+                
             
         if tname == 'wiktionary'
             multipleResult = []
