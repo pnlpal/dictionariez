@@ -127,13 +127,13 @@ export default {
         # special handle of bing when look up Chinese
         if tname == "bingCN"
             if utils.isChinese(w) 
-                result.prons.push({'synthesis': 'zh-CN'})
+                result.prons?.push({'synthesis': 'zh-CN'})
             else 
-                result.prons = result.prons.filter (n)->n.type != 'pinyin'
+                result.prons = result.prons?.filter (n)->n.type != 'pinyin'
 
         # add American pronunciation to English
         if tname == 'bing' 
-            result.prons.push({
+            result.prons?.push({
                 "symbol": "US",
                 "type": "ame",
                 "synthesis": "en-US"

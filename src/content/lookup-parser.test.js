@@ -258,7 +258,7 @@ describe("lookup-parser", () => {
       "https://www.bing.com/search?q=define%20lecture"
     );
     const result = await parseHTML(html, parserDesc.bing.result);
-    console.log(JSON.stringify(result, null, 2));
+    // console.log(JSON.stringify(result, null, 2));
     expect(JSON.stringify(result, null, 2)).to.equal(
       `{
   "w": "lec·ture",
@@ -288,12 +288,12 @@ describe("lookup-parser", () => {
 }`
     );
   });
-  it.only("should get and parse the word dynasty from Bing CN Dict", async () => {
+  it("should get and parse the word dynasty from Bing CN Dict", async () => {
     const html = await utils.loadHTML(
       "https://cn.bing.com/dict/search?mkt=zh-cn&q=dynasty"
     );
     const result = await parseHTML(html, parserDesc.bingCN.result);
-    console.log(JSON.stringify(result, null, 2));
+    // console.log(JSON.stringify(result, null, 2));
     expect(JSON.stringify(result, null, 2)).to.equal(
       `{
   "w": "dynasty",
@@ -334,5 +334,37 @@ describe("lookup-parser", () => {
   ]
 }`
     );
+  });
+
+  it("should get and parse the word 장마 from Wiktionary", async () => {
+    const html = await utils.loadHTML(
+      `https://en.wiktionary.org/wiki/${encodeURIComponent("장마")}`
+    );
+    const result = await parseHTML(html, parserDesc.wiktionary.result);
+    // console.log(JSON.stringify(result, null, 2));
+    expect(JSON.stringify(result, null, 2)).to.equal(`{
+  "w": "장마",
+  "langTargets": [
+    {
+      "lang": "Korean",
+      "prons": [
+        {
+          "symbol": "[t͡ɕa̠ŋma̠]",
+          "type": "unknow"
+        }
+      ],
+      "defs": [
+        {
+          "pos": "noun",
+          "def": [
+            "The East Asian rainy season between spring and summer"
+          ],
+          "followWord": null,
+          "optionalFollowWord": "East Asian"
+        }
+      ]
+    }
+  ]
+}`);
   });
 });
