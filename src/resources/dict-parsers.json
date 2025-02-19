@@ -112,7 +112,8 @@
       "Tajik",
       "Vietnamese",
       "Indonesian",
-      "Korean"
+      "Korean",
+      "Thai"
     ],
     "result": {
       "w": {
@@ -238,37 +239,6 @@
             "singleParents": ".part-of-speech-content",
             "selector": ".part-of-speech-content .definition>span",
             "toArray": true,
-            "includeArrayIndex": true
-          }
-        }
-      }
-    }
-  },
-  "Thai": {
-    "url": "https://en.bab.la/dictionary/thai-english/<word>",
-    "languages": ["Thai"],
-    "result": {
-      "w": {
-        "selector": ".quick-result-entry a.babQuickResult"
-      },
-      "prons": [
-        {
-          "synthesis": "th-TH"
-        }
-      ],
-      "defs": {
-        "container": ".quick-results",
-        "groups": ".quick-result-entry:has('.quick-result-overview')",
-        "filterRelatedWord": "a.babQuickResult",
-        "result": {
-          "pos": {
-            "selector": "span.suffix",
-            "strFilter": "[{}]"
-          },
-          "def": {
-            "selector": ".quick-result-overview ul.sense-group-results>li",
-            "toArray": true,
-            "excludeChild": ".sound-inline",
             "includeArrayIndex": true
           }
         }
