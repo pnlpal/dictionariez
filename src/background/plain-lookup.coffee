@@ -51,9 +51,6 @@ export default {
         if utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
             return setting.getValue "englishLookupSource" # bing, bingCN, wiktionary
 
-        if utils.hasKorean(w) and setting.getValue "enableLookupKorean"
-            return setting.getValue "koreanLookupSource" # wiktionary, naver (korean only)
-
         for name, dictDesc of parserDescs
             if dictDesc.supportChinese
                 return name if utils.isChinese(w) and setting.getValue "enableLookupChinese"
@@ -106,10 +103,7 @@ export default {
         url = (url or dictDesc.url).replace('<word>', w)
 
         try
-            if tname == "naver"
-                json = await utils.loadJson url, dictDesc.credentials
-            else
-                html = await utils.loadHTML url, dictDesc.credentials
+            html = await utils.loadHTML url, dictDesc.credentials
         catch err 
             if err.message == 'timeout' \
                 and tname != 'wiktionary' \
@@ -128,10 +122,7 @@ export default {
             console.error "Failed to parse: ", url, err.message
             return prevResult
 
-        if tname == "naver"
-            result = @parseNaver json, dictDesc.result
-        else
-            result = await utils.sendToTab tabId, { type: 'parse lookup result', html, parserDesc: dictDesc.result }
+        result = await utils.sendToTab tabId, { type: 'parse lookup result', html, parserDesc: dictDesc.result }
 
         # special handle of bing when look up Chinese
         if tname == "bingCN"
@@ -169,8 +160,6 @@ export default {
                     if @isLangDisabled(targetLang.lang) or not langs[targetLang.lang]
                         targetLang = null 
                     else if targetLang.lang == 'English' and not setting.getValue "enableLookupEnglish"
-                        targetLang = null
-                    else if targetLang.lang == 'Korean' and not setting.getValue "enableLookupKorean"
                         targetLang = null
                     else 
                         if targetLang.lang == 'English'
@@ -228,35 +217,4 @@ export default {
             result.prons = wiktionaryResult.prons
         
         return if prevResult then [prevResult, result] else result 
-
-    parseNaver: (json, obj) ->
-        result = {}
-        definitions = json.searchResultMap.searchResultListMap.WORD.items
-
-        result['langSymbol'] = 'ko'
-        result['defs'] = []
-
-        for explanation in definitions
-            newDef = {}
-            entry = explanation.expEntry.replace(/(<([^>]+)>)/gi, "")
-            meansCollector = explanation.meansCollector[0]
-
-            newDef['def'] = []
-
-            count = 1
-            for def in meansCollector.means
-                pretty_value = def.value.replace(/(<([^>]+)>)/gi, "")
-
-                if meansCollector.means.length != 1
-                    pretty_value = count.toString() + ". " + def.value.replace(/(<([^>]+)>)/gi, "")
-
-                if count == 1
-                    pretty_value = entry + ": " + pretty_value
-
-                count += 1
-                newDef['def'].push pretty_value
-
-            result['defs'].push newDef
-
-        return result
 }

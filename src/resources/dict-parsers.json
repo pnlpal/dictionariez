@@ -95,9 +95,6 @@
       }
     }
   },
-  "naver": {
-    "url": "https://ko.dict.naver.com/api3/koko/search?query=<word>&m=pc&range=all&lang=ko"
-  },
   "wiktionary": {
     "url": "https://en.wiktionary.org/wiki/<word>",
     "languages": [
@@ -114,7 +111,8 @@
       "Russian",
       "Tajik",
       "Vietnamese",
-      "Indonesian"
+      "Indonesian",
+      "Korean"
     ],
     "result": {
       "w": {

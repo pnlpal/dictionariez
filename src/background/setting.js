@@ -30,13 +30,11 @@ export default {
     selectionSK1: "Shift",
 
     enableLookupEnglish: true,
-    enableLookupKorean: true,
     enableLookupChinese: true,
     otherDisabledLanguages: [],
 
     enablePlainLookup: true,
     englishLookupSource: "bing", // bing, bingCN, wiktionary
-    koreanLookupSource: "naver", // naver, wiktionary
     enableAmeAudio: false,
     enableBreAudio: false,
     enableRealPron: false,
@@ -98,9 +96,6 @@ export default {
         //migration:
         if (this.configCache.englishLookupSource === "google") {
           this.configCache.englishLookupSource = "bing";
-        }
-        if (this.configCache.koreanLookupSource === "google") {
-          this.configCache.koreanLookupSource = "naver";
         }
         // migration done.
         resolve(this.configCache);
