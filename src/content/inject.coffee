@@ -391,7 +391,7 @@ run = () =>
 				if res?.prons
 					pronHtml = res.prons.reduce ((prev, cur)->
 						if cur.synthesis or cur.audio or cur.symbol
-							prev += pronSymbolTpl(cur.symbol, cur.type)
+							prev += pronSymbolTpl(cur.symbol, cur.type) if cur.symbol
 							prev += pronAudioTpl(res.w.replaceAll('·', ''), cur.audio, cur.type, cur.synthesis, res.lang) if cur.synthesis or cur.audio
 						return prev
 					), ''

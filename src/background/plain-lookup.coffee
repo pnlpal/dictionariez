@@ -28,9 +28,14 @@ export default {
         w = w.trim()
         return unless w
         return if utils.isSentence(w)
-        return if utils.hasEnglish(w) && w.length == 1
+        
         # ignore one or two punctuation signs in the end
         w = w.replace(/[,:;'"-?!.]{1,2}$/, '')
+
+        return if utils.hasEnglish(w) && w.length == 1
+
+        # accept one hyphen in the middle, but not other punctuation signs
+        return if w.replace('-', '').match(/[,:;'"-?!.]/) 
 
         if @checkType(w)
             return w
