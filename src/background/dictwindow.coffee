@@ -7,7 +7,7 @@ import utils from "utils"
 import contextMenu from "./contextMenu.js"
 
 screenWidth = 1080
-screenHeight = 800
+screenHeight = 1000
 screenAvailLeft = 0
 screenAvailTop = 0
 
@@ -78,8 +78,8 @@ class DictWindow
         width = 600 if !width or width < 300 
         height = 800 if !height or height < 300
         
-        defaultLeft = Math.round((screenWidth / 2) - (width / 2))
-        defaultTop = Math.round((screenHeight / 2) - (height / 2))
+        defaultLeft = Math.round(((screenWidth || 1080) / 2) - (width / 2))
+        defaultTop = Math.round(((screenHeight || 1000) / 2) - (height / 2))
         left = (defaultLeft || 600) if isNaN left
         top = (defaultTop || 300) if isNaN top 
 
@@ -96,10 +96,10 @@ class DictWindow
                 left = defaultLeft
 
         if useDefaultPosition
-            top = defaultTop
-            left = defaultLeft
             width = screenWidth if width > screenWidth
             height = screenHeight if height > screenHeight
+            left = Math.round(((screenWidth || 1080) / 2) - (width / 2))
+            top = Math.round(((screenHeight || 1000) / 2) - (height / 2))
 
         if !@wid
             try     
