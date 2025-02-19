@@ -367,4 +367,43 @@ describe("lookup-parser", () => {
   ]
 }`);
   });
+
+  it("should get and parse the Japanese word 十分 from japandict", async () => {
+    const html = await utils.loadHTML(
+      `https://www.japandict.com/${encodeURIComponent("十分")}`
+    );
+    const result = await parseHTML(html, parserDesc.japan.result);
+    // console.log(JSON.stringify(result, null, 2));
+    expect(JSON.stringify(result, null, 2)).to.equal(`{
+  "w": "十分",
+  "prons": [
+    {
+      "symbol": "juubun",
+      "synthesis": "ja-JP"
+    }
+  ],
+  "defs": [
+    {
+      "def": "enough, sufficient, plenty, adequate, satisfactory",
+      "labels": [
+        "な adjective"
+      ]
+    },
+    {
+      "def": "sufficiently, fully, thoroughly, well, perfectly",
+      "labels": [
+        "adverb"
+      ]
+    },
+    {
+      "def": "division into ten",
+      "labels": [
+        "noun",
+        "noun or participle taking the aux. verb する",
+        "transitive verb"
+      ]
+    }
+  ]
+}`);
+  });
 });
