@@ -215,7 +215,7 @@
     }
   },
   "Tajik": {
-    "url": "https://vazhaju.com/search/<word>",
+    "url": "https://vazhaju.tj/search/<word>",
     "languages": ["Tajik"],
     "result": {
       "w": {
