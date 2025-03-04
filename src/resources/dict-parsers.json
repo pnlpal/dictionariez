@@ -26,8 +26,7 @@
           },
           "def": {
             "selector": ".b_dList .dc_pm .dc_mn",
-            "toArray": true,
-            "includeArrayIndex": true
+            "toArray": true
           }
         }
       }
@@ -78,7 +77,8 @@
           },
           "def": {
             "selector": ".def_fl>.de_li1",
-            "toArray": true
+            "toArray": true,
+            "strFilter": "\\d+[.]"
           }
         }
       },
@@ -146,8 +146,7 @@
               "def": {
                 "selector": "ol>li",
                 "excludeChild": "div,ul,dl,ol",
-                "toArray": true,
-                "includeArrayIndex": true
+                "toArray": true
               },
               "followWord": {
                 "selector": "ol>li .mention a[href]",
@@ -238,8 +237,7 @@
           "def": {
             "singleParents": ".part-of-speech-content",
             "selector": ".part-of-speech-content .definition>span",
-            "toArray": true,
-            "includeArrayIndex": true
+            "toArray": true
           }
         }
       }
@@ -264,8 +262,7 @@
           "def": {
             "selector": "p",
             "toArray": true,
-            "excludeChild": ".pron",
-            "includeArrayIndex": true
+            "excludeChild": ".pron"
           }
         }
       }

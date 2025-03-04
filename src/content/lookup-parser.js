@@ -186,7 +186,11 @@ const getValueFromNode = ($node, desc) => {
   }
 
   if (desc.strFilter && value) {
-    value = value.replace(new RegExp(desc.strFilter, "g"), "");
+    if (Array.isArray(value)) {
+      value = value.map((v) => v.replace(new RegExp(desc.strFilter, "g"), ""));
+    } else {
+      value = value.replace(new RegExp(desc.strFilter, "g"), "");
+    }
   }
 
   return value;
