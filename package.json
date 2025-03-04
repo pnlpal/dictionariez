@@ -42,6 +42,7 @@
     "less": "^4.2.0",
     "lodash": "latest",
     "moment": "^2.29.4",
+    "opencc-js": "^1.0.5",
     "requirejs": "^2.3.7",
     "string-similarity": "^4.0.4"
   },

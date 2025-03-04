@@ -6,8 +6,15 @@ import utils from "utils"
 import parserDescs from '../resources/dict-parsers.json'
 import langs from '../resources/langs.json'
 import stringSimilarity from 'string-similarity'
+import * as OpenCC from 'opencc-js/cn2t';
 
-
+cnConverter = null
+convertCn2T = (result) ->
+    if not cnConverter 
+        cnConverter = OpenCC.Converter({ from: 'cn', to: 'tw' })
+    result.defs?.forEach ({def}) -> 
+        def?.forEach (text, i) -> 
+            def[i] = cnConverter(text)
 
 setEnglishProns = (result) ->
     result.prons = result.prons.concat [
@@ -132,6 +139,7 @@ export default {
         if tname == "bingCN"
             if utils.isChinese(w) 
                 result.prons?.push({'synthesis': 'zh-CN'})
+                convertCn2T(result)
             else 
                 result.prons = result.prons?.filter (n)->n.type != 'pinyin'
 
