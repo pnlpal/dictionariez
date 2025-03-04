@@ -39,7 +39,6 @@ export default {
     enableBreAudio: false,
     enableRealPron: false,
 
-    showOtherLang: "",
     otherLang: "zh-CN",
 
     enablePlainSK1: false,
