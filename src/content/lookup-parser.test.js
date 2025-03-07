@@ -317,8 +317,8 @@ describe("lookup-parser", () => {
     {
       "pos": "n.",
       "def": [
-        "1.a family whose members rule a country or region for a long period of time; a period of time during which members of the same family rule a country or region",
-        "2.a family whose members are very successful in business or politics for a long period of time"
+        "a family whose members rule a country or region for a long period of time; a period of time during which members of the same family rule a country or region",
+        "a family whose members are very successful in business or politics for a long period of time"
       ]
     }
   ],
@@ -330,6 +330,52 @@ describe("lookup-parser", () => {
     {
       "pos": "web",
       "def": "豪门恩怨；皇朝；大内群英"
+    }
+  ]
+}`
+    );
+  });
+
+  it("should get and parse the word 恩 from Bing CN Dict", async () => {
+    const html = await utils.loadHTML(
+      "https://cn.bing.com/dict/search?mkt=zh-cn&q=恩"
+    );
+    const result = await parseHTML(html, parserDesc.bingCN.result);
+    console.log(JSON.stringify(result, null, 2));
+    expect(JSON.stringify(result, null, 2)).to.equal(
+      `{
+  "w": "恩",
+  "prons": [
+    {
+      "symbol": null,
+      "type": "ame"
+    },
+    {
+      "symbol": null,
+      "type": "bre"
+    },
+    {
+      "symbol": "[ēn]",
+      "type": "pinyin"
+    }
+  ],
+  "defs": [
+    {
+      "pos": "n.",
+      "def": [
+        "恩惠;恩德",
+        "姓氏"
+      ]
+    }
+  ],
+  "defs2": [
+    {
+      "pos": "n.",
+      "def": "grace; kindness; favour; a surname"
+    },
+    {
+      "pos": "web",
+      "def": "Grace; Ian; John Donne"
     }
   ]
 }`
