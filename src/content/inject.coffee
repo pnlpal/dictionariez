@@ -261,7 +261,7 @@ run = () =>
 				utils.send 'play audios', { synthesisObj }
 
 			return false
-		), 1000, {leading: true})
+		), 1000, {leading: true, trailing: false})
 
 		handleSelectionWord = (e)->
 			selObj = window.getSelection()
