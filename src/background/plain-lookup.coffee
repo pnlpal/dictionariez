@@ -143,6 +143,10 @@ export default {
                 convertCn2T(result) if setting.getValue 'enableConvertCn2T'
             else 
                 result.prons = result.prons?.filter (n)->n.type != 'pinyin'
+                # parse the second language if possible.
+                possibleLangs = @checkLangs(w).filter((l) -> l != result?.lang)
+                if possibleLangs.length
+                    return @parse(tabId, w, 'wiktionary', if result.w then result else null)
 
         # add American pronunciation to English
         if tname == 'bing' 
