@@ -248,7 +248,9 @@ export default {
             tid: win.tid, 
             url: win.url, 
             word: win.word, 
-            dictName: win.dictName 
+            dictName: win.dictName,
+            sentence: win.sentence,
+            isHelpMeRefine: win.isHelpMeRefine
         }) }
 
         # chrome.storage.local.get 'dictWindows', (data) =>
@@ -348,14 +350,22 @@ export default {
             else if w and (not utils.isSentence(w))
                 storage.addHistory { w, sentence }
 
-            if request.newDictWindow
-                targetWin = @create({ dictName })
-                result = await targetWin.lookup(w, sentence, languagePrompt)
+            if senderWin.isHelpMeRefine and utils.isSentence(w) and senderWin.dictName != dictName 
+                if request.newDictWindow
+                    targetWin = @create({ dictName })
+                    result = await targetWin.refineTextWithAI(w)
+                else 
+                    result = await senderWin.refineTextWithAI(w)
+                    
             else 
-                if senderWin.dictName != dictName
-                    result = await senderWin.lookup(w, sentence, languagePrompt, dictName)
-                else
-                    result = await @lookup({ w, sentence, languagePrompt })
+                if request.newDictWindow
+                    targetWin = @create({ dictName })
+                    result = await targetWin.lookup(w, sentence, languagePrompt)
+                else 
+                    if senderWin.dictName != dictName
+                        result = await senderWin.lookup(w, sentence, languagePrompt, dictName)
+                    else
+                        result = await @lookup({ w, sentence, languagePrompt })
             
             @saveInStorage()
             return result
