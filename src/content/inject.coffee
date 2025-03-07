@@ -342,7 +342,7 @@ run = () =>
 					return true
 				curNode = curNode.parentElement
 			# check the direct children of the node, sometimes the editor could be wrapped by a div. 
-			for node in element?.children
+			for node in (element?.children || [])
 				if node.isContentEditable or ["input", "textarea"].includes(node.nodeName.toLowerCase())
 					return true
 
