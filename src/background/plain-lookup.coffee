@@ -15,6 +15,7 @@ convertCn2T = (result) ->
     result.defs?.forEach ({def}) -> 
         def?.forEach (text, i) -> 
             def[i] = cnConverter(text)
+    result.w = cnConverter(result.w)
 
 setEnglishProns = (result) ->
     result.prons = result.prons.concat [
@@ -139,7 +140,7 @@ export default {
         if tname == "bingCN"
             if utils.isChinese(w) 
                 result.prons?.push({'synthesis': 'zh-CN'})
-                convertCn2T(result)
+                convertCn2T(result) if setting.getValue 'enableConvertCn2T'
             else 
                 result.prons = result.prons?.filter (n)->n.type != 'pinyin'
 

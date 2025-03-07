@@ -316,6 +316,17 @@
 									Look up <strong>Chinese</strong> words <span class="text-muted">(Japanese Kanji conflicts with Chinese, cancel Chinese if you prefer Japanese.)</span>
 								</label>
 							</div>
+							<div class="checkbox indent">
+								<label>
+									<input
+										type="checkbox"
+										ng-model="setting.enableConvertCn2T"
+										ng-click="changeKey(!setting.enableConvertCn2T, 'enableConvertCn2T')"
+									/>
+									  Show definitions in Traditional Chinese instead of Simplified Chinese.
+								</label>
+							</div>
+
 	
 							<div class="checkbox" ng-repeat="lang in setting.otherSupportedLanguages">
 								<label>

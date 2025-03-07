@@ -31,6 +31,7 @@ export default {
 
     enableLookupEnglish: true,
     enableLookupChinese: true,
+    enableConvertCn2T: false,
     otherDisabledLanguages: [],
 
     enablePlainLookup: true,
@@ -38,8 +39,6 @@ export default {
     enableAmeAudio: false,
     enableBreAudio: false,
     enableRealPron: false,
-
-    otherLang: "zh-CN",
 
     enablePlainSK1: false,
     plainSK1: "Ctrl",

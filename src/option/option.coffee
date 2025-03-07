@@ -39,14 +39,6 @@ dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
         'bingCN': 'Bing Dict CN',
         'wiktionary': 'Wiktionary'
     };
-    $scope.otherLangs = {
-        'zh-CN': 'Chinese',
-        "ja-JP": 'Japanese',
-        'ko-KR': 'Korean',
-        'es-ES': 'Spanish',
-        'fr-FR': 'French',
-        'de-DE': 'German'
-    }
 
     $scope.changeKey = debounce ((value, key)->
         if key 
