@@ -165,7 +165,9 @@ export default {
             
         if tname == 'wiktionary'
             multipleResult = []
-            if prevResult
+            if Array.isArray(prevResult)
+                multipleResult = prevResult
+            else if prevResult
                 multipleResult.push prevResult
 
             for targetLang in (result.langTargets || [])
@@ -203,27 +205,8 @@ export default {
                         if targetLang.lang == 'Indonesian' 
                             return @parseOtherLang tabId, w, 'Indonesian', targetLang, prevResult
 
-                        # use followWord fist, then try optionalFollowWord
-                        followWords = targetLang.defs?.map((n) -> n.followWord).filter((n) -> n)
-                        followWords = [...new Set(followWords)] # remove duplicate
-                        optionalFollowWord = targetLang.defs?[0]?.optionalFollowWord
-                        if followWords?.length and !prevResult
-                            if followWords[0] != w
-                                followWordResults_0 = await @parse(tabId, followWords[0], 'wiktionary', targetLang)
-                            if followWords[1] and followWords[1] != w
-                                followWordResults_1 = await @parse(tabId, followWords[1], 'wiktionary', targetLang)
-
-                        if optionalFollowWord and !prevResult
-                            if optionalFollowWord != w and !followWords.includes(optionalFollowWord) and stringSimilarity.compareTwoStrings(w, optionalFollowWord) > 0.7
-                                optionalFollowWordResults = await @parse(tabId, optionalFollowWord, 'wiktionary', targetLang)
-
-                        multipleResult.push targetLang if multipleResult.length < 3
-
-                        # merge the followWords result.
-                        multipleResult.push followWordResults_0[1] if followWordResults_0?.length > 1 and multipleResult.length < 3
-                        multipleResult.push followWordResults_1[1] if followWordResults_1?.length > 1 and multipleResult.length < 3
-                        multipleResult.push optionalFollowWordResults[1] if optionalFollowWordResults?.length > 1 and multipleResult.length < 3
-                        
+                        multipleResult.push targetLang
+                        await @parseFollowWordsOnWiktionary tabId, w, targetLang, multipleResult
             
             if !multipleResult.length
                 # merge Tajik
@@ -232,11 +215,30 @@ export default {
 
                 upperFirst = utils.toUpperFirst w 
                 if !result and upperFirst != w and html.find("a[href='/wiki/#{upperFirst}']").get(0)
-                    return @parse(tabId, upperFirst, 'wiktionary')
+                    return @parse(tabId, upperFirst, 'wiktionary', prevResult)
 
             return multipleResult
 
         return result
+
+    parseFollowWordsOnWiktionary: (tabId, w, targetLang, multipleResult) -> 
+        # use followWord fist, then try optionalFollowWord
+        followWords = targetLang.defs?.map((n) -> n.followWord).filter((n) -> n)
+        followWords = [...new Set(followWords)] # remove duplicate
+        optionalFollowWord = targetLang.defs?[0]?.optionalFollowWord
+        isUniqueWord = (word) -> 
+            word && w != word && multipleResult.every (n) -> n.w?.replaceAll('·', '') != word
+
+        if followWords?.length and multipleResult.length < 5
+            if isUniqueWord(followWords[0])
+                await @parse(tabId, followWords[0], 'wiktionary', multipleResult)
+            if isUniqueWord(followWords[1])
+                await @parse(tabId, followWords[1], 'wiktionary', multipleResult)
+
+        if optionalFollowWord and multipleResult.length < 5
+            if isUniqueWord(optionalFollowWord) and stringSimilarity.compareTwoStrings(w, optionalFollowWord) > 0.7
+                await @parse(tabId, optionalFollowWord, 'wiktionary', multipleResult)
+
 
     parseOtherLang: (tabId, w, lang, wiktionaryResult, prevResult) ->
         result = await @parse(tabId, w, lang)
