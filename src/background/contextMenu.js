@@ -11,12 +11,14 @@ export default {
           type: "get info before open dict",
         },
         async (res) => {
-          dw.lookup({
-            ...res,
-            w: word || res?.w || (await readClipboard(tab)),
-            s: res?.s || info.frameUrl || tab.url,
-            sc: res?.sc || tab.title,
-          });
+          if (res?.w && res.isInEditable) dw.refineTextWithAI(res.w);
+          else
+            dw.lookup({
+              ...res,
+              w: word || res?.w || (await readClipboard(tab)),
+              s: res?.s || info.frameUrl || tab.url,
+              sc: res?.sc || tab.title,
+            });
         }
       );
     }

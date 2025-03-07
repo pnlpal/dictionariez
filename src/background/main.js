@@ -80,10 +80,12 @@ chrome.tabs.onRemoved.addListener(async function (tid) {
         type: "get info before open dict",
       },
       async (res) => {
-        dw.lookup({
-          w: res?.w || (await readClipboard(tab)),
-          ...res,
-        });
+        if (res?.w && res.isInEditable) dw.refineTextWithAI(res.w);
+        else
+          dw.lookup({
+            w: res?.w || (await readClipboard(tab)),
+            ...res,
+          });
       }
     );
   } else {

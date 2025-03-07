@@ -175,7 +175,7 @@ run = () =>
 		$(document).bind 'keydown', (event)->
 			if utils.checkEventKey event, setting.openSK1, setting.openSK2, setting.openKey
 				w = window.getSelection().toString().trim()
-				isInEditable = checkEditable(event.target)
+				isInEditable = utils.isSentence(w) && checkEditable(event.target)
 				try 
 					sentence = getSentenceOfSelection()
 				catch
@@ -335,11 +335,16 @@ run = () =>
 			catch  # Gecko does not implement "sentence" yet
 				return getSentenceFromSelection(selection)
 
-		checkEditable = (curNode) ->
+		checkEditable = (element) ->
+			curNode = element
 			while curNode 
 				if curNode.isContentEditable or ["input", "textarea"].includes(curNode.nodeName.toLowerCase())
 					return true
 				curNode = curNode.parentElement
+			# check the direct children of the node, sometimes the editor could be wrapped by a div. 
+			for node in element?.children
+				if node.isContentEditable or ["input", "textarea"].includes(node.nodeName.toLowerCase())
+					return true
 
 		handleMouseUp = (event)->
 			if isInDict
@@ -482,7 +487,7 @@ run = () =>
 					w: text,
 					s: location.href,
 					sc: document.title,
-					isInEditable: checkEditable(event.target)
+					isInEditable: utils.isSentence(text) && checkEditable(event.target)
 				})
 
 			# floating definition
@@ -516,6 +521,16 @@ run = () =>
 					},  handlePlainResult
 
 		utils.listenToBackground 'get info before open dict', (request, sender, sendResponse) =>
+			word = window.getSelection().toString().trim()
+			if !word 
+				for frame in window.frames 
+					try 
+						word = frame.getSelection().toString().trim()
+						break if word 
+					catch
+
+			isInEditable = utils.isSentence(word) && checkEditable(window.getSelection().focusNode)
+
 			try 
 				sentence = getSentenceOfSelection()
 			catch
@@ -527,20 +542,13 @@ run = () =>
 						sentence = getSentenceOfSelection(frame)
 						break if sentence 
 					catch
-			
-			word = window.getSelection().toString().trim()
-			if !word 
-				for frame in window.frames 
-					try 
-						word = frame.getSelection().toString().trim()
-						break if word 
-					catch
 
 			sendResponse({
 				w: word,
 				s: location.href,
 				sc: document.title,
 				sentence: sentence,
+				isInEditable: isInEditable,
 				screen: {
 					width: screen.width,
 					height: screen.height,

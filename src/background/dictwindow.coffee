@@ -151,8 +151,8 @@ class DictWindow
     lookup: (text, sentence, languagePrompt, dictName)->
         url = @url
 
+        sentence = @sentence if not sentence and not text 
         text = @word if not text
-        sentence = @sentence if not sentence
         dictName = @dictName if not dictName
 
         @isHelpMeRefine = false
