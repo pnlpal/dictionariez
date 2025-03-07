@@ -1,6 +1,6 @@
 import utils from "utils";
 
-async function doQuery(w, sentence, languagePrompt, dict) {
+async function doQuery(w, sentence, languagePrompt, dict, isHelpMeRefine) {
   if (!w || !dict.inputSelector) return;
   if (
     w === localStorage.lastWord &&
@@ -14,18 +14,24 @@ async function doQuery(w, sentence, languagePrompt, dict) {
 
   await utils.checkInTime(() => document.querySelector(dict.inputSelector));
 
+  const helpMeRefinePrompt =
+    dict.helpMeRefinePrompt ||
+    'Please help me refine the text to make it clearer, more concise, correct any grammatical errors, and ensure the output is simple: \n\n"<word>"';
+
   const translationPrompt =
     dict.translationPrompt ||
     'Translate this text, keep it simple, clear and natural: "<word>"';
 
-  const prompt = utils.isSentence(w)
+  const prompt = isHelpMeRefine
+    ? helpMeRefinePrompt.replaceAll("<word>", w)
+    : utils.isSentence(w)
     ? translationPrompt.replaceAll("<word>", w)
     : sentence && (dict.chatgptPromptWithContext || dict.promptWithContext)
     ? (dict.chatgptPromptWithContext || dict.promptWithContext)
         .replaceAll("<word>", w)
         .replaceAll("<sentence>", sentence)
         .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "")
-    : (dict.chatgptPrompt || dict.prompt || "")
+    : (dict.chatgptPrompt || dict.prompt || "Define: <word>")
         .replaceAll("<word>", w)
         .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "");
 
@@ -90,16 +96,27 @@ async function fixQueryingOnEnterForChatGPT(dict) {
   }
 }
 
-export async function initOnLoadDynamicDict({ word, sentence, dict }, $) {
+export async function initOnLoadDynamicDict({
+  word,
+  sentence,
+  dict,
+  isHelpMeRefine,
+}) {
   if (dict.windowUrl.includes(location.origin)) {
     if (dict && word) {
-      doQuery(word, sentence, "", dict);
+      doQuery(word, sentence, "", dict, isHelpMeRefine);
     }
 
     fixQueryingOnEnterForChatGPT(dict);
 
     utils.listenToBackground("querying", (request) => {
-      doQuery(request.text, request.sentence, request.languagePrompt, dict);
+      doQuery(
+        request.text,
+        request.sentence,
+        request.languagePrompt,
+        dict,
+        request.isHelpMeRefine
+      );
     });
   }
 }

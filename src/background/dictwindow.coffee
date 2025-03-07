@@ -47,6 +47,7 @@ class DictWindow
     sentence: null
     dictName: null
     windex: 0
+    isHelpMeRefine: false
 
     defaultUrl: chrome.runtime.getURL('dict.html')
 
@@ -61,6 +62,7 @@ class DictWindow
         @word = null
         @sentence = null
         @dictName = null
+        @isHelpMeRefine = false
 
     getStoredPosition: ()->
         # bugfix: dont know how why, windowWidth and windowHeight are saved as number, need integer here.
@@ -153,23 +155,49 @@ class DictWindow
         sentence = @sentence if not sentence
         dictName = @dictName if not dictName
 
+        @isHelpMeRefine = false
+
         if text
             if @word != text || @sentence != sentence || @dictName != dictName
                 @word = text
                 @sentence = sentence
                 @dictName = dictName
-                result = await dict.query(text, @dictName || setting.getValue('dictionary')) 
+                result = dict.query(text, @dictName || setting.getValue('dictionary')) 
                 url = result?.windowUrl
                 @sendMessage({type: 'querying', text, sentence, languagePrompt})
         else 
             @dictName = dictName
 
         return @open(url)
-            
 
+    refineTextWithAI: (text) ->
+        return if not text
+        return if not @dictName 
+        return if not dict.isAI(@dictName)
+        @word = text 
+        @isHelpMeRefine = true
+        result = dict.query(text, @dictName)
+        @sendMessage({type: 'querying', text, isHelpMeRefine: true})
+        @open(result.windowUrl)
+        return true
+            
 export default {
     DictWindow,
     dictWindows: [],
+
+    refineTextWithAI: (text) -> 
+        return if utils.isMobile()
+
+        results = []
+        for win in @dictWindows
+            result = win.refineTextWithAI(text)
+            results.push result if result 
+        
+        if not results.length
+            aiDict = dict.getFirstAIDict()
+            if aiDict
+                result = @create({ dictName: aiDict.dictName }).refineTextWithAI(text) 
+        return result 
 
     lookup: ({ w, s, sc, sentence, languagePrompt, screen } = {}) ->
         storage.addHistory { w, s, sc, sentence } if w and s and (not utils.isSentence(w))  # ignore lookup from options page
@@ -265,8 +293,10 @@ export default {
             if w
                 @lookup({ w, s, sc, sentence })
 
-        message.on 'look up', ({ dictName, w, s, sc, sentence, means, newDictWindow }, sender) =>
+        message.on 'look up', ({ dictName, w, s, sc, sentence, means, newDictWindow, isInEditable }, sender) =>
             # 'look up' can be triggered by the context menu or the hotkey or any webpages
+
+            console.log("[dictWindow] look up: ", { dictName, w, s, sc, sentence, means, isInEditable })
             if means == 'mouse'
                 if not setting.getValue('enableMinidict')
                     return
@@ -274,14 +304,17 @@ export default {
             if !w 
                 w = await readClipboard(sender.tab)
 
-            result = await @lookup({ w: w?.trim(), s, sc, sentence })
+            if isInEditable 
+                result = await @refineTextWithAI(w)
+            else
+                result = await @lookup({ w: w?.trim(), s, sc, sentence })
 
-            if newDictWindow 
-                targetWin = @create({ dictName })
-                result = await targetWin.lookup(w || @dictWindows[0].word, sentence)
+                if newDictWindow 
+                    targetWin = @create({ dictName })
+                    result = await targetWin.lookup(w || @dictWindows[0].word, sentence)
 
-            else if dictName # only change the main window or in new window.
-                result = await @mainDictWindow().lookup(w?.trim(), sentence, null, dictName)
+                else if dictName # only change the main window or in new window.
+                    result = await @mainDictWindow().lookup(w?.trim(), sentence, null, dictName)
                 
             @saveInStorage()
             return result
@@ -369,7 +402,8 @@ export default {
                     cardUrl: chrome.runtime.getURL('card.html'),
                     dict: dict.getDict(win.dictName),
                     word: win.word,
-                    sentence: win.sentence 
+                    sentence: win.sentence,
+                    isHelpMeRefine: win.isHelpMeRefine
                 }
             else if utils.isMobile()
                 chatgptDict = dict.getDict("chatgpt definition")

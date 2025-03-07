@@ -157,18 +157,24 @@ export default {
             return @allDicts[@allDicts.length-1]
         return @allDicts[n-1]
 
+    isAI: (dictName) ->
+        dict = @getDict(dictName)
+        return dict.chatgptPrompt or dict.prompt 
+    getFirstAIDict: () ->
+        dict = @allDicts.find (d) -> d.chatgptPrompt or d.prompt 
+        return dict or chatgptDefault
+
     query: (word, dictName)->
-        new Promise (resolve, reject) => 
-            dict = @getDict(dictName)
-            if dict.fixSpaceInWords
-                word = word.replace(/\s+/g, dict.fixSpaceInWords)
+        dict = @getDict(dictName)
+        if dict.fixSpaceInWords
+            word = word.replace(/\s+/g, dict.fixSpaceInWords)
 
-            if dict.windowUrl
-                windowUrl = dict.windowUrl.replace('<word>', word.toLowerCase())
-            else if dict.chatgptPrompt 
-                windowUrl = chatgptDefault.windowUrl
+        if dict.windowUrl
+            windowUrl = dict.windowUrl.replace('<word>', word.toLowerCase())
+        else if dict.chatgptPrompt 
+            windowUrl = chatgptDefault.windowUrl
 
-            return resolve { windowUrl }
+        return  { windowUrl }
         
     searchDicts: (key) ->
         results = []

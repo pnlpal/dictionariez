@@ -48,7 +48,7 @@ run = () =>
 				$("<iframe id='dictionaries-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('html')
 				
 			isInDict = true
-			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict }, $)
+			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict, isHelpMeRefine: res.isHelpMeRefine })
 
 		if res?.cardUrl and res.word and not location.host.includes('wikipedia.org') and window.self == window.top
 			comparedLoc = decodeURI(location.href).toLowerCase()
@@ -174,6 +174,8 @@ run = () =>
 		
 		$(document).bind 'keydown', (event)->
 			if utils.checkEventKey event, setting.openSK1, setting.openSK2, setting.openKey
+				w = window.getSelection().toString().trim()
+				isInEditable = checkEditable(event.target)
 				try 
 					sentence = getSentenceOfSelection()
 				catch
@@ -181,10 +183,11 @@ run = () =>
 				chrome.runtime.sendMessage({
 					type: 'look up',
 					means: 'keyboard',
-					w: window.getSelection().toString().trim(),
+					w: w,
 					s: location.href,
 					sc: document.title,
 					sentence,
+					isInEditable: isInEditable
 				})
 			if event.key == "Escape"
 				$('.dictionaries-tooltip').fadeOut().hide()
@@ -478,7 +481,8 @@ run = () =>
 					sentence,
 					w: text,
 					s: location.href,
-					sc: document.title
+					sc: document.title,
+					isInEditable: checkEditable(event.target)
 				})
 
 			# floating definition
