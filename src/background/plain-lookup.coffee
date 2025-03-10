@@ -230,9 +230,9 @@ export default {
             word && w != word && multipleResult.every (n) -> n.w?.replaceAll('·', '') != word
 
         if followWords?.length and multipleResult.length < 5
-            if isUniqueWord(followWords[0])
+            if isUniqueWord(followWords[0]) and followWords[0][0] == w[0]
                 await @parse(tabId, followWords[0], 'wiktionary', multipleResult)
-            if isUniqueWord(followWords[1])
+            if isUniqueWord(followWords[1]) and followWords[1][0] == w[0]
                 await @parse(tabId, followWords[1], 'wiktionary', multipleResult)
 
         if optionalFollowWord and multipleResult.length < 5
