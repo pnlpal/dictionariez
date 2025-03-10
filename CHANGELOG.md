@@ -1,3 +1,12 @@
+# v5.4.0 Mar 10, 2025 
+- Added configuration options to convert Simplified Chinese to Traditional Chinese.
+- Removed redundant index for Chinese lookup results.
+- Implemented fallback to Wiktionary if BingCN lookup fails.
+- Provided more optional words for non-English languages, especially for conjugated words.
+- Introduced "Help Me Refine with AI" feature accessible via keyboard shortcut.
+- Fixed issue with multiple pronunciations for the same word.
+- Fixed infinite loop issue when looking up German words.
+
 # v5.3.1 Feb 19, 2025
 - Google word lookup for the floating definitions is no longer available; use Bing instead.
 - English floating definitions now include dots for pronunciation.
