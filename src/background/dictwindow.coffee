@@ -170,8 +170,9 @@ class DictWindow
 
         return @open(url)
 
-    refineTextWithAI: (text) ->
+    refineTextWithAI: (text, dictName = null) ->
         return if not text
+        @dictName = dictName if dictName
         return if not @dictName 
         return if not dict.isAI(@dictName)
         @word = text 
@@ -355,7 +356,7 @@ export default {
                     targetWin = @create({ dictName })
                     result = await targetWin.refineTextWithAI(w)
                 else 
-                    result = await senderWin.refineTextWithAI(w)
+                    result = await senderWin.refineTextWithAI(w, dictName)
                     
             else 
                 if request.newDictWindow
