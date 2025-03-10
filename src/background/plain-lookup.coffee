@@ -119,12 +119,12 @@ export default {
 
             else if err.status == 404 \
                 and tname == 'wiktionary'
-                if (not url.includes('sv.wiktionary.org')) \
+                if (url.includes('en.wiktionary.org')) \
                     and @checkLangs(w).includes('Swedish') 
-                    return @parse(tabId, w, 'wiktionary', prevResult, url.replace('en.wiktionary.org', 'sv.wiktionary.org'))
+                    return @parse(tabId, w, 'wiktionary', prevResult, url.replace(/\w+.wiktionary.org/, 'sv.wiktionary.org'))
                 else if (not url.includes('de.wiktionary.org')) \
                     and @checkLangs(w).includes('German')
-                    return @parse(tabId, w, 'wiktionary', prevResult, url.replace('en.wiktionary.org', 'de.wiktionary.org'))
+                    return @parse(tabId, w, 'wiktionary', prevResult, url.replace(/\w+.wiktionary.org/, 'de.wiktionary.org'))
                 else if @checkLangs(w).includes('Tajik')
                     return @parseOtherLang tabId, w, 'Tajik', null, prevResult
                 else if @checkLangs(w).includes('Indonesian')
