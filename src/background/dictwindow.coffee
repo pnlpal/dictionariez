@@ -179,8 +179,7 @@ class DictWindow
         @isHelpMeRefine = true
         result = dict.query(text, @dictName)
         @sendMessage({type: 'querying', text, isHelpMeRefine: true})
-        @open(result.windowUrl)
-        return true
+        return @open(result.windowUrl)
             
 export default {
     DictWindow,
@@ -198,6 +197,9 @@ export default {
             aiDict = dict.getFirstAIDict()
             if aiDict
                 result = @create({ dictName: aiDict.dictName }).refineTextWithAI(text) 
+
+        await Promise.all(results)
+        @saveInStorage()
         return result 
 
     lookup: ({ w, s, sc, sentence, languagePrompt, screen } = {}) ->
