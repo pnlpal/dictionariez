@@ -1,8 +1,9 @@
 browser="${BROWSER:-Chrome}"
-name="dictionaries_${browser}.zip"
-srcname="dictionaries-src_${browser}.zip" 
+product="${PRODUCT:-Dictionariez}"
+name="${product}_${browser}.zip"
+srcname="${product}-src_${browser}.zip" 
 
-BROWSER=${browser} npm run build
+PRODUCT=${product} BROWSER=${browser} npm run build
 
 rm -f ${name}
 rm -f ${srcname}
