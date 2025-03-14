@@ -125,7 +125,10 @@ var options = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: "src/manifest.json",
+          from:
+            env.PRODUCT === "SidePal"
+              ? "src/manifest.sidepal.json"
+              : "src/manifest.json",
           to: path.join(__dirname, "build"),
           force: true,
           transform: function (content) {
@@ -143,7 +146,10 @@ var options = {
               delete json.host_permissions;
               json["browser_specific_settings"] = {
                 gecko: {
-                  id: "revir.qing@gmail.com",
+                  id:
+                    env.PRODUCT === "SidePal"
+                      ? "revir.qing_sidepal@gmail.com"
+                      : "revir.qing@gmail.com",
                   strict_min_version: "109.0",
                 },
               };
@@ -151,7 +157,7 @@ var options = {
                 scripts: ["background.bundle.js"],
               };
               json.permissions = json.permissions.filter(
-                (x) => x !== "offscreen"
+                (x) => x !== "offscreen" && x !== "sidePanel"
               );
               json.permissions.push("<all_urls>");
               json["web_accessible_resources"] = [
@@ -160,6 +166,13 @@ var options = {
                 "*.html",
                 "fonts/*",
               ];
+              if (env.PRODUCT === "SidePal") {
+                json["sidebar_action"] = {
+                  default_title: "SidePal",
+                  default_panel: "dict.html",
+                  default_icon: "images/library-128.png",
+                };
+              }
             }
             if (env.NODE_ENV === "development") {
               if (env.BROWSER === "Firefox") {
