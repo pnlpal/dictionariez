@@ -43,7 +43,7 @@ export default {
     enablePlainSK1: false,
     plainSK1: "Ctrl",
 
-    enableMinidict: false,
+    enableMinidict: process.env.PRODUCT === "SidePal" ? true : false,
     enableMouseSK1: false,
     mouseSK1: "Alt",
 
