@@ -3,23 +3,35 @@ import storage from "./storage.js";
 import dict from "./dict.coffee";
 import dw from "./dictwindow.coffee";
 import "./auto-complete.coffee";
-import lookup from "./plain-lookup.coffee";
-import speak from "./speak.coffee";
-import ankiWindow from "./ankiwindow.coffee";
+
 import message from "./message.js";
 import readClipboard from "./clipboard.coffee";
-import pnlpal from "./pnlpal.coffee";
 import contextMenu from "./contextMenu.js";
+console.log("PRODUCT: ", process.env.PRODUCT);
 
 const initPromises = (async function () {
   await setting.init();
   await storage.init();
   await dict.init();
   await dw.init();
-  await ankiWindow.init();
-  await lookup.init();
-  await speak.init();
-  await pnlpal.init();
+
+  if (process.env.PRODUCT === "Dictionariez") {
+    const lookup = require("./plain-lookup.coffee").default;
+    const speak = require("./speak.coffee").default;
+    const ankiWindow = require("./ankiwindow.coffee").default;
+    const pnlpal = require("./pnlpal.coffee").default;
+
+    await ankiWindow.init();
+    await lookup.init();
+    await speak.init();
+    await pnlpal.init();
+
+    global.ankiWindow = ankiWindow;
+  }
+  if (process.env.PRODUCT === "SidePal") {
+    const setupSidePanel = require("./setupSidePanel.js").default;
+    setupSidePanel();
+  }
 
   global.dw = dw;
   global.storage = storage;
@@ -40,11 +52,17 @@ chrome.runtime.onInstalled.addListener(async function (details) {
     ].includes(details.reason)
   ) {
     await initPromises;
-    if (!setting.getValue("privacyConsent")) {
+    if (process.env.PRODUCT === "Dictionariez") {
+      if (!setting.getValue("privacyConsent")) {
+        chrome.tabs.create({
+          url: chrome.runtime.getURL("privacy-consent.html"),
+        });
+        return;
+      }
+    } else {
       chrome.tabs.create({
-        url: chrome.runtime.getURL("privacy-consent.html"),
+        url: chrome.runtime.getURL("share.html"),
       });
-      return;
     }
   }
 });
@@ -57,21 +75,36 @@ chrome.runtime.onMessage.addListener(function (...args) {
   // unless you return true from the event listener to indicate you wish to send a response asynchronously
   return true;
 });
-chrome.windows.onRemoved.addListener(async function (wid) {
-  await initPromises;
-  dw.destroyWin({ wid });
-  ankiWindow.destroyWin({ wid });
-});
-chrome.tabs.onRemoved.addListener(async function (tid) {
-  await initPromises;
-  dw.destroyWin({ tid });
-});
+
+if (process.env.PRODUCT === "Dictionariez") {
+  chrome.windows.onRemoved.addListener(async function (wid) {
+    await initPromises;
+    dw.destroyWin({ wid });
+    global.ankiWindow?.destroyWin({ wid });
+  });
+  chrome.tabs.onRemoved.addListener(async function (tid) {
+    await initPromises;
+    dw.destroyWin({ tid });
+  });
+}
+
+function openSidePanel(tab) {
+  if (chrome.sidePanel) {
+    chrome.sidePanel.open({ tabId: tab.id });
+  } else {
+    browser.sidebarAction.open();
+  }
+}
 
 (chrome.action || chrome.browserAction).onClicked.addListener(async function (
   tab
 ) {
+  if (process.env.PRODUCT === "SidePal") {
+    openSidePanel(tab);
+  }
+
   await initPromises;
-  ankiWindow.focus();
+  global.ankiWindow?.focus();
 
   if (tab.url.startsWith("http")) {
     chrome.tabs.sendMessage(
@@ -96,6 +129,10 @@ chrome.tabs.onRemoved.addListener(async function (tid) {
 });
 
 chrome.contextMenus.onClicked.addListener(async function (info, tab) {
+  if (process.env.PRODUCT === "SidePal") {
+    openSidePanel(tab);
+  }
+
   await initPromises;
   contextMenu.handler(info, tab);
 });
