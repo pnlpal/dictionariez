@@ -22,7 +22,7 @@ if (!inFrame)
 
 dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     # change Bing dictionary's title
-    document.title = 'Dictionariez'
+    document.title = process.env.PRODUCT
     baseNode = '#fairy-dict'
     $scope.initial = true
     $scope.inFrame = inFrame
