@@ -37,3 +37,12 @@ if (!navigator.userAgent.includes("Gecko/")) {
   // not Firefox
   document.querySelector("#link-to-mozilla").style.display = "none";
 }
+
+(function setupAsciiTitle() {
+  const asciiTitle =
+    process.env.PRODUCT === "SidePal"
+      ? require("../ascii-title.sidepal.html").default
+      : require("../ascii-title.html").default;
+
+  document.querySelector("#ascii-title").innerHTML = asciiTitle;
+})();

@@ -20,7 +20,7 @@ dictApp = angular.module('fairyDictApp', ['ui.bootstrap'])
 if (!inFrame) 
     initLookupParser()
 
-dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
+dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
     # change Bing dictionary's title
     document.title = process.env.PRODUCT
     baseNode = '#fairy-dict'
@@ -30,6 +30,11 @@ dictApp.controller 'dictCtrl', ['$scope', ($scope) ->
     $scope.previous = null
 
     $scope.version = chrome.runtime.getManifest().version
+    $scope.asciiTitle = if process.env.PRODUCT == 'SidePal' 
+        require("../ascii-title.sidepal.html").default
+    else 
+        require("../ascii-title.html").default
+    $scope.asciiTitleHtml = $sce.trustAsHtml($scope.asciiTitle)
 
     if not $scope.inFrame
         import(### webpackChunkName: "github-badge"  ###'../vendor/github-badge.js')

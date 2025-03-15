@@ -21,7 +21,13 @@ import 'angularjs-color-picker'
 
 dictApp = angular.module('fairyDictApp', ['ui.bootstrap', 'color.picker'])
 
-dictApp.controller 'optionCtrl', ['$scope', ($scope) ->
+dictApp.controller 'optionCtrl', ['$scope', '$sce', ($scope, $sce) ->
+    $scope.asciiTitle = if process.env.PRODUCT == 'SidePal' 
+            require("../ascii-title.sidepal.html").default
+        else 
+            require("../ascii-title.html").default
+    $scope.asciiTitleHtml = $sce.trustAsHtml($scope.asciiTitle)
+
     $scope.version = chrome.runtime.getManifest().version
     $scope.allSK = ['', 'Ctrl', 'Shift', 'Alt', 'Meta']
     $scope.allLetters = (String.fromCharCode(code) for code in ['A'.charCodeAt(0)..'Z'.charCodeAt(0)])

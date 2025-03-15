@@ -17,3 +17,12 @@ bootoast.toast({
     timeout: 5,
     dismissible: false
 })
+
+(setupAsciiTitle = () ->
+  asciiTitle = if process.env.PRODUCT == "SidePal"
+    require("../ascii-title.sidepal.html").default
+  else 
+    require("../ascii-title.html").default
+
+  document.querySelector("#ascii-title").innerHTML = asciiTitle
+)()

@@ -256,14 +256,7 @@
     <div class="text-section text-center">
       <h1 class="">
         <!-- http://patorjk.com/software/taag/#p=display&h=1&v=1&f=Swan&t=Dictionariez -->
-        <pre class="ascii-title">
-.--.        .                                    
-|   : o    _|_   o                    o          
-|   | .  .-.|    .  .-. .--. .-.  .--..  .-. ---.
-|   ; | (   |    | (   )|  |(   ) |   | (.-'  .' 
-'--'-' `-`-'`-'-' `-`-' '  `-`-'`-' -' `-`--''---
-				</pre
-        >
+        <span ng-bind-html="asciiTitleHtml"></span>
       </h1>
       <p>
         <a
@@ -323,10 +316,6 @@
       </p>
     </div>
 
-    <div
-      class="dict_result"
-      ng-bind-html="queryResult"
-      ng-hide="querying || initial"
-    ></div>
+    <div class="dict_result" ng-hide="querying || initial"></div>
   </div>
 </div>
