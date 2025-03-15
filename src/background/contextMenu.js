@@ -26,7 +26,7 @@ export default {
   createLookupItem: () => {
     chrome.contextMenus.create({
       id: "lookup",
-      title: "Look up '%s' in Dictionariez",
+      title: `Look up '%s' in ${process.env.PRODUCT}`,
       contexts: ["selection"],
     });
   },
