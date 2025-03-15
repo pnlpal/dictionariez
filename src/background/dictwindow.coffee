@@ -168,7 +168,16 @@ class DictWindow
         else 
             @dictName = dictName
 
-        return @open(url)
+        if process.env.PRODUCT == 'SidePal'
+            return utils.send 'look up result', {
+                dictName: dictName,
+                word: text,
+                sentence: sentence,
+                languagePrompt: languagePrompt,
+                ...result 
+            }
+        else 
+            return @open(url)
 
     refineTextWithAI: (text, dictName = null) ->
         return if not text
@@ -406,6 +415,16 @@ export default {
             return { history }
 
         message.on 'injected', (request, sender) =>
+            fromSidePanel = sender.id and !sender.tab
+            if fromSidePanel
+                return {
+                    isInSidePanelDict: true,
+                    cardUrl: chrome.runtime.getURL('card.html'),
+                    dict: dict.getDict(@mainDictWindow().dictName),
+                    word: @mainDictWindow().word,
+                    sentence: @mainDictWindow().sentence
+                }
+
             return unless sender.tab 
 
             win = @getByTab sender.tab.id 
@@ -440,10 +459,13 @@ export default {
             @getByTab(sender.tab.id)?.sendMessage request
 
         message.on 'get wikipedia', ( request, sender ) =>
-            win = @getByTab(sender.tab.id)
+            if sender.tab 
+                win = @getByTab(sender.tab.id)
 
-            return if win.windex != 0  # only show at the main window.
-            return if not win?.word 
+                return if win.windex != 0  # only show at the main window.
+                return if not win?.word 
+            else 
+                win = @mainDictWindow()
             
             if utils.isEnglish win.word 
                 return utils.loadJson "https://en.m.wikipedia.org/api/rest_v1/page/summary/" + win.word
