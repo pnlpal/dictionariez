@@ -383,7 +383,10 @@ export default {
             return result
                 
         message.on 'dictionary', (request, sender) =>
-            win = @getByTab(sender.tab.id)
+            win = if sender.tab 
+                @getByTab(sender.tab.id)
+            else # SidePal
+                @mainDictWindow()
 
             currentDictName = win?.dictName || setting.getValue('dictionary')
             currentDictName = dict.getDict(currentDictName).dictName
@@ -408,7 +411,9 @@ export default {
             nextDictName = dict.getNextDict(currentDictName).dictName
             previousDictName = dict.getPreviousDict(currentDictName).dictName
             
-            return { allDicts: dict.allDicts, history, currentDictName, nextDictName, previousDictName, previous, w, r }
+            if process.env.PRODUCT == 'SidePal'
+                { windowUrl } = await dict.query(@word, currentDictName)
+            return { allDicts: dict.allDicts, history, currentDictName, nextDictName, previousDictName, previous, w, r, windowUrl }
         
         message.on 'dictionary history', (request, sender) =>
             history = await storage.getHistory(10) # at most show 8 words in the history list on dictionary header.

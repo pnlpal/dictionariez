@@ -24,7 +24,7 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.inFrame = inFrame
     $scope.querying = false
     $scope.previous = null
-
+    $scope.isSidePal = process.env.PRODUCT == 'SidePal'
     $scope.version = chrome.runtime.getManifest().version
     $scope.asciiTitle = if process.env.PRODUCT == 'SidePal' 
         require("../ascii-title.sidepal.html").default
@@ -42,7 +42,7 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             type: 'dictionary',
             # origin: window.top?.location?.origin,
             # url: window.top?.location?.href
-        }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, history, w, r})->
+        }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, history, w, r, windowUrl})->
             $scope.allDicts = allDicts
             $scope.currentDictName = currentDictName
             $scope.nextDictName = nextDictName
@@ -51,6 +51,8 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.word = w
             $scope._lastQueryWord = $scope.word
             $scope.history = history
+            $scope.windowUrl = windowUrl if windowUrl
+            $scope.trustedWindowUrl = $sce.trustAsResourceUrl(windowUrl) if windowUrl
             $scope.$apply()
             $('#fairy-dict input.dict-input').focus()
 
@@ -60,6 +62,9 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
                     $('.starrr', baseNode).data("star-rating").setRating(r)
                 else
                     $('.starrr', baseNode).starrr({numStars: 3, rating: r})
+
+            if $scope.querying  
+                $scope.checkIfFrameIsLoaded()
 
     initDict()
     chrome.runtime.sendMessage {
@@ -83,9 +88,9 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
         #     return
 
         $scope.initial = false
-        $scope.querying = true
-
+        $scope.querying = true if w
         $scope.word = w if w
+        $scope.currentDictName = dictName if dictName and not newDictWindow
     
         if dictName and queryText?
             $scope.word = queryText || $scope._lastQueryWord
@@ -109,6 +114,9 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
                 # current dict might be changed
                 initDict()
         )
+    
+    sendMessageToDictPage = (message) ->
+        document.getElementById('dict-result')?.contentWindow.postMessage(message, '*')
 
     $scope.toggleDropdown = (open) ->
         if $scope.inFrame
@@ -181,6 +189,7 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.word = request.text
             setTimeout (() -> 
                 $scope.querying = false
+                $scope._lastQueryWord = $scope.word
                 $('#fairy-dict input.dict-input').focus()
                 $scope.$apply()
             ), 1000
@@ -188,8 +197,39 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
         if request.type == 'sendToDict'
             if request.action == 'keypress focus'
                 $('input.dict-input', baseNode)[0].select()
+        
+        if request.type == 'look up result'
+            $scope.querying = false
+            $scope._lastQueryWord = $scope.word
+            if request.windowUrl and $scope.windowUrl != request.windowUrl
+                $scope.windowUrl = request.windowUrl
+                $scope.trustedWindowUrl = $sce.trustAsResourceUrl(request.windowUrl)
+                $scope.querying = true
+
+            initDict()
+            sendMessageToDictPage({ ...request,  type: 'look up in dynamic dict' })
 
         $scope.$apply()
+    
+    window.addEventListener "message", (event) -> 
+        if event.data?.type == 'injectedInDict'
+            $scope.dictFrameIsLoaded = true
+            $scope.dictFrameIsNotLoaded = false
+            $scope.querying = false
+            $scope.$apply()
+
+    $scope.checkIfFrameIsLoaded = () ->
+        $scope.dictFrameIsLoaded = false
+        clearTimeout $scope._checkFrameTimer
+
+        $scope._checkFrameTimer = setTimeout (() ->
+            if $scope.dictFrameIsLoaded
+                $scope.dictFrameIsNotLoaded = false
+            else
+                $scope.dictFrameIsNotLoaded = true
+
+            $scope.$apply()
+        ), 2000
 
     $(baseNode).on 'starrr:change', (e, value)->
         if $scope.word
