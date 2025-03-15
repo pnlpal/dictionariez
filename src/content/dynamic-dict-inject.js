@@ -118,5 +118,16 @@ export async function initOnLoadDynamicDict({
         request.isHelpMeRefine
       );
     });
+
+    window.addEventListener("message", (event) => {
+      if (event.data.type === "look up in dynamic dict") {
+        doQuery(
+          event.data.word,
+          event.data.sentence,
+          event.data.languagePrompt,
+          dict
+        );
+      }
+    });
   }
 }
