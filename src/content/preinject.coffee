@@ -4,7 +4,7 @@ chrome.runtime.sendMessage {
 	origin: location.origin,
 	url: location.href
 }, (res) ->
-	if res?.dictUrl
+	if res?.dictUrl or res?.isInSidePanelDict
 		if res.dict?.resources?.styles?
 			for style in res.dict.resources.styles
 				require("./css/#{style}")

@@ -26,7 +26,12 @@ addDictByParseContent = (contentNode) ->
 	await utils.send 'look up', dict
 
 if location.host == 'pnlpal.dev' or location.host == "localhost:4567"
-	$('body').attr('data-dictionariez-version', chrome.runtime.getManifest().version)
+	if (process.env.PRODUCT == 'SidePal')
+		$('body').attr('data-sidepal-version', chrome.runtime.getManifest().version)
+		$('.add-to-dictionariez').text('Add to SidePal')
+	else
+		$('body').attr('data-dictionariez-version', chrome.runtime.getManifest().version)
+
 	$(document).on 'click', '.add-to-dictionariez', () -> 
 		$(this).text('waiting...')
 		$(this).addClass('disabled')
