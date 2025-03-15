@@ -11,14 +11,10 @@ import('../vendor/font-awesome.css')
 import('./dictheader.less')
 
 import('./card-iframe.coffee')
-import initLookupParser from './lookup-parser.js'
 
 inFrame = window.self != window.top
 # some ui need bootstrap, like dropdown.
 dictApp = angular.module('fairyDictApp', ['ui.bootstrap'])
-
-if (!inFrame) 
-    initLookupParser()
 
 dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
     # change Bing dictionary's title
