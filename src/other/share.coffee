@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootoast/dist/bootoast.min.css'
 import bootoast from 'bootoast/dist/bootoast.min.js'
 
+document.title = "Share - #{process.env.PRODUCT}"
 version = chrome.runtime.getManifest().version
 
 (toast = () ->
