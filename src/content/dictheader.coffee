@@ -275,6 +275,16 @@ import('../header.html').then ({ default: headerDom }) ->
     $(document.body).append(headerDom)
     angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])
 
-    
+    (setupAppDescription = () ->
+        appDescription = if process.env.PRODUCT == "SidePal"
+            require("../description-and-badge.sidepal.html").default
+        else 
+            require("../description-and-badge.html").default
+
+        document.querySelector("#app-description").innerHTML = appDescription 
+        
+        version = chrome.runtime.getManifest().version
+        document.querySelector('#app-description .badge').innerText = "V" + version
+    )()
 
     

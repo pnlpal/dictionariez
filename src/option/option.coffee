@@ -116,3 +116,15 @@ Read more here: https://pnlpal.dev/topic/52/help-more-dictionaries-needed
     
     setupDevFunctions()
 ]
+
+(setupAppDescription = () ->
+  appDescription = if process.env.PRODUCT == "SidePal"
+    require("../description-and-badge.sidepal.html").default
+  else 
+    require("../description-and-badge.html").default
+
+  document.querySelector("#app-description").innerHTML = appDescription 
+  
+  version = chrome.runtime.getManifest().version
+  document.querySelector('#app-description .badge').innerText = "V" + version
+)()
