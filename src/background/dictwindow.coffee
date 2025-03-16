@@ -429,7 +429,6 @@ export default {
             if fromSidePanel
                 return {
                     isInSidePanelDict: true,
-                    cardUrl: chrome.runtime.getURL('card.html'),
                     dict: dict.getDict(@mainDictWindow().dictName),
                     word: @mainDictWindow().word,
                     sentence: @mainDictWindow().sentence
