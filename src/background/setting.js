@@ -14,7 +14,7 @@ export default {
 
     markWords: false,
     markColor: "yellow",
-    enableMarkWordsSK1: true,
+    enableMarkWordsSK1: false,
     markWordsSK1: "Meta",
     markWordsKey: "B",
 
