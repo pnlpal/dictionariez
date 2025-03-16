@@ -41,3 +41,9 @@ version = chrome.runtime.getManifest().version
   
   document.querySelector('#app-description .badge').innerText = "V" + version
 )()
+
+(setupProductName = () ->
+  productName = process.env.PRODUCT
+  document.querySelectorAll(".productName").forEach (el) ->
+    el.innerText = productName
+)()
