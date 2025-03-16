@@ -111,7 +111,8 @@ run = () =>
 				utils.send 'look up plain', {
 					w
 				}, (res) ->
-					handlePlainResult(res)
+					plainLookupTooltip.renderPlainResult(res)
+					plainQuerying = null
 
 			else
 				if setting.enableSelectionOnMouseMove
@@ -194,35 +195,6 @@ run = () =>
 						dictNumber: parseInt(event.key.match(/\d/)[0])
 					})
 					return false 
-
-
-		$(document).on 'click mouseover', '.fairydict-pron-audio', debounce(((e) ->
-			e.stopPropagation()
-
-			return if utils.isMobile() and e.type == 'mouseover'  # on mobile mouseover will be triggered when click.
-
-			synthesisObj = null
-
-			if $(this).data('mp3')
-				utils.send 'play audios', { otherSrc: $(this).data('mp3') }
-
-			else if $(this).data('synthesis') 
-				synthesisObj = {
-					text: $(this).data('w'),
-					name: $(this).data('lang'),
-					lang: $(this).data('synthesis')
-				}
-				utils.send 'play audios', { synthesisObj }
-			
-			else if $(this).hasClass('for-chatgpt-audio')
-				synthesisObj = {
-					text: $(this).parent().text(),
-					lang: 'en-US'
-				}
-				utils.send 'play audios', { synthesisObj }
-
-			return false
-		), 1000, {leading: true, trailing: false})
 
 		handleSelectionWord = (e)->
 			selObj = window.getSelection()
@@ -333,99 +305,6 @@ run = () =>
 			if event.which == 0 or event.which == 1 # left mouse or touchend
 				handleLookupByMouse(event, text)
 
-		renderQueryResult = (res) ->
-			wTpl = (w) -> "<strong class='fairydict-w'> #{w} </strong>"
-			defTpl = (def) -> "<span class='fairydict-def'> #{def} </span>"
-			defsTpl = (defs) -> "<span class='fairydict-defs'> #{defs} </span>"
-			labelsTpl = (labels) -> "<div class='fairydict-labels'> #{labels} </div>"
-			labelTpl = (label) -> "<span class='fairydict-label'> #{label} </span>"
-			posTpl = (pos) -> "<span class='fairydict-pos'> #{pos} </span>"
-			contentTpl = (content) -> "<div class='fairydict-content'> #{content} </div>"
-			pronSymbolTpl = (symbol='', type='') -> "<span class='fairydict-symbol fairydict-symbol-#{type}'> <em> #{symbol} </em> </span>"
-			pronAudioTpl = (w, src='', type='', synthesis='', lang='') -> "<a class='fairydict-pron-audio fairydict-pron-audio-#{type}' data-mp3='#{src}' data-synthesis='#{synthesis}' data-lang='#{lang}' data-w='#{w}'><i class='icon-fairydict-volume'></i></a>"
-			pronsTpl = (w, prons) -> "<div class='fairydict-prons'> #{w} #{prons} </div>"
-
-			# console.log res 
-
-			html = ''
-
-			wHtml = ''
-			pronHtml = ''
-			if res?.w
-				wHtml = wTpl res.w
-
-				if res?.prons
-					pronHtml = res.prons.reduce ((prev, cur)->
-						if cur.synthesis or cur.audio or cur.symbol
-							prev += pronSymbolTpl(cur.symbol, cur.type) if cur.symbol
-							prev += pronAudioTpl(res.w.replaceAll('·', ''), cur.audio, cur.type, cur.synthesis, res.lang) if cur.synthesis or cur.audio
-						return prev
-					), ''
-			
-			html += pronsTpl wHtml, pronHtml if pronHtml or wHtml
-			
-			renderItem = (item) ->
-				posHtml = ''
-				defsHtml = ''
-				labelsHtml = ''
-
-				posHtml = posTpl item.pos if item.pos 
-				labelsCon = (item.labels || []).map((name) -> labelTpl name if name).reduce ((prev, cur) ->
-					prev += cur if cur 
-					return prev
-				), ''
-				labelsHtml = labelsTpl labelsCon if labelsCon
-				defs = if Array.isArray(item.def) then item.def else [item.def]
-				defsCon = defs.map((def, i) -> 
-					if def
-						if defs.length == 1
-							return defTpl def 
-						else 
-							return defTpl("#{i+1}. #{def}")
-					return ""
-				).reduce (prev, next) ->
-					return prev + '<br>' + next if next 
-					return prev 
-				defsHtml = defsTpl defsCon if defsCon
-
-				html += contentTpl posHtml + labelsHtml + defsHtml if defsHtml
-
-			res.defs.forEach renderItem if res?.defs
-			res.defs2.forEach renderItem if res?.defs2
-			return html
-
-		getEnglishPronAudio = (w) ->
-			res = await utils.send 'get real person voice', { w }
-			if res?.prons
-				ameSrc = ''
-				breSrc = ''
-				for item in res.prons 
-					if item.type == 'ame' and item.audio 
-						ameSrc = item.audio 
-						$('.dictionaries-tooltip .fairydict-pron-audio-ame').attr('data-mp3', ameSrc)
-					if item.type == 'bre' and item.audio
-						breSrc = item.audio
-						$('.dictionaries-tooltip .fairydict-pron-audio-bre').attr('data-mp3', breSrc)
-
-				utils.send 'play audios', { ameSrc, breSrc, checkSetting: true}
-		
-		handlePlainResult = (res) ->
-			html = ''
-			res = if Array.isArray(res) then res else [res]
-			for item in res 
-				html += renderQueryResult item
-		
-				if item?.prons?.length and item.w
-					if item.prons.some (v)->['bre', 'ame'].includes(v.type) 
-						getEnglishPronAudio item.w 
-			
-			if html 
-				plainLookupTooltip.showPlainContent(html)
-			else 
-				plainQuerying = null
-				plainLookupTooltip.hide()
-			return html
-
 		handleLookupByMouse = (event, text)->
 			return unless text
 
@@ -466,7 +345,9 @@ run = () =>
 						w: text,
 						s: location.href,
 						sc: document.title
-					},  handlePlainResult
+					},  (res) ->
+						plainLookupTooltip.renderPlainResult(res)
+						plainQuerying = null
 
 		utils.listenToBackground 'get info before open dict', (request, sender, sendResponse) =>
 			word = window.getSelection().toString().trim()
