@@ -232,7 +232,7 @@ getEnglishPronAudio = (w) ->
 			$('.field .fairydict-pron-audio-bre').attr('data-mp3', item.audio)
 
 export initAnkiInjection = () -> 
-	if location.origin == 'https://ankiuser.net' && location.pathname == '/add'
+	if location.origin == 'https://ankiweb.net' && location.pathname == '/add'
 		getAnkiInfo()
 		addSkipButton()
 		$("body")[0].addEventListener('click', wordSavedCallback, true)

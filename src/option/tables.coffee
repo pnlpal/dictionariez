@@ -114,7 +114,7 @@ initHistory = () ->
             text: 'Start Anki Study',
             className: 'btn btn-success',
             action: () ->
-                href = 'https://ankiuser.net/study/'
+                href = 'https://ankiweb.net/study/'
                 window.open(href, '_blank')
         }],
         order: [[4, 'desc']],
