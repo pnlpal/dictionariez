@@ -159,7 +159,7 @@ class DictWindow
 
         if text
             if @word != text || @sentence != sentence || @dictName != dictName
-                @word = text
+                @word = text.trim()
                 @sentence = sentence
                 @dictName = dictName
                 result = dict.query(text, @dictName || setting.getValue('dictionary')) 

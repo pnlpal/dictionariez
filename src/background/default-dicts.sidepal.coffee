@@ -58,6 +58,7 @@ export default [{
     "dictName": "DeepL Translator (Auto - English)",
     "windowUrl": "https://www.deepl.com/en/translator/en-us/",
     "inputSelector": "#textareasContainer div[contenteditable]",
-    "translationPrompt": "<word>"
+    "translationPrompt": "<word>",
+    "css": '[data-testid="dl-cookieBanner"] {display: none;}'
 }
 ]
