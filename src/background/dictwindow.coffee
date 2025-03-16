@@ -169,6 +169,7 @@ class DictWindow
             @dictName = dictName
 
         if process.env.PRODUCT == 'SidePal'
+            setting.setValue 'dictionary', dictName
             return utils.send 'look up result', {
                 dictName: dictName,
                 word: text,
