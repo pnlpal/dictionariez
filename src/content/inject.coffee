@@ -51,6 +51,11 @@ run = () =>
 			isInDict = true
 			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict, isHelpMeRefine: res.isHelpMeRefine })
 
+		if res?.isInSidePanelDict
+			isInDict = true
+			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict, isHelpMeRefine: res.isHelpMeRefine })
+			window.top.postMessage { type: 'injectedInDict' }, '*'
+
 		if res?.cardUrl and res.word and not location.host.includes('wikipedia.org') and window.self == window.top
 			comparedLoc = decodeURI(location.href).toLowerCase()
 			if res.word.split(/\s/).every (s) -> comparedLoc.includes(s.toLowerCase())

@@ -335,7 +335,11 @@ export default {
 
         message.on 'query', (request, sender) =>
             # query message only comes from the dict window.
-            senderWin = @getByTab(sender.tab.id)
+            senderWin = if sender.tab 
+                @getByTab(sender.tab.id)
+            else 
+                @mainDictWindow()
+                
             dictName = request.dictName || senderWin.dictName
             w = request.w || senderWin.word
             languagePrompt = w?.split(" /")[1]
@@ -411,8 +415,8 @@ export default {
             nextDictName = dict.getNextDict(currentDictName).dictName
             previousDictName = dict.getPreviousDict(currentDictName).dictName
             
-            if process.env.PRODUCT == 'SidePal'
-                { windowUrl } = await dict.query(@word, currentDictName)
+            if process.env.PRODUCT == 'SidePal' and w
+                { windowUrl } = await dict.query(w, currentDictName)
             return { allDicts: dict.allDicts, history, currentDictName, nextDictName, previousDictName, previous, w, r, windowUrl }
         
         message.on 'dictionary history', (request, sender) =>

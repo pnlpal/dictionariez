@@ -96,6 +96,7 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $scope.word = queryText || $scope._lastQueryWord
 
         window.top.postMessage { type: 'toggleDropdown', open: false }, '*'
+        return if not $scope.word
 
         chrome.runtime.sendMessage({
             type: 'query',
