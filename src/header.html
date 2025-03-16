@@ -232,7 +232,7 @@
           ng-click="query({newDictWindow: $event.ctrlKey || $event.metaKey})"
         ></i>
 
-        <div class="querying text-center" ng-show="querying">
+        <div class="querying text-center hidden-xss" ng-show="querying">
           <i class="fa fa-spinner fa-spin fa-2x" title="Querying..."></i>
         </div>
         <div
