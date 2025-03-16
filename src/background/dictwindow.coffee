@@ -190,7 +190,18 @@ class DictWindow
         @isHelpMeRefine = true
         result = dict.query(text, @dictName)
         @sendMessage({type: 'querying', text, isHelpMeRefine: true})
-        return @open(result.windowUrl)
+
+        if process.env.PRODUCT == 'SidePal'
+            setting.setValue 'dictionary', dictName if dictName
+            utils.send 'look up result', {
+                dictName: @dictName,
+                word: @word,
+                isHelpMeRefine: true,
+                ...result 
+            }
+            return true
+        else 
+            return @open(result.windowUrl)
             
 export default {
     DictWindow,
@@ -435,7 +446,8 @@ export default {
                     isInSidePanelDict: true,
                     dict: dict.getDict(@mainDictWindow().dictName),
                     word: @mainDictWindow().word,
-                    sentence: @mainDictWindow().sentence
+                    sentence: @mainDictWindow().sentence,
+                    isHelpMeRefine: @mainDictWindow().isHelpMeRefine
                 }
 
             return unless sender.tab 

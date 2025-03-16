@@ -110,6 +110,7 @@ export async function initOnLoadDynamicDict({
     fixQueryingOnEnterForChatGPT(dict);
 
     utils.listenToBackground("querying", (request) => {
+      // console.log("querying", request);
       doQuery(
         request.text,
         request.sentence,
@@ -121,11 +122,13 @@ export async function initOnLoadDynamicDict({
 
     window.addEventListener("message", (event) => {
       if (event.data.type === "look up in dynamic dict") {
+        // console.log("on message", event.data);
         doQuery(
           event.data.word,
           event.data.sentence,
           event.data.languagePrompt,
-          dict
+          dict,
+          event.data.isHelpMeRefine
         );
       }
     });
