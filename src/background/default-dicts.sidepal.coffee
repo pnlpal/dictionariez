@@ -38,10 +38,6 @@ export default [{
         styles: ['wiktionary.less']
     }
 }, {
-    "dictName": "WordReference Defenition", 
-    "windowUrl": "https://www.wordreference.com/definition/<word>", 
-    "css": "c-wiz[jsdata='deferred-i3']>div:first-child {display: none;} body {margin-top: 50px !important;}"
-}, {
     "dictName": "Merriam-webster Dictionary",
     "windowUrl": "https://www.merriam-webster.com/dictionary/<word>",
     "css": "header, .home-top-creative-cont, .mw-ad-slot-top, #main-banner-ad-container, .container-top-ads {display: none !important; }"
