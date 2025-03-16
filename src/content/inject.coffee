@@ -14,6 +14,7 @@ import {
 import { initAnkiInjection } from './anki-inject.coffee'
 import initLookupParser from './lookup-parser.js'
 import { initClipboardReader } from './read-clipboard.coffee'
+import plainLookupTooltip from './plain-lookup-tooltip.js'
 
 setupStyles = () -> 
 	require('./inject.less')
@@ -82,52 +83,9 @@ run = () =>
 			# See issue #45
 			return
 
-		$dictionariezTooltipContainer = if $('#dictionariez-tooltip-container').length then $('#dictionariez-tooltip-container') else $('html')
+		if process.env.PRODUCT == 'Dictionariez'
+			plainLookupTooltip.init()
 
-		$('''
-			<div class="dictionaries-tooltip">
-				<div class="fairydict-spinner">
-				<div class="fairydict-bounce1"></div>
-				<div class="fairydict-bounce2"></div>
-				<div class="fairydict-bounce3"></div>
-				</div>
-				<div class="dictionaries-tooltip-content">
-				</div>
-			</div>
-				''').appendTo($dictionariezTooltipContainer)
-
-		setupPlainContentPosition = (e) ->
-			$el = $('.dictionaries-tooltip')
-			if e.pageX && e.pageY
-				pageX = e.pageX
-				pageY = e.pageY
-			else 
-				pageX = e.changedTouches?[0].pageX
-				pageY = e.changedTouches?[0].pageY
-			
-			containerOffset = $dictionariezTooltipContainer.offset()
-			if $el.length and pageY
-				mousex = pageX - containerOffset.left + 25 + ($dictionariezTooltipContainer.data('dictionariezTooltipOffsetLeft') || 0)
-				mousey = pageY - containerOffset.top + 20 + ($dictionariezTooltipContainer.data('dictionariezTooltipOffsetTop') || 0)
-				top = mousey
-				left = mousex
-
-				# console.log top, left, window.innerHeight, window.innerWidth
-
-				# bugfix: here we can't use document.body.getBoundingClientRect()
-				# because some websites are not using body to scroll, thus there body rect is 0.
-				# for example: https://www.wired.com/story/russias-disinformation-war-is-just-getting-started/
-				rect = if $('#dictionariez-tooltip-container').length then $('#dictionariez-tooltip-container')[0].getBoundingClientRect() else window.document.scrollingElement.getBoundingClientRect()
-				domW = window.innerWidth - rect.left
-				domH = window.innerHeight - rect.top
-
-				if domW - left < 300
-					left = domW - 300
-				if domH - top < 200
-					top = domH - 200
-
-				$el.css({ top, left })
-		
 		if setting.enableReadClipboard
 			document.addEventListener('copy', (() -> 
 				try 
@@ -148,14 +106,8 @@ run = () =>
 				w = w.trim()
 				return if w == plainQuerying
 
-				$('.dictionaries-tooltip').fadeIn('slow')
-				$('.dictionaries-tooltip .fairydict-spinner').show()
-				$('.dictionaries-tooltip .dictionaries-tooltip-content').empty()
-
-				setupPlainContentPosition(e)
-
+				plainLookupTooltip.showPlainContent(null, e)
 				plainQuerying = w
-
 				utils.send 'look up plain', {
 					w
 				}, (res) ->
@@ -196,7 +148,7 @@ run = () =>
 					isInEditable: isInEditable
 				})
 			if event.key == "Escape"
-				$('.dictionaries-tooltip').fadeOut().hide()
+				plainLookupTooltip.hide()
 				plainQuerying = null
 
 				if isInDict
@@ -363,7 +315,7 @@ run = () =>
 				if $('.dictionaries-tooltip').has(event.target).length
 					return
 
-				$('.dictionaries-tooltip').fadeOut().hide()
+				plainLookupTooltip.hide()
 				plainQuerying = null
 				return
 
@@ -468,12 +420,10 @@ run = () =>
 						getEnglishPronAudio item.w 
 			
 			if html 
-				$('.dictionaries-tooltip').fadeIn('slow')
-				$('.dictionaries-tooltip .fairydict-spinner').hide()
-				$('.dictionaries-tooltip .dictionaries-tooltip-content').append(html)
+				plainLookupTooltip.showPlainContent(html)
 			else 
 				plainQuerying = null
-				$('.dictionaries-tooltip').fadeOut().hide()
+				plainLookupTooltip.hide()
 			return html
 
 		handleLookupByMouse = (event, text)->
@@ -507,15 +457,7 @@ run = () =>
 
 			if setting.enablePlainLookup && text != plainQuerying
 				if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
-					clickInside = $('.dictionaries-tooltip').has(event.target).length
-
-					$('.dictionaries-tooltip').fadeIn('slow')
-					$('.dictionaries-tooltip .fairydict-spinner').show()
-					$('.dictionaries-tooltip .dictionaries-tooltip-content').empty()
-
-					unless clickInside
-						setupPlainContentPosition(event)
-
+					plainLookupTooltip.showPlainContent(null, event)
 					plainQuerying = text
 
 					isOk = await utils.send 'look up plain', {
