@@ -22,6 +22,8 @@ import 'datatables.net-buttons/js/buttons.html5.js'
 import 'datatables.net-rowreorder-bs4'
 import 'datatables.net-rowreorder-bs4/css/rowReorder.bootstrap4.css'
 
+isSidePal = process.env.PRODUCT == 'SidePal'
+
 confirmDelete = (content, twice) ->
     new Promise (resolve) ->
         $('#confirm-delete-modal').off('show.bs.modal').on 'show.bs.modal', () ->
@@ -110,13 +112,13 @@ initHistory = () ->
                 columns: ['w:name', 'r:name', 'sentence:name', 's:name', 't:name'],
                 orthogonal: 'download'
             }
-        }, {
+        }, if not isSidePal then {
             text: 'Start Anki Study',
             className: 'btn btn-success',
             action: () ->
                 href = 'https://ankiweb.net/study/'
                 window.open(href, '_blank')
-        }],
+        } else null ].filter(Boolean),
         order: [[4, 'desc']],
         columns: [
             {
@@ -176,6 +178,8 @@ initHistory = () ->
                 title: 'Action',
                 render: (data, type, row) ->
                     if type == 'display'
+                        if isSidePal
+                            return buildActionIcon('remove')
                         if row.ankiSaved 
                             return buildActionIcon('saved in Anki') + buildActionIcon('remove')
                         return buildActionIcon('export to Anki') + buildActionIcon('remove')
