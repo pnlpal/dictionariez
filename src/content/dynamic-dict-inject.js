@@ -31,7 +31,7 @@ async function doQuery(w, sentence, languagePrompt, dict, isHelpMeRefine) {
         .replaceAll("<word>", w)
         .replaceAll("<sentence>", sentence)
         .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "")
-    : (dict.chatgptPrompt || dict.prompt || "Define: <word>")
+    : (dict.chatgptPrompt || dict.prompt || "<word>")
         .replaceAll("<word>", w)
         .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "");
 
