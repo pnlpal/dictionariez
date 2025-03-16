@@ -51,7 +51,7 @@
     "default_title": "SidePal: Your Language Ally in Side Panel"
   },
   "icons": {
-    "64": "images/library-64.png",
-    "128": "images/library-128.png"
+    "64": "images/sidepal-64.png",
+    "128": "images/sidepal-128.png"
   }
 }
