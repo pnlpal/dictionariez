@@ -129,7 +129,7 @@ var options = {
             env.PRODUCT === "SidePal"
               ? "src/manifest.sidepal.json"
               : "src/manifest.json",
-          to: path.join(__dirname, "build"),
+          to: path.join(__dirname, "build", "manifest.json"),
           force: true,
           transform: function (content) {
             // generates the manifest file using the package.json informations
