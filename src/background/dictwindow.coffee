@@ -170,13 +170,14 @@ class DictWindow
 
         if process.env.PRODUCT == 'SidePal'
             setting.setValue 'dictionary', dictName
-            return utils.send 'look up result', {
+            utils.send 'look up result', {
                 dictName: dictName,
                 word: text,
                 sentence: sentence,
                 languagePrompt: languagePrompt,
                 ...result 
             }
+            return true
         else 
             return @open(url)
 

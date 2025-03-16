@@ -247,6 +247,12 @@ run = () =>
 			return if text == plainQuerying
 			sentence = getSentenceOfSelection()
 
+			markWordAfterward = (lookupResult) ->
+				# highlight selected words is a special feature
+				# even if the floating definition is turned off, still highlight can be working.
+				if lookupResult and setting.markWords and !setting.enableMarkWordsSK1
+					highlight(setting.markColor)
+
 			# popup window
 			if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
 				chrome.runtime.sendMessage({
@@ -257,15 +263,11 @@ run = () =>
 					s: location.href,
 					sc: document.title,
 					isInEditable: utils.isSentence(text) && checkEditable(event.target)
-				})
+				}, markWordAfterward)
+
 			# floating definition
 			text = await utils.send 'check text supported', { w: text }
 			return unless text
-
-			# highlight selected words is a special feature
-			# even if the floating definition is turned off, still highlight can be working.
-			if setting.markWords and !setting.enableMarkWordsSK1
-				highlight(setting.markColor) 
 
 			if setting.enablePlainLookup
 				if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
@@ -281,6 +283,7 @@ run = () =>
 					},  (res) ->
 						plainLookupTooltip.renderPlainResult(res)
 						plainQuerying = null
+						markWordAfterward(res)
 
 		utils.listenToBackground 'get info before open dict', (request, sender, sendResponse) =>
 			word = getWordFromSelection(true)
