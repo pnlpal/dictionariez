@@ -311,7 +311,7 @@ export default {
 
         message.on 'look up', ({ dictName, w, s, sc, sentence, means, newDictWindow, isInEditable }, sender) =>
             # 'look up' can be triggered by the context menu or the hotkey or any webpages
-
+            fromSidePanel = sender.id and !sender.tab
             console.log("[dictWindow] look up: ", { dictName, w, s, sc, sentence, means, isInEditable })
             if means == 'mouse'
                 if not setting.getValue('enableMinidict')
@@ -319,6 +319,9 @@ export default {
 
             if !w 
                 w = await readClipboard(sender.tab)
+
+            if fromSidePanel and utils.isSentence(w) 
+                return
 
             if isInEditable 
                 result = await @refineTextWithAI(w)

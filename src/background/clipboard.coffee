@@ -8,7 +8,7 @@ export default (currentTab) ->
     return new Promise (resolve, reject) ->
         if not setting.getValue 'enableReadClipboard'
             return resolve()
-        if not currentTab.url?.startsWith('http')
+        if not currentTab?.url?.startsWith('http')
             return resolve()
 
         chrome.tabs.sendMessage(currentTab.id, { type: 'read clipboard text' })
