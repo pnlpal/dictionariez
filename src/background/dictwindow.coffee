@@ -323,7 +323,7 @@ export default {
             else
                 result = await @lookup({ w: w?.trim(), s, sc, sentence })
 
-                if newDictWindow 
+                if newDictWindow and process.env.PRODUCT == 'Dictionariez'
                     targetWin = @create({ dictName })
                     result = await targetWin.lookup(w || @dictWindows[0].word, sentence)
 
@@ -339,7 +339,7 @@ export default {
                 @getByTab(sender.tab.id)
             else 
                 @mainDictWindow()
-                
+
             dictName = request.dictName || senderWin.dictName
             w = request.w || senderWin.word
             languagePrompt = w?.split(" /")[1]
@@ -367,14 +367,14 @@ export default {
                 storage.addHistory { w, sentence }
 
             if senderWin.isHelpMeRefine and utils.isSentence(w) and senderWin.dictName != dictName 
-                if request.newDictWindow
+                if request.newDictWindow and process.env.PRODUCT == 'Dictionariez'
                     targetWin = @create({ dictName })
                     result = await targetWin.refineTextWithAI(w)
                 else 
                     result = await senderWin.refineTextWithAI(w, dictName)
                     
             else 
-                if request.newDictWindow
+                if request.newDictWindow and process.env.PRODUCT == 'Dictionariez'
                     targetWin = @create({ dictName })
                     result = await targetWin.lookup(w, sentence, languagePrompt)
                 else 
