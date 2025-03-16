@@ -8,13 +8,18 @@ import './pnlpal-inject.coffee'
 import { initCaptionzInjection } from  './captionz-inject.coffee'
 import { initYtbInjection } from './ytb-inject.js'
 import { initOnLoadDynamicDict } from './dynamic-dict-inject.js'
-import {
-  getSentenceFromSelection
-} from 'get-selection-more'
 import { initAnkiInjection } from './anki-inject.coffee'
 import initLookupParser from './lookup-parser.js'
 import { initClipboardReader } from './read-clipboard.coffee'
 import plainLookupTooltip from './plain-lookup-tooltip.js'
+
+import {
+  getWordAtPoint,
+  getWordFromSelection,
+  getSentenceOfSelection,
+  getSentenceFromAllFrames,
+  checkEditable
+} from './common-text-utils.coffee'
 
 setupStyles = () -> 
 	require('./inject.less')
@@ -88,11 +93,7 @@ run = () =>
 
 		if setting.enableReadClipboard
 			document.addEventListener('copy', (() -> 
-				try 
-					sentence = getSentenceOfSelection()
-				catch
-					sentence = null
-
+				sentence = getSentenceOfSelection()
 				utils.send('copy event triggered', {
 					sentence,
 					s: location.href,
@@ -133,12 +134,9 @@ run = () =>
 		
 		$(document).bind 'keydown', (event)->
 			if utils.checkEventKey event, setting.openSK1, setting.openSK2, setting.openKey
-				w = window.getSelection().toString().trim()
+				w = getWordFromSelection()
 				isInEditable = utils.isSentence(w) && checkEditable(event.target)
-				try 
-					sentence = getSentenceOfSelection()
-				catch
-					sentence = null
+				sentence = getSentenceOfSelection()
 				chrome.runtime.sendMessage({
 					type: 'look up',
 					means: 'keyboard',
@@ -212,69 +210,7 @@ run = () =>
 			if word
 				handleLookupByMouse(e, word)
 
-		getWordAtPoint = (elem, x, y)->
-			if elem.nodeType == elem.TEXT_NODE
-				range = elem.ownerDocument.createRange()
-				range.selectNodeContents(elem)
-				currentPos = 0
-				endPos = range.endOffset
-				while currentPos < endPos
-					range.setStart(elem, currentPos)
-					range.setEnd(elem, currentPos+1)
-					if range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right >= x &&
-					range.getBoundingClientRect().top <= y && range.getBoundingClientRect().bottom >= y
-						range.detach()
-						sel = window.getSelection()
-						sel.removeAllRanges()
-						sel.addRange(range)
-						sel.modify("move", "backward", "word")
-						sel.collapseToStart()
-						sel.modify("extend", "forward", "word")
-						return sel.toString().trim()
-
-					currentPos += 1
-			else
-				for el in elem.childNodes
-					range = el.ownerDocument.createRange()
-					range.selectNodeContents(el)
-					react = range.getBoundingClientRect()
-					if react.left <= x && react.right >= x && react.top <= y && react.bottom >= y
-						range.detach()
-						return getWordAtPoint el, x, y
-					else
-						range.detach()
-			return
 		
-		getSentenceOfSelection = (window_ = window) ->
-			selection = window_.getSelection()
-			try
-				range = selection.getRangeAt(0)
-
-				range1 = range.cloneRange()
-				range1.detach()
-
-				selection.modify('move', 'backward', 'sentence')
-				selection.modify('extend', 'forward', 'sentence')
-
-				text = selection.toString().trim()
-
-				selection.removeAllRanges()
-				selection.addRange(range1)
-
-				return text
-			catch  # Gecko does not implement "sentence" yet
-				return getSentenceFromSelection(selection)
-
-		checkEditable = (element) ->
-			curNode = element
-			while curNode 
-				if curNode.isContentEditable or ["input", "textarea"].includes(curNode.nodeName.toLowerCase())
-					return true
-				curNode = curNode.parentElement
-			# check the direct children of the node, sometimes the editor could be wrapped by a div. 
-			for node in (element?.children || [])
-				if node.isContentEditable or ["input", "textarea"].includes(node.nodeName.toLowerCase())
-					return true
 
 		handleMouseUp = (event)->
 			if isInDict
@@ -307,11 +243,7 @@ run = () =>
 
 		handleLookupByMouse = (event, text)->
 			return unless text
-
-			try 
-				sentence = getSentenceOfSelection()
-			catch
-				sentence = null
+			sentence = getSentenceOfSelection()
 
 			# popup window
 			if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
@@ -350,27 +282,9 @@ run = () =>
 						plainQuerying = null
 
 		utils.listenToBackground 'get info before open dict', (request, sender, sendResponse) =>
-			word = window.getSelection().toString().trim()
-			if !word 
-				for frame in window.frames 
-					try 
-						word = frame.getSelection().toString().trim()
-						break if word 
-					catch
-
+			word = getWordFromSelection(true)
 			isInEditable = utils.isSentence(word) && checkEditable(window.getSelection().focusNode)
-
-			try 
-				sentence = getSentenceOfSelection()
-			catch
-				sentence = null
-			
-			if !sentence 
-				for frame in window.frames 
-					try 
-						sentence = getSentenceOfSelection(frame)
-						break if sentence 
-					catch
+			sentence = getSentenceFromAllFrames()
 
 			sendResponse({
 				w: word,
