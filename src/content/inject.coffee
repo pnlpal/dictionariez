@@ -1,15 +1,6 @@
 import $ from 'jquery'
 import utils from "utils"
-
-import "./inject.less"
-
-# Interesting: font url is embedded, for some websites' security setting font-src,
-# it might be forbidden to load the font url.
-# but after webpack build, it not a problem any more.
-import "./inject-fontello.css"
-
 import debounce from 'lodash/debounce'
-
 import highlight from './editable-highlight'
 
 import './card-iframe.coffee'
@@ -24,13 +15,23 @@ import { initAnkiInjection } from './anki-inject.coffee'
 import initLookupParser from './lookup-parser.js'
 import { initClipboardReader } from './read-clipboard.coffee'
 
+setupStyles = () -> 
+	require('./inject.less')
+	# Interesting: font url is embedded, for some websites' security setting font-src,
+	# it might be forbidden to load the font url.
+	# but after webpack build, it not a problem any more.
+	require('./inject-fontello.css')
+
 run = () =>
-	initYtbInjection()
-	initCaptionzInjection()
+	if (process.env.PRODUCT == 'Dictionariez') 
+		setupStyles()
+		initYtbInjection()
+		initCaptionzInjection()
+		initLookupParser()
+
 	initAnkiInjection()
-	initLookupParser()
 	initClipboardReader()
-	
+
 	isInDict = false
 
 	chrome.runtime.sendMessage {

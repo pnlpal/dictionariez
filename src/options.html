@@ -244,7 +244,7 @@
 
 						<br />
 
-						<div class="checkbox">
+						<div class="checkbox" ng-if="!isSidePal">
 							<label>
 								<input
 									type="checkbox"
@@ -254,7 +254,7 @@
 								Enable floating definition of seleted word, supporting multiple languages.
 							</label>
 						</div>
-						<div class="checkbox indent">
+						<div class="checkbox indent" ng-if="!isSidePal">
 							<label>
 								<input
 									type="checkbox"
@@ -287,7 +287,7 @@
 								</ul>
 							</div>
 						</div>
-						<div class="indent text-muted">
+						<div class="indent text-muted" ng-if="!isSidePal">
 							Some words might be used in multiple languages, for example English and Spanish have many 
 							common words, cancel one if you prefer the other.
 							
@@ -295,7 +295,7 @@
 							<a href="examples.html" target="_blank">an example page</a>
 							to look up different words in different languages you might be interested.
 						</div>
-						<div class="checkbox indent">
+						<div class="checkbox indent" ng-if="!isSidePal">
 							<div class="checkbox">
 								<label>
 									<input
@@ -399,9 +399,10 @@
 									</label>
 								</div>
 							</div>
+						<br />
 						</div>
-						<br>
-						<div class="checkbox">
+						
+						<div class="checkbox" ng-if="!isSidePal">
 							<label>
 								<input
 									type="checkbox"
@@ -412,7 +413,7 @@
 							</label>
 						</div>
 
-						<div class="checkbox indent">
+						<div class="checkbox indent" ng-if="!isSidePal">
 							<label>
 								<input
 									type="checkbox"
@@ -444,8 +445,9 @@
 									</li>
 								</ul>
 							</div>
+							<br />
 						</div>
-						<br />
+						
 						<div class="checkbox">
 							<label>
 								<input
@@ -477,7 +479,7 @@
 								Disable the lookup item in context menu.
 							</label>
 						</div>
-						<div class="checkbox">
+						<div class="checkbox" ng-if="!isSidePal">
 							<label>
 								<input
 									type="checkbox"

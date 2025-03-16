@@ -24,6 +24,7 @@ document.title = "Options - #{process.env.PRODUCT}"
 dictApp = angular.module('fairyDictApp', ['ui.bootstrap', 'color.picker'])
 
 dictApp.controller 'optionCtrl', ['$scope', '$sce', ($scope, $sce) ->
+    $scope.isSidePal = process.env.PRODUCT == 'SidePal'
     $scope.asciiTitle = if process.env.PRODUCT == 'SidePal' 
             require("../ascii-title.sidepal.html").default
         else 
