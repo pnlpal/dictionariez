@@ -1,3 +1,8 @@
+# v5.5.0 Mar 16, 2025 
+- Introduced "Help Me Refine with AI" feature in SidePal.
+- Enabled highlight selected text in SidePal.
+- Fixed cookie setting dialog in DeepL.
+
 # v5.4.0 Mar 10, 2025 
 - Added configuration options to convert Simplified Chinese to Traditional Chinese.
 - Removed redundant index for Chinese lookup results.
