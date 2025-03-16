@@ -106,6 +106,7 @@ run = () =>
 				w = $(e.target).data('w') || $(e.target).text()
 				w = w.trim()
 				return if w == plainQuerying
+				return if not setting.enablePlainLookup
 
 				plainLookupTooltip.showPlainContent(null, e)
 				plainQuerying = w
@@ -243,6 +244,7 @@ run = () =>
 
 		handleLookupByMouse = (event, text)->
 			return unless text
+			return if text == plainQuerying
 			sentence = getSentenceOfSelection()
 
 			# popup window
@@ -256,7 +258,6 @@ run = () =>
 					sc: document.title,
 					isInEditable: utils.isSentence(text) && checkEditable(event.target)
 				})
-
 			# floating definition
 			text = await utils.send 'check text supported', { w: text }
 			return unless text
@@ -264,9 +265,9 @@ run = () =>
 			# highlight selected words is a special feature
 			# even if the floating definition is turned off, still highlight can be working.
 			if setting.markWords and !setting.enableMarkWordsSK1
-					highlight(setting.markColor) 
+				highlight(setting.markColor) 
 
-			if setting.enablePlainLookup && text != plainQuerying
+			if setting.enablePlainLookup
 				if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
 					plainLookupTooltip.showPlainContent(null, event)
 					plainQuerying = text

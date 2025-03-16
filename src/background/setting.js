@@ -34,7 +34,7 @@ export default {
     enableConvertCn2T: false,
     otherDisabledLanguages: [],
 
-    enablePlainLookup: true,
+    enablePlainLookup: process.env.PRODUCT === "SidePal" ? false : true,
     englishLookupSource: "bing", // bing, bingCN, wiktionary
     enableAmeAudio: false,
     enableBreAudio: false,
