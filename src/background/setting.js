@@ -47,6 +47,8 @@ export default {
     enableMouseSK1: false,
     mouseSK1: "Alt",
 
+    enableAutoCloseMinidict:false,
+
     openSK1: "Ctrl",
     openSK2: "Shift",
     openKey: "X",

@@ -506,6 +506,17 @@
 							</label>
 						</div>
 
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enableAutoCloseMinidict"
+									ng-click="changeKey(!setting.enableAutoCloseMinidict, 'enableAutoCloseMinidict')"
+								/>
+								Automatically close the popup dict window when focus normal window.
+							</label>
+						</div>
+
 						<div>
 							<label for="excluded-websites">
 								<span>Don't run on these websites:</span>
