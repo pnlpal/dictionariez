@@ -259,8 +259,6 @@ export default {
             
         if (setting.getValue("enableAutoCloseMinidict")) 
             windowFocusListener = (wId) ->
-                console.log("listenID:" ,wId)
-                console.log("popupID:" ,win.wid)
                 if wId > -1
                     chrome.windows.get wId, {}, (w) ->
                         if w?.type is 'normal'
