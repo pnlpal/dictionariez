@@ -256,7 +256,18 @@ export default {
             win = new DictWindow(options)
             win.windex = @dictWindows.length
             @dictWindows.push win
-        
+            
+        if (setting.getValue("enableAutoCloseMinidict")) 
+            windowFocusListener = (wId) ->
+                console.log("listenID:" ,wId)
+                console.log("popupID:" ,win.wid)
+                if wId > -1
+                    chrome.windows.get wId, {}, (w) ->
+                        if w?.type is 'normal'
+                            chrome.windows.remove win.wid
+                            chrome.windows.onFocusChanged.removeListener windowFocusListener
+            setTimeout (-> chrome.windows.onFocusChanged.addListener windowFocusListener), 300
+            
         @saveInStorage()
         return win 
 
