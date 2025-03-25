@@ -257,15 +257,6 @@ export default {
             win.windex = @dictWindows.length
             @dictWindows.push win
             
-        if (setting.getValue("enableAutoCloseMinidict")) 
-            windowFocusListener = (wId) ->
-                if wId > -1
-                    chrome.windows.get wId, {}, (w) ->
-                        if w?.type is 'normal'
-                            chrome.windows.remove win.wid
-                            chrome.windows.onFocusChanged.removeListener windowFocusListener
-            setTimeout (-> chrome.windows.onFocusChanged.addListener windowFocusListener), 300
-            
         @saveInStorage()
         return win 
 
@@ -274,6 +265,15 @@ export default {
                 if win.wid == wid or win.tid == tid
                     win.reset()
         @dictWindows = @dictWindows.filter (win) -> win.wid
+        @saveInStorage()
+    
+    closeAllWindows: () ->
+        for win in @dictWindows
+            try 
+                chrome.windows.remove win.wid
+            catch err 
+                console.error("[dictWindow] closeAllWindows error: ", err)
+        @dictWindows = []
         @saveInStorage()
 
     saveInStorage: () ->
@@ -323,6 +323,15 @@ export default {
 
         if not setting.getValue "disableContextMenu"
             contextMenu.createLookupItem()
+        
+        if (setting.getValue("enableAutoCloseMinidict")) 
+            windowFocusListener = (wId) =>
+                if wId > -1 and setting.getValue("enableAutoCloseMinidict")
+                    chrome.windows.get wId, {}, (w) =>
+                        if w?.type is 'normal'
+                            @closeAllWindows()
+
+            chrome.windows.onFocusChanged.addListener windowFocusListener
 
         message.on "copy event triggered", ({s, sc, sentence}, sender) => 
             w = await readClipboard(sender.tab)
