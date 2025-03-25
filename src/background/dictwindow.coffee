@@ -324,15 +324,6 @@ export default {
         if not setting.getValue "disableContextMenu"
             contextMenu.createLookupItem()
         
-        if (setting.getValue("enableAutoCloseMinidict")) 
-            windowFocusListener = (wId) =>
-                if wId > -1 and setting.getValue("enableAutoCloseMinidict")
-                    chrome.windows.get wId, {}, (w) =>
-                        if w?.type is 'normal'
-                            @closeAllWindows()
-
-            chrome.windows.onFocusChanged.addListener windowFocusListener
-
         message.on "copy event triggered", ({s, sc, sentence}, sender) => 
             w = await readClipboard(sender.tab)
             if w

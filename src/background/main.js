@@ -86,6 +86,16 @@ if (process.env.PRODUCT === "Dictionariez") {
     await initPromises;
     dw.destroyWin({ tid });
   });
+  chrome.windows.onFocusChanged.addListener(async function (wid) {
+    await initPromises;
+    if (wid > -1 && setting.getValue("enableAutoCloseMinidict")) {
+      chrome.windows.get(wid, (win) => {
+        if (win?.type === "normal") {
+          dw.closeAllWindows();
+        }
+      });
+    }
+  });
 }
 
 function openSidePanel(tab) {
