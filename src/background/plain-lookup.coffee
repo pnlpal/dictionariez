@@ -248,7 +248,7 @@ export default {
             return wiktionaryResult
         
         # merge 
-        if not result?.defs?.length
+        if not result?.defs?.length and wiktionaryResult?.defs
             result.defs = wiktionaryResult.defs 
         
         if not result?.prons?[0]?.symbol and wiktionaryResult?.prons?.length
