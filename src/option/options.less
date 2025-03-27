@@ -142,30 +142,59 @@ body {
     }
   }
 
-  #captionz-promo-modal {
+  .promo-modal {
     .modal-dialog {
       top: 80px;
       width: 80%;
+      &.small-dialog {
+        max-width: 960px;
+      }
+
+      .avatar {
+        position: absolute;
+        margin-top: -5px;
+        img {
+          border-radius: 50%;
+          width: 48px;
+          height: 48px;
+        }
+      }
+      .promo-text {
+        margin-left: 60px;
+      }
+
       .modal-header {
         background-color: #666;
-        .avatar {
-          position: absolute;
-          margin-top: -5px;
-          img {
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-          }
-        }
-        .promo-text {
-          margin-left: 60px;
-        }
       }
       .modal-body {
         background-color: white;
         iframe {
           border-radius: 4px;
           overflow-y: hidden;
+        }
+        .promo-text-wrapper {
+          min-height: 80px;
+          margin-bottom: 35px;
+
+          .promo-text {
+            border: #c7c7c7 solid 1px;
+            border-radius: 15px;
+            padding: 10px 20px;
+            color: #333;
+            font-size: 18px;
+            a {
+              background-color: unset;
+              color: unset;
+              text-decoration: underline;
+            }
+          }
+        }
+
+        .promo-img {
+          display: block;
+          margin: auto;
+          border-radius: 5px;
+          height: 480px;
         }
       }
       .modal-footer {

@@ -19,6 +19,8 @@ import "angularjs-color-picker/dist/angularjs-color-picker.min.css"
 import "angularjs-color-picker/dist/themes/angularjs-color-picker-bootstrap.min.css"
 import 'angularjs-color-picker'
 
+import "./promote.coffee"
+
 document.title = "Options - #{process.env.PRODUCT}"
 
 dictApp = angular.module('fairyDictApp', ['ui.bootstrap', 'color.picker'])
