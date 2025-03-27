@@ -139,7 +139,6 @@ var options = {
               ...JSON.parse(content.toString()),
             };
             if (env.BROWSER === "Firefox") {
-              json.name = "SidePal: Your Language Ally in Side Panel";
               json.manifest_version = 2; // Firefox has host permission issue with manifest v3
               json.browser_action = json.action;
               delete json.action;
@@ -168,6 +167,7 @@ var options = {
                 "fonts/*",
               ];
               if (env.PRODUCT === "SidePal") {
+                json.name = "SidePal: Your Language Ally in Side Panel";
                 json["sidebar_action"] = {
                   default_title: "SidePal",
                   default_panel: "dict.html",
