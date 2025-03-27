@@ -1,3 +1,9 @@
+# v5.5.1 Mar 26, 2025 
+- Automatically close the popup dictionary window when focus changes to another window (configurable).
+- Added Bluesky as a sharing option.
+- Fixed merging plain lookup results from Wiktionary.
+- Fixed issues with adding words to AnkiWeb.
+
 # v5.5.0 Mar 16, 2025 
 - Introduced "Help Me Refine with AI" feature in SidePal.
 - Enabled highlight selected text in SidePal.
