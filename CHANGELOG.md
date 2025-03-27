@@ -1,3 +1,6 @@
+# v5.5.1.1 Mar 27, 2025 
+- Fix the product name on Firefox.
+
 # v5.5.1 Mar 26, 2025 
 - Automatically close the popup dictionary window when focus changes to another window (configurable).
 - Added Bluesky as a sharing option.
