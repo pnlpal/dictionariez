@@ -113,6 +113,7 @@ run = () =>
 				utils.send 'look up plain', {
 					w
 				}, (res) ->
+					return if plainQuerying != w
 					plainLookupTooltip.renderPlainResult(res)
 					plainQuerying = null
 
@@ -281,6 +282,7 @@ run = () =>
 						s: location.href,
 						sc: document.title
 					},  (res) ->
+						return if plainQuerying != text
 						plainLookupTooltip.renderPlainResult(res)
 						plainQuerying = null
 						markWordAfterward(res)
