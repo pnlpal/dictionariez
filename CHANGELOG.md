@@ -1,3 +1,8 @@
+# v5.5.2 Apr 21, 2025 
+- Added a delay to handle the `mouseup` event, preventing unnecessary queries if canceled.
+- Suppressed query results when the action is canceled.
+- Increased the font size of query results for better readability.
+
 # v5.5.1.1 Mar 27, 2025 
 - Fix the product name on Firefox.
 
