@@ -1,3 +1,5 @@
+import utils from "utils";
+
 function promisifiedTimeout(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -54,10 +56,22 @@ function playSynthesis({ text, lang, name, voice } = {}) {
   let v;
 
   if (lang === "en-US") {
-    v =
+    if (utils.isWindows()) {
+      v =
+        voices.find((x) => x.name === voice) ||
+        voices.find((x) => x.name === "Microsoft Zira") || // Windows default
+        voices.find((x) => x.name === "Microsoft David") ||
+        voices.find((x) => x.lang === "en-US");
+    } else if (utils.isMac()) {
       voices.find((x) => x.name === voice) ||
-      voices.find((x) => x.name === "Google US English") ||
-      voices.find((x) => x.lang === "en-US" && x.name === "Samantha");
+        voices.find((x) => x.name === "Samantha") || // macOS default
+        voices.find((x) => x.lang === "en-US");
+    } else {
+      v =
+        voices.find((x) => x.name === voice) ||
+        voices.find((x) => x.name === "Google US English") ||
+        voices.find((x) => x.lang === "en-US" && x.name === "Samantha");
+    }
     if (v) {
       msg.voice = v;
     }
@@ -68,6 +82,7 @@ function playSynthesis({ text, lang, name, voice } = {}) {
     }
   }
 
+  // console.log("speak", text, msg);
   window.speechSynthesis.speak(msg);
 }
 

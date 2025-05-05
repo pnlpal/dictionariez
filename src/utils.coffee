@@ -168,6 +168,9 @@ export default {
     isMac: () -> 
         return navigator.platform.includes('Mac')
 
+    isWindows: () ->
+        return navigator.platform.includes('Win')
+
     sanitizeHTML: (s)->
         s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
 
