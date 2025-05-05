@@ -172,6 +172,8 @@ const getValueFromNode = ($node, desc) => {
     value = $el.attr(desc.attr);
     if (value?.startsWith("/") && desc.srcOrigin) {
       value = desc.srcOrigin + value;
+    } else if (value?.startsWith("//")) {
+      value = "https:" + value;
     }
   } else if (desc.attrOrText) {
     value =
@@ -180,6 +182,10 @@ const getValueFromNode = ($node, desc) => {
   } else if (desc.htmlRegex) {
     value = $el.html()
       ? $el.html().match(new RegExp(desc.htmlRegex))?.[desc.regexIndex || 0]
+      : null;
+  } else if (desc.textRegex) {
+    value = $el.text()
+      ? $el.text().match(new RegExp(desc.textRegex))?.[desc.regexIndex || 0]
       : null;
   } else {
     value = $el.get(0) ? $el.get(0).innerText.trim() : null;

@@ -1,6 +1,6 @@
 {
   "google": {
-    "url": "https://www.google.com/search?q=define+<word>",
+    "url": "https://www.google.com/search?hl=en&q=define+<word>",
     "languages": ["German", "Spanish", "French", "Italian"],
     "credentials": "same-origin",
     "result": {
@@ -14,11 +14,15 @@
       "prons": [
         {
           "symbol": {
-            "selector": ".vmod[data-topic][data-hveid]",
-            "htmlRegex": "<span>([^<>]*)</span>",
-            "regexIndex": 1
+            "selector": ".vmod[data-topic][data-hveid] [data-attrid='EntryHeader']",
+            "textRegex": "/[^/]+/",
+            "regexIndex": 0
           },
-          "type": "unknow"
+          "audio": {
+            "selector": "[data-tts-client-name][data-ved] audio source",
+            "attr": "src"
+          },
+          "type": "bre"
         }
       ],
       "defs": {
