@@ -33,8 +33,7 @@
           },
           "def": {
             "selector": "[data-dobid='dfn']",
-            "toArray": true,
-            "includeArrayIndex": true
+            "toArray": true
           }
         }
       },
@@ -46,7 +45,7 @@
             "selector": "div"
           },
           "def": {
-            "selector": "ol>li",
+            "selector": "ol>li span[lang]",
             "max": 2,
             "toArray": true
           }
