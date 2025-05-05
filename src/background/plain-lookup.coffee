@@ -62,7 +62,7 @@ export default {
 
     checkType: (w) ->
         if utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
-            return setting.getValue "englishLookupSource" # bing, bingCN, wiktionary
+            return setting.getValue "englishLookupSource" # google, bingCN, wiktionary
 
         for name, dictDesc of parserDescs
             if dictDesc.supportChinese
@@ -114,7 +114,7 @@ export default {
                 and tname != 'wiktionary' \
                 and utils.isEnglish(w)
                 return @parse(tabId, w, 'wiktionary')
-            else if tname == 'bing'
+            else if tname == 'google'
                 return @parse(tabId, w, 'wiktionary', prevResult)
 
             else if err.status == 404 \
@@ -147,20 +147,6 @@ export default {
                 possibleLangs = @checkLangs(w).filter((l) -> l != result?.lang)
                 if possibleLangs.length
                     return @parse(tabId, w, 'wiktionary', if result.w then result else null)
-
-        # add American pronunciation to English
-        if tname == 'bing' 
-            # Bing only supports English and has only British pronunciation.
-            result.lang = 'English'
-            result.prons?.push({
-                "symbol": "US",
-                "type": "ame",
-                "synthesis": "en-US"
-            })
-            # parse the second language if possible.
-            possibleLangs = @checkLangs(w).filter((l) -> l != result?.lang)
-            if possibleLangs.length
-                return @parse(tabId, w, 'wiktionary', if result.w then result else null)
 
             
         if tname == 'wiktionary'

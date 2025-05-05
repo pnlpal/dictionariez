@@ -35,7 +35,7 @@ export default {
     otherDisabledLanguages: [],
 
     enablePlainLookup: process.env.PRODUCT === "SidePal" ? false : true,
-    englishLookupSource: "bing", // bing, bingCN, wiktionary
+    englishLookupSource: "google", // google, bingCN, wiktionary
     enableAmeAudio: false,
     enableBreAudio: false,
     enableRealPron: false,
@@ -47,7 +47,7 @@ export default {
     enableMouseSK1: false,
     mouseSK1: "Alt",
 
-    enableAutoCloseMinidict:false,
+    enableAutoCloseMinidict: false,
 
     openSK1: "Ctrl",
     openSK2: "Shift",
@@ -94,8 +94,8 @@ export default {
           Object.assign(this.configCache, obj.config);
         }
         //migration:
-        if (this.configCache.englishLookupSource === "google") {
-          this.configCache.englishLookupSource = "bing";
+        if (this.configCache.englishLookupSource === "bing") {
+          this.configCache.englishLookupSource = "google";
         }
         // migration done.
         resolve(this.configCache);

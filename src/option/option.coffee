@@ -46,7 +46,7 @@ dictApp.controller 'optionCtrl', ['$scope', '$sce', ($scope, $sce) ->
                            'middleLeft', 'middleCenter', 'middleRight',
                            'bottomLeft', 'bottomCenter', 'bottomRight']
     $scope.englishLookupSources = {
-        'bing': 'Bing',
+        'google': 'Google',
         'bingCN': 'Bing Dict CN',
         'wiktionary': 'Wiktionary'
     };

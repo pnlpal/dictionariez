@@ -1,32 +1,59 @@
 {
-  "bing": {
-    "url": "https://www.bing.com/search?q=define%20<word>",
+  "google": {
+    "url": "https://www.google.com/search?q=define+<word>",
+    "languages": ["German", "Spanish", "French", "Italian"],
+    "credentials": "same-origin",
     "result": {
       "w": {
-        "selector": ".WordContainer div[role=\"heading\"]"
+        "selector": "[data-dobid='hdw']"
+      },
+      "langSymbol": {
+        "selector": "[data-language]",
+        "attr": "data-language"
       },
       "prons": [
         {
           "symbol": {
-            "selector": ".WordContainer .dc_prn"
+            "selector": ".vmod[data-topic][data-hveid]",
+            "htmlRegex": "<span>([^<>]*)</span>",
+            "regexIndex": 1
           },
-          "type": "bre",
-          "audio": {
-            "selector": ".WordContainer audio",
-            "attr": "src",
-            "srcOrigin": "https://www.bing.com"
-          }
+          "type": "unknow"
         }
       ],
       "defs": {
-        "groups": ".WordContainer .dc_pds .dc_pd",
+        "groups": ".vmod>.vmod[data-topic]",
         "result": {
           "pos": {
-            "selector": "span.dc_lowerpos"
+            "selector": "i"
           },
           "def": {
-            "selector": ".b_dList .dc_pm .dc_mn",
+            "selector": "[data-dobid='dfn']",
+            "toArray": true,
+            "includeArrayIndex": true
+          }
+        }
+      },
+
+      "defs2": {
+        "groups": "[data-tae]>[data-mh='-1']",
+        "result": {
+          "pos": {
+            "selector": "div"
+          },
+          "def": {
+            "selector": "ol>li",
+            "max": 2,
             "toArray": true
+          }
+        }
+      },
+      "images": {
+        "groups": ".vmod [data-topic] g-img",
+        "result": {
+          "src": {
+            "selector": "img",
+            "attr": "title"
           }
         }
       }
