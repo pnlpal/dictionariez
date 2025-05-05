@@ -42,23 +42,22 @@ const setupAudioListener = () => {
   );
 };
 
-const renderQueryResult = (res) => {
-  const wTpl = (w) => `<strong class='fairydict-w'> ${w} </strong>`;
-  const defTpl = (def) => `<span class='fairydict-def'> ${def} </span>`;
-  const defsTpl = (defs) => `<span class='fairydict-defs'> ${defs} </span>`;
-  const labelsTpl = (labels) =>
-    `<div class='fairydict-labels'> ${labels} </div>`;
-  const labelTpl = (label) => `<span class='fairydict-label'> ${label} </span>`;
-  const posTpl = (pos) => `<span class='fairydict-pos'> ${pos} </span>`;
-  const contentTpl = (content) =>
-    `<div class='fairydict-content'> ${content} </div>`;
-  const pronSymbolTpl = (symbol = "", type = "") =>
-    `<span class='fairydict-symbol fairydict-symbol-${type}'> <em> ${symbol} </em> </span>`;
-  const pronAudioTpl = (w, src = "", type = "", synthesis = "", lang = "") =>
-    `<a class='fairydict-pron-audio fairydict-pron-audio-${type}' data-mp3='${src}' data-synthesis='${synthesis}' data-lang='${lang}' data-w='${w}'><i class='icon-fairydict-volume'></i></a>`;
-  const pronsTpl = (w, prons) =>
-    `<div class='fairydict-prons'> ${w} ${prons} </div>`;
+const wTpl = (w) => `<strong class='fairydict-w'> ${w} </strong>`;
+const defTpl = (def) => `<span class='fairydict-def'> ${def} </span>`;
+const defsTpl = (defs) => `<span class='fairydict-defs'> ${defs} </span>`;
+const labelsTpl = (labels) => `<div class='fairydict-labels'> ${labels} </div>`;
+const labelTpl = (label) => `<span class='fairydict-label'> ${label} </span>`;
+const posTpl = (pos) => `<span class='fairydict-pos'> ${pos} </span>`;
+const contentTpl = (content) =>
+  `<div class='fairydict-content'> ${content} </div>`;
+const pronSymbolTpl = (symbol = "", type = "") =>
+  `<span class='fairydict-symbol fairydict-symbol-${type}'> <em> ${symbol} </em> </span>`;
+const pronAudioTpl = (w, src = "", type = "", synthesis = "", lang = "") =>
+  `<a class='fairydict-pron-audio fairydict-pron-audio-${type}' data-mp3='${src}' data-synthesis='${synthesis}' data-lang='${lang}' data-w='${w}'><i class='icon-fairydict-volume'></i></a>`;
+const pronsTpl = (w, prons) =>
+  `<div class='fairydict-prons'> ${w} ${prons} </div>`;
 
+const renderQueryResult = (res) => {
   let html = "";
 
   let wHtml = "";
@@ -121,21 +120,25 @@ const getEnglishPronAudio = async (w) => {
   if (res?.prons) {
     let ameSrc = "";
     let breSrc = "";
+    function addPronAudio(item) {
+      if ($(`.fairydict-pron-audio-${item.type}`).length) {
+        $(`.fairydict-pron-audio-${item.type}`).attr("data-mp3", item.audio);
+      } else {
+        const audioEl = pronAudioTpl(
+          w.replaceAll("·", ""),
+          item.audio,
+          item.type,
+          item.synthesis,
+          "English"
+        );
+        const label_ =
+          item.type === "ame" ? "US" : item.type === "bre" ? "UK" : item.type;
+        const elWithLabel = `<em>${label_}</em>${audioEl}`;
+        $(".fairydict-prons").append(elWithLabel);
+      }
+    }
     for (const item of res.prons) {
-      if (item.type === "ame" && item.audio) {
-        ameSrc = item.audio;
-        $(".dictionaries-tooltip .fairydict-pron-audio-ame").attr(
-          "data-mp3",
-          ameSrc
-        );
-      }
-      if (item.type === "bre" && item.audio) {
-        breSrc = item.audio;
-        $(".dictionaries-tooltip .fairydict-pron-audio-bre").attr(
-          "data-mp3",
-          breSrc
-        );
-      }
+      addPronAudio(item);
     }
     utils.send("play audios", { ameSrc, breSrc, checkSetting: true });
   }
