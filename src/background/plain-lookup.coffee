@@ -148,10 +148,20 @@ export default {
             return prevResult
 
         result = await utils.sendToTab tabId, { type: 'parse lookup result', html, parserDesc: dictDesc.result }
-
+        console.log "parse:", w, "from:", tname, "result:", result
         # fallback to wiktionary if google failed
         if tname == 'google' && !result?.w
             return @parse(tabId, w, @fallbackDictFromGoogle(w), prevResult)
+
+        # fix prons for google result 
+        if tname == 'google'
+            detectedPron = result.prons[0]
+            if !detectedPron.audio and result.langSymbol
+                for lang, n of langs
+                    if n.symbol == result.langSymbol || n.aternative == result.langSymbol 
+                        detectedPron.type = n.symbol 
+                        detectedPron.synthesis = n.synthesis
+                        result.lang = lang 
 
         # special handle of bing when look up Chinese
         if tname == "bingCN"
