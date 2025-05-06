@@ -139,6 +139,11 @@ const getEnglishPronAudio = async (w) => {
     }
     for (const item of res.prons) {
       addPronAudio(item);
+      if (item.type === "ame") {
+        ameSrc = item.audio;
+      } else if (item.type === "bre") {
+        breSrc = item.audio;
+      }
     }
     utils.send("play audios", { ameSrc, breSrc, checkSetting: true });
   }
