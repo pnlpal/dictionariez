@@ -1,3 +1,11 @@
+# v5.6.0 May 06, 2025
+- Fixed Google lookup as Bing no longer supports dictionary functionality.
+- Added fallback to Wiktionary if Google lookup fails.
+- Corrected synthesis symbols for languages like German.
+- Reduced waiting time for resolving issues (#151).
+- Added a link to PNL PDF Reader.
+- Updated references from `pnlpal` to `pnl.dev`.
+
 # v5.5.2 Apr 21, 2025 
 - Added a delay to handle the `mouseup` event, preventing unnecessary queries if canceled.
 - Suppressed query results when the action is canceled.
