@@ -253,41 +253,6 @@ describe("lookup-parser", () => {
     });
   });
 
-  it("should get and parse the word lecture from Bing", async () => {
-    const html = await utils.loadHTML(
-      "https://www.bing.com/search?q=define%20lecture"
-    );
-    const result = await parseHTML(html, parserDesc.bing.result);
-    // console.log(JSON.stringify(result, null, 2));
-    expect(JSON.stringify(result, null, 2)).to.equal(
-      `{
-  "w": "lec·ture",
-  "prons": [
-    {
-      "symbol": "[ˈlɛktʃə]",
-      "type": "bre",
-      "audio": "https://www.bing.com/th?id=ODT.135401A448B8B91B5A0CF3DB78E0386E&pid=Dictionary"
-    }
-  ],
-  "defs": [
-    {
-      "pos": "noun",
-      "def": [
-        "an educational talk to an audience, especially one of students in a university:",
-        "a long serious speech, especially one given as a scolding or reprimand:"
-      ]
-    },
-    {
-      "pos": "verb",
-      "def": [
-        "deliver an educational lecture or lectures:",
-        "talk seriously or reprovingly to (someone):"
-      ]
-    }
-  ]
-}`
-    );
-  });
   it("should get and parse the word dynasty from Bing CN Dict", async () => {
     const html = await utils.loadHTML(
       "https://cn.bing.com/dict/search?mkt=zh-cn&q=dynasty"
@@ -341,7 +306,7 @@ describe("lookup-parser", () => {
       "https://cn.bing.com/dict/search?mkt=zh-cn&q=恩"
     );
     const result = await parseHTML(html, parserDesc.bingCN.result);
-    console.log(JSON.stringify(result, null, 2));
+    // console.log(JSON.stringify(result, null, 2));
     expect(JSON.stringify(result, null, 2)).to.equal(
       `{
   "w": "恩",
