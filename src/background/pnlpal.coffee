@@ -3,7 +3,7 @@ import setting from "./setting.js"
 
 
 openYtbOnCaptionz = (link) ->
-    url = "https://pnlpal.dev/captionz?link="+encodeURIComponent(link)
+    url = "https://pnl.dev/captionz?link="+encodeURIComponent(link)
 
     chrome.tabs.create {
         url

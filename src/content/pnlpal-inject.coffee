@@ -25,7 +25,7 @@ addDictByParseContent = (contentNode) ->
 	await utils.send 'dictionary-add', { dict }
 	await utils.send 'look up', dict
 
-if location.host == 'pnlpal.dev' or location.host == "localhost:4567"
+if location.host == 'pnlpal.dev' or location.host == 'pnl.dev' or location.host == "localhost:4567"
 	if (process.env.PRODUCT == 'SidePal')
 		$('body').attr('data-sidepal-version', chrome.runtime.getManifest().version)
 		$('.add-to-dictionariez').text('Add to SidePal')

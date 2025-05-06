@@ -243,7 +243,7 @@ initDictionary = () ->
             text: 'Add more dicts',
             className: 'btn btn-success',
             action: () ->
-                href = 'https://pnlpal.dev/category/4/dictionariez-trove'
+                href = 'https://pnl.dev/category/4/dictionariez-trove'
                 window.open(href, '_blank')
         }, {
             text: 'Restore default',

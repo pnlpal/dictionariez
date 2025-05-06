@@ -112,7 +112,7 @@ addDict({
 
 And use "allDicts" to access all the dicts in your collection. 
 
-Read more here: https://pnlpal.dev/topic/52/help-more-dictionaries-needed
+Read more here: https://pnl.dev/topic/52/help-more-dictionaries-needed
 
         """)
         window.addDict = window.addExtraDict = (dict)->

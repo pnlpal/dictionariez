@@ -115,7 +115,11 @@ export function initYtbInjection() {
   window.addEventListener("message", async (event) => {
     if (
       event.data &&
-      ["http://localhost:4100", "https://pnlpal.dev"].includes(event.origin)
+      [
+        "http://localhost:4100",
+        "https://pnlpal.dev",
+        "https://pnl.dev",
+      ].includes(event.origin)
     ) {
       // console.log("event", event.data, event.origin);
       if (event.data.getRawVideoDataFirst) {

@@ -46,7 +46,7 @@ We look forward to hearing from you and helping you achieve your language learni
 
 # More dictionaries are needed!
 
-[See here.](https://pnlpal.dev/topic/52/help-more-dictionaries-are-needed)
+[See here.](https://pnl.dev/topic/52/help-more-dictionaries-are-needed)
 
 # Build
 
@@ -69,6 +69,6 @@ Thank you.
 
 [kiwi]: https://kiwibrowser.com/
 [flow]: https://play.google.com/store/apps/details?id=org.flow.browser
-[Programming and Language community]: https://pnlpal.dev/
-[pnlpal]: https://pnlpal.dev/
+[Programming and Language community]: https://pnl.dev/
+[pnl]: https://pnl.dev/
 [Discord channel]: https://discord.gg/sazRac4kSa
