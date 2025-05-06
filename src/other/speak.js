@@ -55,22 +55,26 @@ function playSynthesis({ text, lang, name, voice } = {}) {
   let voices = speechSynthesis.getVoices();
   let v;
 
-  if (lang === "en-US") {
+  if (lang) {
     if (utils.isWindows()) {
       v =
         voices.find((x) => x.name === voice) ||
-        voices.find((x) => x.name === "Microsoft Zira") || // Windows default
-        voices.find((x) => x.name === "Microsoft David") ||
-        voices.find((x) => x.lang === "en-US");
+        voices.find(
+          (x) => x.name.startsWith("Microsoft Zira") && x.lang === lang
+        ) || // Windows default
+        voices.find(
+          (x) => x.name.startsWith("Microsoft David") && x.lang === lang
+        ) ||
+        voices.find((x) => x.lang === lang);
     } else if (utils.isMac()) {
       voices.find((x) => x.name === voice) ||
-        voices.find((x) => x.name === "Samantha") || // macOS default
-        voices.find((x) => x.lang === "en-US");
+        voices.find((x) => x.name === "Samantha" && x.lang === lang) || // macOS default
+        voices.find((x) => x.lang === lang);
     } else {
       v =
         voices.find((x) => x.name === voice) ||
-        voices.find((x) => x.name === "Google US English") ||
-        voices.find((x) => x.lang === "en-US" && x.name === "Samantha");
+        voices.find((x) => x.name.startsWith("Google") && x.lang === lang) ||
+        voices.find((x) => x.lang === lang);
     }
     if (v) {
       msg.voice = v;
