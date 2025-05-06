@@ -157,11 +157,15 @@ export default {
         if tname == 'google'
             detectedPron = result.prons[0]
             if !detectedPron.audio and result.langSymbol
-                for lang, n of langs
-                    if n.symbol == result.langSymbol || n.aternative == result.langSymbol 
-                        detectedPron.type = n.symbol 
-                        detectedPron.synthesis = n.synthesis
-                        result.lang = lang 
+                if result.langSymbol == 'zh-CN' 
+                    detectedPron.type = 'zh-CN'
+                    detectedPron.synthesis = 'zh-CN'
+                else 
+                    for lang, n of langs
+                        if n.symbol == result.langSymbol || n.aternative == result.langSymbol 
+                            detectedPron.type = n.symbol 
+                            detectedPron.synthesis = n.synthesis
+                            result.lang = lang 
 
         # special handle of bing when look up Chinese
         if tname == "bingCN"
