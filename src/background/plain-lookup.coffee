@@ -136,6 +136,10 @@ export default {
 
         result = await utils.sendToTab tabId, { type: 'parse lookup result', html, parserDesc: dictDesc.result }
 
+        # fallback to wiktionary if google failed
+        if tname == 'google' && !result?.w
+            return @parse(tabId, w, 'wiktionary', prevResult)
+
         # special handle of bing when look up Chinese
         if tname == "bingCN"
             if utils.isChinese(w) 
