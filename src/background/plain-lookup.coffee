@@ -73,6 +73,19 @@ export default {
                     if w.match(new RegExp(langs[lang].regex, 'ug'))?.length == w.length \
                         and not @isLangDisabled(lang)
                         return name
+    fallbackDictFromGoogle: (w) -> # fallback to other dict if Google failed
+        for name, dictDesc of parserDescs
+            if name == 'google'
+                continue
+            if dictDesc.supportChinese
+                return name if utils.isChinese(w) and setting.getValue "enableLookupChinese"
+            
+            if dictDesc.languages
+                for lang in dictDesc.languages 
+                    if w.match(new RegExp(langs[lang].regex, 'ug'))?.length == w.length \
+                        and not @isLangDisabled(lang)
+                        return name
+        return 'wiktionary'
 
     init: () ->
         @typeCount = Object.keys(parserDescs).length
@@ -115,7 +128,7 @@ export default {
                 and utils.isEnglish(w)
                 return @parse(tabId, w, 'wiktionary')
             else if tname == 'google'
-                return @parse(tabId, w, 'wiktionary', prevResult)
+                return @parse(tabId, w, @fallbackDictFromGoogle(w), prevResult)
 
             else if err.status == 404 \
                 and tname == 'wiktionary'
@@ -138,7 +151,7 @@ export default {
 
         # fallback to wiktionary if google failed
         if tname == 'google' && !result?.w
-            return @parse(tabId, w, 'wiktionary', prevResult)
+            return @parse(tabId, w, @fallbackDictFromGoogle(w), prevResult)
 
         # special handle of bing when look up Chinese
         if tname == "bingCN"
@@ -150,7 +163,7 @@ export default {
                 # parse the second language if possible.
                 possibleLangs = @checkLangs(w).filter((l) -> l != result?.lang)
                 if possibleLangs.length
-                    return @parse(tabId, w, 'wiktionary', if result.w then result else null)
+                    return @parse(tabId, w, @fallbackDictFromGoogle(w), if result.w then result else null)
 
             
         if tname == 'wiktionary'
