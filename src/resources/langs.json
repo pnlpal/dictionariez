@@ -2,11 +2,13 @@
   "English": {},
   "German": {
     "regex": "[a-zA-Z]|[ÄÖÜẞäöüß ]",
-    "symbol": "de"
+    "symbol": "de",
+    "synthesis": "de-DE"
   },
   "Spanish": {
     "regex": "[a-zA-Z]|[ÑñÁÉÍÓÚÜáéíóúü ]",
-    "symbol": "es"
+    "symbol": "es",
+    "synthesis": "es-ES"
   },
   "French": {
     "regex": "[a-zA-Z]|[ÀàÂâÆæÇçÉéÈèÊêËëÎîÏïÔôŒœÙùÛûÜüŸÿ ]",

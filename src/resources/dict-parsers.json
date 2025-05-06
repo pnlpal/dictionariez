@@ -1,7 +1,7 @@
 {
   "google": {
     "url": "https://www.google.com/search?hl=en&q=define+<word>",
-    "languages": ["German", "Spanish", "French", "Italian", "Japanese"],
+    "languages": ["German", "Spanish", "Italian", "Japanese"],
     "credentials": "same-origin",
     "result": {
       "w": {

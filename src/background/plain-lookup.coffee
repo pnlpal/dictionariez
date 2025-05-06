@@ -148,7 +148,7 @@ export default {
             return prevResult
 
         result = await utils.sendToTab tabId, { type: 'parse lookup result', html, parserDesc: dictDesc.result }
-        console.log "parse:", w, "from:", tname, "result:", result
+        # console.log "parse:", w, "from:", tname, "result:", result
         # fallback to wiktionary if google failed
         if tname == 'google' && !result?.w
             return @parse(tabId, w, @fallbackDictFromGoogle(w), prevResult)
