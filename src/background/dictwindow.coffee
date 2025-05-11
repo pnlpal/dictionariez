@@ -490,7 +490,11 @@ export default {
             setting.setValue 'dictionary', request.dictName
 
         message.on 'sendToDict', ( request, sender ) =>
-            @getByTab(sender.tab.id)?.sendMessage request
+            if sender.tab 
+                win = @getByTab(sender.tab.id)
+            else 
+                win = @mainDictWindow()
+            win?.sendMessage request
 
         message.on 'get wikipedia', ( request, sender ) =>
             if sender.tab 
