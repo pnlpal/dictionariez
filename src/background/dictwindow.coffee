@@ -333,7 +333,7 @@ export default {
             # 'look up' can be triggered by the context menu or the hotkey or any webpages
             fromSidePanel = sender.id and !sender.tab
             # console.log("[dictWindow] look up: ", { dictName, w, s, sc, sentence, means, isInEditable })
-            if means == 'mouse'
+            if means == 'mouse' and process.env.PRODUCT == 'Dictionariez'
                 if not setting.getValue('enableMinidict')
                     return
 
