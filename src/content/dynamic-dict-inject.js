@@ -87,7 +87,11 @@ async function fixQueryingOnEnterForChatGPT(dict) {
     await utils.promisifiedTimeout(1000);
     const textarea = document.querySelector(dict.inputSelector);
     textarea.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" && !event.shiftKey && textarea.value) {
+      if (
+        event.key === "Enter" &&
+        !event.shiftKey &&
+        textarea.innerText.trim()
+      ) {
         event.preventDefault();
         const btn = document.querySelector(dict.submitButtonSelector);
         btn.click();
