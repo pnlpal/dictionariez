@@ -313,6 +313,7 @@
   <div id="sidepal-body" ng-if="isSidePal">
     <iframe
       referrerpolicy="no-referrer"
+      ng-if="!isDynamicDict"
       ng-src="{{trustedWindowUrl}}"
       ng-hide="!windowUrl || dictFrameIsNotLoaded"
       id="dict-result"
@@ -321,6 +322,18 @@
       style="height: 100vh"
       frameborder="0"
       sandbox="allow-same-origin"
+    ></iframe>
+    <iframe
+      referrerpolicy="no-referrer"
+      ng-if="isDynamicDict"
+      ng-src="{{trustedWindowUrl}}"
+      ng-hide="!windowUrl || dictFrameIsNotLoaded"
+      id="dict-result"
+      width="100%"
+      height="100%"
+      style="height: 100vh"
+      frameborder="0"
+      sandbox="allow-same-origin allow-scripts allow-forms"
     ></iframe>
     <div
       class="well well-lg text-center"
