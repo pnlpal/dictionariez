@@ -45,8 +45,6 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
         }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, history, w, r, windowUrl})->
             $scope.allDicts = allDicts
             $scope.currentDictName = currentDictName
-            $scope.currentDict = allDicts.find (d) -> d.dictName == currentDictName
-            $scope.isDynamicDict = $scope.currentDict?.inputSelector
             $scope.nextDictName = nextDictName
             $scope.previousDictName = previousDictName
             $scope.previous = previous
