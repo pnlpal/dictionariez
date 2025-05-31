@@ -49,7 +49,10 @@ export default {
             return w
 
     isLangDisabled: (lang) ->
-        setting.getValue("otherSupportedLanguages", []).includes(lang) \
+        if lang == 'English' and not setting.getValue "enableLookupEnglish"
+            return true
+
+        return setting.getValue("otherSupportedLanguages", []).includes(lang) \
             && setting.getValue("otherDisabledLanguages", []).includes(lang)
     
     checkLangs: (w) ->
@@ -162,18 +165,17 @@ export default {
 
         # fix prons for google result 
         if tname == 'google'
-            detectedPron = result.prons[0]
-            if !detectedPron.audio and result.langSymbol
-                if result.langSymbol == 'zh-CN' 
-                    detectedPron.type = 'zh-CN'
-                    detectedPron.synthesis = 'zh-CN'
-                else 
-                    for lang, n of langs
-                        if n.symbol == result.langSymbol || n.aternative == result.langSymbol 
-                            detectedPron.type = n.symbol 
-                            detectedPron.synthesis = n.synthesis
-                            result.lang = lang 
+            for lang, n of langs
+                if n.symbol == result.langSymbol || n.aternative == result.langSymbol 
+                    if @isLangDisabled(lang)
+                        return @parse(tabId, w, @fallbackDictFromGoogle(w), prevResult)
 
+                    detectedPron = result.prons[0]
+                    if !detectedPron.audio and result.langSymbol
+                        detectedPron.type = n.symbol 
+                        detectedPron.synthesis = n.synthesis
+                        result.lang = lang 
+            
         # special handle of bing when look up Chinese
         if tname == "bingCN"
             if utils.isChinese(w) 
