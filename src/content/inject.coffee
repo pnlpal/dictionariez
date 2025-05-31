@@ -249,25 +249,26 @@ run = () =>
 		handleLookupByMouse = (event, text)->
 			return unless text
 			return if text == plainQuerying
-			sentence = getSentenceOfSelection()
-
+			sentence = ''
 			markWordAfterward = (lookupResult) ->
 				# highlight selected words is a special feature
 				# even if the floating definition is turned off, still highlight can be working.
 				if lookupResult and setting.markWords and !setting.enableMarkWordsSK1
 					highlight(setting.markColor)
-
+			
 			# popup window
 			if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
-				chrome.runtime.sendMessage({
-					type: 'look up',
-					means: 'mouse',
-					sentence,
-					w: text,
-					s: location.href,
-					sc: document.title,
-					isInEditable: utils.isSentence(text) && checkEditable(event.target)
-				}, markWordAfterward)
+				if process.env.PRODUCT == 'SidePal' or setting.enableMinidict
+					sentence = getSentenceOfSelection()
+					chrome.runtime.sendMessage({
+						type: 'look up',
+						means: 'mouse',
+						sentence,
+						w: text,
+						s: location.href,
+						sc: document.title,
+						isInEditable: utils.isSentence(text) && checkEditable(event.target)
+					}, markWordAfterward)
 
 			# floating definition
 			text = await utils.send 'check text supported', { w: text }
@@ -277,7 +278,7 @@ run = () =>
 				if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
 					plainLookupTooltip.showPlainContent(null, event)
 					plainQuerying = text
-
+					sentence = getSentenceOfSelection() if not sentence
 					isOk = await utils.send 'look up plain', {
 						means: 'mouse',
 						sentence,
