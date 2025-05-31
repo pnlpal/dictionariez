@@ -47,23 +47,28 @@ export getWordFromSelection = (fromAllFrames = false) ->
 
 export getSentenceOfSelection = (window_ = window) ->
     selection = window_.getSelection()
+
     try
-        range = selection.getRangeAt(0)
+        if navigator.userAgent.includes("Gecko") 
+            return getSentenceFromSelection(selection)
+        else 
+            range = selection.getRangeAt(0)
 
-        range1 = range.cloneRange()
-        range1.detach()
+            range1 = range.cloneRange()
+            range1.detach()
 
-        selection.modify('move', 'backward', 'sentence')
-        selection.modify('extend', 'forward', 'sentence')
+            selection.modify('move', 'backward', 'sentence')
+            selection.modify('extend', 'forward', 'sentence')
 
-        text = selection.toString().trim()
+            text = selection.toString().trim()
 
-        selection.removeAllRanges()
-        selection.addRange(range1)
+            selection.removeAllRanges()
+            selection.addRange(range1)
 
-        return text
-    catch  # Gecko does not implement "sentence" yet
+            return text
+    catch  
         try 
+            # Fallback for browsers that don't support modify
             return getSentenceFromSelection(selection)
         catch
             return
