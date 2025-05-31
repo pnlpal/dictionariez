@@ -116,6 +116,7 @@ run = () =>
 					return if plainQuerying != w
 					plainLookupTooltip.renderPlainResult(res)
 					plainQuerying = null
+				
 
 			else
 				if setting.enableSelectionOnMouseMove
@@ -223,6 +224,8 @@ run = () =>
 			unless text
 				# click inside the dict
 				if $('.dictionaries-tooltip').has(event.target).length
+					return
+				if plainQuerying # if is querying, wait for the result.
 					return
 
 				plainLookupTooltip.hide()

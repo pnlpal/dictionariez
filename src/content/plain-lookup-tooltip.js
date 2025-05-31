@@ -226,11 +226,11 @@ export default {
         htmlContent
       );
     } else {
+      const clickInside = $(".dictionaries-tooltip").has(e.target).length;
       $(".dictionaries-tooltip .fairydict-spinner").show();
       $(".dictionaries-tooltip .dictionaries-tooltip-content").empty();
 
       if (e) {
-        const clickInside = $(".dictionaries-tooltip").has(e.target).length;
         if (!clickInside) {
           this.setupPlainContentPosition(e);
         }
