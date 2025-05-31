@@ -120,6 +120,13 @@ export default {
         dictDesc = parserDescs[tname]
         url = (url or dictDesc.url).replace('<word>', w)
 
+        if tname == 'google' 
+            possibleLangs = @checkLangs(w)
+            if possibleLangs.length > 0
+                # prioritize other languages over English
+                langDesc = langs[possibleLangs[0]]
+                url = url.replace 'hl=en', 'hl=' + langDesc.synthesis if langDesc.synthesis 
+
         try
             html = await utils.loadHTML url, dictDesc.credentials
         catch err 
