@@ -1,3 +1,12 @@
+# v5.6.1 Jun 01, 2025 
+- Prioritized user settings for language preferences (e.g., Japanese over Chinese) ([#158](https://github.com/pnlpal/dictionariez/issues/158)).
+- Filtered out results for disabled languages in user settings.
+- Fixed issues with looking up new words from the popup bubble ([#155](https://github.com/pnlpal/dictionariez/issues/155)).
+- Resolved multi-line selection issues on Firefox ([#156](https://github.com/pnlpal/dictionariez/issues/156)).
+- Fixed extracting sentence on Firefox.
+- Fixed retrieving sentence when switching dict or from the history. 
+- Addressed ChatGPT posting issue when pressing the Enter key.
+
 # v5.6.0 May 06, 2025
 - Fixed Google lookup as Bing no longer supports dictionary functionality.
 - Added fallback to Wiktionary if Google lookup fails.
