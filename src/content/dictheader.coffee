@@ -42,13 +42,14 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             type: 'dictionary',
             # origin: window.top?.location?.origin,
             # url: window.top?.location?.href
-        }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, history, w, r, windowUrl})->
+        }, ({currentDictName, nextDictName, previousDictName, allDicts, previous, history, w, r, sentence, windowUrl})->
             $scope.allDicts = allDicts
             $scope.currentDictName = currentDictName
             $scope.nextDictName = nextDictName
             $scope.previousDictName = previousDictName
             $scope.previous = previous
             $scope.word = w
+            $scope.sentence = sentence 
             $scope._lastQueryWord = $scope.word
             $scope.history = history
             $scope.windowUrl = windowUrl if windowUrl
@@ -90,6 +91,7 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
         $scope.initial = false
         $scope.querying = true if w
         $scope.word = w if w
+        $scope.sentence = null if w
         $scope.currentDictName = dictName if dictName and not newDictWindow
     
         if dictName and queryText?
@@ -101,6 +103,7 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
         chrome.runtime.sendMessage({
             type: 'query',
             w: $scope.word,
+            sentence: $scope.sentence,
             dictName: dictName or $scope.currentDictName,
             nextDict,
             previousDict,

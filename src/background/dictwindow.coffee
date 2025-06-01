@@ -422,6 +422,7 @@ export default {
 
             if win 
                 w = win.word
+                sentence = win.sentence
                 if w 
                     wordDetail = await storage.getWordDetail(w)
                     r = wordDetail?.r
@@ -442,7 +443,7 @@ export default {
             
             if process.env.PRODUCT == 'SidePal' and w
                 { windowUrl } = await dict.query(w, currentDictName)
-            return { allDicts: dict.allDicts, history, currentDictName, nextDictName, previousDictName, previous, w, r, windowUrl }
+            return { allDicts: dict.allDicts, history, currentDictName, nextDictName, previousDictName, previous, w, r, sentence, windowUrl }
         
         message.on 'dictionary history', (request, sender) =>
             history = await storage.getHistory(10) # at most show 8 words in the history list on dictionary header.

@@ -219,8 +219,12 @@ initHistory = () ->
             e.preventDefault()
             e.stopPropagation()
 
+            row = table.row($(e.target).closest('tr'))
+            rowData = row.data()
+
             utils.send('look up', {
-                w: $(e.target).data('w').trim()
+                w: $(e.target).data('w').trim(),
+                sentence: rowData.sentence,
             })
 
 initHistory()
