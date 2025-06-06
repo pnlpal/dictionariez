@@ -27,10 +27,10 @@ dictApp = angular.module('fairyDictApp', ['ui.bootstrap', 'color.picker'])
 
 dictApp.controller 'optionCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.isSidePal = process.env.PRODUCT == 'SidePal'
-    $scope.asciiTitle = if process.env.PRODUCT == 'SidePal' 
-            require("../ascii-title.sidepal.html").default
-        else 
+    $scope.asciiTitle = if process.env.PRODUCT == 'Dictionariez' 
             require("../ascii-title.html").default
+        else 
+            require("../ascii-title.#{process.env.PRODUCT.toLowerCase()}.html").default
     $scope.asciiTitleHtml = $sce.trustAsHtml($scope.asciiTitle)
 
     $scope.version = chrome.runtime.getManifest().version
@@ -123,10 +123,10 @@ Read more here: https://pnl.dev/topic/52/help-more-dictionaries-needed
 ]
 
 (setupAppDescription = () ->
-  appDescription = if process.env.PRODUCT == "SidePal"
-    require("../description-and-badge.sidepal.html").default
-  else 
+  appDescription = if process.env.PRODUCT == "Dictionariez"
     require("../description-and-badge.html").default
+  else 
+    require("../description-and-badge.#{process.env.PRODUCT.toLowerCase()}.html").default
 
   document.querySelector("#app-description").innerHTML = appDescription 
   

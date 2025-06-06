@@ -333,7 +333,7 @@ export default {
             # 'look up' can be triggered by the context menu or the hotkey or any webpages
             fromSidePanel = sender.id and !sender.tab
             # console.log("[dictWindow] look up: ", { dictName, w, s, sc, sentence, means, isInEditable })
-            if means == 'mouse' and process.env.PRODUCT == 'Dictionariez'
+            if means == 'mouse' and process.env.PRODUCT != 'SidePal'
                 if not setting.getValue('enableMinidict')
                     return
 
@@ -348,7 +348,7 @@ export default {
             else
                 result = await @lookup({ w: w?.trim(), s, sc, sentence })
 
-                if newDictWindow and process.env.PRODUCT == 'Dictionariez'
+                if newDictWindow and process.env.PRODUCT != 'SidePal'
                     targetWin = @create({ dictName })
                     result = await targetWin.lookup(w || @dictWindows[0].word, sentence)
 
@@ -392,14 +392,14 @@ export default {
                 storage.addHistory { w, sentence }
 
             if senderWin.isHelpMeRefine and utils.isSentence(w) and senderWin.dictName != dictName 
-                if request.newDictWindow and process.env.PRODUCT == 'Dictionariez'
+                if request.newDictWindow and process.env.PRODUCT != 'SidePal'
                     targetWin = @create({ dictName })
                     result = await targetWin.refineTextWithAI(w)
                 else 
                     result = await senderWin.refineTextWithAI(w, dictName)
                     
             else 
-                if request.newDictWindow and process.env.PRODUCT == 'Dictionariez'
+                if request.newDictWindow and process.env.PRODUCT != 'SidePal'
                     targetWin = @create({ dictName })
                     result = await targetWin.lookup(w, sentence, languagePrompt)
                 else 

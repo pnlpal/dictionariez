@@ -1,10 +1,10 @@
 import storage from  "./storage.js"
 import message from "./message.js"
 
-defaultDicts = if process.env.PRODUCT == 'SidePal'
-  require('./default-dicts.sidepal.coffee').default
-else
+defaultDicts = if process.env.PRODUCT == 'Dictionariez'
   require('./default-dicts.coffee').default
+else
+  require("./default-dicts.#{process.env.PRODUCT.toLowerCase()}.coffee").default
 
 chatgptDefault = {
     "windowUrl": "https://chatgpt.com",

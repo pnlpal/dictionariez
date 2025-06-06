@@ -15,7 +15,7 @@ const initPromises = (async function () {
   await dict.init();
   await dw.init();
 
-  if (process.env.PRODUCT === "Dictionariez") {
+  if (process.env.PRODUCT !== "SidePal") {
     const lookup = require("./plain-lookup.coffee").default;
     const speak = require("./speak.coffee").default;
     const ankiWindow = require("./ankiwindow.coffee").default;
@@ -52,7 +52,7 @@ chrome.runtime.onInstalled.addListener(async function (details) {
     ].includes(details.reason)
   ) {
     await initPromises;
-    if (process.env.PRODUCT === "Dictionariez") {
+    if (process.env.PRODUCT !== "SidePal") {
       if (!setting.getValue("privacyConsent")) {
         chrome.tabs.create({
           url: chrome.runtime.getURL("privacy-consent.html"),
@@ -76,7 +76,7 @@ chrome.runtime.onMessage.addListener(function (...args) {
   return true;
 });
 
-if (process.env.PRODUCT === "Dictionariez") {
+if (process.env.PRODUCT !== "SidePal") {
   chrome.windows.onRemoved.addListener(async function (wid) {
     await initPromises;
     dw.destroyWin({ wid });

@@ -26,10 +26,10 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.previous = null
     $scope.isSidePal = process.env.PRODUCT == 'SidePal'
     $scope.version = chrome.runtime.getManifest().version
-    $scope.asciiTitle = if process.env.PRODUCT == 'SidePal' 
-        require("../ascii-title.sidepal.html").default
-    else 
+    $scope.asciiTitle = if process.env.PRODUCT == 'Dictionariez' 
         require("../ascii-title.html").default
+    else 
+        require("../ascii-title.#{process.env.PRODUCT.toLowerCase()}.html").default
     $scope.asciiTitleHtml = $sce.trustAsHtml($scope.asciiTitle)
 
     if not $scope.inFrame
@@ -316,10 +316,10 @@ import('../header.html').then ({ default: headerDom }) ->
     angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])
 
     (setupAppDescription = () ->
-        appDescription = if process.env.PRODUCT == "SidePal"
-            require("../description-and-badge.sidepal.html").default
-        else 
+        appDescription = if process.env.PRODUCT == "Dictionariez"
             require("../description-and-badge.html").default
+        else 
+            require("../description-and-badge.#{process.env.PRODUCT.toLowerCase()}.html").default
 
         document.querySelector("#app-description").innerHTML = appDescription 
         

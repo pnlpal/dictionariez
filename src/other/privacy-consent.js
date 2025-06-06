@@ -40,9 +40,10 @@ if (!navigator.userAgent.includes("Gecko/")) {
 
 (function setupAsciiTitle() {
   const asciiTitle =
-    process.env.PRODUCT === "SidePal"
-      ? require("../ascii-title.sidepal.html").default
-      : require("../ascii-title.html").default;
+    process.env.PRODUCT === "Dictionariez"
+      ? require("../ascii-title.html").default
+      : require(`../ascii-title.${process.env.PRODUCT.toLowerCase()}.html`)
+          .default;
 
   document.querySelector("#ascii-title").innerHTML = asciiTitle;
 })();

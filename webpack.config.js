@@ -126,9 +126,9 @@ var options = {
       patterns: [
         {
           from:
-            env.PRODUCT === "SidePal"
-              ? "src/manifest.sidepal.json"
-              : "src/manifest.json",
+            env.PRODUCT === "Dictionariez"
+              ? "src/manifest.json"
+              : `src/manifest.${process.env.PRODUCT.toLowerCase()}.json`,
           to: path.join(__dirname, "build", "manifest.json"),
           force: true,
           transform: function (content) {
@@ -147,9 +147,9 @@ var options = {
               json["browser_specific_settings"] = {
                 gecko: {
                   id:
-                    env.PRODUCT === "SidePal"
-                      ? "revir.qing_sidepal@gmail.com"
-                      : "revir.qing@gmail.com",
+                    env.PRODUCT === "Dictionariez"
+                      ? "revir.qing@gmail.com"
+                      : `revir.qing_${env.PRODUCT.toLowerCase()}@gmail.com`,
                   strict_min_version: "109.0",
                 },
               };
