@@ -70,5 +70,6 @@
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.2.1",
     "write-file-webpack-plugin": "^4.5.1"
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }
