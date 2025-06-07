@@ -182,6 +182,8 @@ export default {
                         detectedPron.type = n.symbol 
                         detectedPron.synthesis = n.synthesis
                         result.lang = lang 
+                    else if detectedPron.type == 'bre' 
+                        detectedPron.symbol = "#{detectedPron.symbol || ''} UK"
             
         # special handle of bing when look up Chinese
         if tname == "bingCN"
