@@ -141,9 +141,8 @@ export default {
             html = await utils.loadHTML url, dictDesc.credentials
         catch err 
             if err.message == 'timeout' \
-                and tname != 'wiktionary' \
                 and utils.isEnglish(w)
-                return @parse(tabId, w, 'wiktionary')
+                return @parse(tabId, w, if tname == 'wiktionary' then 'google' else 'wiktionary')
             else if tname == 'google'
                 return @parse(tabId, w, @fallbackDictFromGoogle(w), prevResult)
 
