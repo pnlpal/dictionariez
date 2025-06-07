@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "minimum_chrome_version": "105",
+  "name": "Ordböcker: dictionaries for learning Swedish",
+  "permissions": ["activeTab", "tabs", "storage", "contextMenus", "offscreen"],
+  "background": {
+    "service_worker": "background.bundle.js"
+  },
+  "content_scripts": [
+    {
+      "js": ["preinject.bundle.js"],
+      "matches": ["<all_urls>"],
+      "run_at": "document_start"
+    },
+    {
+      "js": ["inject.bundle.js"],
+      "matches": ["<all_urls>"],
+      "all_frames": true
+    }
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["*.js", "*.json", "*.html", "fonts/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "action": {
+    "default_title": "Ordböcker: dictionaries for learning Swedish"
+  },
+  "icons": {
+    "64": "images/ordböcker-64.png",
+    "128": "images/ordböcker-128.png",
+    "256": "images/ordböcker-256.png"
+  }
+}
