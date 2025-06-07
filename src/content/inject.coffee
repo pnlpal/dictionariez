@@ -29,7 +29,7 @@ setupStyles = () ->
 	require('./inject-fontello.css')
 
 run = () =>
-	if (process.env.PRODUCT == 'Dictionariez') 
+	if (process.env.PRODUCT != 'SidePal') 
 		setupStyles()
 		initYtbInjection()
 		initCaptionzInjection()
@@ -88,7 +88,7 @@ run = () =>
 			# See issue #45
 			return
 
-		if process.env.PRODUCT == 'Dictionariez'
+		if process.env.PRODUCT != 'SidePal'
 			plainLookupTooltip.init()
 
 		if setting.enableReadClipboard
