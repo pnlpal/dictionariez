@@ -27,6 +27,7 @@ dictApp = angular.module('fairyDictApp', ['ui.bootstrap', 'color.picker'])
 
 dictApp.controller 'optionCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.isSidePal = process.env.PRODUCT == 'SidePal'
+    $scope.isDictionariez = process.env.PRODUCT == 'Dictionariez'
     $scope.asciiTitle = if process.env.PRODUCT == 'Dictionariez' 
             require("../ascii-title.html").default
         else 

@@ -307,7 +307,7 @@
 							to look up different words in different languages you might be interested.
 						</div>
 						<div class="checkbox indent" ng-if="!isSidePal">
-							<div class="checkbox">
+							<div class="checkbox" ng-if="isDictionariez">
 								<label>
 									<input
 										type="checkbox"
@@ -317,7 +317,7 @@
 									Look up <strong>Chinese</strong> words <span class="text-muted">(Japanese Kanji conflicts with Chinese, cancel Chinese if you prefer Japanese.)</span>
 								</label>
 							</div>
-							<div class="checkbox indent">
+							<div class="checkbox indent" ng-if="isDictionariez">
 								<label>
 									<input
 										type="checkbox"

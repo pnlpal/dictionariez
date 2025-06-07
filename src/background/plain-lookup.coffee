@@ -52,8 +52,7 @@ export default {
         if lang == 'English' and not setting.getValue "enableLookupEnglish"
             return true
 
-        return setting.getValue("otherSupportedLanguages", []).includes(lang) \
-            && setting.getValue("otherDisabledLanguages", []).includes(lang)
+        return setting.getValue("otherDisabledLanguages", []).includes(lang)
     
     checkLangs: (w) ->
         res =  []
@@ -95,7 +94,13 @@ export default {
         @otherSupportedLanguages = []
         for dictDesc in Object.values(parserDescs)
             dictDesc.languages?.forEach (n) =>
-                @otherSupportedLanguages.push n if not @otherSupportedLanguages.includes(n)
+                if process.env.PRODUCT == "Ordböcker"
+                    if n == 'Swedish'
+                        @otherSupportedLanguages.push n if not @otherSupportedLanguages.includes(n)
+                    else 
+                        setting.configCache.otherDisabledLanguages.push n if not setting.configCache.otherDisabledLanguages.includes(n)
+                else 
+                    @otherSupportedLanguages.push n if not @otherSupportedLanguages.includes(n)
                 
         setting.configCache.otherSupportedLanguages = @otherSupportedLanguages
 

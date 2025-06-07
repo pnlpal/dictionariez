@@ -30,7 +30,7 @@ export default {
     selectionSK1: "Shift",
 
     enableLookupEnglish: true,
-    enableLookupChinese: true,
+    enableLookupChinese: process.env.PRODUCT === "Dictionariez" ? true : false,
     enableConvertCn2T: false,
     otherDisabledLanguages: [],
 
