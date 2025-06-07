@@ -51,7 +51,8 @@ export default {
     isLangDisabled: (lang) ->
         if lang == 'English' and not setting.getValue "enableLookupEnglish"
             return true
-
+        if lang == 'Chinese' and not setting.getValue "enableLookupChinese"
+            return true
         return setting.getValue("otherDisabledLanguages", []).includes(lang)
     
     checkLangs: (w) ->
