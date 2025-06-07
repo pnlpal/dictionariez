@@ -64,6 +64,7 @@ export default {
 
     checkType: (w) ->
         if utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
+            return 'wiktionary' if process.env.PRODUCT == "Ordböcker"
             return setting.getValue "englishLookupSource" # google, bingCN, wiktionary
 
         for name, dictDesc of parserDescs
@@ -75,6 +76,7 @@ export default {
                     if w.match(new RegExp(langs[lang].regex, 'ug'))?.length == w.length \
                         and not @isLangDisabled(lang)
                         return name
+
     fallbackDictFromGoogle: (w) -> # fallback to other dict if Google failed
         for name, dictDesc of parserDescs
             if name == 'google'
@@ -195,6 +197,20 @@ export default {
 
             
         if tname == 'wiktionary'
+            if process.env.PRODUCT == 'Ordböcker'
+                isNotSwedish = () -> 
+                    (result.langTargets || []).every (n) -> n.lang != 'Swedish'
+                if isNotSwedish() and utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
+                    enSrc = setting.getValue "englishLookupSource" # google, bingCN, wiktionary
+                    if enSrc != 'wiktionary'
+                        return @parse(tabId, w, enSrc, result)
+                else if (not isNotSwedish()) # is Swedish 
+                    # resort result to put Swedish first
+                    if result.langTargets?.length > 1
+                        result.langTargets.sort (a, b) ->
+                            if a.lang == 'Swedish' then -1
+                            else 0
+            
             multipleResult = []
             if Array.isArray(prevResult)
                 multipleResult = prevResult
