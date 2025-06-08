@@ -142,9 +142,9 @@ export default {
             html = await utils.loadHTML url, dictDesc.credentials
         catch err 
             if err.message == 'timeout' \
-                and utils.isEnglish(w)
+                and utils.isEnglish(w) and not prevResult
                 return @parse(tabId, w, if tname == 'wiktionary' then 'google' else 'wiktionary')
-            else if tname == 'google'
+            else if tname == 'google' and not prevResult
                 return @parse(tabId, w, @fallbackDictFromGoogle(w), prevResult)
 
             else if err.status == 404 \
@@ -194,7 +194,7 @@ export default {
                 result.prons = result.prons?.filter (n)->n.type != 'pinyin'
                 # parse the second language if possible.
                 possibleLangs = @checkLangs(w).filter((l) -> l != result?.lang)
-                if possibleLangs.length
+                if possibleLangs.length and not prevResult
                     return @parse(tabId, w, @fallbackDictFromGoogle(w), if result.w then result else null)
 
             
