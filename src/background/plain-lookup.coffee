@@ -168,6 +168,7 @@ export default {
         # console.log "parse:", w, "from:", tname, "result:", result
         # fallback to wiktionary if google failed
         if tname == 'google' && !result?.w
+            return prevResult if prevResult
             return @parse(tabId, w, @fallbackDictFromGoogle(w), prevResult)
 
         # fix prons for google result 
@@ -201,7 +202,7 @@ export default {
         if tname == 'wiktionary'
             if process.env.PRODUCT == 'Ordböcker'
                 isNotSwedish = () -> 
-                    (result.langTargets || []).every (n) -> n.lang != 'Swedish'
+                    (result.langTargets || []).every (n) -> n.lang != 'Swedish' and n.lang != 'Svenska'
                 if isNotSwedish() and utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
                     enSrc = setting.getValue "englishLookupSource" # google, bingCN, wiktionary
                     if enSrc != 'wiktionary'
