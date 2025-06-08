@@ -144,15 +144,18 @@ var options = {
               delete json.action;
               delete json.minimum_chrome_version;
               delete json.host_permissions;
-              json["browser_specific_settings"] = {
-                gecko: {
-                  id:
-                    env.PRODUCT === "Dictionariez"
-                      ? "revir.qing@gmail.com"
-                      : `revir.qing_${env.PRODUCT.toLowerCase()}@gmail.com`,
-                  strict_min_version: "109.0",
-                },
-              };
+
+              if (["Dictionariez", "SidePal"].includes(env.PRODUCT)) {
+                json["browser_specific_settings"] = {
+                  gecko: {
+                    id:
+                      env.PRODUCT === "Dictionariez"
+                        ? "revir.qing@gmail.com"
+                        : `revir.qing_${env.PRODUCT.toLowerCase()}@gmail.com`,
+                    strict_min_version: "109.0",
+                  },
+                };
+              }
               json.background = {
                 scripts: ["background.bundle.js"],
               };
