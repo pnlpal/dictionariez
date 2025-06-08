@@ -246,7 +246,7 @@ run = () =>
 			if event.which == 0 or event.which == 1 # left mouse or touchend
 				handleLookupByMouse(event, text)
 
-		handleLookupByMouse = (event, text)->
+		handleLookupByMouse = debounce(((event, text)->
 			return unless text
 			return if text == plainQuerying
 			sentence = ''
@@ -290,6 +290,7 @@ run = () =>
 						plainLookupTooltip.renderPlainResult(res)
 						plainQuerying = null
 						markWordAfterward(res)
+		), 500, { leading: true, trailing: false })
 
 		utils.listenToBackground 'get info before open dict', (request, sender, sendResponse) =>
 			word = getWordFromSelection(true)
