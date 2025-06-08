@@ -32,9 +32,9 @@
     "default_title": "Ordböcker: Swedish Learning Dictionaries"
   },
   "icons": {
-    "32": "images/ordböcker-32.png",
-    "64": "images/ordböcker-64.png",
-    "128": "images/ordböcker-128.png",
-    "256": "images/ordböcker-256.png"
+    "32": "images/ordbocker-32.png",
+    "64": "images/ordbocker-64.png",
+    "128": "images/ordbocker-128.png",
+    "256": "images/ordbocker-256.png"
   }
 }
