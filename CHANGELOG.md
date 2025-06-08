@@ -1,3 +1,9 @@
+# v5.7.0 Jun 08, 2025
+- Introduced Ordböcker: Swedish Learning Dictionaries.
+- Added language symbols for English words.
+- Enhanced prevention mechanisms for infinite loops.
+- Resolved flickering issue when repeatedly looking up the same word.
+
 # v5.6.1 Jun 01, 2025 
 - Prioritized user settings for language preferences (e.g., Japanese over Chinese) ([#158](https://github.com/pnlpal/dictionariez/issues/158)).
 - Filtered out results for disabled languages in user settings.

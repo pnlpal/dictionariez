@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "minimum_chrome_version": "105",
-  "name": "Ordböcker: dictionaries for learning Swedish",
+  "name": "Ordböcker: Swedish Learning Dictionaries",
   "permissions": ["activeTab", "tabs", "storage", "contextMenus", "offscreen"],
   "background": {
     "service_worker": "background.bundle.js"
@@ -29,7 +29,7 @@
     }
   ],
   "action": {
-    "default_title": "Ordböcker: dictionaries for learning Swedish"
+    "default_title": "Ordböcker: Swedish Learning Dictionaries"
   },
   "icons": {
     "32": "images/ordböcker-32.png",
