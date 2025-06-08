@@ -46,7 +46,7 @@ class Item {
     return new Promise((resolve) => {
       chrome.storage.sync.get(null, (data) => {
         resolve(
-          Object.keys(data)
+          Object.keys(data || {})
             .filter((item) => item.startsWith("w-"))
             .map((k) => new Item(data[k]))
             .sort((x, y) => x.t - y.t)
@@ -288,7 +288,7 @@ export default {
   get(k, defaultValue) {
     return new Promise((resolve) => {
       chrome.storage.sync.get(k, (data) => {
-        resolve(data[k] !== undefined ? data[k] : defaultValue);
+        resolve(data?.[k] !== undefined ? data[k] : defaultValue);
       });
     });
   },
@@ -308,7 +308,7 @@ export default {
     return new Promise((resolve) => {
       chrome.storage.sync.get(null, (data) => {
         resolve(
-          Object.keys(data)
+          Object.keys(data || {})
             .filter((item) => item.startsWith(k))
             .map((n) => data[n])
         );
