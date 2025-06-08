@@ -35,7 +35,8 @@ window.onload = function () {
 
 if (!navigator.userAgent.includes("Gecko/")) {
   // not Firefox
-  document.querySelector("#link-to-mozilla").style.display = "none";
+  const $link = document.querySelector("#link-to-mozilla");
+  if ($link) $link.style.display = "none";
 }
 
 (function setupAsciiTitle() {
