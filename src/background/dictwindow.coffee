@@ -80,7 +80,7 @@ class DictWindow
         width = 600 if !width or width < 300 
         height = 800 if !height or height < 300
         
-        defaultLeft = Math.round(((screenWidth || 1080) / 2) - (width / 2))
+        defaultLeft = if @isAnki then Math.round(((screenWidth || 1080) / 2) + 400) else Math.round(((screenWidth || 1080) / 2) - (width / 2))
         defaultTop = Math.round(((screenHeight || 1000) / 2) - (height / 2))
         left = (defaultLeft || 600) if isNaN left
         top = (defaultTop || 300) if isNaN top 
@@ -89,7 +89,7 @@ class DictWindow
         if @windex > 0
             top += 50 * @windex
             left += 50 * @windex 
-        
+     
         # fix top value on Linux, may be chrome's bug.
         if utils.isLinux()
             if top > screenAvailTop

@@ -8,6 +8,7 @@ import dw from "./dictwindow.coffee";
 
 
 class AnkiWindow extends dw.DictWindow
+    isAnki: true
     defaultUrl: 'https://ankiweb.net/add'
     wordItem: null
 
