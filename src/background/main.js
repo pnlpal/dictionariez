@@ -19,12 +19,10 @@ const initPromises = (async function () {
     const lookup = require("./plain-lookup.coffee").default;
     const speak = require("./speak.coffee").default;
     const ankiWindow = require("./ankiwindow.coffee").default;
-    const pnlpal = require("./pnlpal.coffee").default;
 
     await ankiWindow.init();
     await lookup.init();
     await speak.init();
-    await pnlpal.init();
 
     global.ankiWindow = ankiWindow;
   }

@@ -5,8 +5,8 @@ import highlight from './editable-highlight'
 
 import './card-iframe.coffee'
 import './pnlpal-inject.coffee'
-import { initCaptionzInjection } from  './captionz-inject.coffee'
-import { initYtbInjection } from './ytb-inject.js'
+# import { initCaptionzInjection } from  './captionz-inject.coffee'
+# import { initYtbInjection } from './ytb-inject.js'
 import { initOnLoadDynamicDict } from './dynamic-dict-inject.js'
 import { initAnkiInjection } from './anki-inject.coffee'
 import initLookupParser from './lookup-parser.js'
@@ -31,9 +31,9 @@ setupStyles = () ->
 run = () =>
 	if (process.env.PRODUCT != 'SidePal') 
 		setupStyles()
-		initYtbInjection()
-		initCaptionzInjection()
 		initLookupParser()
+		# initYtbInjection()
+		# initCaptionzInjection()
 
 	initAnkiInjection()
 	initClipboardReader()
