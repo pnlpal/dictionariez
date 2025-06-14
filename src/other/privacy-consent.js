@@ -37,6 +37,17 @@ if (!navigator.userAgent.includes("Gecko/")) {
   // not Firefox
   const $link = document.querySelector("#link-to-mozilla");
   if ($link) $link.style.display = "none";
+} else {
+  const $link = document.querySelector("#link-to-mozilla");
+  if ($link) {
+    if (process.env.PRODUCT === "Dictionariez") {
+      $link.href =
+        "https://addons.mozilla.org/en-US/firefox/addon/dictionaries/privacy/";
+    } else if (process.env.PRODUCT === "Ordböcker") {
+      $link.href =
+        "https://addons.mozilla.org/en-US/firefox/addon/ordb%C3%B6cker/privacy/";
+    }
+  }
 }
 
 (function setupAsciiTitle() {
