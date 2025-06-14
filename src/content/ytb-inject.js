@@ -42,7 +42,9 @@ export function initYtbInjection() {
         xml: await fetchCaption(caption.baseUrl),
       };
 
-      result.push(item);
+      if (item.xml) {
+        result.push(item);
+      }
     }
 
     return result;
