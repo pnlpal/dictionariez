@@ -490,6 +490,19 @@
 								Disable the lookup item in context menu.
 							</label>
 						</div>
+						<div class="checkbox" ng-if="!isSidePal">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.disableYtbCaptionz"
+									ng-click="changeKey(!setting.disableYtbCaptionz, 'disableYtbCaptionz')"
+								/>
+								Disable helper of watching YouTube video on 
+								<a href='https://pnl.dev/captionz' title="What is this?" class="text-muted" target="_blank">
+									Captionz <i class="fa fa-question-circle" aria-hidden="true"></i>
+								</a>
+							</label>
+						</div>
 
 						<div class="checkbox">
 							<label>
