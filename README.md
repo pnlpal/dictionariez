@@ -3,14 +3,26 @@
 A browser extension that helps you look up words in multiple dictionaries. With only one click, you can quickly find the definition, translation, and pronunciation of any word on any webpage, and also export the words you've looked up to **Anki**.
 
 # Install
+### Dictionariez download links
 
 - [Dictionariez on Chrome](https://chrome.google.com/webstore/detail/dictionaries/diojcfpekhhnndfmggknljpnfpcccbhc)
 - [Dictionariez on Firefox](https://addons.mozilla.org/en-US/firefox/addon/dictionaries/)
 
 - [Dictionariez on Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/dictionaries-one-to-rule/jdgglojanbnghagoeffacmjodigadoof)
 
+---- 
+### Ordböcker download links
+
+**Ordböcker** is an equivalent version of Dictionariez tailored for learning Swedish. It prioritizes Swedish over English and includes a wide range of built-in Swedish dictionaries to support your language learning journey. [Learn more about Ordböcker's featuers and development here](https://pnl.dev/topic/988/ordb%C3%B6cker-the-all-in-one-dictionary-app-for-learning-swedish).
+
+- [Ordböcker on Chrome](https://chromewebstore.google.com/detail/ordb%C3%B6cker-swedish-learnin/mfgjnhlgimobopmfhfnemcgkdmofcmlo)
+- [Ordböcker on Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/ordb%C3%B6cker-swedish-learni/lbghhcchdjnppebeaocohpiiekimdfdb)
+- [Ordböcker on Firefox](https://addons.mozilla.org/en-US/firefox/addon/ordb%C3%B6cker/)
+
 ----
-**SidePal** is a lighter version of Dictionariez that works in the browser's side panel. For full features, use Dictionariez.
+### SidePal download links
+
+**SidePal** is a lighter version of Dictionariez that works in the browser's side panel. For full features, use Dictionariez. [Learn more about SidePal's featuers and development here](https://pnl.dev/topic/832/sidepal-your-language-and-ai-ally-in-side-panel).
 
 - [SidePal on Chrome](https://chromewebstore.google.com/detail/sidepal-your-language-and/oildocdoabpmedpnpefhccjdjghdggbl)
 - [SidePal on Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/sidepal-your-language-an/amdfamlegedglkigjblhoakieeokbpaj)
