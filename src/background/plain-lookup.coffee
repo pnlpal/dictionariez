@@ -211,7 +211,8 @@ export default {
                     # resort result to put Swedish first
                     if result.langTargets?.length > 1
                         result.langTargets.sort (a, b) ->
-                            if a.lang == 'Swedish' then -1
+                            if a.lang == 'Swedish' or a.lang == 'Svenska' then -1
+                            else if b.lang == 'Swedish' or b.lang == 'Svenska' then 1
                             else 0
             
             multipleResult = []
