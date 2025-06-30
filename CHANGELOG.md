@@ -1,3 +1,9 @@
+# v5.7.1 Jun 30, 2025
+- Update Captionz to allow searching for words in specific languages.
+- Restored the Captionz option in settings.
+- Improved Google results filtering to exclude result without definitions.
+- Always put Swedish definition first for Ordböcker.
+
 # v5.7.0 Jun 08, 2025
 - Introduced Ordböcker: Swedish Learning Dictionaries.
 - Added language symbols for English words.
