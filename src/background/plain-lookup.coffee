@@ -132,7 +132,7 @@ export default {
         url = (url or dictDesc.url).replace('<word>', w)
         possibleLangs = @checkLangs(w)
 
-        if tname == 'google' and possibleLangs.length > 0
+        if tname == 'google' and possibleLangs.length > 0 and possibleLangs[0] != 'English'
                 # prioritize other languages over English
                 langDesc = langs[possibleLangs[0]]
                 url = url.replace 'hl=en', 'hl=' + langDesc.synthesis if langDesc.synthesis 
@@ -260,7 +260,7 @@ export default {
                         multipleResult.push targetLang
                         await @parseFollowWordsOnWiktionary tabId, w, targetLang, multipleResult
             
-            if prevResult
+            if prevResult?.w
                 multipleResult.push prevResult
 
             if !multipleResult.length
