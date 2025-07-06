@@ -66,6 +66,7 @@ describe.only("background/plain-lookup", () => {
     const result = await utils.send("look up plain", {
       w: "trots",
     });
+    // console.log(result);
     expect(result.length).to.equal(2);
     expect(result[0].lang).to.equal("Swedish");
     expect(result[0].w).to.equal("trots");
@@ -171,5 +172,23 @@ describe.only("background/plain-lookup", () => {
     });
     expect(result.w).to.equal("博");
     expect(result.defs[0].def[0].includes("豐富"));
+  });
+
+  it("should get definition of tissue from bingCN if source is from bingCN", async () => {
+    await enableLanguages([], true, true);
+    await utils.send("save setting", {
+      key: "englishLookupSource",
+      value: "bingCN",
+    });
+    const result = await utils.send("look up plain", {
+      w: "tissue",
+    });
+    expect(result.lang).to.equal("English");
+    expect(result.w).to.equal("tissue");
+
+    await utils.send("save setting", {
+      key: "englishLookupSource",
+      value: "google",
+    });
   });
 });

@@ -195,6 +195,7 @@ export default {
                 convertCn2T(result) if setting.getValue 'enableConvertCn2T'
             else 
                 result.prons = result.prons?.filter (n)->n.type != 'pinyin'
+                result.lang ?= 'English'
                 # parse the second language if possible.
                 otherPossibleLangs = possibleLangs.filter((l) -> l != result?.lang)
                 if otherPossibleLangs.length and not prevResult
