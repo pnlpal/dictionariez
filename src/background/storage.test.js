@@ -12,8 +12,9 @@ const wordDetail = {
   r: 0,
 };
 
-describe("storage", () => {
+describe("background/storage", () => {
   let chrome;
+  let originalChrome = window.chrome;
   beforeEach(() => {
     chrome = {
       storage: {
@@ -29,6 +30,7 @@ describe("storage", () => {
   });
   afterEach(() => {
     sinon.restore();
+    window.chrome = originalChrome;
   });
 
   it("should add the word to local history for non-pro users", async function () {

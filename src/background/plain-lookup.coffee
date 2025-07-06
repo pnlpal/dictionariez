@@ -130,10 +130,9 @@ export default {
 
         dictDesc = parserDescs[tname]
         url = (url or dictDesc.url).replace('<word>', w)
+        possibleLangs = @checkLangs(w)
 
-        if tname == 'google' 
-            possibleLangs = @checkLangs(w)
-            if possibleLangs.length > 0
+        if tname == 'google' and possibleLangs.length > 0
                 # prioritize other languages over English
                 langDesc = langs[possibleLangs[0]]
                 url = url.replace 'hl=en', 'hl=' + langDesc.synthesis if langDesc.synthesis 
@@ -150,14 +149,14 @@ export default {
             else if err.status == 404 \
                 and tname == 'wiktionary'
                 if (url.includes('en.wiktionary.org')) \
-                    and @checkLangs(w).includes('Swedish') 
+                    and possibleLangs.includes('Swedish') 
                     return @parse(tabId, w, 'wiktionary', prevResult, url.replace(/\w+.wiktionary.org/, 'sv.wiktionary.org'))
                 else if (not url.includes('de.wiktionary.org')) \
-                    and @checkLangs(w).includes('German')
+                    and possibleLangs.includes('German')
                     return @parse(tabId, w, 'wiktionary', prevResult, url.replace(/\w+.wiktionary.org/, 'de.wiktionary.org'))
-                else if @checkLangs(w).includes('Tajik')
+                else if possibleLangs.includes('Tajik')
                     return @parseOtherLang tabId, w, 'Tajik', null, prevResult
-                else if @checkLangs(w).includes('Indonesian')
+                else if possibleLangs.includes('Indonesian')
                     return @parseOtherLang tabId, w, 'Indonesian', null, prevResult
             
     
@@ -171,20 +170,24 @@ export default {
             return prevResult if prevResult
             return @parse(tabId, w, @fallbackDictFromGoogle(w), prevResult)
 
-        # fix prons for google result 
+        # fix prons and lang for google result 
         if tname == 'google'
             for lang, n of langs
                 if n.symbol == result.langSymbol || n.aternative == result.langSymbol 
                     if @isLangDisabled(lang)
                         return @parse(tabId, w, @fallbackDictFromGoogle(w), prevResult)
-
+                    result.lang = lang 
                     detectedPron = result.prons[0]
                     if !detectedPron.audio and result.langSymbol
                         detectedPron.type = n.symbol 
                         detectedPron.synthesis = n.synthesis
-                        result.lang = lang 
+                        
                     else if detectedPron.type == 'bre' 
                         detectedPron.symbol = "#{detectedPron.symbol || ''} UK"
+        
+        # check other possible languages in fallback dict like wiktionary
+        if tname == 'google' and possibleLangs.length > 1
+            return @parse(tabId, w, @fallbackDictFromGoogle(w), result)
             
         # special handle of bing when look up Chinese
         if tname == "bingCN"
@@ -194,8 +197,8 @@ export default {
             else 
                 result.prons = result.prons?.filter (n)->n.type != 'pinyin'
                 # parse the second language if possible.
-                possibleLangs = @checkLangs(w).filter((l) -> l != result?.lang)
-                if possibleLangs.length and not prevResult
+                otherPossibleLangs = possibleLangs.filter((l) -> l != result?.lang)
+                if otherPossibleLangs.length and not prevResult
                     return @parse(tabId, w, @fallbackDictFromGoogle(w), if result.w then result else null)
 
             
@@ -218,8 +221,6 @@ export default {
             multipleResult = []
             if Array.isArray(prevResult)
                 multipleResult = prevResult
-            else if prevResult
-                multipleResult.push prevResult
 
             for targetLang in (result.langTargets || [])
                 if targetLang.lang 
@@ -259,9 +260,12 @@ export default {
                         multipleResult.push targetLang
                         await @parseFollowWordsOnWiktionary tabId, w, targetLang, multipleResult
             
+            if prevResult
+                multipleResult.push prevResult
+
             if !multipleResult.length
                 # merge Tajik
-                if @checkLangs(w).includes('Tajik')
+                if possibleLangs.includes('Tajik')
                     return @parseOtherLang tabId, w, 'Tajik', null, prevResult
 
                 upperFirst = utils.toUpperFirst w 
