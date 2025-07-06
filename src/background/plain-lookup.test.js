@@ -57,12 +57,24 @@ describe.only("background/plain-lookup", () => {
     expect(result[1].lang).to.equal("Swedish");
     expect(result[1].w).to.equal("regering");
   });
+
+  it("should get definition of trots from Swedish and English (trot)", async () => {
+    await enableLanguages(["Swedish"]);
+    const result = await utils.send("look up plain", {
+      w: "trots",
+    });
+    expect(result.length).to.equal(2);
+    expect(result[0].lang).to.equal("Swedish");
+    expect(result[0].w).to.equal("trots");
+    expect(result[1].lang).to.equal("English");
+    expect(result[1].w).to.equal("trot");
+  });
+
   it("should get definition of födda from Swedish and its original form", async () => {
     await enableLanguages(["Swedish"]);
     const result = await utils.send("look up plain", {
       w: "födda",
     });
-    console.log(result);
     expect(result.length).to.equal(3);
     expect(result[0].lang).to.equal("Swedish");
     expect(result[0].w).to.equal("födda");

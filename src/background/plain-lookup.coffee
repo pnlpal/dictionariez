@@ -224,8 +224,11 @@ export default {
 
             for targetLang in (result.langTargets || [])
                 if targetLang.lang 
-                    if prevResult?.lang == targetLang.lang && (prevResult.w == w or prevResult.w?.replaceAll('·', '') == w)
+                    if prevResult?.lang == targetLang.lang
                         continue 
+                    if prevResult?.length # parse following words
+                        if targetLang.lang != prevResult[0].lang # ignore if lang is not the same.
+                            continue 
 
                     # Special handle for Norwegian on Wiktionary
                     # see https://en.wiktionary.org/wiki/bl%C3%A5kval#Norwegian
