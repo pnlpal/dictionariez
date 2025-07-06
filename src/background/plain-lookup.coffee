@@ -65,7 +65,6 @@ export default {
 
     checkType: (w) ->
         if utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
-            return 'wiktionary' if process.env.PRODUCT == "Ordböcker"
             return setting.getValue "englishLookupSource" # google, bingCN, wiktionary
 
         for name, dictDesc of parserDescs
@@ -203,26 +202,17 @@ export default {
 
             
         if tname == 'wiktionary'
-            if process.env.PRODUCT == 'Ordböcker'
-                isNotSwedish = () -> 
-                    (result.langTargets || []).every (n) -> n.lang != 'Swedish' and n.lang != 'Svenska'
-                if isNotSwedish() and utils.isEnglish(w) and setting.getValue "enableLookupEnglish"
-                    enSrc = setting.getValue "englishLookupSource" # google, bingCN, wiktionary
-                    if enSrc != 'wiktionary'
-                        return @parse(tabId, w, enSrc, result)
-                else if (not isNotSwedish()) # is Swedish 
-                    # resort result to put Swedish first
-                    if result.langTargets?.length > 1
-                        result.langTargets.sort (a, b) ->
-                            if a.lang == 'Swedish' or a.lang == 'Svenska' then -1
-                            else if b.lang == 'Swedish' or b.lang == 'Svenska' then 1
-                            else 0
-            
             multipleResult = []
             if Array.isArray(prevResult)
                 multipleResult = prevResult
 
-            for targetLang in (result.langTargets || [])
+            if result?.langTargets?.length > 1
+                result.langTargets.sort (a, b) ->
+                    if ['english', 'engelska'].includes(b.lang?.toLowerCase()) then -1
+                    else if ['english', 'engelska'].includes(a.lang?.toLowerCase()) then 1
+                    else 0
+
+            for targetLang in (result?.langTargets || [])
                 if targetLang.lang 
                     if prevResult?.lang == targetLang.lang
                         continue 

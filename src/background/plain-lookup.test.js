@@ -31,6 +31,9 @@ const enableLanguages = async (
 before(() => {
   lookupParser();
 });
+after(() => {
+  enableLanguages(["Swedish"], true, true);
+});
 
 describe.only("background/plain-lookup", () => {
   it("should get definition of fart from both Swedish and English and Swedish comes first", async () => {
@@ -83,6 +86,28 @@ describe.only("background/plain-lookup", () => {
     expect(result[1].w).to.equal("född");
     expect(result[2].lang).to.equal("Swedish");
     expect(result[2].w).to.equal("föda");
+  });
+
+  it("should sort wiktionary result and put English at the end", async () => {
+    await enableLanguages(["Swedish"], true, true);
+    await utils.send("save setting", {
+      key: "englishLookupSource",
+      value: "wiktionary",
+    });
+    const result = await utils.send("look up plain", {
+      w: "cancer",
+    });
+    expect(result.length).to.equal(3);
+    expect(result[0].lang).to.equal("Chinese");
+    expect(result[0].w).to.equal("cancer");
+    expect(result[1].lang).to.equal("Swedish");
+    expect(result[1].w).to.equal("cancer");
+    expect(result[2].lang).to.equal("English");
+    expect(result[2].w).to.equal("cancer");
+    await utils.send("save setting", {
+      key: "englishLookupSource",
+      value: "google",
+    });
   });
 
   it("should get definition of pie from both Spanish and English and Spanish comes first", async () => {
