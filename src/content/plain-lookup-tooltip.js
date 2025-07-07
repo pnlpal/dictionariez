@@ -195,7 +195,7 @@ export default {
       let mousey =
         pageY -
         containerOffset.top +
-        20 +
+        25 +
         (this.$dictionariezTooltipContainer.data(
           "dictionariezTooltipOffsetTop"
         ) || 0);
@@ -208,14 +208,27 @@ export default {
       const domW = window.innerWidth - rect.left;
       const domH = window.innerHeight - rect.top;
 
+      const isOnSmallScreen = domW < 600;
+
       if (domW - left < 300) {
         left = domW - 300;
       }
       if (domH - top < 200) {
-        top = domH - 200;
+        top = top - 10;
+      }
+      if (domH - top < 30) {
+        top = top - 100;
       }
 
-      $el.css({ top, left });
+      if (isOnSmallScreen) {
+        $el.css({
+          top,
+          left: "10px",
+          right: "10px",
+        });
+      } else {
+        $el.css({ top, left, marginRight: "10px" });
+      }
     }
   },
   showPlainContent(htmlContent, e) {

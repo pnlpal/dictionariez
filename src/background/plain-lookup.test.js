@@ -204,5 +204,9 @@ describe.only("background/plain-lookup", () => {
     expect(result[0].defs[0].pos).to.equal("adj");
     expect(result[0].defs[1].pos).to.equal("verb");
     expect(result[0].defs[1].def.length).to.equal(2);
+    await utils.send("save setting", {
+      key: "englishLookupSource",
+      value: "google",
+    });
   });
 });
