@@ -401,8 +401,7 @@ describe("lookup-parser", () => {
           "pos": "adj",
           "def": [
             "inflection of förvissad:",
-            "definite singular",
-            "plural"
+            "definite singular"
           ],
           "followWord": "förvissad",
           "optionalFollowWord": "förvissad"

@@ -35,7 +35,7 @@ after(() => {
   enableLanguages(["Swedish"], true, true);
 });
 
-describe.only("background/plain-lookup", () => {
+describe("background/plain-lookup", () => {
   it("should get definition of fart from both Swedish and English and Swedish comes first", async () => {
     await enableLanguages(["Swedish"]);
     const result = await utils.send("look up plain", {
