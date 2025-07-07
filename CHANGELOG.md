@@ -1,3 +1,11 @@
+# v5.7.2 July 07, 2025
+- Expanded integration tests.
+- Retrieve definitions from other languages if a word has multiple possible languages.
+- Sort Wiktionary results to show other languages first, then English.
+- Limit Wiktionary results to a maximum of 2 definitions.
+- Fixed the Bluesky account link.
+- Added a link to the Telegram channel.
+
 # v5.7.1 Jun 30, 2025
 - Update Captionz to allow searching for words in specific languages.
 - Restored the Captionz option in settings.

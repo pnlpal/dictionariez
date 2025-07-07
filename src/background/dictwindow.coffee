@@ -77,8 +77,8 @@ class DictWindow
         { width, height, left, top } = @getStoredPosition()
 
         # fix too small value
-        width = 600 if !width or width < 300 
-        height = 800 if !height or height < 300
+        width = 700 if !width or width < 300 
+        height = 820 if !height or height < 300
         
         defaultLeft = if @isAnki then Math.round(((screenWidth || 1080) / 2) + 400) else Math.round(((screenWidth || 1080) / 2) - (width / 2))
         defaultTop = Math.round(((screenHeight || 1000) / 2) - (height / 2))
