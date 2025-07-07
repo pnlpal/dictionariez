@@ -191,4 +191,18 @@ describe.only("background/plain-lookup", () => {
       value: "google",
     });
   });
+
+  it("should shorten the definition of få to only 2 definitions", async () => {
+    await enableLanguages(["Swedish"]);
+    await utils.send("save setting", {
+      key: "englishLookupSource",
+      value: "wiktionary",
+    });
+    const result = await utils.send("look up plain", {
+      w: "få",
+    });
+    expect(result[0].defs[0].pos).to.equal("adj");
+    expect(result[0].defs[1].pos).to.equal("verb");
+    expect(result[0].defs[1].def.length).to.equal(2);
+  });
 });

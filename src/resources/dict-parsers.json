@@ -176,7 +176,8 @@
               "def": {
                 "selector": "ol>li",
                 "excludeChild": "div,ul,dl,ol",
-                "toArray": true
+                "toArray": true,
+                "max": 2
               },
               "followWord": {
                 "selector": "ol>li .mention a[href]",
