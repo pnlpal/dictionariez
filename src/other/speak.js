@@ -69,6 +69,7 @@ function playSynthesis({ text, lang, name, voice } = {}) {
     } else if (utils.isMac()) {
       voices.find((x) => x.name === voice) ||
         voices.find((x) => x.name === "Samantha" && x.lang === lang) || // macOS default
+        voices.find((x) => x.name === "Daniel" && x.lang === lang) ||
         voices.find((x) => x.lang === lang);
     } else {
       v =
