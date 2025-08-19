@@ -65,6 +65,9 @@ export default [{
   "windowUrl": "https://www.google.com/search?tbm=isch&q=<word>",
   "css": "c-wiz[jsdata='deferred-i3']>div:first-child {display: none;} body {margin-top: 50px !important;}"
 }, {
+    'dictName': 'Slovnyk.ua (Ukrainian)'
+    'windowUrl': 'https://slovnyk.ua/index.php?swrd=<word>'
+}, {
     "dictName": "Captionz (examples on YouTube)",
     "windowUrl": "https://pnl.dev/captionz-ii/?NO_REDIRECT=true",
     "inputSelector": ".search-container input.text-search"
