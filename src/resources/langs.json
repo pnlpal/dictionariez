@@ -88,5 +88,10 @@
     "regex": "[a-zA-Z ]",
     "symbol": "id",
     "synthesis": "id-ID"
+  },
+  "Ukrainian": {
+    "regex": "[а-щьюяґєіїА-ЩЬЮЯҐЄІЇʼ’' ]",
+    "symbol": "uk",
+    "synthesis": "uk-UA"
   }
 }
