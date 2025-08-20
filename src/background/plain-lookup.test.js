@@ -209,4 +209,19 @@ describe("background/plain-lookup", () => {
       value: "google",
     });
   });
+
+  it("should get definition of їжа from Ukrainian if Ukrainian is enabled", async () => {
+    await enableLanguages(["Ukrainian"], false, false);
+    const result = await utils.send("look up plain", {
+      w: "їжа",
+    });
+    if (Array.isArray(result)) {
+      expect(result.length).to.be.greaterThan(0);
+      expect(result[0].lang).to.equal("Ukrainian");
+      expect(result[0].w).to.equal("їжа");
+    } else {
+      expect(result.lang).to.equal("Ukrainian");
+      expect(result.w).to.equal("їжа");
+    }
+  });
 });
