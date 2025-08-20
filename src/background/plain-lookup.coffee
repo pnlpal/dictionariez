@@ -153,6 +153,9 @@ export default {
                 else if (not url.includes('de.wiktionary.org')) \
                     and possibleLangs.includes('German')
                     return @parse(tabId, w, 'wiktionary', prevResult, url.replace(/\w+.wiktionary.org/, 'de.wiktionary.org'))
+                else if (not url.includes('uk.wiktionary.org')) \
+                    and possibleLangs.includes('Ukrainian')
+                    return @parse(tabId, w, 'wiktionary', prevResult, url.replace(/\w+.wiktionary.org/, 'uk.wiktionary.org'))
                 else if possibleLangs.includes('Tajik')
                     return @parseOtherLang tabId, w, 'Tajik', null, prevResult
                 else if possibleLangs.includes('Indonesian')
@@ -228,6 +231,10 @@ export default {
                     
                     if targetLang.lang == 'Svenska'
                         targetLang.lang = 'Swedish'
+                    
+                    # Map Ukrainian heading on uk.wiktionary to English name
+                    if targetLang.lang == 'Українська' or targetLang.lang == 'українська'
+                        targetLang.lang = 'Ukrainian'
 
                     if @isLangDisabled(targetLang.lang) or not langs[targetLang.lang]
                         targetLang = null 

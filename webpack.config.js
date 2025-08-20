@@ -250,6 +250,13 @@ var options = {
       cache: false,
     }),
   ],
+  ignoreWarnings: [
+    {
+      module: /node_modules[\\\/]mocha[\\\/]mocha\.js/,
+      message:
+        /Critical dependency: the request of a dependency is an expression/,
+    },
+  ],
   infrastructureLogging: {
     level: "info",
   },
