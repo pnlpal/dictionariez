@@ -1,10 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
- * DS208: Avoid top-level this
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 import $ from "jquery";
 import message from "./message.js";
 import utils from "utils";
@@ -14,19 +7,17 @@ import storage from "./storage.js";
 import dw from "./dictwindow.js";
 
 class AnkiWindow extends dw.DictWindow {
-    static initClass() {
-        this.prototype.isAnki = true;
-        this.prototype.defaultUrl = "https://ankiweb.net/add";
-        this.prototype.wordItem = null;
-    }
+    isAnki = true;
+    defaultUrl = "https://ankiweb.net/add";
+    wordItem = null;
 
     constructor() {
         super({ dictName: "none" });
     }
 
     reset() {
-        super.reset.reset();
-        return (this.wordItem = null);
+        super.reset();
+        this.wordItem = null;
     }
 
     getStoredPosition() {
@@ -39,7 +30,6 @@ class AnkiWindow extends dw.DictWindow {
         };
     }
 }
-AnkiWindow.initClass();
 
 export default {
     anki: new AnkiWindow(),
@@ -47,7 +37,7 @@ export default {
     destroyWin({ wid }) {
         if (this.anki.wid === wid) {
             this.anki.reset();
-            return this.saveInStorage();
+            this.saveInStorage();
         }
     },
 
@@ -78,10 +68,10 @@ export default {
                 await chrome.windows.get(ankiWindow.wid);
                 this.anki.wid = ankiWindow.wid;
                 this.anki.tid = ankiWindow.tid;
-                return (this.anki.wordItem = ankiWindow.wordItem);
+                this.anki.wordItem = ankiWindow.wordItem;
                 // console.log "[ankiWindow] restored from storage: ", @anki.wid, @anki.wordItem
             } catch (err) {
-                return console.warn("[ankiWindow] restore error: ", err.message, "Ignored.");
+                console.warn("[ankiWindow] restore error: ", err.message, "Ignored.");
             }
         }
     },
@@ -90,13 +80,13 @@ export default {
         const item = storage.getPreviousAnkiUnsaved(prevWord);
         if (item?.w) {
             this.anki.wordItem = item;
-            return console.info(`Anki to save next word: ${item.w}`);
+            console.info(`Anki to save next word: ${item.w}`);
         }
     },
 
     focus() {
         if (this.anki.wid) {
-            return this.anki.focus();
+            this.anki.focus();
         }
     },
 
@@ -145,9 +135,10 @@ export default {
 
                     const setDataToImages = async (images) =>
                         await Promise.all(
-                            images.map(async function (image) {
+                            images.map(async (image) => {
                                 const dataUrl = await utils.imageToDataUrl(image.src);
-                                return (image.dataUrl = dataUrl);
+                                image.dataUrl = dataUrl;
+                                return image;
                             })
                         );
 
@@ -170,11 +161,11 @@ export default {
             return { dataUrl };
         });
 
-        return message.on("beforeunload anki window", (request, sender) => {
+        message.on("beforeunload anki window", (request, sender) => {
             setting.setValue("ankiWidth", request.width);
             setting.setValue("ankiHeight", request.height);
             setting.setValue("ankiLeft", request.left);
-            return setting.setValue("ankiTop", request.top);
+            setting.setValue("ankiTop", request.top);
         });
     },
 };

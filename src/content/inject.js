@@ -1,8 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 import $ from "jquery";
 import utils from "utils";
 import debounce from "lodash/debounce";
@@ -31,7 +26,7 @@ const setupStyles = function () {
     // Interesting: font url is embedded, for some websites' security setting font-src,
     // it might be forbidden to load the font url.
     // but after webpack build, it not a problem any more.
-    return require("./inject-fontello.css");
+    require("./inject-fontello.css");
 };
 
 const run = () => {
@@ -87,7 +82,7 @@ const run = () => {
             if (res?.cardUrl && res.word && !location.host.includes("wikipedia.org") && window.self === window.top) {
                 const comparedLoc = decodeURI(location.href).toLowerCase();
                 if (res.word.split(/\s/).every((s) => comparedLoc.includes(s.toLowerCase()))) {
-                    return $(
+                    $(
                         `<iframe class='dictionaries-card dictionaries-card-wiki' src='${res.cardUrl}?sys=wiki' style='display: none;'> </iframe>`
                     ).appendTo("body");
                 }
@@ -95,7 +90,7 @@ const run = () => {
         }
     );
 
-    return chrome.runtime.sendMessage(
+    chrome.runtime.sendMessage(
         {
             type: "setting",
         },
@@ -133,7 +128,7 @@ const run = () => {
                     "copy",
                     function () {
                         const sentence = getSentenceOfSelection();
-                        return utils.send("copy event triggered", {
+                        utils.send("copy event triggered", {
                             sentence,
                             s: location.href,
                             sc: document.title,
@@ -157,7 +152,7 @@ const run = () => {
 
                         plainLookupTooltip.showPlainContent(null, e);
                         plainQuerying = w;
-                        return utils.send(
+                        utils.send(
                             "look up plain",
                             {
                                 w,
@@ -167,13 +162,13 @@ const run = () => {
                                     return;
                                 }
                                 plainLookupTooltip.renderPlainResult(res);
-                                return (plainQuerying = null);
+                                plainQuerying = null;
                             }
                         );
                     } else {
                         if (setting.enableSelectionOnMouseMove) {
                             if (!setting.enableSelectionSK1 || utils.checkEventKey(e, setting.selectionSK1)) {
-                                return handleSelectionWord(e);
+                                handleSelectionWord(e);
                             }
                         }
                     }
@@ -191,7 +186,7 @@ const run = () => {
                 debounce(async function (e) {
                     try {
                         await utils.checkInTime(() => window.getSelection()?.getRangeAt(0)?.toString(), 3000);
-                        return handleMouseUp(e);
+                        handleMouseUp(e);
                     } catch (error) {}
                 }, 800)
             );
@@ -291,7 +286,7 @@ const run = () => {
                 }
 
                 if (word) {
-                    return handleLookupByMouse(e, word);
+                    handleLookupByMouse(e, word);
                 }
             };
 
@@ -340,7 +335,7 @@ const run = () => {
 
                 if (event.which === 0 || event.which === 1) {
                     // left mouse or touchend
-                    return handleLookupByMouse(event, text);
+                    handleLookupByMouse(event, text);
                 }
             };
 
@@ -357,7 +352,7 @@ const run = () => {
                         // highlight selected words is a special feature
                         // even if the floating definition is turned off, still highlight can be working.
                         if (lookupResult && setting.markWords && !setting.enableMarkWordsSK1) {
-                            return highlight(setting.markColor);
+                            highlight(setting.markColor);
                         }
                     };
 
@@ -394,7 +389,7 @@ const run = () => {
                             if (!sentence) {
                                 sentence = getSentenceOfSelection();
                             }
-                            return (isOk = await utils.send(
+                            await utils.send(
                                 "look up plain",
                                 {
                                     means: "mouse",
@@ -409,9 +404,9 @@ const run = () => {
                                     }
                                     plainLookupTooltip.renderPlainResult(res);
                                     plainQuerying = null;
-                                    return markWordAfterward(res);
+                                    markWordAfterward(res);
                                 }
-                            ));
+                            );
                         }
                     }
                 },
@@ -419,12 +414,12 @@ const run = () => {
                 { leading: true, trailing: false }
             );
 
-            return utils.listenToBackground("get info before open dict", (request, sender, sendResponse) => {
+            utils.listenToBackground("get info before open dict", (request, sender, sendResponse) => {
                 const word = getWordFromSelection(true);
                 const isInEditable = utils.isSentence(word) && checkEditable(window.getSelection().focusNode);
                 const sentence = getSentenceFromAllFrames();
 
-                return sendResponse({
+                sendResponse({
                     w: word,
                     s: location.href,
                     sc: document.title,
