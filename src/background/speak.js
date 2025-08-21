@@ -1,68 +1,87 @@
-import utils from "utils"
-import message from "./message.js"
-import setting from "./setting.js"
-import { playAudios, playSynthesis } from "../other/speak.js"
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+import utils from "utils";
+import message from "./message.js";
+import setting from "./setting.js";
+import { playAudios, playSynthesis } from "../other/speak.js";
 
-creating = null  # A global promise to avoid concurrency issues
+let creating = null;  // A global promise to avoid concurrency issues
 
-setupOffscreenDocument = () ->
-    path = 'offscreen.html'
-    offscreenUrl = chrome.runtime.getURL(path)
-    existingContexts = await chrome.runtime.getContexts({
+const setupOffscreenDocument = async function() {
+    const path = 'offscreen.html';
+    const offscreenUrl = chrome.runtime.getURL(path);
+    const existingContexts = await chrome.runtime.getContexts({
         contextTypes: ['OFFSCREEN_DOCUMENT'],
         documentUrls: [offscreenUrl]
-    })
+    });
 
-    if (existingContexts.length > 0)
-        return
+    if (existingContexts.length > 0) {
+        return;
+    }
     
-    if creating
-        await creating
-    else 
+    if (creating) {
+        return await creating;
+    } else { 
         creating = chrome.offscreen.createDocument({
             url: path,
             reasons: ['AUDIO_PLAYBACK'],
             justification: 'Play audio of the word',
-        })
-        await creating
-        creating = null
+        });
+        await creating;
+        return creating = null;
+    }
+};
     
-export default {
-    init: () ->
-        message.on 'play audios', ({ ameSrc, breSrc, otherSrc, checkSetting, synthesisObj}) ->
-            if (!await utils.isFirefox()) 
-                await setupOffscreenDocument()
-            if checkSetting 
-                if not setting.getValue 'enableAmeAudio'
-                    ameSrc = null
-                if not setting.getValue 'enableBreAudio'
-                    breSrc = null
+export default ({
+    init() {
+        return message.on('play audios', async function({ ameSrc, breSrc, otherSrc, checkSetting, synthesisObj}) {
+            if (!await utils.isFirefox()) { 
+                await setupOffscreenDocument();
+            }
+            if (checkSetting) { 
+                if (!setting.getValue('enableAmeAudio')) {
+                    ameSrc = null;
+                }
+                if (!setting.getValue('enableBreAudio')) {
+                    breSrc = null;
+                }
+            }
 
-            if (!await utils.isFirefox()) 
+            if (!await utils.isFirefox()) { 
                 chrome.runtime.sendMessage({
                     type: 'speak',
                     ameSrc,
                     breSrc 
-                })
-            else 
+                });
+            } else { 
                 playAudios([ameSrc, breSrc]);
+            }
             
-            if otherSrc
-                if (!await utils.isFirefox()) 
+            if (otherSrc) {
+                if (!await utils.isFirefox()) { 
                     chrome.runtime.sendMessage({
                         type: 'speak',
                         otherSrc 
-                    })
-                else 
+                    });
+                } else { 
                     playAudios([otherSrc]);
+                }
+            }
             
-            if synthesisObj
-                if (!await utils.isFirefox()) 
-                    chrome.runtime.sendMessage({
+            if (synthesisObj) {
+                if (!await utils.isFirefox()) { 
+                    return chrome.runtime.sendMessage({
                         type: 'speak',
                         synthesisObj
-                    })
-                else 
-                    playSynthesis(synthesisObj);
+                    });
+                } else { 
+                    return playSynthesis(synthesisObj);
+                }
+            }
+        });
+    }
                 
-}
+});

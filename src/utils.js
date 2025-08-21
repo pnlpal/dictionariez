@@ -1,10 +1,17 @@
-export default {
-    getRandomInt: (min, max)->
-        min ?= 1
-        max ?= 10
-        min = Math.ceil(min)
-        max = Math.floor(max)
-        return Math.floor(Math.random() * (max - min)) + min
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS208: Avoid top-level this
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+export default ({
+    getRandomInt(min, max){
+        min ??= 1;
+        max ??= 10;
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+    },
 
     extraKeyMap: {
         Enter: 13,
@@ -19,217 +26,264 @@ export default {
         ArrowRight: 39,
         ArrowUp: 38,
         Escape: 27,
-    }
-    checkEventKey: (event, sk1, sk2, key)->
-        if key == 'Disabled'
-            return false
-        if sk1 and not event[sk1.toLowerCase() + 'Key']
-            return false
-        if sk2 and not event[sk2.toLowerCase() + 'Key']
-            return false
-        if @extraKeyMap[key]
-            if event.keyCode != @extraKeyMap[key]
-                return false
+    },
+    checkEventKey(event, sk1, sk2, key){
+        if (key === 'Disabled') {
+            return false;
+        }
+        if (sk1 && !event[sk1.toLowerCase() + 'Key']) {
+            return false;
+        }
+        if (sk2 && !event[sk2.toLowerCase() + 'Key']) {
+            return false;
+        }
+        if (this.extraKeyMap[key]) {
+            if (event.keyCode !== this.extraKeyMap[key]) {
+                return false;
+            }
 
-        else if key and event.keyCode != key.charCodeAt(0)
-            return false
+        } else if (key && (event.keyCode !== key.charCodeAt(0))) {
+            return false;
+        }
 
-        return true
+        return true;
+    },
 
-    promisify: (cb) ->
-        new Promise (resolve) ->
-            cb resolve
+    promisify(cb) {
+        return new Promise(resolve => cb(resolve));
+    },
     
-    promisifiedTimeout: (t) ->
-        new Promise (resolve) ->
-            setTimeout resolve, t
+    promisifiedTimeout(t) {
+        return new Promise(resolve => setTimeout(resolve, t));
+    },
     
-    checkInTime: (func, t=5000) ->
-        timeIsUp = false 
-        @promisifiedTimeout(t).then ()->
-            timeIsUp = true 
+    async checkInTime(func, t=5000) {
+        let timeIsUp = false; 
+        this.promisifiedTimeout(t).then(() => timeIsUp = true); 
 
-        _check = () =>
-            new Promise (resolve, reject) =>
-                await @promisifiedTimeout(200)
-                if func()
-                    resolve()
-                else if timeIsUp
-                    reject() 
-                else 
-                    return _check().then(resolve, reject)
+        var _check = () => {
+            return new Promise(async (resolve, reject) => {
+                await this.promisifiedTimeout(200);
+                if (func()) {
+                    return resolve();
+                } else if (timeIsUp) {
+                    return reject(); 
+                } else { 
+                    return _check().then(resolve, reject);
+                }
+            });
+        };
         
-        return await _check()
+        return await _check();
+    },
     
-    promiseInTime: (promise, t=3000) ->
-        new Promise (resolve, reject) =>
-            timer = setTimeout (()->
-                reject(new Error('timeout'))), t
+    promiseInTime(promise, t=3000) {
+        return new Promise((resolve, reject) => {
+            const timer = setTimeout((() => reject(new Error('timeout'))), t);
 
-            promise.then((value) =>
-                clearTimeout(timer)
-                resolve(value)
-            ).catch((reason) =>
-                clearTimeout(timer)
-                reject(reason)
-            )
+            return promise.then(value => {
+                clearTimeout(timer);
+                return resolve(value);
+            }).catch(reason => {
+                clearTimeout(timer);
+                return reject(reason);
+            });
+        });
+    },
             
-    send: (type, data = {}, callback) ->
-        if typeof data == 'function'
-            callback = data
-            data = {}
+    send(type, data = {}, callback) {
+        if (typeof data === 'function') {
+            callback = data;
+            data = {};
+        }
 
-        p = new Promise (resolve, reject) ->
-            data.type = type
-            chrome.runtime.sendMessage data, (ret) ->
-                if ret?.error
-                    reject (if typeof ret.error == 'string' then new Error(ret.error) else ret.error)
-                else 
-                    resolve ret
+        const p = new Promise(function(resolve, reject) {
+            data.type = type;
+            return chrome.runtime.sendMessage(data, function(ret) {
+                if (ret?.error) {
+                    return reject((typeof ret.error === 'string' ? new Error(ret.error) : ret.error));
+                } else { 
+                    return resolve(ret);
+                }
+            });
+        });
 
-        if callback
-            return p.then callback
-        return p
+        if (callback) {
+            return p.then(callback);
+        }
+        return p;
+    },
 
-    sendToDict: (action, data={}, callback) ->
-        if typeof data == 'function'
-            callback = data
-            data = {}
-        data.action = action
+    sendToDict(action, data={}, callback) {
+        if (typeof data === 'function') {
+            callback = data;
+            data = {};
+        }
+        data.action = action;
         
-        return @send 'sendToDict', data, callback
+        return this.send('sendToDict', data, callback);
+    },
 
-    sendToTab: (tabId, data={}, callback = null) ->
-        if typeof data == 'function'
-            callback = data
-            data = {}
-        else if typeof data == 'string'
-            data = { type: data }
+    sendToTab(tabId, data={}, callback = null) {
+        if (typeof data === 'function') {
+            callback = data;
+            data = {};
+        } else if (typeof data === 'string') {
+            data = { type: data };
+        }
         
-        p = new Promise (resolve, reject) ->
-            chrome.tabs.sendMessage tabId, data, (ret) ->
-                if ret?.error
-                    reject (if typeof ret.error == 'string' then new Error(ret.error) else ret.error)
-                else 
-                    resolve ret
-        if callback
-            return p.then callback
-        return p
+        const p = new Promise((resolve, reject) => chrome.tabs.sendMessage(tabId, data, function(ret) {
+            if (ret?.error) {
+                return reject((typeof ret.error === 'string' ? new Error(ret.error) : ret.error));
+            } else { 
+                return resolve(ret);
+            }
+        }));
+        if (callback) {
+            return p.then(callback);
+        }
+        return p;
+    },
 
-    listenToBackground: (type, callback) ->
-        if window.self == window.top
-            if (!window.dictionariezBackgroundListeners)
-                window.dictionariezBackgroundListeners = {}
-                window.dictionariezBackgroundListeners[type] = callback
+    listenToBackground(type, callback) {
+        if (window.self === window.top) {
+            if (!window.dictionariezBackgroundListeners) {
+                window.dictionariezBackgroundListeners = {};
+                window.dictionariezBackgroundListeners[type] = callback;
 
-                chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
-                    window.dictionariezBackgroundListeners[request.type]?(request, sender, sendResponse)
+                return chrome.runtime.onMessage.addListener((request, sender, sendResponse) => window.dictionariezBackgroundListeners[request.type]?.(request, sender, sendResponse));
 
-            else 
-                window.dictionariezBackgroundListeners[type] = callback
+            } else { 
+                return window.dictionariezBackgroundListeners[type] = callback;
+            }
+        }
+    },
 
-    hasJapanese: (str) ->
-        REGEX_JAPANESE = /[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]/
-        REGEX_JAPANESE.test(str)
-    isJapanese: (str) ->
-        jregex = /[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]/g
-        str.match(jregex)?.length == str.length
+    hasJapanese(str) {
+        const REGEX_JAPANESE = /[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]/;
+        return REGEX_JAPANESE.test(str);
+    },
+    isJapanese(str) {
+        const jregex = /[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]/g;
+        return str.match(jregex)?.length === str.length;
+    },
 
-    hasChinese: (str) ->
-        REGEX_CHINESE = /[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\u{20000}-\u{2a6df}]|[\u{2a700}-\u{2b73f}]|[\u{2b740}-\u{2b81f}]|[\u{2b820}-\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\u{2f800}-\u{2fa1f}]/u
-        REGEX_CHINESE.test(str)
-    isChinese: (str) ->
-        cregex = /[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\u{20000}-\u{2a6df}]|[\u{2a700}-\u{2b73f}]|[\u{2b740}-\u{2b81f}]|[\u{2b820}-\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\u{2f800}-\u{2fa1f}]/ug
-        str.match(cregex)?.length == str.length
-    hasKorean: (str) ->
-        REGEX_KOREAN = /\p{sc=Hangul}/u
-        REGEX_KOREAN.test(str)
+    hasChinese(str) {
+        const REGEX_CHINESE = /[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\u{20000}-\u{2a6df}]|[\u{2a700}-\u{2b73f}]|[\u{2b740}-\u{2b81f}]|[\u{2b820}-\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\u{2f800}-\u{2fa1f}]/u;
+        return REGEX_CHINESE.test(str);
+    },
+    isChinese(str) {
+        const cregex = /[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\u{20000}-\u{2a6df}]|[\u{2a700}-\u{2b73f}]|[\u{2b740}-\u{2b81f}]|[\u{2b820}-\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\u{2f800}-\u{2fa1f}]/ug;
+        return str.match(cregex)?.length === str.length;
+    },
+    hasKorean(str) {
+        const REGEX_KOREAN = /\p{sc=Hangul}/u;
+        return REGEX_KOREAN.test(str);
+    },
     
-    isSentence: (str = "") ->
-        if @hasChinese(str) or @hasJapanese(str) or @hasKorean(str)
-            return str.length > 4
-        else 
-            simpleStopWords = ['a', 'an', 'en', 'ett', 'the', 'to', 'in', 'on', 'at', 'of', 'for', 'with', 'by', 'and', 'or', 'but', 'nor', 'so', 'yet', 'as', 'if']
-            str.split(/\s/)
-                .filter (w) -> w.length > 1 and not simpleStopWords.includes(w.toLowerCase())
-                .length > 3
+    isSentence(str = "") {
+        if (this.hasChinese(str) || this.hasJapanese(str) || this.hasKorean(str)) {
+            return str.length > 4;
+        } else { 
+            const simpleStopWords = ['a', 'an', 'en', 'ett', 'the', 'to', 'in', 'on', 'at', 'of', 'for', 'with', 'by', 'and', 'or', 'but', 'nor', 'so', 'yet', 'as', 'if'];
+            return str.split(/\s/)
+                .filter(w => (w.length > 1) && !simpleStopWords.includes(w.toLowerCase()))
+                .length > 3;
+        }
+    },
 
-    hasEnglish: (str) ->
-        /\w/.test(str)
+    hasEnglish(str) {
+        return /\w/.test(str);
+    },
 
-    isEnglish: (str)->
-        # not match: I'll  don't  Mr.Jackson
-        REGEX_ENG = /[a-zA-Z\s-]+/
-        return str.match(REGEX_ENG)?[0] == str
+    isEnglish(str){
+        // not match: I'll  don't  Mr.Jackson
+        const REGEX_ENG = /[a-zA-Z\s-]+/;
+        return str.match(REGEX_ENG)?.[0] === str;
+    },
 
-    isLinux: () -> 
-        return navigator.platform.includes('Linux')
+    isLinux() { 
+        return navigator.platform.includes('Linux');
+    },
     
-    isMac: () -> 
-        return navigator.platform.includes('Mac')
+    isMac() { 
+        return navigator.platform.includes('Mac');
+    },
 
-    isWindows: () ->
-        return navigator.platform.includes('Win')
+    isWindows() {
+        return navigator.platform.includes('Win');
+    },
 
-    sanitizeHTML: (s)->
-        s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+    sanitizeHTML(s){
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    },
 
-    imageToDataUrl: (src) ->
-        new Promise (resolve, reject) -> 
-            if src.startsWith('data:')
-                resolve src 
-            else 
-                fetch(src)
-                    .then (response) ->
-                        response.blob()
-                    .then (blob) ->
-                        reader = new FileReader()
-                        reader.onloadend = () ->
-                            resolve reader.result
-                        reader.onerror = reject
-                        reader.readAsDataURL blob
+    imageToDataUrl(src) {
+        return new Promise(function(resolve, reject) { 
+            if (src.startsWith('data:')) {
+                return resolve(src); 
+            } else { 
+                return fetch(src)
+                    .then(response => response.blob()).then(function(blob) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        return reader.readAsDataURL(blob);
+                });
+            }
+        });
+    },
 
-    imageSize: (src) -> 
-        new Promise (resolve) ->
-            img = new Image()
-            img.onload = () ->
-                resolve {width: this.width, height: this.height}
+    imageSize(src) { 
+        return new Promise(function(resolve) {
+            const img = new Image();
+            img.onload = function() {
+                return resolve({width: this.width, height: this.height});
+            };
             
-            img.src = src
+            return img.src = src;
+        });
+    },
 
-    toUpperFirst: (text)->
-        text[0].toUpperCase() + text.slice(1)
+    toUpperFirst(text){
+        return text[0].toUpperCase() + text.slice(1);
+    },
     
-    isMobile: () -> /Mobi|Android/i.test(navigator.userAgent)
-    isFirefox: () -> 
-        ret = await browser?.runtime?.getBrowserInfo?()
-        return ret?.name == 'Firefox'
+    isMobile() { return /Mobi|Android/i.test(navigator.userAgent); },
+    async isFirefox() { 
+        const ret = await browser?.runtime?.getBrowserInfo?.();
+        return ret?.name === 'Firefox';
+    },
 
-    loadHTML: (url, credentials='omit') ->
-        @promiseInTime(fetch(url, {
+    loadHTML(url, credentials='omit') {
+        return this.promiseInTime(fetch(url, {
             method: 'GET', 
             credentials,
         }), 5000)
-        .then((resp) -> 
-            if not resp.ok
-                err = new Error(resp.statusText) 
-                err.status = resp.status
-                throw err
+        .then(function(resp) { 
+            if (!resp.ok) {
+                const err = new Error(resp.statusText); 
+                err.status = resp.status;
+                throw err;
+            }
 
-            return resp.text()
-        )
+            return resp.text();
+        });
+    },
 
-    loadJson: (url, credentials) ->
-        @promiseInTime(fetch(url, {
+    loadJson(url, credentials) {
+        return this.promiseInTime(fetch(url, {
             method: 'GET', 
             credentials
         }), 5000)
-        .then((resp) -> 
-            if not resp.ok
-                err = new Error(resp.statusText) 
-                err.status = resp.status
-                throw err
+        .then(function(resp) { 
+            if (!resp.ok) {
+                const err = new Error(resp.statusText); 
+                err.status = resp.status;
+                throw err;
+            }
 
-            return resp.json()
-        )
-}
+            return resp.json();
+        });
+    }
+});
