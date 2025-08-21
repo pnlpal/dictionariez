@@ -3,11 +3,11 @@ import $ from 'jquery'
 import utils from "utils"
 import debounce from 'lodash/debounce'
 
-import('bootstrap/dist/css/bootstrap.min.css')
-import('../vendor/font-awesome.css')
+import 'bootstrap/dist/css/bootstrap.min.css'
+import '../vendor/font-awesome.css'
 
-import('./scrollbar.less')
-import('./card.less')
+import './scrollbar.less'
+import './card.less'
 
 sys = location.search.match(/sys=(\w+)/)[1]
 

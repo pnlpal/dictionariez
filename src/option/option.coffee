@@ -8,12 +8,14 @@ import 'angular-ui-bootstrap'
 import '../vendor/needsharebutton.js'
 import '../vendor/needsharebutton.css'
 
-import(### webpackChunkName: "github-badge"  ###'../vendor/github-badge.js')
-import(### webpackChunkName: "inject-options"  ###'../content/inject.coffee')
+# webpackChunkName: "github-badge"
+import '../vendor/github-badge.js'
+# webpackChunkName: "inject-options"
+import '../content/inject.coffee'
 
-import('bootstrap/dist/css/bootstrap.min.css')
-import('../vendor/font-awesome.css')
-import('./options.less')
+import 'bootstrap/dist/css/bootstrap.min.css'
+import '../vendor/font-awesome.css'
+import './options.less'
 
 import "angularjs-color-picker/dist/angularjs-color-picker.min.css"
 import "angularjs-color-picker/dist/themes/angularjs-color-picker-bootstrap.min.css"
@@ -85,7 +87,8 @@ dictApp.controller 'optionCtrl', ['$scope', '$sce', ($scope, $sce) ->
         $scope.setting = config
         $scope.$apply()
 
-        import(### webpackChunkName: "tables"  ###'./tables.coffee')
+        # webpackChunkName: "tables"
+        # import './tables.coffee'
 
     
     $scope.markColorEvent = { 
