@@ -58,8 +58,7 @@ export default {
     checkLangs: (w) ->
         res =  []
         for lang, n of langs 
-            if w.match(new RegExp(n.regex, 'ug'))?.length == w.length \
-            and not @isLangDisabled(lang)
+            if w.match(new RegExp(n.regex, 'ug'))?.length == w.length and not @isLangDisabled(lang)
                 res.push lang 
         return res 
 
@@ -73,8 +72,7 @@ export default {
             
             if dictDesc.languages
                 for lang in dictDesc.languages 
-                    if w.match(new RegExp(langs[lang].regex, 'ug'))?.length == w.length \
-                        and not @isLangDisabled(lang)
+                    if w.match(new RegExp(langs[lang].regex, 'ug'))?.length == w.length and not @isLangDisabled(lang)
                         return name
 
     fallbackDictFromGoogle: (w) -> # fallback to other dict if Google failed
@@ -86,8 +84,7 @@ export default {
             
             if dictDesc.languages
                 for lang in dictDesc.languages 
-                    if w.match(new RegExp(langs[lang].regex, 'ug'))?.length == w.length \
-                        and not @isLangDisabled(lang)
+                    if w.match(new RegExp(langs[lang].regex, 'ug'))?.length == w.length and not @isLangDisabled(lang)
                         return name
         return 'wiktionary'
 
@@ -140,22 +137,17 @@ export default {
         try
             html = await utils.loadHTML url, dictDesc.credentials
         catch err 
-            if err.message == 'timeout' \
-                and utils.isEnglish(w) and not prevResult
+            if err.message == 'timeout' and utils.isEnglish(w) and not prevResult
                 return @parse(tabId, w, if tname == 'wiktionary' then 'google' else 'wiktionary')
             else if tname == 'google' and not prevResult
                 return @parse(tabId, w, @fallbackDictFromGoogle(w), prevResult)
 
-            else if err.status == 404 \
-                and tname == 'wiktionary'
-                if (url.includes('en.wiktionary.org')) \
-                    and possibleLangs.includes('Swedish') 
+            else if err.status == 404 and tname == 'wiktionary'
+                if (url.includes('en.wiktionary.org')) and possibleLangs.includes('Swedish') 
                     return @parse(tabId, w, 'wiktionary', prevResult, url.replace(/\w+.wiktionary.org/, 'sv.wiktionary.org'))
-                else if (not url.includes('de.wiktionary.org')) \
-                    and possibleLangs.includes('German')
+                else if (not url.includes('de.wiktionary.org')) and possibleLangs.includes('German')
                     return @parse(tabId, w, 'wiktionary', prevResult, url.replace(/\w+.wiktionary.org/, 'de.wiktionary.org'))
-                else if (not url.includes('uk.wiktionary.org')) \
-                    and possibleLangs.includes('Ukrainian')
+                else if (not url.includes('uk.wiktionary.org')) and possibleLangs.includes('Ukrainian')
                     return @parse(tabId, w, 'wiktionary', prevResult, url.replace(/\w+.wiktionary.org/, 'uk.wiktionary.org'))
                 else if possibleLangs.includes('Tajik')
                     return @parseOtherLang tabId, w, 'Tajik', null, prevResult
