@@ -1,8 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 import utils from "utils";
 import message from "./message.js";
 import setting from "./setting.js";
@@ -31,13 +26,13 @@ const setupOffscreenDocument = async function () {
             justification: "Play audio of the word",
         });
         await creating;
-        return (creating = null);
+        creating = null;
     }
 };
 
 export default {
     init() {
-        return message.on("play audios", async function ({ ameSrc, breSrc, otherSrc, checkSetting, synthesisObj }) {
+        message.on("play audios", async ({ ameSrc, breSrc, otherSrc, checkSetting, synthesisObj }) => {
             if (!(await utils.isFirefox())) {
                 await setupOffscreenDocument();
             }
@@ -73,12 +68,12 @@ export default {
 
             if (synthesisObj) {
                 if (!(await utils.isFirefox())) {
-                    return chrome.runtime.sendMessage({
+                    chrome.runtime.sendMessage({
                         type: "speak",
                         synthesisObj,
                     });
                 } else {
-                    return playSynthesis(synthesisObj);
+                    playSynthesis(synthesisObj);
                 }
             }
         });
