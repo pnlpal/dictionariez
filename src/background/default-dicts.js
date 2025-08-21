@@ -1,7 +1,7 @@
 export default [{
-    'dictName': 'Longman English'
-    'entry': 'LongmanEnglish'
-    'windowUrl': 'https://www.ldoceonline.com/dictionary/<word>'
+    'dictName': 'Longman English',
+    'entry': 'LongmanEnglish',
+    'windowUrl': 'https://www.ldoceonline.com/dictionary/<word>',
     'fixSpaceInWords': '-',
     "resources": {
         styles: ['longmanenglish.less']
@@ -31,7 +31,7 @@ export default [{
     }
 }, {
     'dictName': "Bing Dict (必应词典)",
-    'windowUrl': 'https://cn.bing.com/dict/search?mkt=zh-cn&q=<word>', # must has mkt 
+    'windowUrl': 'https://cn.bing.com/dict/search?mkt=zh-cn&q=<word>', // must has mkt 
     "resources": {
         styles: ['bing.less']
     }
@@ -39,7 +39,7 @@ export default [{
     'dictName': 'Oxford Learner',
     'entry': 'OxfordLearner',
     'fixSpaceInWords': '-',
-    'windowUrl': 'https://www.oxfordlearnersdictionaries.com/search/english/?q=<word>'
+    'windowUrl': 'https://www.oxfordlearnersdictionaries.com/search/english/?q=<word>',
     "resources": {
         styles: ['oxfordlearner.less']
     }
@@ -68,4 +68,4 @@ export default [{
     "dictName": "Captionz (examples on YouTube)",
     "windowUrl": "https://pnl.dev/captionz-ii/?NO_REDIRECT=true",
     "inputSelector": ".search-container input.text-search"
-}]
+}];

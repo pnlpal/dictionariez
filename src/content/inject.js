@@ -1,17 +1,22 @@
-import $ from 'jquery'
-import utils from "utils"
-import debounce from 'lodash/debounce'
-import highlight from './editable-highlight'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+import $ from 'jquery';
+import utils from "utils";
+import debounce from 'lodash/debounce';
+import highlight from './editable-highlight';
 
-import './card-iframe.coffee'
-import './pnlpal-inject.coffee'
-import { initCaptionzInjection } from  './captionz-inject.coffee'
-import { initYtbInjection } from './ytb-inject.js'
-import { initOnLoadDynamicDict } from './dynamic-dict-inject.js'
-import { initAnkiInjection } from './anki-inject.coffee'
-import initLookupParser from './lookup-parser.js'
-import { initClipboardReader } from './read-clipboard.coffee'
-import plainLookupTooltip from './plain-lookup-tooltip.js'
+import './card-iframe.coffee';
+import './pnlpal-inject.coffee';
+import { initCaptionzInjection } from  './captionz-inject.coffee';
+import { initYtbInjection } from './ytb-inject.js';
+import { initOnLoadDynamicDict } from './dynamic-dict-inject.js';
+import { initAnkiInjection } from './anki-inject.coffee';
+import initLookupParser from './lookup-parser.js';
+import { initClipboardReader } from './read-clipboard.coffee';
+import plainLookupTooltip from './plain-lookup-tooltip.js';
 
 import {
   getWordAtPoint,
@@ -19,247 +24,293 @@ import {
   getSentenceOfSelection,
   getSentenceFromAllFrames,
   checkEditable
-} from './common-text-utils.coffee'
+} from './common-text-utils.coffee';
 
-setupStyles = () -> 
-	require('./inject.less')
-	# Interesting: font url is embedded, for some websites' security setting font-src,
-	# it might be forbidden to load the font url.
-	# but after webpack build, it not a problem any more.
-	require('./inject-fontello.css')
+const setupStyles = function() { 
+	require('./inject.less');
+	// Interesting: font url is embedded, for some websites' security setting font-src,
+	// it might be forbidden to load the font url.
+	// but after webpack build, it not a problem any more.
+	return require('./inject-fontello.css');
+};
 
-run = () =>
-	if (process.env.PRODUCT != 'SidePal') 
-		setupStyles()
-		initYtbInjection()
-		initCaptionzInjection()
-		initLookupParser()
+const run = () => {
+	if (process.env.PRODUCT !== 'SidePal') { 
+		setupStyles();
+		initYtbInjection();
+		initCaptionzInjection();
+		initLookupParser();
+	}
 
-	initAnkiInjection()
-	initClipboardReader()
+	initAnkiInjection();
+	initClipboardReader();
 
-	isInDict = false
+	let isInDict = false;
 
-	chrome.runtime.sendMessage {
+	chrome.runtime.sendMessage({
 		type: 'injected',
 		origin: location.origin,
 		url: location.href
-	}, (res) ->
-		if res?.dictUrl and window.self == window.top
-			# append to html rather than body.
-			# some websites such as naver dict, may clear body when reload to another page. 
-			# But somehow for ChatGPT, it has to append to body.
-			if location.href.includes('chatgpt.com')
-				$("<iframe id='dictionaries-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('body')
-			else
-				$("<iframe id='dictionaries-iframe' src='#{res.dictUrl}'> </iframe>").appendTo('html')
+	}, function(res) {
+		if (res?.dictUrl && (window.self === window.top)) {
+			// append to html rather than body.
+			// some websites such as naver dict, may clear body when reload to another page. 
+			// But somehow for ChatGPT, it has to append to body.
+			if (location.href.includes('chatgpt.com')) {
+				$(`<iframe id='dictionaries-iframe' src='${res.dictUrl}'> </iframe>`).appendTo('body');
+			} else {
+				$(`<iframe id='dictionaries-iframe' src='${res.dictUrl}'> </iframe>`).appendTo('html');
+			}
 				
-			isInDict = true
-			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict, isHelpMeRefine: res.isHelpMeRefine })
+			isInDict = true;
+			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict, isHelpMeRefine: res.isHelpMeRefine });
+		}
 
-		if res?.isInSidePanelDict
-			isInDict = true
-			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict, isHelpMeRefine: res.isHelpMeRefine })
-			window.top.postMessage { type: 'injectedInDict' }, '*'
+		if (res?.isInSidePanelDict) {
+			isInDict = true;
+			initOnLoadDynamicDict({ word: res.word, sentence: res.sentence, dict: res.dict, isHelpMeRefine: res.isHelpMeRefine });
+			window.top.postMessage({ type: 'injectedInDict' }, '*');
+		}
 
-		if res?.cardUrl and res.word and not location.host.includes('wikipedia.org') and window.self == window.top
-			comparedLoc = decodeURI(location.href).toLowerCase()
-			if res.word.split(/\s/).every (s) -> comparedLoc.includes(s.toLowerCase())
-				$("<iframe class='dictionaries-card dictionaries-card-wiki' src='#{res.cardUrl}?sys=wiki' style='display: none;'> </iframe>").appendTo('body')
+		if (res?.cardUrl && res.word && !location.host.includes('wikipedia.org') && (window.self === window.top)) {
+			const comparedLoc = decodeURI(location.href).toLowerCase();
+			if (res.word.split(/\s/).every(s => comparedLoc.includes(s.toLowerCase()))) {
+				return $(`<iframe class='dictionaries-card dictionaries-card-wiki' src='${res.cardUrl}?sys=wiki' style='display: none;'> </iframe>`).appendTo('body');
+			}
+		}
+	});
 
-	chrome.runtime.sendMessage {
+	return chrome.runtime.sendMessage({
 		type: 'setting',
-	}, (setting)->
-		mouseMoveTimer = null
-		plainQuerying = null
-		lastAutoSelection = ''
+	}, async function(setting){
+		const mouseMoveTimer = null;
+		let plainQuerying = null;
+		let lastAutoSelection = '';
 
-		checkExcludedSites = () ->
-			for sitePattern in setting.excludedSites.split('\n')
-				if sitePattern and location.href.match(new RegExp(sitePattern))
-					return true
-			return false
+		const checkExcludedSites = function() {
+			for (var sitePattern of setting.excludedSites.split('\n')) {
+				if (sitePattern && location.href.match(new RegExp(sitePattern))) {
+					return true;
+				}
+			}
+			return false;
+		};
 		
-		return if checkExcludedSites()
-		await utils.promisify($(document).ready)
+		if (checkExcludedSites()) { return; }
+		await utils.promisify($(document).ready);
 
-		if document.body?.isContentEditable
-			# If the page is editable, such as blogger's editor, disable the injection.
-			# See issue #45
-			return
+		if (document.body?.isContentEditable) {
+			// If the page is editable, such as blogger's editor, disable the injection.
+			// See issue #45
+			return;
+		}
 
-		if process.env.PRODUCT != 'SidePal'
-			plainLookupTooltip.init()
+		if (process.env.PRODUCT !== 'SidePal') {
+			plainLookupTooltip.init();
+		}
 
-		if setting.enableReadClipboard
-			document.addEventListener('copy', (() -> 
-				sentence = getSentenceOfSelection()
-				utils.send('copy event triggered', {
+		if (setting.enableReadClipboard) {
+			document.addEventListener('copy', (function() { 
+				const sentence = getSentenceOfSelection();
+				return utils.send('copy event triggered', {
 					sentence,
 					s: location.href,
 					sc: document.title
-				})
-			), true) 
+				});
+			}), true); 
+		}
 
-		$(document).mousemove debounce ((e) ->
-			if $(e.target).hasClass('dictionariez-w')
-				w = $(e.target).data('w') || $(e.target).text()
-				w = w.trim()
-				return if w == plainQuerying
-				return if not setting.enablePlainLookup
+		$(document).mousemove(debounce((function(e) {
+			if ($(e.target).hasClass('dictionariez-w')) {
+				let w = $(e.target).data('w') || $(e.target).text();
+				w = w.trim();
+				if (w === plainQuerying) { return; }
+				if (!setting.enablePlainLookup) { return; }
 
-				plainLookupTooltip.showPlainContent(null, e)
-				plainQuerying = w
-				utils.send 'look up plain', {
+				plainLookupTooltip.showPlainContent(null, e);
+				plainQuerying = w;
+				return utils.send('look up plain', {
 					w
-				}, (res) ->
-					return if plainQuerying != w
-					plainLookupTooltip.renderPlainResult(res)
-					plainQuerying = null
+				}, function(res) {
+					if (plainQuerying !== w) { return; }
+					plainLookupTooltip.renderPlainResult(res);
+					return plainQuerying = null;
+				});
 				
 
-			else
-				if setting.enableSelectionOnMouseMove
-					if !setting.enableSelectionSK1 or utils.checkEventKey(e, setting.selectionSK1)
-						handleSelectionWord(e)
+			} else {
+				if (setting.enableSelectionOnMouseMove) {
+					if (!setting.enableSelectionSK1 || utils.checkEventKey(e, setting.selectionSK1)) {
+						return handleSelectionWord(e);
+					}
+				}
+			}
 
-			), 200
+			}), 200)
+		);
 
-		# 对 mouseup 事件做一个延时处理，
-		# 	# 以避免取消选中后getSelection依然能获得文字。
-		$(document).on 'mouseup', debounce(((e) -> handleMouseUp(e)), 100)
-		$(document).on 'touchstart', debounce(((e) -> 
-			try 
-				await utils.checkInTime (() -> window.getSelection()?.getRangeAt(0)?.toString()), 3000
-				handleMouseUp(e)
-			catch
-		), 800)
+		// 对 mouseup 事件做一个延时处理，
+		// 	# 以避免取消选中后getSelection依然能获得文字。
+		$(document).on('mouseup', debounce((e => handleMouseUp(e)), 100));
+		$(document).on('touchstart', debounce((async function(e) { 
+			try { 
+				await utils.checkInTime((() => window.getSelection()?.getRangeAt(0)?.toString()), 3000);
+				return handleMouseUp(e);
+			} catch (error) {}
+		}), 800)
+		);
 		
-		$(document).bind 'keydown', (event)->
-			if utils.checkEventKey event, setting.openSK1, setting.openSK2, setting.openKey
-				w = getWordFromSelection()
-				isInEditable = utils.isSentence(w) && checkEditable(event.target)
-				sentence = getSentenceOfSelection()
+		$(document).bind('keydown', function(event){
+			if (utils.checkEventKey(event, setting.openSK1, setting.openSK2, setting.openKey)) {
+				const w = getWordFromSelection();
+				const isInEditable = utils.isSentence(w) && checkEditable(event.target);
+				const sentence = getSentenceOfSelection();
 				chrome.runtime.sendMessage({
 					type: 'look up',
 					means: 'keyboard',
-					w: w,
+					w,
 					s: location.href,
 					sc: document.title,
 					sentence,
-					isInEditable: isInEditable
-				})
-			if event.key == "Escape"
-				plainLookupTooltip.hide()
-				plainQuerying = null
+					isInEditable
+				});
+			}
+			if (event.key === "Escape") {
+				plainLookupTooltip.hide();
+				plainQuerying = null;
 
-				if isInDict
-					utils.sendToDict 'keypress focus'
+				if (isInDict) {
+					utils.sendToDict('keypress focus');
+				}
+			}
 
-			if utils.checkEventKey event, setting.openOptionSK1, setting.openOptionSK2, setting.openOptionKey
-				utils.send 'open options'
-				return false
+			if (utils.checkEventKey(event, setting.openOptionSK1, setting.openOptionSK2, setting.openOptionKey)) {
+				utils.send('open options');
+				return false;
+			}
 			
-			if setting.markWords 
-				if setting.enableMarkWordsSK1 and utils.checkEventKey(event, setting.markWordsSK1, null, setting.markWordsKey)
-					highlight(setting.markColor) 
+			if (setting.markWords) { 
+				if (setting.enableMarkWordsSK1 && utils.checkEventKey(event, setting.markWordsSK1, null, setting.markWordsKey)) {
+					highlight(setting.markColor); 
+				}
+			}
 
-			if isInDict
-				if utils.checkEventKey event, setting.prevHistorySK1, null, setting.prevHistoryKey
+			if (isInDict) {
+				if (utils.checkEventKey(event, setting.prevHistorySK1, null, setting.prevHistoryKey)) {
 					chrome.runtime.sendMessage({
 						type: 'query',
 						previousWord: true
-					})
-					return false
+					});
+					return false;
+				}
 
-				if utils.checkEventKey event, setting.nextHistorySK1, null, setting.nextHistoryKey
+				if (utils.checkEventKey(event, setting.nextHistorySK1, null, setting.nextHistoryKey)) {
 					chrome.runtime.sendMessage({
 						type: 'query',
 						nextWord: true
-					})
-					return false
-				if utils.checkEventKey event, setting.prevDictSK1, null, setting.prevDictKey
+					});
+					return false;
+				}
+				if (utils.checkEventKey(event, setting.prevDictSK1, null, setting.prevDictKey)) {
 					chrome.runtime.sendMessage({
 						type: 'query',
 						previousDict: true
-					})
-					return false
-				if utils.checkEventKey event, setting.nextDictSK1, null, setting.nextDictKey
+					});
+					return false;
+				}
+				if (utils.checkEventKey(event, setting.nextDictSK1, null, setting.nextDictKey)) {
 					chrome.runtime.sendMessage({
 						type: 'query',
 						nextDict: true
-					})
-					return false
-				if (event.ctrlKey or event.metaKey) and event.key.match(/\d/)
+					});
+					return false;
+				}
+				if ((event.ctrlKey || event.metaKey) && event.key.match(/\d/)) {
 					chrome.runtime.sendMessage({
 						type: 'query',
 						dictNumber: parseInt(event.key.match(/\d/)[0])
-					})
-					return false 
+					});
+					return false;
+				}
+			}
+		}); 
 
-		handleSelectionWord = (e)->
-			selObj = window.getSelection()
-			return if checkEditable(selObj.focusNode)
+		var handleSelectionWord = function(e){
+			const selObj = window.getSelection();
+			if (checkEditable(selObj.focusNode)) { return; }
 
-			word = selObj.toString().trim()
+			let word = selObj.toString().trim();
 			
-			# filter last auto selection word, let choose another word.
-			if word == lastAutoSelection
-				word = getWordAtPoint(e.target, e.clientX, e.clientY)
-				lastAutoSelection = word
-			else
-				lastAutoSelection = ''
+			// filter last auto selection word, let choose another word.
+			if (word === lastAutoSelection) {
+				word = getWordAtPoint(e.target, e.clientX, e.clientY);
+				lastAutoSelection = word;
+			} else {
+				lastAutoSelection = '';
+			}
 
-			if word
-				handleLookupByMouse(e, word)
+			if (word) {
+				return handleLookupByMouse(e, word);
+			}
+		};
 
 		
 
-		handleMouseUp = (event)->
-			if isInDict
-				window.top.postMessage { type: 'toggleDropdown', open: false }, '*'
+		var handleMouseUp = function(event){
+			let text;
+			if (isInDict) {
+				window.top.postMessage({ type: 'toggleDropdown', open: false }, '*');
+			}
 
-			selObj = window.getSelection()
-			text = selObj.getRangeAt(0)?.toString().trim() if selObj.rangeCount > 0
-			unless text
-				# click inside the dict
-				if $('.dictionaries-tooltip').has(event.target).length
-					return
-				if plainQuerying # if is querying, wait for the result.
-					return
+			const selObj = window.getSelection();
+			if (selObj.rangeCount > 0) { text = selObj.getRangeAt(0)?.toString().trim(); }
+			if (!text) {
+				// click inside the dict
+				if ($('.dictionaries-tooltip').has(event.target).length) {
+					return;
+				}
+				if (plainQuerying) { // if is querying, wait for the result.
+					return;
+				}
 
-				plainLookupTooltip.hide()
-				plainQuerying = null
-				return
+				plainLookupTooltip.hide();
+				plainQuerying = null;
+				return;
+			}
 
-			# issue #4
-			# check if mouse is at the same position of the selected text
-			including = $(event.target).has(selObj.focusNode).length or $(event.target).is(selObj.focusNode)
-			# on Firefox, the focusNode might be exactly adjoining the click target.
-			if not including 
-				including = $(event.target).has(selObj.focusNode.previousElementSibling).length or $(event.target).is(selObj.focusNode.previousElementSibling)
-			return if not including
+			// issue #4
+			// check if mouse is at the same position of the selected text
+			let including = $(event.target).has(selObj.focusNode).length || $(event.target).is(selObj.focusNode);
+			// on Firefox, the focusNode might be exactly adjoining the click target.
+			if (!including) { 
+				including = $(event.target).has(selObj.focusNode.previousElementSibling).length || $(event.target).is(selObj.focusNode.previousElementSibling);
+			}
+			if (!including) { return; }
 			
-			# check if click in editable element
-			return if checkEditable(selObj.focusNode)
+			// check if click in editable element
+			if (checkEditable(selObj.focusNode)) { return; }
 
-			if event.which == 0 or event.which == 1 # left mouse or touchend
-				handleLookupByMouse(event, text)
+			if ((event.which === 0) || (event.which === 1)) { // left mouse or touchend
+				return handleLookupByMouse(event, text);
+			}
+		};
 
-		handleLookupByMouse = debounce(((event, text)->
-			return unless text
-			return if text == plainQuerying
-			sentence = ''
-			markWordAfterward = (lookupResult) ->
-				# highlight selected words is a special feature
-				# even if the floating definition is turned off, still highlight can be working.
-				if lookupResult and setting.markWords and !setting.enableMarkWordsSK1
-					highlight(setting.markColor)
+		var handleLookupByMouse = debounce((async function(event, text){
+			if (!text) { return; }
+			if (text === plainQuerying) { return; }
+			let sentence = '';
+			const markWordAfterward = function(lookupResult) {
+				// highlight selected words is a special feature
+				// even if the floating definition is turned off, still highlight can be working.
+				if (lookupResult && setting.markWords && !setting.enableMarkWordsSK1) {
+					return highlight(setting.markColor);
+				}
+			};
 			
-			# popup window
-			if !setting.enableMouseSK1 or (setting.mouseSK1 and utils.checkEventKey(event, setting.mouseSK1))
-				if process.env.PRODUCT == 'SidePal' or setting.enableMinidict
-					sentence = getSentenceOfSelection()
+			// popup window
+			if (!setting.enableMouseSK1 || (setting.mouseSK1 && utils.checkEventKey(event, setting.mouseSK1))) {
+				if ((process.env.PRODUCT === 'SidePal') || setting.enableMinidict) {
+					sentence = getSentenceOfSelection();
 					chrome.runtime.sendMessage({
 						type: 'look up',
 						means: 'mouse',
@@ -268,50 +319,60 @@ run = () =>
 						s: location.href,
 						sc: document.title,
 						isInEditable: utils.isSentence(text) && checkEditable(event.target)
-					}, markWordAfterward)
+					}, markWordAfterward);
+				}
+			}
 
-			# floating definition
-			text = await utils.send 'check text supported', { w: text }
-			return unless text
+			// floating definition
+			text = await utils.send('check text supported', { w: text });
+			if (!text) { return; }
 
-			if setting.enablePlainLookup
-				if !setting.enablePlainSK1 or utils.checkEventKey(event, setting.plainSK1)
-					plainLookupTooltip.showPlainContent(null, event)
-					plainQuerying = text
-					sentence = getSentenceOfSelection() if not sentence
-					isOk = await utils.send 'look up plain', {
+			if (setting.enablePlainLookup) {
+				if (!setting.enablePlainSK1 || utils.checkEventKey(event, setting.plainSK1)) {
+					let isOk;
+					plainLookupTooltip.showPlainContent(null, event);
+					plainQuerying = text;
+					if (!sentence) { sentence = getSentenceOfSelection(); }
+					return isOk = await utils.send('look up plain', {
 						means: 'mouse',
 						sentence,
 						w: text,
 						s: location.href,
 						sc: document.title
-					},  (res) ->
-						return if plainQuerying != text
-						plainLookupTooltip.renderPlainResult(res)
-						plainQuerying = null
-						markWordAfterward(res)
-		), 500, { leading: true, trailing: false })
+					},  function(res) {
+						if (plainQuerying !== text) { return; }
+						plainLookupTooltip.renderPlainResult(res);
+						plainQuerying = null;
+						return markWordAfterward(res);
+				});
+				}
+			}
+		}), 500, { leading: true, trailing: false });
 
-		utils.listenToBackground 'get info before open dict', (request, sender, sendResponse) =>
-			word = getWordFromSelection(true)
-			isInEditable = utils.isSentence(word) && checkEditable(window.getSelection().focusNode)
-			sentence = getSentenceFromAllFrames()
+		return utils.listenToBackground('get info before open dict', (request, sender, sendResponse) => {
+			const word = getWordFromSelection(true);
+			const isInEditable = utils.isSentence(word) && checkEditable(window.getSelection().focusNode);
+			const sentence = getSentenceFromAllFrames();
 
-			sendResponse({
+			return sendResponse({
 				w: word,
 				s: location.href,
 				sc: document.title,
-				sentence: sentence,
-				isInEditable: isInEditable,
+				sentence,
+				isInEditable,
 				screen: {
 					width: screen.width,
 					height: screen.height,
 					availLeft: screen.availLeft,
 					availTop: screen.availTop
 				}
-			})
+			});
+		});
+	});
+};
 
-if !window.dictionariezInjected 
-	run()
-	window.dictionariezInjected = true
+if (!window.dictionariezInjected) { 
+	run();
+	window.dictionariezInjected = true;
+}
 

@@ -1,98 +1,130 @@
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
 import {
   getSentenceFromSelection
-} from 'get-selection-more'
+} from 'get-selection-more';
 
-export getWordAtPoint = (elem, x, y)->
-    if elem.nodeType == elem.TEXT_NODE
-        range = elem.ownerDocument.createRange()
-        range.selectNodeContents(elem)
-        currentPos = 0
-        endPos = range.endOffset
-        while currentPos < endPos
-            range.setStart(elem, currentPos)
-            range.setEnd(elem, currentPos+1)
-            if range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right >= x &&
-            range.getBoundingClientRect().top <= y && range.getBoundingClientRect().bottom >= y
-                range.detach()
-                sel = window.getSelection()
-                sel.removeAllRanges()
-                sel.addRange(range)
-                sel.modify("move", "backward", "word")
-                sel.collapseToStart()
-                sel.modify("extend", "forward", "word")
-                return sel.toString().trim()
+export var getWordAtPoint = function(elem, x, y){
+    let range;
+    if (elem.nodeType === elem.TEXT_NODE) {
+        range = elem.ownerDocument.createRange();
+        range.selectNodeContents(elem);
+        let currentPos = 0;
+        const endPos = range.endOffset;
+        while (currentPos < endPos) {
+            range.setStart(elem, currentPos);
+            range.setEnd(elem, currentPos+1);
+            if ((range.getBoundingClientRect().left <= x) && (range.getBoundingClientRect().right >= x) &&
+            (range.getBoundingClientRect().top <= y) && (range.getBoundingClientRect().bottom >= y)) {
+                range.detach();
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+                sel.modify("move", "backward", "word");
+                sel.collapseToStart();
+                sel.modify("extend", "forward", "word");
+                return sel.toString().trim();
+            }
 
-            currentPos += 1
-    else
-        for el in elem.childNodes
-            range = el.ownerDocument.createRange()
-            range.selectNodeContents(el)
-            react = range.getBoundingClientRect()
-            if react.left <= x && react.right >= x && react.top <= y && react.bottom >= y
-                range.detach()
-                return getWordAtPoint el, x, y
-            else
-                range.detach()
-    return
+            currentPos += 1;
+        }
+    } else {
+        for (var el of elem.childNodes) {
+            range = el.ownerDocument.createRange();
+            range.selectNodeContents(el);
+            var react = range.getBoundingClientRect();
+            if ((react.left <= x) && (react.right >= x) && (react.top <= y) && (react.bottom >= y)) {
+                range.detach();
+                return getWordAtPoint(el, x, y);
+            } else {
+                range.detach();
+            }
+        }
+    }
+};
 
-export getWordFromSelection = (fromAllFrames = false) -> 
-    word = window.getSelection().toString().trim()
-    if !word and fromAllFrames
-        for frame in window.frames 
-            try 
-                word = frame.getSelection().toString().trim()
-                break if word 
-            catch
-    return word
+export var getWordFromSelection = function(fromAllFrames = false) { 
+    let word = window.getSelection().toString().trim();
+    if (!word && fromAllFrames) {
+        for (var frame of window.frames) { 
+            try { 
+                word = frame.getSelection().toString().trim();
+                if (word) { break; } 
+            } catch (error) {}
+        }
+    }
+    return word;
+};
 
-export getSentenceOfSelection = (window_ = window) ->
-    selection = window_.getSelection()
+export var getSentenceOfSelection = function(window_ = window) {
+    const selection = window_.getSelection();
 
-    try
-        if navigator.userAgent.includes("Gecko") 
-            return getSentenceFromSelection(selection)
-        else 
-            range = selection.getRangeAt(0)
+    try {
+        if (navigator.userAgent.includes("Gecko")) { 
+            return getSentenceFromSelection(selection);
+        } else { 
+            const range = selection.getRangeAt(0);
 
-            range1 = range.cloneRange()
-            range1.detach()
+            const range1 = range.cloneRange();
+            range1.detach();
 
-            selection.modify('move', 'backward', 'sentence')
-            selection.modify('extend', 'forward', 'sentence')
+            selection.modify('move', 'backward', 'sentence');
+            selection.modify('extend', 'forward', 'sentence');
 
-            text = selection.toString().trim()
+            const text = selection.toString().trim();
 
-            selection.removeAllRanges()
-            selection.addRange(range1)
+            selection.removeAllRanges();
+            selection.addRange(range1);
 
-            return text
-    catch  
-        try 
-            # Fallback for browsers that don't support modify
-            return getSentenceFromSelection(selection)
-        catch
-            return
+            return text;
+        }
+    } catch (error) {  
+        try { 
+            // Fallback for browsers that don't support modify
+            return getSentenceFromSelection(selection);
+        } catch (error1) {
+            return;
+        }
+    }
+};
 
-export getSentenceFromAllFrames = () -> 
-    sentence = getSentenceOfSelection()
-    return sentence if sentence
+export var getSentenceFromAllFrames = function() { 
+    let sentence = getSentenceOfSelection();
+    if (sentence) { return sentence; }
 
-    for frame in window.frames 
-        try 
-            sentence = getSentenceOfSelection(frame)
-            break if sentence 
-        catch
+    return (() => {
+        const result = [];
+        for (var frame of window.frames) { 
+            try { 
+                sentence = getSentenceOfSelection(frame);
+                if (sentence) { break; } else {
+                    result.push(undefined);
+                } 
+            } catch (error) {}
+        }
+        return result;
+    })();
+};
 
 
-export checkEditable = (element) ->
-    curNode = element
-    while curNode 
-        if curNode.isContentEditable or ["input", "textarea"].includes(curNode.nodeName.toLowerCase())
-            return true
-        curNode = curNode.parentElement
-    # check the direct children of the node, sometimes the editor could be wrapped by a div. 
-    for node in (element?.children || [])
-        if node.isContentEditable or ["input", "textarea"].includes(node.nodeName.toLowerCase())
-            return true
+export var checkEditable = function(element) {
+    let curNode = element;
+    while (curNode) { 
+        if (curNode.isContentEditable || ["input", "textarea"].includes(curNode.nodeName.toLowerCase())) {
+            return true;
+        }
+        curNode = curNode.parentElement;
+    }
+    // check the direct children of the node, sometimes the editor could be wrapped by a div. 
+    for (var node of (element?.children || [])) {
+        if (node.isContentEditable || ["input", "textarea"].includes(node.nodeName.toLowerCase())) {
+            return true;
+        }
+    }
+};
 
 

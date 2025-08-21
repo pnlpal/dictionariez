@@ -1,49 +1,61 @@
-import '../vendor/needsharebutton.js'
-import '../vendor/needsharebutton.css'
-import '../vendor/github-badge.js'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+let setupAppDescription, setupAsciiTitle, setupProductName, toast;
+import '../vendor/needsharebutton.js';
+import '../vendor/needsharebutton.css';
+import '../vendor/github-badge.js';
 
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootoast/dist/bootoast.min.css'
-import bootoast from 'bootoast/dist/bootoast.min.js'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootoast/dist/bootoast.min.css';
+import bootoast from 'bootoast/dist/bootoast.min.js';
 
-document.title = "Share - #{process.env.PRODUCT}"
-version = chrome.runtime.getManifest().version
+document.title = `Share - ${process.env.PRODUCT}`;
+const {
+  version
+} = chrome.runtime.getManifest();
 
-(toast = () ->
-    prevVersion = localStorage.getItem('dictionariez-version')
-    localStorage.setItem('dictionariez-version', version)
-    if prevVersion and prevVersion != version
-        bootoast.toast({
+(toast = function() {
+    const prevVersion = localStorage.getItem('dictionariez-version');
+    localStorage.setItem('dictionariez-version', version);
+    if (prevVersion && (prevVersion !== version)) {
+        return bootoast.toast({
             message: 'Bravo! You have successfully upgraded Dictionariez to v' + version,
             type: 'info',
             position: 'top',
             timeout: 5,
             dismissible: false
-        })
-)()
+        });
+      }
+  }
+)();
 
-(setupAsciiTitle = () ->
-  asciiTitle = if process.env.PRODUCT == "Dictionariez"
+(setupAsciiTitle = function() {
+  const asciiTitle = process.env.PRODUCT === "Dictionariez" ?
     require("../ascii-title.html").default
-  else 
-    require("../ascii-title.#{process.env.PRODUCT.toLowerCase()}.html").default
+  : 
+    require(`../ascii-title.${process.env.PRODUCT.toLowerCase()}.html`).default;
 
-  document.querySelector("#ascii-title").innerHTML = asciiTitle
-)()
+  return document.querySelector("#ascii-title").innerHTML = asciiTitle;
+}
+)();
 
-(setupAppDescription = () ->
-  appDescription = if process.env.PRODUCT == "Dictionariez"
+(setupAppDescription = function() {
+  const appDescription = process.env.PRODUCT === "Dictionariez" ?
     require("../description-and-badge.html").default
-  else 
-    require("../description-and-badge.#{process.env.PRODUCT.toLowerCase()}.html").default
+  : 
+    require(`../description-and-badge.${process.env.PRODUCT.toLowerCase()}.html`).default;
 
-  document.querySelector("#app-description").innerHTML = appDescription 
+  document.querySelector("#app-description").innerHTML = appDescription; 
   
-  document.querySelector('#app-description .badge').innerText = "V" + version
-)()
+  return document.querySelector('#app-description .badge').innerText = "V" + version;
+}
+)();
 
-(setupProductName = () ->
-  productName = process.env.PRODUCT
-  document.querySelectorAll(".productName").forEach (el) ->
-    el.innerText = productName
-)()
+(setupProductName = function() {
+  const productName = process.env.PRODUCT;
+  return document.querySelectorAll(".productName").forEach(el => el.innerText = productName);
+}
+)();
