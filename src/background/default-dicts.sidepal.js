@@ -27,7 +27,7 @@ export default [{
     'css': '#header, #ad_topslot_a {display: none;}'
 }, {
     'dictName': "Bing Dict (必应词典)",
-    'windowUrl': 'https://cn.bing.com/dict/search?mkt=zh-cn&q=<word>', # must has mkt 
+    'windowUrl': 'https://cn.bing.com/dict/search?mkt=zh-cn&q=<word>', // must has mkt 
     "resources": {
         styles: ['bing.less']
     }
@@ -61,4 +61,4 @@ export default [{
     "translationPrompt": "<word>",
     "css": '[data-testid="dl-cookieBanner"] {display: none;}'
 }
-]
+];

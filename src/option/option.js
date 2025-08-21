@@ -1,108 +1,119 @@
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
 
-import angular from 'angular'
-import utils from "utils"
-import debounce from 'lodash/debounce'
+let setupAppDescription;
+import angular from 'angular';
+import utils from "utils";
+import debounce from 'lodash/debounce';
 
-import 'angular-ui-bootstrap'
+import 'angular-ui-bootstrap';
 
-import '../vendor/needsharebutton.js'
-import '../vendor/needsharebutton.css'
+import '../vendor/needsharebutton.js';
+import '../vendor/needsharebutton.css';
 
-# webpackChunkName: "github-badge"
-import '../vendor/github-badge.js'
-# webpackChunkName: "inject-options"
-import '../content/inject.coffee'
+// webpackChunkName: "github-badge"
+import '../vendor/github-badge.js';
+// webpackChunkName: "inject-options"
+import '../content/inject.coffee';
 
-import 'bootstrap/dist/css/bootstrap.min.css'
-import '../vendor/font-awesome.css'
-import './options.less'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../vendor/font-awesome.css';
+import './options.less';
 
-import "angularjs-color-picker/dist/angularjs-color-picker.min.css"
-import "angularjs-color-picker/dist/themes/angularjs-color-picker-bootstrap.min.css"
-import 'angularjs-color-picker'
+import "angularjs-color-picker/dist/angularjs-color-picker.min.css";
+import "angularjs-color-picker/dist/themes/angularjs-color-picker-bootstrap.min.css";
+import 'angularjs-color-picker';
 
-import "./promote.coffee"
+import "./promote.coffee";
 
-document.title = "Options - #{process.env.PRODUCT}"
+document.title = `Options - ${process.env.PRODUCT}`;
 
-dictApp = angular.module('fairyDictApp', ['ui.bootstrap', 'color.picker'])
+const dictApp = angular.module('fairyDictApp', ['ui.bootstrap', 'color.picker']);
 
-dictApp.controller 'optionCtrl', ['$scope', '$sce', ($scope, $sce) ->
-    $scope.isSidePal = process.env.PRODUCT == 'SidePal'
-    $scope.isDictionariez = process.env.PRODUCT == 'Dictionariez'
-    $scope.asciiTitle = if process.env.PRODUCT == 'Dictionariez' 
+dictApp.controller('optionCtrl', ['$scope', '$sce', function($scope, $sce) {
+    $scope.isSidePal = process.env.PRODUCT === 'SidePal';
+    $scope.isDictionariez = process.env.PRODUCT === 'Dictionariez';
+    $scope.asciiTitle = process.env.PRODUCT === 'Dictionariez' ? 
             require("../ascii-title.html").default
-        else 
-            require("../ascii-title.#{process.env.PRODUCT.toLowerCase()}.html").default
-    $scope.asciiTitleHtml = $sce.trustAsHtml($scope.asciiTitle)
+        : 
+            require(`../ascii-title.${process.env.PRODUCT.toLowerCase()}.html`).default;
+    $scope.asciiTitleHtml = $sce.trustAsHtml($scope.asciiTitle);
 
-    $scope.version = chrome.runtime.getManifest().version
-    $scope.allSK = ['', 'Ctrl', 'Shift', 'Alt', 'Meta']
-    $scope.allLetters = (String.fromCharCode(code) for code in ['A'.charCodeAt(0)..'Z'.charCodeAt(0)])
-    $scope.allLetters.unshift('Disabled')
+    $scope.version = chrome.runtime.getManifest().version;
+    $scope.allSK = ['', 'Ctrl', 'Shift', 'Alt', 'Meta'];
+    $scope.allLetters = (__range__('A'.charCodeAt(0), 'Z'.charCodeAt(0), true).map((code) => String.fromCharCode(code)));
+    $scope.allLetters.unshift('Disabled');
 
-    $scope.extraKeys = Object.keys(utils.extraKeyMap)
+    $scope.extraKeys = Object.keys(utils.extraKeyMap);
 
-    $scope.allKeys = $scope.allLetters.concat($scope.extraKeys)
+    $scope.allKeys = $scope.allLetters.concat($scope.extraKeys);
 
     $scope.allPositions = ['topLeft', 'topCenter', 'topRight',
                            'middleLeft', 'middleCenter', 'middleRight',
-                           'bottomLeft', 'bottomCenter', 'bottomRight']
+                           'bottomLeft', 'bottomCenter', 'bottomRight'];
     $scope.englishLookupSources = {
         'google': 'Google',
         'bingCN': 'Bing Dict CN',
         'wiktionary': 'Wiktionary'
     };
 
-    $scope.changeKey = debounce ((value, key)->
-        if key 
-            $scope.setting[key] = value
-        else 
-            key = value 
-            value = $scope.setting[key]
-        
-        chrome.runtime.sendMessage {
-            type: 'save setting'
-            key: key,
-            value: value
+    $scope.changeKey = debounce((function(value, key){
+        if (key) { 
+            $scope.setting[key] = value;
+        } else { 
+            key = value; 
+            value = $scope.setting[key];
         }
-    ), 500
+        
+        return chrome.runtime.sendMessage({
+            type: 'save setting',
+            key,
+            value
+        });
+    }), 500);
 
-    $scope.toggleOtherDisabledLanguages = (lang) ->
-        idx = $scope.setting.otherDisabledLanguages.indexOf lang 
-        if idx >= 0
-            $scope.setting.otherDisabledLanguages.splice idx, 1
-        else 
-            $scope.setting.otherDisabledLanguages.push lang 
-        chrome.runtime.sendMessage {
-            type: 'save setting'
+    $scope.toggleOtherDisabledLanguages = function(lang) {
+        const idx = $scope.setting.otherDisabledLanguages.indexOf(lang); 
+        if (idx >= 0) {
+            $scope.setting.otherDisabledLanguages.splice(idx, 1);
+        } else { 
+            $scope.setting.otherDisabledLanguages.push(lang); 
+        }
+        return chrome.runtime.sendMessage({
+            type: 'save setting',
             key: 'otherDisabledLanguages',
             value: $scope.setting.otherDisabledLanguages
-        }
+        });
+    };
     
-    chrome.runtime.sendMessage {
+    chrome.runtime.sendMessage({
         type: 'setting'
-    }, (config)->
-        # window.setting = config
-        $scope.setting = config
-        $scope.$apply()
+    }, function(config){
+        // window.setting = config
+        $scope.setting = config;
+        return $scope.$apply();
+    });
 
-        # webpackChunkName: "tables"
-        # import './tables.coffee'
+        // webpackChunkName: "tables"
+        // import './tables.coffee'
 
     
     $scope.markColorEvent = { 
-        onChange: (api, color, $event) -> 
-            $scope.changeKey(color, 'markColor')
-    }
+        onChange(api, color, $event) { 
+            return $scope.changeKey(color, 'markColor');
+        }
+    };
 
-    setupDevFunctions = () -> 
-        console.log("""
+    const setupDevFunctions = function() { 
+        console.log(`\
 .--.        .                                    
 |   : o    _|_   o                    o          
 |   | .  .-.|    .  .-. .--. .-.  .--..  .-. ---.
 |   ; | (   |    | (   )|  |(   ) |   | (.-'  .' 
-'--'-' `-`-'`-'-' `-`-' '  `-`-'`-' -' `-`--''---
+'--'-' \`-\`-'\`-'-' \`-\`-' '  \`-\`-'\`-' -' \`-\`--''---
 
 Welcome to dictionariez! 
 You can use the function "addDict" to add/change a dict to your dictionary list.
@@ -117,23 +128,38 @@ addDict({
 And use "allDicts" to access all the dicts in your collection. 
 
 Read more here: https://pnl.dev/topic/52/help-more-dictionaries-needed
-
-        """)
-        window.addDict = window.addExtraDict = (dict)->
-            await utils.send 'dictionary-add', { dict } 
-            location.reload()
+\
+`);
+        return window.addDict = (window.addExtraDict = async function(dict){
+            await utils.send('dictionary-add', { dict }); 
+            return location.reload();
+        });
+    };
     
-    setupDevFunctions()
-]
+    return setupDevFunctions();
+}
+]);
 
-(setupAppDescription = () ->
-  appDescription = if process.env.PRODUCT == "Dictionariez"
+(setupAppDescription = function() {
+  const appDescription = process.env.PRODUCT === "Dictionariez" ?
     require("../description-and-badge.html").default
-  else 
-    require("../description-and-badge.#{process.env.PRODUCT.toLowerCase()}.html").default
+  : 
+    require(`../description-and-badge.${process.env.PRODUCT.toLowerCase()}.html`).default;
 
-  document.querySelector("#app-description").innerHTML = appDescription 
+  document.querySelector("#app-description").innerHTML = appDescription; 
   
-  version = chrome.runtime.getManifest().version
-  document.querySelector('#app-description .badge').innerText = "V" + version
-)()
+  const {
+      version
+  } = chrome.runtime.getManifest();
+  return document.querySelector('#app-description .badge').innerText = "V" + version;
+}
+)();
+function __range__(left, right, inclusive) {
+  let range = [];
+  let ascending = left < right;
+  let end = !inclusive ? right : ascending ? right + 1 : right - 1;
+  for (let i = left; ascending ? i < end : i > end; ascending ? i++ : i--) {
+    range.push(i);
+  }
+  return range;
+}

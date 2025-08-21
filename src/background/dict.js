@@ -1,203 +1,254 @@
-import storage from  "./storage.js"
-import message from "./message.js"
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS208: Avoid top-level this
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+import storage from  "./storage.js";
+import message from "./message.js";
 
-defaultDicts = if process.env.PRODUCT == 'Dictionariez'
+const defaultDicts = process.env.PRODUCT === 'Dictionariez' ?
   require('./default-dicts.coffee').default
-else
-  require("./default-dicts.#{process.env.PRODUCT.toLowerCase()}.coffee").default
+:
+  require(`./default-dicts.${process.env.PRODUCT.toLowerCase()}.coffee`).default;
 
-chatgptDefault = {
+const chatgptDefault = {
     "windowUrl": "https://chatgpt.com",
     "css": "body {margin-top: 50px !important;}",
     "inputSelector": "main form div[contenteditable]",
     "submitButtonSelector": "main form button[data-testid='send-button'], main form button[data-testid='stop-button']"
-}
+};
 
-export default {
+export default ({
     setting: undefined,
     allDicts: [],
 
-    init: () ->
-        await @initAllDicts()
+    async init() {
+        await this.initAllDicts();
         
-        message.on 'set-dictionary-reorder', ({ dictMap }) =>
-            changed = [] 
+        message.on('set-dictionary-reorder', ({ dictMap }) => {
+            const changed = []; 
 
-            @allDicts.forEach (d) =>
-                s = dictMap[d.dictName] 
-                if s 
-                    Object.assign d, s 
-                    changed.push d 
+            this.allDicts.forEach(d => {
+                const s = dictMap[d.dictName]; 
+                if (s) { 
+                    Object.assign(d, s); 
+                    return changed.push(d);
+                }
+            }); 
             
-            @allDicts.sort (a, b) -> a.sequence - b.sequence
+            this.allDicts.sort((a, b) => a.sequence - b.sequence);
 
-            storage.setAllByK 'dict-', 'dictName', changed 
+            return storage.setAllByK('dict-', 'dictName', changed);
+        }); 
 
-        message.on 'dictionary-remove', ({ dictName }) =>
-            i = @allDicts.findIndex (d)-> d.dictName == dictName 
-            if i >=0 
-                @allDicts.splice(i, 1)
+        message.on('dictionary-remove', ({ dictName }) => {
+            const i = this.allDicts.findIndex(d => d.dictName === dictName); 
+            if (i >=0) { 
+                this.allDicts.splice(i, 1);
+            }
 
-            storage.remove ('dict-'+dictName)
+            return storage.remove(('dict-'+dictName));
+        });
         
-        message.on 'dictionary-add', ({ dict }) =>
-            @addToDictionariez dict 
+        message.on('dictionary-add', ({ dict }) => {
+            return this.addToDictionariez(dict);
+        }); 
 
-        message.on 'restore-default-dicts', () =>
-            @restoreDefaultDicts()
+        return message.on('restore-default-dicts', () => {
+            return this.restoreDefaultDicts();
+        });
+    },
         
-    initAllDicts: () ->
-        allDicts = await storage.getAllByK 'dict-'
+    async initAllDicts() {
+        const allDicts = await storage.getAllByK('dict-');
         
-        if not allDicts.length 
-            # get dicts from default and old settings 
-            dictSettings = await storage.get('dictionary-setting', {})
-            storage.remove 'dictionary-setting'
+        if (!allDicts.length) { 
+            // get dicts from default and old settings 
+            const dictSettings = await storage.get('dictionary-setting', {});
+            storage.remove('dictionary-setting');
 
-            extraDicts = await storage.get('extra-dicts', [])
-            storage.remove 'extra-dicts'
+            const extraDicts = await storage.get('extra-dicts', []);
+            storage.remove('extra-dicts');
 
-            defaultDicts.forEach (d, oi) =>
-                s = dictSettings[d.dictName]
-                d.sequence = oi
-                if s
-                    Object.assign d, s 
+            defaultDicts.forEach((d, oi) => {
+                const s = dictSettings[d.dictName];
+                d.sequence = oi;
+                if (s) {
+                    Object.assign(d, s); 
+                }
 
-                d = Object.assign {}, chatgptDefault, d if d.chatgptPrompt
-                allDicts.push d 
+                if (d.chatgptPrompt) { d = Object.assign({}, chatgptDefault, d); }
+                return allDicts.push(d);
+            }); 
             
-            extraDicts.forEach (d)=>
-                locDict = allDicts.find (d1) ->
-                    d1.dictName == d.dictName 
+            extraDicts.forEach(d=> {
+                const locDict = allDicts.find(d1 => d1.dictName === d.dictName); 
 
-                if locDict
-                    Object.assign locDict, d
-                else 
-                    d.sequence = allDicts.length
-                    allDicts.push d
+                if (locDict) {
+                    return Object.assign(locDict, d);
+                } else { 
+                    d.sequence = allDicts.length;
+                    return allDicts.push(d);
+                }
+            });
             
-            storage.setAllByK 'dict-', 'dictName', allDicts
+            storage.setAllByK('dict-', 'dictName', allDicts);
+        }
 
-        allDicts.sort (a, b) -> a.sequence - b.sequence
+        allDicts.sort((a, b) => a.sequence - b.sequence);
 
-        allDicts.forEach (d, oi) => 
-            d.sequence = oi 
+        allDicts.forEach((d, oi) => { 
+            d.sequence = oi; 
 
-            # fix old settings
-            if d.windowUrl == 'https://chat.openai.com' || d.submitButtonSelector == "main form button.mb-1"
-                Object.assign d, chatgptDefault
-            if d.windowUrl == 'https://chatgpt.com' and d.inputSelector == 'main form textarea'
-                Object.assign d, chatgptDefault
+            // fix old settings
+            if ((d.windowUrl === 'https://chat.openai.com') || (d.submitButtonSelector === "main form button.mb-1")) {
+                Object.assign(d, chatgptDefault);
+            }
+            if ((d.windowUrl === 'https://chatgpt.com') && (d.inputSelector === 'main form textarea')) {
+                return Object.assign(d, chatgptDefault);
+            }
+        });
                 
 
-        @allDicts = allDicts   
+        return this.allDicts = allDicts;
+    },   
 
-    addToDictionariez: (d) ->
-        if d.name 
-            d.dictName = d.name 
-            delete d.name
-        if d.url 
-            d.windowUrl = d.url 
-            delete d.url
+    addToDictionariez(d) {
+        if (d.name) { 
+            d.dictName = d.name; 
+            delete d.name;
+        }
+        if (d.url) { 
+            d.windowUrl = d.url; 
+            delete d.url;
+        }
         
-        if not d.dictName 
-            return { error: 'the name of the dict is required' }
+        if (!d.dictName) { 
+            return { error: 'the name of the dict is required' };
+        }
         
-        if (not d.windowUrl) and (not d.chatgptPrompt)
-            return { error: 'the url of the dict is required' }
+        if ((!d.windowUrl) && (!d.chatgptPrompt)) {
+            return { error: 'the url of the dict is required' };
+        }
 
-        locDict = @allDicts.find (d1) ->
-            d1.dictName == d.dictName 
+        const locDict = this.allDicts.find(d1 => d1.dictName === d.dictName); 
 
-        if locDict
-            Object.assign locDict, d
-            d = locDict
-        else 
-            d.sequence = @allDicts.length
-            d = Object.assign {}, chatgptDefault, d if d.chatgptPrompt
-            @allDicts.push d
+        if (locDict) {
+            Object.assign(locDict, d);
+            d = locDict;
+        } else { 
+            d.sequence = this.allDicts.length;
+            if (d.chatgptPrompt) { d = Object.assign({}, chatgptDefault, d); }
+            this.allDicts.push(d);
+        }
         
-        storage.setAllByK 'dict-', 'dictName', [d]
+        return storage.setAllByK('dict-', 'dictName', [d]);
+    },
     
-    restoreDefaultDicts: () ->
-        added = []
+    restoreDefaultDicts() {
+        const added = [];
 
-        defaultDicts.forEach (d, oi) =>
-            currentDict = @allDicts.find (d1) -> d1.dictName == d.dictName 
-            if currentDict 
-                Object.assign currentDict, d, (if d.chatgptPrompt then chatgptDefault else null)
-                return  # ignore existing ones 
+        defaultDicts.forEach((d, oi) => {
+            const currentDict = this.allDicts.find(d1 => d1.dictName === d.dictName); 
+            if (currentDict) { 
+                Object.assign(currentDict, d, (d.chatgptPrompt ? chatgptDefault : null));
+                return;  // ignore existing ones 
+            }
 
-            d.sequence = oi
-            d = Object.assign {}, chatgptDefault, d if d.chatgptPrompt
-            @allDicts.push d 
-            added.push d 
+            d.sequence = oi;
+            if (d.chatgptPrompt) { d = Object.assign({}, chatgptDefault, d); }
+            this.allDicts.push(d); 
+            return added.push(d);
+        }); 
 
-        if added.length
-            @allDicts.sort (a, b) -> a.sequence - b.sequence
-            storage.setAllByK 'dict-', 'dictName', added 
+        if (added.length) {
+            this.allDicts.sort((a, b) => a.sequence - b.sequence);
+            return storage.setAllByK('dict-', 'dictName', added);
+        }
+    }, 
 
-    getDict: (dictName) ->
-        dict = @allDicts.find (d)->
-            d.dictName == dictName
-        return dict or @allDicts[0]
+    getDict(dictName) {
+        const dict = this.allDicts.find(d => d.dictName === dictName);
+        return dict || this.allDicts[0];
+    },
 
-    getNextDict: (dictName) ->
-        i = @allDicts.findIndex (d) -> d.dictName == dictName
-        if i >= 0 and i < @allDicts.length - 1
-            return @allDicts[i + 1]
-        else
-            return @allDicts[0]
+    getNextDict(dictName) {
+        const i = this.allDicts.findIndex(d => d.dictName === dictName);
+        if ((i >= 0) && (i < (this.allDicts.length - 1))) {
+            return this.allDicts[i + 1];
+        } else {
+            return this.allDicts[0];
+        }
+    },
 
-    getPreviousDict: (dictName) ->
-        i = @allDicts.findIndex (d) -> d.dictName == dictName
-        if i > 0 and i <= @allDicts.length - 1
-            return @allDicts[i - 1]
-        else
-            return @allDicts[@allDicts.length - 1]
+    getPreviousDict(dictName) {
+        const i = this.allDicts.findIndex(d => d.dictName === dictName);
+        if ((i > 0) && (i <= (this.allDicts.length - 1))) {
+            return this.allDicts[i - 1];
+        } else {
+            return this.allDicts[this.allDicts.length - 1];
+        }
+    },
 
-    getDictByNumber: (n) ->
-        if n == 9
-            return @allDicts[@allDicts.length-1]
-        return @allDicts[n-1]
+    getDictByNumber(n) {
+        if (n === 9) {
+            return this.allDicts[this.allDicts.length-1];
+        }
+        return this.allDicts[n-1];
+    },
 
-    isAI: (dictName) ->
-        dict = @getDict(dictName)
-        return dict.chatgptPrompt or dict.prompt 
-    getFirstAIDict: () ->
-        dict = @allDicts.find (d) -> d.chatgptPrompt or d.prompt 
-        return dict or chatgptDefault
+    isAI(dictName) {
+        const dict = this.getDict(dictName);
+        return dict.chatgptPrompt || dict.prompt;
+    }, 
+    getFirstAIDict() {
+        const dict = this.allDicts.find(d => d.chatgptPrompt || d.prompt); 
+        return dict || chatgptDefault;
+    },
 
-    query: (word, dictName)->
-        dict = @getDict(dictName)
-        if dict.fixSpaceInWords
-            word = word.replace(/\s+/g, dict.fixSpaceInWords)
+    query(word, dictName){
+        let windowUrl;
+        const dict = this.getDict(dictName);
+        if (dict.fixSpaceInWords) {
+            word = word.replace(/\s+/g, dict.fixSpaceInWords);
+        }
 
-        if dict.windowUrl
-            windowUrl = dict.windowUrl.replace('<word>', word.toLowerCase())
-        else if dict.chatgptPrompt 
-            windowUrl = chatgptDefault.windowUrl
+        if (dict.windowUrl) {
+            windowUrl = dict.windowUrl.replace('<word>', word.toLowerCase());
+        } else if (dict.chatgptPrompt) { 
+            ({
+                windowUrl
+            } = chatgptDefault);
+        }
 
-        return  { windowUrl }
+        return  { windowUrl };
+    },
         
-    searchDicts: (key) ->
-        results = []
-        for dict in @allDicts
-            if dict.dictName.toLowerCase().startsWith(key)
-                results.push(dict)
-            else if dict.windowUrl
-                domain = dict.windowUrl.match(/:\/\/([^\/\?]+)/)[1]
-                domain = domain.replace(/^www\.|^dict\.|^dictionary\.|^m\.|\.m\./, '')
-                domains = domain.split('.')
-                domains.pop()
+    searchDicts(key) {
+        const results = [];
+        for (var dict of this.allDicts) {
+            if (dict.dictName.toLowerCase().startsWith(key)) {
+                results.push(dict);
+            } else if (dict.windowUrl) {
+                var domain = dict.windowUrl.match(/:\/\/([^\/\?]+)/)[1];
+                domain = domain.replace(/^www\.|^dict\.|^dictionary\.|^m\.|\.m\./, '');
+                var domains = domain.split('.');
+                domains.pop();
 
-                domains.forEach (s)->
-                    if s.toLowerCase().startsWith(key)
-                        results.push(dict)
+                domains.forEach(function(s){
+                    if (s.toLowerCase().startsWith(key)) {
+                        return results.push(dict);
+                    }
+                });
+            }
                 
             
-            if results.length >= 3
-                break
+            if (results.length >= 3) {
+                break;
+            }
+        }
 
-        return results
-}
+        return results;
+    }
+});

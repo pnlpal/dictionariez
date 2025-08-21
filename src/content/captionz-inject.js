@@ -1,39 +1,53 @@
-import $ from 'jquery'
-import utils from "utils"
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS209: Avoid top-level return
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+import $ from 'jquery';
+import utils from "utils";
 
-setYtb = () => 
-    return if $('#captionz-ytb-btn').length > 0
-    sbtn = '<a href="" id="captionz-ytb-btn">Watch on Captionz</a>'
+const setYtb = async () => { 
+    if ($('#captionz-ytb-btn').length > 0) { return; }
+    const sbtn = '<a href="" id="captionz-ytb-btn">Watch on Captionz</a>';
 
-    await utils.checkInTime () ->
-        $('#above-the-fold').length > 0
+    await utils.checkInTime(() => $('#above-the-fold').length > 0);
 
     $('#above-the-fold').prepend(sbtn);
 
-    $(document).on('click', '#captionz-ytb-btn', () => 
-        utils.send 'open ytb video on captionz', {
+    return $(document).on('click', '#captionz-ytb-btn', () => { 
+        utils.send('open ytb video on captionz', {
             link: location.href
-        }
+        });
         return false;
-    )
+    });
+};
 
-observePathnameChange = (callback) ->
-    lastPathname = location.pathname
-    observer = new MutationObserver (mutations) ->
-        mutations.forEach (mutation) ->
-            if location.pathname != lastPathname
-                lastPathname = location.pathname
-                callback()
-    observer.observe document, { subtree: true, childList: true }
+const observePathnameChange = function(callback) {
+    let lastPathname = location.pathname;
+    const observer = new MutationObserver(mutations => mutations.forEach(function(mutation) {
+        if (location.pathname !== lastPathname) {
+            lastPathname = location.pathname;
+            return callback();
+        }
+    }));
+    return observer.observe(document, { subtree: true, childList: true });
+};
 
 
-export initCaptionzInjection = () => 
-    $(document).ready () ->
-        { disableYtbCaptionz } = await utils.send 'setting of ytb captionz'
-        if not disableYtbCaptionz
-            if (location.href.startsWith "https://www.youtube.com/watch") and location.search.includes('v=') and window.self == window.top
-                setYtb().catch(console.warn)
+export var initCaptionzInjection = () => { 
+    return $(document).ready(async function() {
+        const { disableYtbCaptionz } = await utils.send('setting of ytb captionz');
+        if (!disableYtbCaptionz) {
+            if ((location.href.startsWith("https://www.youtube.com/watch")) && location.search.includes('v=') && (window.self === window.top)) {
+                setYtb().catch(console.warn);
+            }
 
-            observePathnameChange ->
-                if (location.href.startsWith "https://www.youtube.com/watch") and location.search.includes('v=') and window.self == window.top
-                    setYtb().catch(console.warn)
+            return observePathnameChange(function() {
+                if ((location.href.startsWith("https://www.youtube.com/watch")) && location.search.includes('v=') && (window.self === window.top)) {
+                    return setYtb().catch(console.warn);
+                }
+            });
+        }
+    });
+};
