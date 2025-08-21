@@ -299,5 +299,26 @@
         }
       }
     }
+  },
+  "Ukrainian": {
+    "url": "https://slovnyk.ua/index.php?swrd=<word>",
+    "languages": ["Ukrainian"],
+    "result": {
+      "w": {
+        "selector": "h4.text-uppercase"
+      },
+      "prons": [
+        {
+          "synthesis": "uk-UA"
+        }
+      ],
+      "defs": {
+        "container": ".toggle-sum .toggle-content",
+        "groups": "p",
+        "result": {
+          "def": {}
+        }
+      }
+    }
   }
 }
