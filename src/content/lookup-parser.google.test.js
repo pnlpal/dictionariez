@@ -1,18 +1,15 @@
 import { parseHTML } from "./lookup-parser.js";
-import utils from "../utils.coffee";
+import utils from "../utils.js";
 import parserDesc from "../resources/dict-parsers.json";
 import { expect } from "chai";
 
 describe("lookup-parser-google", () => {
-  it("should get and parse the word lecture from Google", async () => {
-    const html = await utils.loadHTML(
-      "https://www.google.com/search?hl=en&q=define+lecture",
-      "same-origin"
-    );
-    const result = await parseHTML(html, parserDesc.google.result);
-    // console.log(JSON.stringify(result, null, 2));
-    expect(JSON.stringify(result, null, 2)).to.equal(
-      `{
+    it("should get and parse the word lecture from Google", async () => {
+        const html = await utils.loadHTML("https://www.google.com/search?hl=en&q=define+lecture", "same-origin");
+        const result = await parseHTML(html, parserDesc.google.result);
+        // console.log(JSON.stringify(result, null, 2));
+        expect(JSON.stringify(result, null, 2)).to.equal(
+            `{
   "w": "lecture",
   "langSymbol": "en",
   "prons": [
@@ -56,18 +53,15 @@ describe("lookup-parser-google", () => {
   ],
   "images": []
 }`
-    );
-  });
+        );
+    });
 
-  it("should get and parse the German word Lehrerin from Google", async () => {
-    const html = await utils.loadHTML(
-      "https://www.google.com/search?hl=en&q=define+Lehrerin",
-      "same-origin"
-    );
-    const result = await parseHTML(html, parserDesc.google.result);
-    // console.log(JSON.stringify(result, null, 2));
-    expect(JSON.stringify(result, null, 2)).to.equal(
-      `{
+    it("should get and parse the German word Lehrerin from Google", async () => {
+        const html = await utils.loadHTML("https://www.google.com/search?hl=en&q=define+Lehrerin", "same-origin");
+        const result = await parseHTML(html, parserDesc.google.result);
+        // console.log(JSON.stringify(result, null, 2));
+        expect(JSON.stringify(result, null, 2)).to.equal(
+            `{
   "w": "Leh·re·rin",
   "langSymbol": "de",
   "prons": [
@@ -94,17 +88,14 @@ describe("lookup-parser-google", () => {
   ],
   "images": []
 }`
-    );
-  });
-  it("should get and parse the Spanish word ingeniera from Google", async () => {
-    const html = await utils.loadHTML(
-      "https://www.google.com/search?hl=en&q=define+ingeniera",
-      "same-origin"
-    );
-    const result = await parseHTML(html, parserDesc.google.result);
-    // console.log(JSON.stringify(result, null, 2));
-    expect(JSON.stringify(result, null, 2)).to.equal(
-      `{
+        );
+    });
+    it("should get and parse the Spanish word ingeniera from Google", async () => {
+        const html = await utils.loadHTML("https://www.google.com/search?hl=en&q=define+ingeniera", "same-origin");
+        const result = await parseHTML(html, parserDesc.google.result);
+        // console.log(JSON.stringify(result, null, 2));
+        expect(JSON.stringify(result, null, 2)).to.equal(
+            `{
   "w": "ingeniero",
   "langSymbol": "es",
   "prons": [
@@ -131,18 +122,15 @@ describe("lookup-parser-google", () => {
   ],
   "images": []
 }`
-    );
-  });
+        );
+    });
 
-  it("should get and parse the Japanese word 事実 from Google", async () => {
-    const html = await utils.loadHTML(
-      "https://www.google.com/search?hl=en&q=define+事実",
-      "same-origin"
-    );
-    const result = await parseHTML(html, parserDesc.google.result);
-    // console.log(JSON.stringify(result, null, 2));
-    expect(JSON.stringify(result, null, 2)).to.equal(
-      `{
+    it("should get and parse the Japanese word 事実 from Google", async () => {
+        const html = await utils.loadHTML("https://www.google.com/search?hl=en&q=define+事実", "same-origin");
+        const result = await parseHTML(html, parserDesc.google.result);
+        // console.log(JSON.stringify(result, null, 2));
+        expect(JSON.stringify(result, null, 2)).to.equal(
+            `{
   "w": "じじつ",
   "langSymbol": "ja",
   "prons": [
@@ -169,6 +157,6 @@ describe("lookup-parser-google", () => {
   ],
   "images": []
 }`
-    );
-  });
+        );
+    });
 });

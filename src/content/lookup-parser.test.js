@@ -1,34 +1,34 @@
 import { parseHTML } from "./lookup-parser.js";
-import utils from "../utils.coffee";
+import utils from "../utils.js";
 import parserDesc from "../resources/dict-parsers.json";
 import { expect } from "chai";
 
 describe("lookup-parser", () => {
-  it("should return an empty object for empty input", () => {
-    const result = parseHTML("", {});
-    chai.expect(result).to.deep.equal({});
-  });
+    it("should return an empty object for empty input", () => {
+        const result = parseHTML("", {});
+        chai.expect(result).to.deep.equal({});
+    });
 
-  it("should parse HTML and extract the headword", () => {
-    const htmlString = `
+    it("should parse HTML and extract the headword", () => {
+        const htmlString = `
       <div>
         <div class="hd_area">
           <div id="headword">Test Word</div>
         </div>
       </div>
     `;
-    const parserDesc = {
-      w: {
-        selector: ".hd_area #headword",
-      },
-    };
-    const $html = $(htmlString);
-    const result = parseHTML($html, parserDesc);
-    expect(result).to.deep.equal({ w: "Test Word" });
-  });
+        const parserDesc = {
+            w: {
+                selector: ".hd_area #headword",
+            },
+        };
+        const $html = $(htmlString);
+        const result = parseHTML($html, parserDesc);
+        expect(result).to.deep.equal({ w: "Test Word" });
+    });
 
-  it("should parse HTML and extract the pronunciations", () => {
-    const htmlString = `
+    it("should parse HTML and extract the pronunciations", () => {
+        const htmlString = `
     <div>
       <div class="hd_area">
         <div class="hd_prUS">/test/</div>
@@ -39,60 +39,60 @@ describe("lookup-parser", () => {
       </div>
     </div>
   `;
-    const parserDesc = {
-      prons: [
-        {
-          symbol: {
-            selector: ".hd_area .hd_prUS",
-          },
-          audio: {
-            selector: ".hd_area .hd_prUS + .hd_tf",
-            htmlRegex: "https:.*?\\.mp3",
-          },
-          type: "ame",
-        },
-        {
-          symbol: {
-            selector: ".hd_area .hd_pr",
-          },
-          audio: {
-            selector: ".hd_area .hd_pr + .hd_tf",
-            htmlRegex: "https:.*?\\.mp3",
-          },
-          type: "bre",
-        },
-        {
-          symbol: {
-            selector: ".hd_area .hd_p1_1",
-          },
-          type: "pinyin",
-        },
-      ],
-    };
-    const $html = $(htmlString);
-    const result = parseHTML($html, parserDesc);
-    expect(result).to.deep.equal({
-      prons: [
-        {
-          symbol: "/test/",
-          audio: "https://testaudio1.mp3",
-          type: "ame",
-        },
-        {
-          symbol: "/testUK/",
-          audio: "https://testaudio2.mp3",
-          type: "bre",
-        },
-        {
-          symbol: "tést",
-          type: "pinyin",
-        },
-      ],
+        const parserDesc = {
+            prons: [
+                {
+                    symbol: {
+                        selector: ".hd_area .hd_prUS",
+                    },
+                    audio: {
+                        selector: ".hd_area .hd_prUS + .hd_tf",
+                        htmlRegex: "https:.*?\\.mp3",
+                    },
+                    type: "ame",
+                },
+                {
+                    symbol: {
+                        selector: ".hd_area .hd_pr",
+                    },
+                    audio: {
+                        selector: ".hd_area .hd_pr + .hd_tf",
+                        htmlRegex: "https:.*?\\.mp3",
+                    },
+                    type: "bre",
+                },
+                {
+                    symbol: {
+                        selector: ".hd_area .hd_p1_1",
+                    },
+                    type: "pinyin",
+                },
+            ],
+        };
+        const $html = $(htmlString);
+        const result = parseHTML($html, parserDesc);
+        expect(result).to.deep.equal({
+            prons: [
+                {
+                    symbol: "/test/",
+                    audio: "https://testaudio1.mp3",
+                    type: "ame",
+                },
+                {
+                    symbol: "/testUK/",
+                    audio: "https://testaudio2.mp3",
+                    type: "bre",
+                },
+                {
+                    symbol: "tést",
+                    type: "pinyin",
+                },
+            ],
+        });
     });
-  });
 
-  it("should parse HTML and extract the definitions", () => {
-    const htmlString = `
+    it("should parse HTML and extract the definitions", () => {
+        const htmlString = `
     <div>
     <table id="homoid">
       <tr class="def_row">
@@ -111,70 +111,70 @@ describe("lookup-parser", () => {
     </table>
     </div>
   `;
-    const parserDesc = {
-      defs: {
-        groups: "#homoid tr.def_row",
-        result: {
-          pos: {
-            selector: ".pos",
-          },
-          def: {
-            selector: ".def_fl>.de_li1",
-            toArray: true,
-          },
-        },
-      },
-    };
-    const $html = $(htmlString);
-    const result = parseHTML($html, parserDesc);
-    expect(result).to.deep.equal({
-      defs: [
-        {
-          pos: "noun",
-          def: ["Definition 1", "Definition 2"],
-        },
-        {
-          pos: "verb",
-          def: ["Definition 3"],
-        },
-      ],
+        const parserDesc = {
+            defs: {
+                groups: "#homoid tr.def_row",
+                result: {
+                    pos: {
+                        selector: ".pos",
+                    },
+                    def: {
+                        selector: ".def_fl>.de_li1",
+                        toArray: true,
+                    },
+                },
+            },
+        };
+        const $html = $(htmlString);
+        const result = parseHTML($html, parserDesc);
+        expect(result).to.deep.equal({
+            defs: [
+                {
+                    pos: "noun",
+                    def: ["Definition 1", "Definition 2"],
+                },
+                {
+                    pos: "verb",
+                    def: ["Definition 3"],
+                },
+            ],
+        });
     });
-  });
 
-  it("should parse HTML and extract the pronunciations using htmlRegex", () => {
-    const htmlString = `
+    it("should parse HTML and extract the pronunciations using htmlRegex", () => {
+        const htmlString = `
     <div>
       <div class="vmod" data-topic="test" data-hveid="testid">
         <span>Test Pronunciation</span>
       </div>
     </div>
   `;
-    const parserDesc = {
-      prons: [
-        {
-          symbol: {
-            selector: ".vmod[data-topic][data-hveid]",
-            htmlRegex: "<span>([^<>]*)</span>",
-            regexIndex: 1,
-          },
-          type: "unknow",
-        },
-      ],
-    };
-    const $html = $(htmlString);
-    const result = parseHTML($html, parserDesc);
-    expect(result).to.deep.equal({
-      prons: [
-        {
-          symbol: "Test Pronunciation",
-          type: "unknow",
-        },
-      ],
+        const parserDesc = {
+            prons: [
+                {
+                    symbol: {
+                        selector: ".vmod[data-topic][data-hveid]",
+                        htmlRegex: "<span>([^<>]*)</span>",
+                        regexIndex: 1,
+                    },
+                    type: "unknow",
+                },
+            ],
+        };
+        const $html = $(htmlString);
+        const result = parseHTML($html, parserDesc);
+        expect(result).to.deep.equal({
+            prons: [
+                {
+                    symbol: "Test Pronunciation",
+                    type: "unknow",
+                },
+            ],
+        });
     });
-  });
 
-  it("should parse HTML and extract the definitions with array", () => {
-    const htmlString = `
+    it("should parse HTML and extract the definitions with array", () => {
+        const htmlString = `
     <div>
       <div class="vmod">
         <div class="vmod" data-topic="test">
@@ -185,34 +185,34 @@ describe("lookup-parser", () => {
       </div>
     </div>
   `;
-    const parserDesc = {
-      defs: {
-        groups: ".vmod>.vmod[data-topic]",
-        result: {
-          pos: {
-            selector: "i",
-          },
-          def: {
-            selector: "[data-dobid='dfn']",
-            toArray: true,
-          },
-        },
-      },
-    };
-    const $html = $(htmlString);
-    const result = parseHTML($html, parserDesc);
-    expect(result).to.deep.equal({
-      defs: [
-        {
-          pos: "noun",
-          def: ["Definition 1", "Definition 2"],
-        },
-      ],
+        const parserDesc = {
+            defs: {
+                groups: ".vmod>.vmod[data-topic]",
+                result: {
+                    pos: {
+                        selector: "i",
+                    },
+                    def: {
+                        selector: "[data-dobid='dfn']",
+                        toArray: true,
+                    },
+                },
+            },
+        };
+        const $html = $(htmlString);
+        const result = parseHTML($html, parserDesc);
+        expect(result).to.deep.equal({
+            defs: [
+                {
+                    pos: "noun",
+                    def: ["Definition 1", "Definition 2"],
+                },
+            ],
+        });
     });
-  });
 
-  it("should parse HTML and extract the definitions with max array", () => {
-    const htmlString = `
+    it("should parse HTML and extract the definitions with max array", () => {
+        const htmlString = `
     <div>
       <div data-tae>
         <div data-mh='-1'>
@@ -226,41 +226,39 @@ describe("lookup-parser", () => {
       </div>
     </div>
   `;
-    const parserDesc = {
-      defs2: {
-        groups: "[data-tae]>[data-mh='-1']",
-        result: {
-          pos: {
-            selector: "div",
-          },
-          def: {
-            selector: "ol>li",
-            max: 2,
-            toArray: true,
-          },
-        },
-      },
-    };
-    const $html = $(htmlString);
-    const result = parseHTML($html, parserDesc);
-    expect(result).to.deep.equal({
-      defs2: [
-        {
-          pos: "verb",
-          def: ["Definition 1", "Definition 2"],
-        },
-      ],
+        const parserDesc = {
+            defs2: {
+                groups: "[data-tae]>[data-mh='-1']",
+                result: {
+                    pos: {
+                        selector: "div",
+                    },
+                    def: {
+                        selector: "ol>li",
+                        max: 2,
+                        toArray: true,
+                    },
+                },
+            },
+        };
+        const $html = $(htmlString);
+        const result = parseHTML($html, parserDesc);
+        expect(result).to.deep.equal({
+            defs2: [
+                {
+                    pos: "verb",
+                    def: ["Definition 1", "Definition 2"],
+                },
+            ],
+        });
     });
-  });
 
-  it("should get and parse the word dynasty from Bing CN Dict", async () => {
-    const html = await utils.loadHTML(
-      "https://cn.bing.com/dict/search?mkt=zh-cn&q=dynasty"
-    );
-    const result = await parseHTML(html, parserDesc.bingCN.result);
-    // console.log(JSON.stringify(result, null, 2));
-    expect(JSON.stringify(result, null, 2)).to.equal(
-      `{
+    it("should get and parse the word dynasty from Bing CN Dict", async () => {
+        const html = await utils.loadHTML("https://cn.bing.com/dict/search?mkt=zh-cn&q=dynasty");
+        const result = await parseHTML(html, parserDesc.bingCN.result);
+        // console.log(JSON.stringify(result, null, 2));
+        expect(JSON.stringify(result, null, 2)).to.equal(
+            `{
   "w": "dynasty",
   "prons": [
     {
@@ -298,17 +296,15 @@ describe("lookup-parser", () => {
     }
   ]
 }`
-    );
-  });
+        );
+    });
 
-  it("should get and parse the word 恩 from Bing CN Dict", async () => {
-    const html = await utils.loadHTML(
-      "https://cn.bing.com/dict/search?mkt=zh-cn&q=恩"
-    );
-    const result = await parseHTML(html, parserDesc.bingCN.result);
-    // console.log(JSON.stringify(result, null, 2));
-    expect(JSON.stringify(result, null, 2)).to.equal(
-      `{
+    it("should get and parse the word 恩 from Bing CN Dict", async () => {
+        const html = await utils.loadHTML("https://cn.bing.com/dict/search?mkt=zh-cn&q=恩");
+        const result = await parseHTML(html, parserDesc.bingCN.result);
+        // console.log(JSON.stringify(result, null, 2));
+        expect(JSON.stringify(result, null, 2)).to.equal(
+            `{
   "w": "恩",
   "prons": [
     {
@@ -344,16 +340,14 @@ describe("lookup-parser", () => {
     }
   ]
 }`
-    );
-  });
+        );
+    });
 
-  it("should get and parse the word 장마 from Wiktionary", async () => {
-    const html = await utils.loadHTML(
-      `https://en.wiktionary.org/wiki/${encodeURIComponent("장마")}`
-    );
-    const result = await parseHTML(html, parserDesc.wiktionary.result);
-    // console.log(JSON.stringify(result, null, 2));
-    expect(JSON.stringify(result, null, 2)).to.equal(`{
+    it("should get and parse the word 장마 from Wiktionary", async () => {
+        const html = await utils.loadHTML(`https://en.wiktionary.org/wiki/${encodeURIComponent("장마")}`);
+        const result = await parseHTML(html, parserDesc.wiktionary.result);
+        // console.log(JSON.stringify(result, null, 2));
+        expect(JSON.stringify(result, null, 2)).to.equal(`{
   "w": "장마",
   "langTargets": [
     {
@@ -377,15 +371,13 @@ describe("lookup-parser", () => {
     }
   ]
 }`);
-  });
+    });
 
-  it("should get and parse the Swedish word förvissade from Wiktionary", async () => {
-    const html = await utils.loadHTML(
-      `https://en.wiktionary.org/wiki/${encodeURIComponent("förvissade")}`
-    );
-    const result = await parseHTML(html, parserDesc.wiktionary.result);
-    // console.log(JSON.stringify(result, null, 2));
-    expect(JSON.stringify(result, null, 2)).to.equal(`{
+    it("should get and parse the Swedish word förvissade from Wiktionary", async () => {
+        const html = await utils.loadHTML(`https://en.wiktionary.org/wiki/${encodeURIComponent("förvissade")}`);
+        const result = await parseHTML(html, parserDesc.wiktionary.result);
+        // console.log(JSON.stringify(result, null, 2));
+        expect(JSON.stringify(result, null, 2)).to.equal(`{
   "w": "förvissade",
   "langTargets": [
     {
@@ -418,15 +410,13 @@ describe("lookup-parser", () => {
     }
   ]
 }`);
-  });
+    });
 
-  it("should get and parse the Japanese word 十分 from japandict", async () => {
-    const html = await utils.loadHTML(
-      `https://www.japandict.com/${encodeURIComponent("十分")}`
-    );
-    const result = await parseHTML(html, parserDesc.japan.result);
-    // console.log(JSON.stringify(result, null, 2));
-    expect(JSON.stringify(result, null, 2)).to.equal(`{
+    it("should get and parse the Japanese word 十分 from japandict", async () => {
+        const html = await utils.loadHTML(`https://www.japandict.com/${encodeURIComponent("十分")}`);
+        const result = await parseHTML(html, parserDesc.japan.result);
+        // console.log(JSON.stringify(result, null, 2));
+        expect(JSON.stringify(result, null, 2)).to.equal(`{
   "w": "十分",
   "prons": [
     {
@@ -457,15 +447,13 @@ describe("lookup-parser", () => {
     }
   ]
 }`);
-  });
+    });
 
-  it("should get and parse the Tajik word дигар from vazhaju.tj", async () => {
-    const html = await utils.loadHTML(
-      `https://vazhaju.tj/search/${encodeURIComponent("дигар")}`
-    );
-    const result = await parseHTML(html, parserDesc.Tajik.result);
-    // console.log(JSON.stringify(result, null, 2));
-    expect(JSON.stringify(result, null, 2)).to.equal(`{
+    it("should get and parse the Tajik word дигар from vazhaju.tj", async () => {
+        const html = await utils.loadHTML(`https://vazhaju.tj/search/${encodeURIComponent("дигар")}`);
+        const result = await parseHTML(html, parserDesc.Tajik.result);
+        // console.log(JSON.stringify(result, null, 2));
+        expect(JSON.stringify(result, null, 2)).to.equal(`{
   "w": "дигар",
   "prons": [
     {
@@ -482,15 +470,13 @@ describe("lookup-parser", () => {
     }
   ]
 }`);
-  });
+    });
 
-  it("should get and parse the Indonesian word pabrikan from kamus.net", async () => {
-    const html = await utils.loadHTML(
-      `https://www.kamus.net/indonesia/${encodeURIComponent("pabrikan")}`
-    );
-    const result = await parseHTML(html, parserDesc.Indonesian.result);
-    // console.log(JSON.stringify(result, null, 2));
-    expect(JSON.stringify(result, null, 2)).to.equal(`{
+    it("should get and parse the Indonesian word pabrikan from kamus.net", async () => {
+        const html = await utils.loadHTML(`https://www.kamus.net/indonesia/${encodeURIComponent("pabrikan")}`);
+        const result = await parseHTML(html, parserDesc.Indonesian.result);
+        // console.log(JSON.stringify(result, null, 2));
+        expect(JSON.stringify(result, null, 2)).to.equal(`{
   "w": "pabrikan",
   "prons": [
     {
@@ -505,19 +491,17 @@ describe("lookup-parser", () => {
     }
   ]
 }`);
-  });
+    });
 
-  it("should parse a Ukrainian word structure like slovnyk.ua", async () => {
-    const html = await utils.loadHTML(
-      `https://slovnyk.ua/index.php?swrd=${encodeURIComponent("їжа")}`
-    );
-    const result = await parseHTML(html, parserDesc.Ukrainian.result);
-    expect(result.w && result.w.toLowerCase().trim()).to.equal("їжа");
-    expect(Array.isArray(result.prons)).to.equal(true);
-    expect(result.prons[0].synthesis).to.equal("uk-UA");
-    expect(Array.isArray(result.defs)).to.equal(true);
-    expect(typeof result.defs[0].def).to.equal("string");
-    expect(result.defs[0].def.length).to.be.greaterThan(0);
-    expect(result.defs[0].def.toLowerCase()).to.include("їжа");
-  });
+    it("should parse a Ukrainian word structure like slovnyk.ua", async () => {
+        const html = await utils.loadHTML(`https://slovnyk.ua/index.php?swrd=${encodeURIComponent("їжа")}`);
+        const result = await parseHTML(html, parserDesc.Ukrainian.result);
+        expect(result.w && result.w.toLowerCase().trim()).to.equal("їжа");
+        expect(Array.isArray(result.prons)).to.equal(true);
+        expect(result.prons[0].synthesis).to.equal("uk-UA");
+        expect(Array.isArray(result.defs)).to.equal(true);
+        expect(typeof result.defs[0].def).to.equal("string");
+        expect(result.defs[0].def.length).to.be.greaterThan(0);
+        expect(result.defs[0].def.toLowerCase()).to.include("їжа");
+    });
 });
