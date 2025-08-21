@@ -4,178 +4,183 @@
  * DS208: Avoid top-level this
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-import storage from  "./storage.js";
+import storage from "./storage.js";
 import message from "./message.js";
 
-const defaultDicts = process.env.PRODUCT === 'Dictionariez' ?
-  require('./default-dicts.coffee').default
-:
-  require(`./default-dicts.${process.env.PRODUCT.toLowerCase()}.coffee`).default;
+const defaultDicts =
+    process.env.PRODUCT === "Dictionariez"
+        ? require("./default-dicts.js").default
+        : require(`./default-dicts.${process.env.PRODUCT.toLowerCase()}.js`).default;
 
 const chatgptDefault = {
-    "windowUrl": "https://chatgpt.com",
-    "css": "body {margin-top: 50px !important;}",
-    "inputSelector": "main form div[contenteditable]",
-    "submitButtonSelector": "main form button[data-testid='send-button'], main form button[data-testid='stop-button']"
+    windowUrl: "https://chatgpt.com",
+    css: "body {margin-top: 50px !important;}",
+    inputSelector: "main form div[contenteditable]",
+    submitButtonSelector: "main form button[data-testid='send-button'], main form button[data-testid='stop-button']",
 };
 
-export default ({
+export default {
     setting: undefined,
     allDicts: [],
 
     async init() {
         await this.initAllDicts();
-        
-        message.on('set-dictionary-reorder', ({ dictMap }) => {
-            const changed = []; 
 
-            this.allDicts.forEach(d => {
-                const s = dictMap[d.dictName]; 
-                if (s) { 
-                    Object.assign(d, s); 
+        message.on("set-dictionary-reorder", ({ dictMap }) => {
+            const changed = [];
+
+            this.allDicts.forEach((d) => {
+                const s = dictMap[d.dictName];
+                if (s) {
+                    Object.assign(d, s);
                     return changed.push(d);
                 }
-            }); 
-            
+            });
+
             this.allDicts.sort((a, b) => a.sequence - b.sequence);
 
-            return storage.setAllByK('dict-', 'dictName', changed);
-        }); 
+            return storage.setAllByK("dict-", "dictName", changed);
+        });
 
-        message.on('dictionary-remove', ({ dictName }) => {
-            const i = this.allDicts.findIndex(d => d.dictName === dictName); 
-            if (i >=0) { 
+        message.on("dictionary-remove", ({ dictName }) => {
+            const i = this.allDicts.findIndex((d) => d.dictName === dictName);
+            if (i >= 0) {
                 this.allDicts.splice(i, 1);
             }
 
-            return storage.remove(('dict-'+dictName));
+            return storage.remove("dict-" + dictName);
         });
-        
-        message.on('dictionary-add', ({ dict }) => {
-            return this.addToDictionariez(dict);
-        }); 
 
-        return message.on('restore-default-dicts', () => {
+        message.on("dictionary-add", ({ dict }) => {
+            return this.addToDictionariez(dict);
+        });
+
+        return message.on("restore-default-dicts", () => {
             return this.restoreDefaultDicts();
         });
     },
-        
-    async initAllDicts() {
-        const allDicts = await storage.getAllByK('dict-');
-        
-        if (!allDicts.length) { 
-            // get dicts from default and old settings 
-            const dictSettings = await storage.get('dictionary-setting', {});
-            storage.remove('dictionary-setting');
 
-            const extraDicts = await storage.get('extra-dicts', []);
-            storage.remove('extra-dicts');
+    async initAllDicts() {
+        const allDicts = await storage.getAllByK("dict-");
+
+        if (!allDicts.length) {
+            // get dicts from default and old settings
+            const dictSettings = await storage.get("dictionary-setting", {});
+            storage.remove("dictionary-setting");
+
+            const extraDicts = await storage.get("extra-dicts", []);
+            storage.remove("extra-dicts");
 
             defaultDicts.forEach((d, oi) => {
                 const s = dictSettings[d.dictName];
                 d.sequence = oi;
                 if (s) {
-                    Object.assign(d, s); 
+                    Object.assign(d, s);
                 }
 
-                if (d.chatgptPrompt) { d = Object.assign({}, chatgptDefault, d); }
+                if (d.chatgptPrompt) {
+                    d = Object.assign({}, chatgptDefault, d);
+                }
                 return allDicts.push(d);
-            }); 
-            
-            extraDicts.forEach(d=> {
-                const locDict = allDicts.find(d1 => d1.dictName === d.dictName); 
+            });
+
+            extraDicts.forEach((d) => {
+                const locDict = allDicts.find((d1) => d1.dictName === d.dictName);
 
                 if (locDict) {
                     return Object.assign(locDict, d);
-                } else { 
+                } else {
                     d.sequence = allDicts.length;
                     return allDicts.push(d);
                 }
             });
-            
-            storage.setAllByK('dict-', 'dictName', allDicts);
+
+            storage.setAllByK("dict-", "dictName", allDicts);
         }
 
         allDicts.sort((a, b) => a.sequence - b.sequence);
 
-        allDicts.forEach((d, oi) => { 
-            d.sequence = oi; 
+        allDicts.forEach((d, oi) => {
+            d.sequence = oi;
 
             // fix old settings
-            if ((d.windowUrl === 'https://chat.openai.com') || (d.submitButtonSelector === "main form button.mb-1")) {
+            if (d.windowUrl === "https://chat.openai.com" || d.submitButtonSelector === "main form button.mb-1") {
                 Object.assign(d, chatgptDefault);
             }
-            if ((d.windowUrl === 'https://chatgpt.com') && (d.inputSelector === 'main form textarea')) {
+            if (d.windowUrl === "https://chatgpt.com" && d.inputSelector === "main form textarea") {
                 return Object.assign(d, chatgptDefault);
             }
         });
-                
 
-        return this.allDicts = allDicts;
-    },   
+        return (this.allDicts = allDicts);
+    },
 
     addToDictionariez(d) {
-        if (d.name) { 
-            d.dictName = d.name; 
+        if (d.name) {
+            d.dictName = d.name;
             delete d.name;
         }
-        if (d.url) { 
-            d.windowUrl = d.url; 
+        if (d.url) {
+            d.windowUrl = d.url;
             delete d.url;
         }
-        
-        if (!d.dictName) { 
-            return { error: 'the name of the dict is required' };
-        }
-        
-        if ((!d.windowUrl) && (!d.chatgptPrompt)) {
-            return { error: 'the url of the dict is required' };
+
+        if (!d.dictName) {
+            return { error: "the name of the dict is required" };
         }
 
-        const locDict = this.allDicts.find(d1 => d1.dictName === d.dictName); 
+        if (!d.windowUrl && !d.chatgptPrompt) {
+            return { error: "the url of the dict is required" };
+        }
+
+        const locDict = this.allDicts.find((d1) => d1.dictName === d.dictName);
 
         if (locDict) {
             Object.assign(locDict, d);
             d = locDict;
-        } else { 
+        } else {
             d.sequence = this.allDicts.length;
-            if (d.chatgptPrompt) { d = Object.assign({}, chatgptDefault, d); }
+            if (d.chatgptPrompt) {
+                d = Object.assign({}, chatgptDefault, d);
+            }
             this.allDicts.push(d);
         }
-        
-        return storage.setAllByK('dict-', 'dictName', [d]);
+
+        return storage.setAllByK("dict-", "dictName", [d]);
     },
-    
+
     restoreDefaultDicts() {
         const added = [];
 
         defaultDicts.forEach((d, oi) => {
-            const currentDict = this.allDicts.find(d1 => d1.dictName === d.dictName); 
-            if (currentDict) { 
-                Object.assign(currentDict, d, (d.chatgptPrompt ? chatgptDefault : null));
-                return;  // ignore existing ones 
+            const currentDict = this.allDicts.find((d1) => d1.dictName === d.dictName);
+            if (currentDict) {
+                Object.assign(currentDict, d, d.chatgptPrompt ? chatgptDefault : null);
+                return; // ignore existing ones
             }
 
             d.sequence = oi;
-            if (d.chatgptPrompt) { d = Object.assign({}, chatgptDefault, d); }
-            this.allDicts.push(d); 
+            if (d.chatgptPrompt) {
+                d = Object.assign({}, chatgptDefault, d);
+            }
+            this.allDicts.push(d);
             return added.push(d);
-        }); 
+        });
 
         if (added.length) {
             this.allDicts.sort((a, b) => a.sequence - b.sequence);
-            return storage.setAllByK('dict-', 'dictName', added);
+            return storage.setAllByK("dict-", "dictName", added);
         }
-    }, 
+    },
 
     getDict(dictName) {
-        const dict = this.allDicts.find(d => d.dictName === dictName);
+        const dict = this.allDicts.find((d) => d.dictName === dictName);
         return dict || this.allDicts[0];
     },
 
     getNextDict(dictName) {
-        const i = this.allDicts.findIndex(d => d.dictName === dictName);
-        if ((i >= 0) && (i < (this.allDicts.length - 1))) {
+        const i = this.allDicts.findIndex((d) => d.dictName === dictName);
+        if (i >= 0 && i < this.allDicts.length - 1) {
             return this.allDicts[i + 1];
         } else {
             return this.allDicts[0];
@@ -183,8 +188,8 @@ export default ({
     },
 
     getPreviousDict(dictName) {
-        const i = this.allDicts.findIndex(d => d.dictName === dictName);
-        if ((i > 0) && (i <= (this.allDicts.length - 1))) {
+        const i = this.allDicts.findIndex((d) => d.dictName === dictName);
+        if (i > 0 && i <= this.allDicts.length - 1) {
             return this.allDicts[i - 1];
         } else {
             return this.allDicts[this.allDicts.length - 1];
@@ -193,21 +198,21 @@ export default ({
 
     getDictByNumber(n) {
         if (n === 9) {
-            return this.allDicts[this.allDicts.length-1];
+            return this.allDicts[this.allDicts.length - 1];
         }
-        return this.allDicts[n-1];
+        return this.allDicts[n - 1];
     },
 
     isAI(dictName) {
         const dict = this.getDict(dictName);
         return dict.chatgptPrompt || dict.prompt;
-    }, 
+    },
     getFirstAIDict() {
-        const dict = this.allDicts.find(d => d.chatgptPrompt || d.prompt); 
+        const dict = this.allDicts.find((d) => d.chatgptPrompt || d.prompt);
         return dict || chatgptDefault;
     },
 
-    query(word, dictName){
+    query(word, dictName) {
         let windowUrl;
         const dict = this.getDict(dictName);
         if (dict.fixSpaceInWords) {
@@ -215,16 +220,14 @@ export default ({
         }
 
         if (dict.windowUrl) {
-            windowUrl = dict.windowUrl.replace('<word>', word.toLowerCase());
-        } else if (dict.chatgptPrompt) { 
-            ({
-                windowUrl
-            } = chatgptDefault);
+            windowUrl = dict.windowUrl.replace("<word>", word.toLowerCase());
+        } else if (dict.chatgptPrompt) {
+            ({ windowUrl } = chatgptDefault);
         }
 
-        return  { windowUrl };
+        return { windowUrl };
     },
-        
+
     searchDicts(key) {
         const results = [];
         for (var dict of this.allDicts) {
@@ -232,23 +235,22 @@ export default ({
                 results.push(dict);
             } else if (dict.windowUrl) {
                 var domain = dict.windowUrl.match(/:\/\/([^\/\?]+)/)[1];
-                domain = domain.replace(/^www\.|^dict\.|^dictionary\.|^m\.|\.m\./, '');
-                var domains = domain.split('.');
+                domain = domain.replace(/^www\.|^dict\.|^dictionary\.|^m\.|\.m\./, "");
+                var domains = domain.split(".");
                 domains.pop();
 
-                domains.forEach(function(s){
+                domains.forEach(function (s) {
                     if (s.toLowerCase().startsWith(key)) {
                         return results.push(dict);
                     }
                 });
             }
-                
-            
+
             if (results.length >= 3) {
                 break;
             }
         }
 
         return results;
-    }
-});
+    },
+};
