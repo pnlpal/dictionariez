@@ -506,4 +506,18 @@ describe("lookup-parser", () => {
   ]
 }`);
   });
+
+  it("should parse a Ukrainian word structure like slovnyk.ua", async () => {
+    const html = await utils.loadHTML(
+      `https://slovnyk.ua/index.php?swrd=${encodeURIComponent("їжа")}`
+    );
+    const result = await parseHTML(html, parserDesc.Ukrainian.result);
+    expect(result.w && result.w.toLowerCase().trim()).to.equal("їжа");
+    expect(Array.isArray(result.prons)).to.equal(true);
+    expect(result.prons[0].synthesis).to.equal("uk-UA");
+    expect(Array.isArray(result.defs)).to.equal(true);
+    expect(typeof result.defs[0].def).to.equal("string");
+    expect(result.defs[0].def.length).to.be.greaterThan(0);
+    expect(result.defs[0].def.toLowerCase()).to.include("їжа");
+  });
 });

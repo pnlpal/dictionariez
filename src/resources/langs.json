@@ -90,7 +90,7 @@
     "synthesis": "id-ID"
   },
   "Ukrainian": {
-    "regex": "[а-щьюяґєіїА-ЩЬЮЯҐЄІЇʼ’' ]",
+    "regex": "[а-щьюяґєіїА-ЩЬЮЯҐЄІЇʼ’' \u0301]",
     "symbol": "uk",
     "synthesis": "uk-UA"
   }

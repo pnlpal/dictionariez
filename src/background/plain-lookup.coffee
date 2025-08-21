@@ -128,8 +128,9 @@ export default {
         return unless tname 
 
         dictDesc = parserDescs[tname]
-        url = (url or dictDesc.url).replace('<word>', w)
         possibleLangs = @checkLangs(w)
+        requestWord = if possibleLangs.includes('Ukrainian') then w.replace(/\u0301/g, '') else w
+        url = (url or dictDesc.url).replace('<word>', requestWord)
 
         if tname == 'google' and possibleLangs.length > 0 and possibleLangs[0] != 'English'
                 # prioritize other languages over English
@@ -160,6 +161,8 @@ export default {
                     return @parseOtherLang tabId, w, 'Tajik', null, prevResult
                 else if possibleLangs.includes('Indonesian')
                     return @parseOtherLang tabId, w, 'Indonesian', null, prevResult
+                else if possibleLangs.includes('Ukrainian')
+                    return @parseOtherLang tabId, w, 'Ukrainian', null, prevResult
             
     
             console.error "Failed to parse: ", url, err.message
