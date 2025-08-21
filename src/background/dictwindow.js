@@ -8,9 +8,9 @@
  */
 import setting from "./setting.js";
 import storage from  "./storage.js";
-import dict from "./dict.coffee";
+import dict from "./dict.js";
 import message from "./message.js";
-import readClipboard from "./clipboard.coffee";
+import readClipboard from "./clipboard.js";
 import utils from "utils";
 import contextMenu from "./contextMenu.js";
 

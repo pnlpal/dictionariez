@@ -4,384 +4,436 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-import $ from 'jquery';
-import angular from 'angular';
+import $ from "jquery";
+import angular from "angular";
 import utils from "utils";
-import debounce from 'lodash/debounce';
+import debounce from "lodash/debounce";
 
 // import '../needsharebutton.js'
-import 'angular-ui-bootstrap';
+import "angular-ui-bootstrap";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../vendor/font-awesome.css';
-import './dictheader.less';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../vendor/font-awesome.css";
+import "./dictheader.less";
 
-import './card-iframe.coffee';
+import "./card-iframe.js";
 
 const inFrame = window.self !== window.top;
 // some ui need bootstrap, like dropdown.
-const dictApp = angular.module('fairyDictApp', ['ui.bootstrap']);
+const dictApp = angular.module("fairyDictApp", ["ui.bootstrap"]);
 
-dictApp.controller('dictCtrl', ['$scope', '$sce', function($scope, $sce) {
-    // change Bing dictionary's title
-    document.title = process.env.PRODUCT;
-    const baseNode = '#fairy-dict';
-    $scope.initial = true;
-    $scope.inFrame = inFrame;
-    $scope.querying = false;
-    $scope.previous = null;
-    $scope.isSidePal = process.env.PRODUCT === 'SidePal';
-    $scope.version = chrome.runtime.getManifest().version;
-    $scope.asciiTitle = process.env.PRODUCT === 'Dictionariez' ? 
-        require("../ascii-title.html").default
-    : 
-        require(`../ascii-title.${process.env.PRODUCT.toLowerCase()}.html`).default;
-    $scope.asciiTitleHtml = $sce.trustAsHtml($scope.asciiTitle);
+dictApp.controller("dictCtrl", [
+    "$scope",
+    "$sce",
+    function ($scope, $sce) {
+        // change Bing dictionary's title
+        document.title = process.env.PRODUCT;
+        const baseNode = "#fairy-dict";
+        $scope.initial = true;
+        $scope.inFrame = inFrame;
+        $scope.querying = false;
+        $scope.previous = null;
+        $scope.isSidePal = process.env.PRODUCT === "SidePal";
+        $scope.version = chrome.runtime.getManifest().version;
+        $scope.asciiTitle =
+            process.env.PRODUCT === "Dictionariez"
+                ? require("../ascii-title.html").default
+                : require(`../ascii-title.${process.env.PRODUCT.toLowerCase()}.html`).default;
+        $scope.asciiTitleHtml = $sce.trustAsHtml($scope.asciiTitle);
 
-    if (!$scope.inFrame) {
-        import '../vendor/github-badge.js';
-        import '../vendor/needsharebutton.js';
-        import '../vendor/needsharebutton.css';
-    }
+        if (!$scope.inFrame) {
+            import(/* webpackChunkName: "github-badge" */ "../vendor/github-badge.js");
+            import(/* webpackChunkName: "needsharebutton-js" */ "../vendor/needsharebutton.js");
+            import(/* webpackChunkName: "needsharebutton-css" */ "../vendor/needsharebutton.css");
+        }
 
-    const initDict = () => chrome.runtime.sendMessage({
-        type: 'dictionary',
-        // origin: window.top?.location?.origin,
-        // url: window.top?.location?.href
-    }, function({currentDictName, nextDictName, previousDictName, allDicts, previous, history, w, r, sentence, windowUrl}){
-        $scope.allDicts = allDicts;
-        $scope.currentDictName = currentDictName;
-        $scope.nextDictName = nextDictName;
-        $scope.previousDictName = previousDictName;
-        $scope.previous = previous;
-        $scope.word = w;
-        $scope.sentence = sentence; 
-        $scope._lastQueryWord = $scope.word;
-        $scope.history = history;
-        if (windowUrl) { $scope.windowUrl = windowUrl; }
-        if (windowUrl) { $scope.trustedWindowUrl = $sce.trustAsResourceUrl(windowUrl); }
-        $scope.$apply();
-        $('#fairy-dict input.dict-input').focus();
+        const initDict = () =>
+            chrome.runtime.sendMessage(
+                {
+                    type: "dictionary",
+                    // origin: window.top?.location?.origin,
+                    // url: window.top?.location?.href
+                },
+                async function ({
+                    currentDictName,
+                    nextDictName,
+                    previousDictName,
+                    allDicts,
+                    previous,
+                    history,
+                    w,
+                    r,
+                    sentence,
+                    windowUrl,
+                }) {
+                    $scope.allDicts = allDicts;
+                    $scope.currentDictName = currentDictName;
+                    $scope.nextDictName = nextDictName;
+                    $scope.previousDictName = previousDictName;
+                    $scope.previous = previous;
+                    $scope.word = w;
+                    $scope.sentence = sentence;
+                    $scope._lastQueryWord = $scope.word;
+                    $scope.history = history;
+                    if (windowUrl) {
+                        $scope.windowUrl = windowUrl;
+                    }
+                    if (windowUrl) {
+                        $scope.trustedWindowUrl = $sce.trustAsResourceUrl(windowUrl);
+                    }
+                    $scope.$apply();
+                    $("#fairy-dict input.dict-input").focus();
 
-        if (!$scope.setting?.disableWordHistory) {
-            // await import('../starrr.js')
-            if ($('.starrr', baseNode).data("star-rating")) {
-                $('.starrr', baseNode).data("star-rating").setRating(r);
-            } else {
-                $('.starrr', baseNode).starrr({numStars: 3, rating: r});
+                    if (!$scope.setting?.disableWordHistory) {
+                        await import("../starrr.js");
+                        if ($(".starrr", baseNode).data("star-rating")) {
+                            $(".starrr", baseNode).data("star-rating").setRating(r);
+                        } else {
+                            $(".starrr", baseNode).starrr({ numStars: 3, rating: r });
+                        }
+                    }
+
+                    if ($scope.querying) {
+                        return $scope.checkIfFrameIsLoaded();
+                    }
+                }
+            );
+
+        initDict();
+        chrome.runtime.sendMessage(
+            {
+                type: "setting",
+            },
+            function (setting) {
+                $scope.setting = setting;
+                return $scope.$apply();
             }
-        }
+        );
 
-        if ($scope.querying) {  
-            return $scope.checkIfFrameIsLoaded();
-        }
-    });
+        $scope.openOptions = (to) => utils.send("open options", { to });
 
-    initDict();
-    chrome.runtime.sendMessage({
-        type: 'setting'
-    }, function(setting){
-        $scope.setting = setting;
-        return $scope.$apply();
-    });
+        $scope.deleteHistory = async function (item, i) {
+            await utils.send("remove history", item);
+            const { history } = await utils.send("dictionary history", {
+                word: $scope.word,
+            });
+            $scope.history = history;
+            return $scope.$apply();
+        };
 
-    $scope.openOptions = to => utils.send('open options', { to });
-    
-    $scope.deleteHistory = async function(item, i) {
-        await utils.send('remove history', item);
-        const {history} = await utils.send('dictionary history', { word: $scope.word });
-        $scope.history = history;
-        return $scope.$apply();
-    };
-
-    $scope.query = function({ nextDict, previousDict, dictNumber, nextWord, previousWord, queryText, dictName, w, newDictWindow } = {}) {
-        // if not $scope.word
-        //     $scope.initial = true
-        //     return
-
-        $scope.initial = false;
-        if (w) { $scope.querying = true; }
-        if (w) { $scope.word = w; }
-        if (w) { $scope.sentence = null; }
-        if (dictName && !newDictWindow) { $scope.currentDictName = dictName; }
-    
-        if (dictName && (queryText != null)) {
-            $scope.word = queryText || $scope._lastQueryWord;
-        }
-
-        window.top.postMessage({ type: 'toggleDropdown', open: false }, '*');
-        if (!$scope.word) { return; }
-
-        return chrome.runtime.sendMessage({
-            type: 'query',
-            w: $scope.word,
-            sentence: $scope.sentence,
-            dictName: dictName || $scope.currentDictName,
+        $scope.query = function ({
             nextDict,
             previousDict,
             dictNumber,
             nextWord,
             previousWord,
-            newDictWindow 
-        }, function(data) {
-            $scope.querying = false;
-            $scope._lastQueryWord = $scope.word;
-            if (data?.noUpdate) {
-                // current dict might be changed
-                return initDict();
+            queryText,
+            dictName,
+            w,
+            newDictWindow,
+        } = {}) {
+            // if not $scope.word
+            //     $scope.initial = true
+            //     return
+
+            $scope.initial = false;
+            if (w) {
+                $scope.querying = true;
             }
-        });
-    };
-    
-    const sendMessageToDictPage = message => document.getElementById('dict-result')?.contentWindow.postMessage(message, '*');
-
-    $scope.toggleDropdown = function(open) {
-        if ($scope.inFrame) {
-            return window.top.postMessage({ type: 'toggleDropdown', open }, '*');
-        }
-    };
-
-    $scope.scheduleDropdown = function(dropdownType, open) {
-        clearTimeout($scope.openDropdownTimer);
-        clearTimeout($scope.closeDropdownTimer); 
-
-        return $scope.openDropdownTimer = setTimeout((function() { 
-            if (dropdownType === 'history') {
-                $scope.isHistoryDropdownOpen = open;
-            } else if (dropdownType === 'dict') {
-                $scope.isDictDropdownOpen = open;
+            if (w) {
+                $scope.word = w;
             }
-            window.top.postMessage({ type: 'toggleDropdown', open }, '*');
-            return $scope.$apply();
-        }), 100);
-    };
-    
-    $scope.scheduleCloseDropdown = function() {
-        clearTimeout($scope.closeDropdownTimer); 
-        clearTimeout($scope.openDropdownTimer);
-        return $scope.closeDropdownTimer = setTimeout((function() { 
-            $scope.isHistoryDropdownOpen = false;
-            $scope.isDictDropdownOpen = false;
-            window.top.postMessage({ type: 'toggleDropdown', open: false }, '*');
-            return $scope.$apply();
-        }), 100);
-    };
-    
-    const parseAutocomplete = function(html) {
-        if (!html) { return []; }
-        const nodes = $(html);
-        const list = [];
-        nodes.find('.word-result-entry').each(function(i, item) {
-            const w = $(item).find('.word').text();
-            const def = $(item).find('.definition').text();
-            const ipa = $(item).find('.word').attr('data-ipa');
-
-            if (i <= 11) { return list.push({ w, def, ipa }); }
-        });  // at most 12 items
-            
-        return list;
-    };
-
-    $scope.autocomplete = debounce((async function() {
-        const cancelAutoCompleteIfQuerying = function() {
-            if ($scope.querying || ($scope.word === $scope._lastQueryWord)) {
-                $scope.autocompletes = [];
-                $scope.toggleDropdown(false);
-                $scope.$apply();
-                return true;
+            if (w) {
+                $scope.sentence = null;
             }
-            return false;
+            if (dictName && !newDictWindow) {
+                $scope.currentDictName = dictName;
+            }
+
+            if (dictName && queryText != null) {
+                $scope.word = queryText || $scope._lastQueryWord;
+            }
+
+            window.top.postMessage({ type: "toggleDropdown", open: false }, "*");
+            if (!$scope.word) {
+                return;
+            }
+
+            return chrome.runtime.sendMessage(
+                {
+                    type: "query",
+                    w: $scope.word,
+                    sentence: $scope.sentence,
+                    dictName: dictName || $scope.currentDictName,
+                    nextDict,
+                    previousDict,
+                    dictNumber,
+                    nextWord,
+                    previousWord,
+                    newDictWindow,
+                },
+                function (data) {
+                    $scope.querying = false;
+                    $scope._lastQueryWord = $scope.word;
+                    if (data?.noUpdate) {
+                        // current dict might be changed
+                        return initDict();
+                    }
+                }
+            );
         };
 
-        if (cancelAutoCompleteIfQuerying()) { return; }
-        const text = $scope.word.trim();
-        if (text) {
-            const {results, html} = await utils.send('autocomplete', { text });
+        const sendMessageToDictPage = (message) =>
+            document.getElementById("dict-result")?.contentWindow.postMessage(message, "*");
+
+        $scope.toggleDropdown = function (open) {
+            if ($scope.inFrame) {
+                return window.top.postMessage({ type: "toggleDropdown", open }, "*");
+            }
+        };
+
+        $scope.scheduleDropdown = function (dropdownType, open) {
+            clearTimeout($scope.openDropdownTimer);
+            clearTimeout($scope.closeDropdownTimer);
+
+            return ($scope.openDropdownTimer = setTimeout(function () {
+                if (dropdownType === "history") {
+                    $scope.isHistoryDropdownOpen = open;
+                } else if (dropdownType === "dict") {
+                    $scope.isDictDropdownOpen = open;
+                }
+                window.top.postMessage({ type: "toggleDropdown", open }, "*");
+                return $scope.$apply();
+            }, 100));
+        };
+
+        $scope.scheduleCloseDropdown = function () {
+            clearTimeout($scope.closeDropdownTimer);
+            clearTimeout($scope.openDropdownTimer);
+            return ($scope.closeDropdownTimer = setTimeout(function () {
+                $scope.isHistoryDropdownOpen = false;
+                $scope.isDictDropdownOpen = false;
+                window.top.postMessage({ type: "toggleDropdown", open: false }, "*");
+                return $scope.$apply();
+            }, 100));
+        };
+
+        const parseAutocomplete = function (html) {
+            if (!html) {
+                return [];
+            }
+            const nodes = $(html);
+            const list = [];
+            nodes.find(".word-result-entry").each(function (i, item) {
+                const w = $(item).find(".word").text();
+                const def = $(item).find(".definition").text();
+                const ipa = $(item).find(".word").attr("data-ipa");
+
+                if (i <= 11) {
+                    return list.push({ w, def, ipa });
+                }
+            }); // at most 12 items
+
+            return list;
+        };
+
+        $scope.autocomplete = debounce(async function () {
+            const cancelAutoCompleteIfQuerying = function () {
+                if ($scope.querying || $scope.word === $scope._lastQueryWord) {
+                    $scope.autocompletes = [];
+                    $scope.toggleDropdown(false);
+                    $scope.$apply();
+                    return true;
+                }
+                return false;
+            };
+
             if (cancelAutoCompleteIfQuerying()) {
                 return;
             }
-            $scope.autocompletes = results.concat(parseAutocomplete(html));
-        } else {
-            $scope.autocompletes = [];
-        }
-
-        $scope.toggleDropdown($scope.autocompletes.length > 0);
-        return $scope.$apply();
-    }), 500);
-
-    chrome.runtime.onMessage?.addListener(function(request, sender, sendResponse){
-        // console.log(request)
-        if (request.type === 'querying') {
-            $scope.initial = false;
-            $scope.querying = true;
-            $scope.word = request.text;
-            setTimeout((function() { 
-                $scope.querying = false;
-                $scope._lastQueryWord = $scope.word;
-                $('#fairy-dict input.dict-input').focus();
-                return $scope.$apply();
-            }), 1000);
-        }
-
-        if (request.type === 'sendToDict') {
-            if (request.action === 'keypress focus') {
-                $('input.dict-input', baseNode)[0].select();
-            }
-        }
-        
-        if (request.type === 'look up result') {
-            $scope.querying = false;
-            $scope._lastQueryWord = $scope.word;
-            if (request.windowUrl && ($scope.windowUrl !== request.windowUrl)) {
-                $scope.windowUrl = request.windowUrl;
-                $scope.trustedWindowUrl = $sce.trustAsResourceUrl(request.windowUrl);
-                $scope.querying = true;
-            }
-
-            initDict();
-            sendMessageToDictPage({ ...request,  type: 'look up in dynamic dict' });
-        }
-
-        return $scope.$apply();
-    });
-    
-    window.addEventListener("message", function(event) { 
-        if (event.data?.type === 'injectedInDict') {
-            $scope.dictFrameIsLoaded = true;
-            $scope.dictFrameIsNotLoaded = false;
-            $scope.querying = false;
-            return $scope.$apply();
-        }
-    });
-
-    $scope.checkIfFrameIsLoaded = function() {
-        $scope.dictFrameIsLoaded = false;
-        clearTimeout($scope._checkFrameTimer);
-
-        return $scope._checkFrameTimer = setTimeout((function() {
-            if ($scope.dictFrameIsLoaded) {
-                $scope.dictFrameIsNotLoaded = false;
+            const text = $scope.word.trim();
+            if (text) {
+                const { results, html } = await utils.send("autocomplete", { text });
+                if (cancelAutoCompleteIfQuerying()) {
+                    return;
+                }
+                $scope.autocompletes = results.concat(parseAutocomplete(html));
             } else {
-                $scope.dictFrameIsNotLoaded = true;
+                $scope.autocompletes = [];
             }
 
+            $scope.toggleDropdown($scope.autocompletes.length > 0);
             return $scope.$apply();
-        }), 2000);
-    };
+        }, 500);
 
-    $(baseNode).on('starrr:change', function(e, value){
-        if ($scope.word) {
-            value ??= 0;
-            // console.log "[dictCtrl] rating word: #{$scope.word} #{value}"
-            chrome.runtime.sendMessage({
-                type: 'rating',
-                value,
-                text: $scope.word
-            });
-            if ($scope.historyIndex >= 0) {
-                const item = $scope.history[$scope.historyIndex];
-                if (item && (item[$scope.word] != null)) {
-                    return item[$scope.word] = value;
+        chrome.runtime.onMessage?.addListener(function (request, sender, sendResponse) {
+            // console.log(request)
+            if (request.type === "querying") {
+                $scope.initial = false;
+                $scope.querying = true;
+                $scope.word = request.text;
+                setTimeout(function () {
+                    $scope.querying = false;
+                    $scope._lastQueryWord = $scope.word;
+                    $("#fairy-dict input.dict-input").focus();
+                    return $scope.$apply();
+                }, 1000);
+            }
+
+            if (request.type === "sendToDict") {
+                if (request.action === "keypress focus") {
+                    $("input.dict-input", baseNode)[0].select();
                 }
             }
-        }
-    });
 
-    const _handler = function(evt){
-        const node = $(event.target);
-        if (node.is('.sound')) {
-            const a = node.next('audio');
-            if (a.length) {
-                return a[0].play();
+            if (request.type === "look up result") {
+                $scope.querying = false;
+                $scope._lastQueryWord = $scope.word;
+                if (request.windowUrl && $scope.windowUrl !== request.windowUrl) {
+                    $scope.windowUrl = request.windowUrl;
+                    $scope.trustedWindowUrl = $sce.trustAsResourceUrl(request.windowUrl);
+                    $scope.querying = true;
+                }
+
+                initDict();
+                sendMessageToDictPage({ ...request, type: "look up in dynamic dict" });
             }
-        }
-    };
 
-    $(document).mouseover(_handler);
-    $(document).click(_handler);
-
-    $(document).on('touchend focus', 'input.dict-input', function() {
-        return this.select();
-    }); 
-
-    $(document).keyup(function(evt){
-        const code = evt.charCode || evt.keyCode;
-        if (code === 27) {
-            return $('input.dict-input', baseNode)[0].select();
-        }
-    });
-
-    $(document).keydown(function(evt){
-        const code = evt.charCode || evt.keyCode;
-        const prevSK = $scope.setting.prevDictSK1;
-        const nextSK = $scope.setting.nextDictSK1;
-        const prevKey = $scope.setting.prevDictKey;
-        const nextKey = $scope.setting.nextDictKey;
-        let stop = false;
-
-        if (utils.checkEventKey(evt, prevSK, null, prevKey)) {
-            $scope.query({ previousDict: true });
-            stop = true;
-        }
-        if (utils.checkEventKey(evt, nextSK, null, nextKey)) {
-            $scope.query({ nextDict: true });
-            stop = true;
-        }
-        if (utils.checkEventKey(evt, $scope.setting.prevHistorySK1, null, $scope.setting.prevHistoryKey)) {
-            $scope.query({ previousWord: true });
-            stop = true;
-        }
-        if (utils.checkEventKey(evt, $scope.setting.nextHistorySK1, null, $scope.setting.nextHistoryKey)) {
-            $scope.query({ nextWord: true });
-            stop = true;
-        }
-        if ((evt.ctrlKey || evt.metaKey) && evt.key.match(/\d/)) {
-            $scope.query({ dictNumber: parseInt(event.key.match(/\d/)[0]) });
-            stop = true; 
-        }
-
-        if (evt.key === 'Escape') {
-            $scope.toggleDropdown(false);
-        }
-
-        if (stop) {
-            evt.preventDefault();
-            evt.stopPropagation();
             return $scope.$apply();
-        }
-    });
+        });
 
-    window.addEventListener('beforeunload', () => utils.send('beforeunload dict window', {
-        left: window.screenX,
-        top: window.screenY,
-        width: window.outerWidth,
-        height: window.outerHeight,
-        dictName: $scope.currentDictName,
-    }));
+        window.addEventListener("message", function (event) {
+            if (event.data?.type === "injectedInDict") {
+                $scope.dictFrameIsLoaded = true;
+                $scope.dictFrameIsNotLoaded = false;
+                $scope.querying = false;
+                return $scope.$apply();
+            }
+        });
 
-}
+        $scope.checkIfFrameIsLoaded = function () {
+            $scope.dictFrameIsLoaded = false;
+            clearTimeout($scope._checkFrameTimer);
+
+            return ($scope._checkFrameTimer = setTimeout(function () {
+                if ($scope.dictFrameIsLoaded) {
+                    $scope.dictFrameIsNotLoaded = false;
+                } else {
+                    $scope.dictFrameIsNotLoaded = true;
+                }
+
+                return $scope.$apply();
+            }, 2000));
+        };
+
+        $(baseNode).on("starrr:change", function (e, value) {
+            if ($scope.word) {
+                value ??= 0;
+                // console.log "[dictCtrl] rating word: #{$scope.word} #{value}"
+                chrome.runtime.sendMessage({
+                    type: "rating",
+                    value,
+                    text: $scope.word,
+                });
+                if ($scope.historyIndex >= 0) {
+                    const item = $scope.history[$scope.historyIndex];
+                    if (item && item[$scope.word] != null) {
+                        return (item[$scope.word] = value);
+                    }
+                }
+            }
+        });
+
+        const _handler = function (evt) {
+            const node = $(event.target);
+            if (node.is(".sound")) {
+                const a = node.next("audio");
+                if (a.length) {
+                    return a[0].play();
+                }
+            }
+        };
+
+        $(document).mouseover(_handler);
+        $(document).click(_handler);
+
+        $(document).on("touchend focus", "input.dict-input", function () {
+            return this.select();
+        });
+
+        $(document).keyup(function (evt) {
+            const code = evt.charCode || evt.keyCode;
+            if (code === 27) {
+                return $("input.dict-input", baseNode)[0].select();
+            }
+        });
+
+        $(document).keydown(function (evt) {
+            const code = evt.charCode || evt.keyCode;
+            const prevSK = $scope.setting.prevDictSK1;
+            const nextSK = $scope.setting.nextDictSK1;
+            const prevKey = $scope.setting.prevDictKey;
+            const nextKey = $scope.setting.nextDictKey;
+            let stop = false;
+
+            if (utils.checkEventKey(evt, prevSK, null, prevKey)) {
+                $scope.query({ previousDict: true });
+                stop = true;
+            }
+            if (utils.checkEventKey(evt, nextSK, null, nextKey)) {
+                $scope.query({ nextDict: true });
+                stop = true;
+            }
+            if (utils.checkEventKey(evt, $scope.setting.prevHistorySK1, null, $scope.setting.prevHistoryKey)) {
+                $scope.query({ previousWord: true });
+                stop = true;
+            }
+            if (utils.checkEventKey(evt, $scope.setting.nextHistorySK1, null, $scope.setting.nextHistoryKey)) {
+                $scope.query({ nextWord: true });
+                stop = true;
+            }
+            if ((evt.ctrlKey || evt.metaKey) && evt.key.match(/\d/)) {
+                $scope.query({ dictNumber: parseInt(event.key.match(/\d/)[0]) });
+                stop = true;
+            }
+
+            if (evt.key === "Escape") {
+                $scope.toggleDropdown(false);
+            }
+
+            if (stop) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                return $scope.$apply();
+            }
+        });
+
+        window.addEventListener("beforeunload", () =>
+            utils.send("beforeunload dict window", {
+                left: window.screenX,
+                top: window.screenY,
+                width: window.outerWidth,
+                height: window.outerHeight,
+                dictName: $scope.currentDictName,
+            })
+        );
+    },
 ]);
 
-// import('../header.html')
-Promise.resolve().then({ default: headerDom })(function() {
+import("../header.html").then({ default: headerDom })(function () {
     let setupAppDescription;
     $(document.body).append(headerDom);
-    angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp']);
+    angular.bootstrap(document.getElementById("fairy-dict"), ["fairyDictApp"]);
 
-    return (setupAppDescription = function() {
-        const appDescription = process.env.PRODUCT === "Dictionariez" ?
-            require("../description-and-badge.html").default
-        : 
-            require(`../description-and-badge.${process.env.PRODUCT.toLowerCase()}.html`).default;
+    return (setupAppDescription = function () {
+        const appDescription =
+            process.env.PRODUCT === "Dictionariez"
+                ? require("../description-and-badge.html").default
+                : require(`../description-and-badge.${process.env.PRODUCT.toLowerCase()}.html`).default;
 
-        document.querySelector("#app-description").innerHTML = appDescription; 
-        
-        const {
-            version
-        } = chrome.runtime.getManifest();
-        return document.querySelector('#app-description .badge').innerText = "V" + version;
-    }
-    )();
+        document.querySelector("#app-description").innerHTML = appDescription;
+
+        const { version } = chrome.runtime.getManifest();
+        return (document.querySelector("#app-description .badge").innerText = "V" + version);
+    })();
 });
-
-    

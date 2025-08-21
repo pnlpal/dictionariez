@@ -8,80 +8,79 @@ import message from "./message.js";
 import setting from "./setting.js";
 import { playAudios, playSynthesis } from "../other/speak.js";
 
-let creating = null;  // A global promise to avoid concurrency issues
+let creating = null; // A global promise to avoid concurrency issues
 
-const setupOffscreenDocument = async function() {
-    const path = 'offscreen.html';
+const setupOffscreenDocument = async function () {
+    const path = "offscreen.html";
     const offscreenUrl = chrome.runtime.getURL(path);
     const existingContexts = await chrome.runtime.getContexts({
-        contextTypes: ['OFFSCREEN_DOCUMENT'],
-        documentUrls: [offscreenUrl]
+        contextTypes: ["OFFSCREEN_DOCUMENT"],
+        documentUrls: [offscreenUrl],
     });
 
     if (existingContexts.length > 0) {
         return;
     }
-    
+
     if (creating) {
         return await creating;
-    } else { 
+    } else {
         creating = chrome.offscreen.createDocument({
             url: path,
-            reasons: ['AUDIO_PLAYBACK'],
-            justification: 'Play audio of the word',
+            reasons: ["AUDIO_PLAYBACK"],
+            justification: "Play audio of the word",
         });
         await creating;
-        return creating = null;
+        return (creating = null);
     }
 };
-    
-export default ({
+
+export default {
     init() {
-        return message.on('play audios', async function({ ameSrc, breSrc, otherSrc, checkSetting, synthesisObj}) {
-            if (!await utils.isFirefox()) { 
+        return message.on("play audios", async function ({ ameSrc, breSrc, otherSrc, checkSetting, synthesisObj }) {
+            if (!(await utils.isFirefox())) {
                 await setupOffscreenDocument();
             }
-            if (checkSetting) { 
-                if (!setting.getValue('enableAmeAudio')) {
+            if (checkSetting) {
+                if (!setting.getValue("enableAmeAudio")) {
                     ameSrc = null;
                 }
-                if (!setting.getValue('enableBreAudio')) {
+                if (!setting.getValue("enableBreAudio")) {
                     breSrc = null;
                 }
             }
 
-            if (!await utils.isFirefox()) { 
+            if (!(await utils.isFirefox())) {
                 chrome.runtime.sendMessage({
-                    type: 'speak',
+                    type: "speak",
                     ameSrc,
-                    breSrc 
+                    breSrc,
                 });
-            } else { 
+            } else {
                 playAudios([ameSrc, breSrc]);
             }
-            
+
             if (otherSrc) {
-                if (!await utils.isFirefox()) { 
+                if (!(await utils.isFirefox())) {
                     chrome.runtime.sendMessage({
-                        type: 'speak',
-                        otherSrc 
+                        type: "speak",
+                        otherSrc,
                     });
-                } else { 
+                } else {
                     playAudios([otherSrc]);
                 }
             }
-            
+
             if (synthesisObj) {
-                if (!await utils.isFirefox()) { 
+                if (!(await utils.isFirefox())) {
                     return chrome.runtime.sendMessage({
-                        type: 'speak',
-                        synthesisObj
+                        type: "speak",
+                        synthesisObj,
                     });
-                } else { 
+                } else {
                     return playSynthesis(synthesisObj);
                 }
             }
         });
-    }
-                
-});
+    },
+};
