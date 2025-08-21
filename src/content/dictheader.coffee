@@ -6,11 +6,11 @@ import debounce from 'lodash/debounce'
 # import '../needsharebutton.js'
 import 'angular-ui-bootstrap'
 
-import('bootstrap/dist/css/bootstrap.min.css')
-import('../vendor/font-awesome.css')
-import('./dictheader.less')
+import 'bootstrap/dist/css/bootstrap.min.css'
+import '../vendor/font-awesome.css'
+import './dictheader.less'
 
-import('./card-iframe.coffee')
+import './card-iframe.coffee'
 
 inFrame = window.self != window.top
 # some ui need bootstrap, like dropdown.
@@ -33,9 +33,9 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
     $scope.asciiTitleHtml = $sce.trustAsHtml($scope.asciiTitle)
 
     if not $scope.inFrame
-        import(### webpackChunkName: "github-badge"  ###'../vendor/github-badge.js')
-        import(### webpackChunkName: "needsharebutton-js"  ###'../vendor/needsharebutton.js')
-        import(### webpackChunkName: "needsharebutton-css"  ###'../vendor/needsharebutton.css')
+        import '../vendor/github-badge.js'
+        import '../vendor/needsharebutton.js'
+        import '../vendor/needsharebutton.css'
 
     initDict = () ->
         chrome.runtime.sendMessage {
@@ -58,7 +58,7 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
             $('#fairy-dict input.dict-input').focus()
 
             if !$scope.setting?.disableWordHistory
-                await import('../starrr.js')
+                # await import('../starrr.js')
                 if $('.starrr', baseNode).data("star-rating")
                     $('.starrr', baseNode).data("star-rating").setRating(r)
                 else
@@ -311,7 +311,8 @@ dictApp.controller 'dictCtrl', ['$scope', '$sce', ($scope, $sce) ->
     return
 ]
 
-import('../header.html').then ({ default: headerDom }) ->
+# import('../header.html')
+Promise.resolve().then({ default: headerDom }) ->
     $(document.body).append(headerDom)
     angular.bootstrap(document.getElementById('fairy-dict'), ['fairyDictApp'])
 
