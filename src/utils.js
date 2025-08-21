@@ -1,11 +1,5 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS208: Avoid top-level this
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-export default ({
-    getRandomInt(min, max){
+export default {
+    getRandomInt(min, max) {
         min ??= 1;
         max ??= 10;
         min = Math.ceil(min);
@@ -27,22 +21,21 @@ export default ({
         ArrowUp: 38,
         Escape: 27,
     },
-    checkEventKey(event, sk1, sk2, key){
-        if (key === 'Disabled') {
+    checkEventKey(event, sk1, sk2, key) {
+        if (key === "Disabled") {
             return false;
         }
-        if (sk1 && !event[sk1.toLowerCase() + 'Key']) {
+        if (sk1 && !event[sk1.toLowerCase() + "Key"]) {
             return false;
         }
-        if (sk2 && !event[sk2.toLowerCase() + 'Key']) {
+        if (sk2 && !event[sk2.toLowerCase() + "Key"]) {
             return false;
         }
-        if (this.extraKeyMap[key]) {
-            if (event.keyCode !== this.extraKeyMap[key]) {
+        if (utils.extraKeyMap[key]) {
+            if (event.keyCode !== utils.extraKeyMap[key]) {
                 return false;
             }
-
-        } else if (key && (event.keyCode !== key.charCodeAt(0))) {
+        } else if (key && event.keyCode !== key.charCodeAt(0)) {
             return false;
         }
 
@@ -50,60 +43,62 @@ export default ({
     },
 
     promisify(cb) {
-        return new Promise(resolve => cb(resolve));
+        return new Promise((resolve) => cb(resolve));
     },
-    
-    promisifiedTimeout(t) {
-        return new Promise(resolve => setTimeout(resolve, t));
-    },
-    
-    async checkInTime(func, t=5000) {
-        let timeIsUp = false; 
-        this.promisifiedTimeout(t).then(() => timeIsUp = true); 
 
-        var _check = () => {
+    promisifiedTimeout(t) {
+        return new Promise((resolve) => setTimeout(resolve, t));
+    },
+
+    async checkInTime(func, t = 5000) {
+        let timeIsUp = false;
+        utils.promisifiedTimeout(t).then(() => (timeIsUp = true));
+
+        const _check = () => {
             return new Promise(async (resolve, reject) => {
-                await this.promisifiedTimeout(200);
+                await utils.promisifiedTimeout(200);
                 if (func()) {
-                    return resolve();
+                    resolve();
                 } else if (timeIsUp) {
-                    return reject(); 
-                } else { 
-                    return _check().then(resolve, reject);
+                    reject();
+                } else {
+                    _check().then(resolve, reject);
                 }
             });
         };
-        
+
         return await _check();
     },
-    
-    promiseInTime(promise, t=3000) {
-        return new Promise((resolve, reject) => {
-            const timer = setTimeout((() => reject(new Error('timeout'))), t);
 
-            return promise.then(value => {
-                clearTimeout(timer);
-                return resolve(value);
-            }).catch(reason => {
-                clearTimeout(timer);
-                return reject(reason);
-            });
+    promiseInTime(promise, t = 3000) {
+        return new Promise((resolve, reject) => {
+            const timer = setTimeout(() => reject(new Error("timeout")), t);
+
+            return promise
+                .then((value) => {
+                    clearTimeout(timer);
+                    return resolve(value);
+                })
+                .catch((reason) => {
+                    clearTimeout(timer);
+                    return reject(reason);
+                });
         });
     },
-            
+
     send(type, data = {}, callback) {
-        if (typeof data === 'function') {
+        if (typeof data === "function") {
             callback = data;
             data = {};
         }
 
-        const p = new Promise(function(resolve, reject) {
+        const p = new Promise(function (resolve, reject) {
             data.type = type;
-            return chrome.runtime.sendMessage(data, function(ret) {
+            return chrome.runtime.sendMessage(data, function (ret) {
                 if (ret?.error) {
-                    return reject((typeof ret.error === 'string' ? new Error(ret.error) : ret.error));
-                } else { 
-                    return resolve(ret);
+                    reject(typeof ret.error === "string" ? new Error(ret.error) : ret.error);
+                } else {
+                    resolve(ret);
                 }
             });
         });
@@ -114,31 +109,33 @@ export default ({
         return p;
     },
 
-    sendToDict(action, data={}, callback) {
-        if (typeof data === 'function') {
+    sendToDict(action, data = {}, callback) {
+        if (typeof data === "function") {
             callback = data;
             data = {};
         }
         data.action = action;
-        
-        return this.send('sendToDict', data, callback);
+
+        return this.send("sendToDict", data, callback);
     },
 
-    sendToTab(tabId, data={}, callback = null) {
-        if (typeof data === 'function') {
+    sendToTab(tabId, data = {}, callback = null) {
+        if (typeof data === "function") {
             callback = data;
             data = {};
-        } else if (typeof data === 'string') {
+        } else if (typeof data === "string") {
             data = { type: data };
         }
-        
-        const p = new Promise((resolve, reject) => chrome.tabs.sendMessage(tabId, data, function(ret) {
-            if (ret?.error) {
-                return reject((typeof ret.error === 'string' ? new Error(ret.error) : ret.error));
-            } else { 
-                return resolve(ret);
-            }
-        }));
+
+        const p = new Promise((resolve, reject) =>
+            chrome.tabs.sendMessage(tabId, data, function (ret) {
+                if (ret?.error) {
+                    reject(typeof ret.error === "string" ? new Error(ret.error) : ret.error);
+                } else {
+                    resolve(ret);
+                }
+            })
+        );
         if (callback) {
             return p.then(callback);
         }
@@ -151,44 +148,69 @@ export default ({
                 window.dictionariezBackgroundListeners = {};
                 window.dictionariezBackgroundListeners[type] = callback;
 
-                return chrome.runtime.onMessage.addListener((request, sender, sendResponse) => window.dictionariezBackgroundListeners[request.type]?.(request, sender, sendResponse));
-
-            } else { 
-                return window.dictionariezBackgroundListeners[type] = callback;
+                chrome.runtime.onMessage.addListener((request, sender, sendResponse) =>
+                    window.dictionariezBackgroundListeners[request.type]?.(request, sender, sendResponse)
+                );
+            } else {
+                window.dictionariezBackgroundListeners[type] = callback;
             }
         }
     },
 
     hasJapanese(str) {
-        const REGEX_JAPANESE = /[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]/;
+        const REGEX_JAPANESE =
+            /[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]/;
         return REGEX_JAPANESE.test(str);
     },
     isJapanese(str) {
-        const jregex = /[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]/g;
+        const jregex =
+            /[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]/g;
         return str.match(jregex)?.length === str.length;
     },
 
     hasChinese(str) {
-        const REGEX_CHINESE = /[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\u{20000}-\u{2a6df}]|[\u{2a700}-\u{2b73f}]|[\u{2b740}-\u{2b81f}]|[\u{2b820}-\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\u{2f800}-\u{2fa1f}]/u;
+        const REGEX_CHINESE =
+            /[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\u{20000}-\u{2a6df}]|[\u{2a700}-\u{2b73f}]|[\u{2b740}-\u{2b81f}]|[\u{2b820}-\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\u{2f800}-\u{2fa1f}]/u;
         return REGEX_CHINESE.test(str);
     },
     isChinese(str) {
-        const cregex = /[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\u{20000}-\u{2a6df}]|[\u{2a700}-\u{2b73f}]|[\u{2b740}-\u{2b81f}]|[\u{2b820}-\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\u{2f800}-\u{2fa1f}]/ug;
+        const cregex =
+            /[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\u{20000}-\u{2a6df}]|[\u{2a700}-\u{2b73f}]|[\u{2b740}-\u{2b81f}]|[\u{2b820}-\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\u{2f800}-\u{2fa1f}]/gu;
         return str.match(cregex)?.length === str.length;
     },
     hasKorean(str) {
         const REGEX_KOREAN = /\p{sc=Hangul}/u;
         return REGEX_KOREAN.test(str);
     },
-    
+
     isSentence(str = "") {
         if (this.hasChinese(str) || this.hasJapanese(str) || this.hasKorean(str)) {
             return str.length > 4;
-        } else { 
-            const simpleStopWords = ['a', 'an', 'en', 'ett', 'the', 'to', 'in', 'on', 'at', 'of', 'for', 'with', 'by', 'and', 'or', 'but', 'nor', 'so', 'yet', 'as', 'if'];
-            return str.split(/\s/)
-                .filter(w => (w.length > 1) && !simpleStopWords.includes(w.toLowerCase()))
-                .length > 3;
+        } else {
+            const simpleStopWords = [
+                "a",
+                "an",
+                "en",
+                "ett",
+                "the",
+                "to",
+                "in",
+                "on",
+                "at",
+                "of",
+                "for",
+                "with",
+                "by",
+                "and",
+                "or",
+                "but",
+                "nor",
+                "so",
+                "yet",
+                "as",
+                "if",
+            ];
+            return str.split(/\s/).filter((w) => w.length > 1 && !simpleStopWords.includes(w.toLowerCase())).length > 3;
         }
     },
 
@@ -196,73 +218,83 @@ export default ({
         return /\w/.test(str);
     },
 
-    isEnglish(str){
+    isEnglish(str) {
         // not match: I'll  don't  Mr.Jackson
         const REGEX_ENG = /[a-zA-Z\s-]+/;
         return str.match(REGEX_ENG)?.[0] === str;
     },
 
-    isLinux() { 
-        return navigator.platform.includes('Linux');
+    isLinux() {
+        return navigator.platform.includes("Linux");
     },
-    
-    isMac() { 
-        return navigator.platform.includes('Mac');
+
+    isMac() {
+        return navigator.platform.includes("Mac");
     },
 
     isWindows() {
-        return navigator.platform.includes('Win');
+        return navigator.platform.includes("Win");
     },
 
-    sanitizeHTML(s){
-        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    sanitizeHTML(s) {
+        return s
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&apos;");
     },
 
     imageToDataUrl(src) {
-        return new Promise(function(resolve, reject) { 
-            if (src.startsWith('data:')) {
-                return resolve(src); 
-            } else { 
+        return new Promise(function (resolve, reject) {
+            if (src.startsWith("data:")) {
+                return resolve(src);
+            } else {
                 return fetch(src)
-                    .then(response => response.blob()).then(function(blob) {
+                    .then((response) => response.blob())
+                    .then(function (blob) {
                         const reader = new FileReader();
                         reader.onloadend = () => resolve(reader.result);
                         reader.onerror = reject;
-                        return reader.readAsDataURL(blob);
-                });
+                        reader.readAsDataURL(blob);
+                    });
             }
         });
     },
 
-    imageSize(src) { 
-        return new Promise(function(resolve) {
+    imageSize(src) {
+        return new Promise(function (resolve) {
             const img = new Image();
-            img.onload = function() {
-                return resolve({width: this.width, height: this.height});
+            img.onload = function () {
+                resolve({ width: this.width, height: this.height });
             };
-            
-            return img.src = src;
+
+            img.src = src;
         });
     },
 
-    toUpperFirst(text){
+    toUpperFirst(text) {
         return text[0].toUpperCase() + text.slice(1);
     },
-    
-    isMobile() { return /Mobi|Android/i.test(navigator.userAgent); },
-    async isFirefox() { 
+
+    isMobile() {
+        return /Mobi|Android/i.test(navigator.userAgent);
+    },
+    async isFirefox() {
         const ret = await browser?.runtime?.getBrowserInfo?.();
-        return ret?.name === 'Firefox';
+        return ret?.name === "Firefox";
     },
 
-    loadHTML(url, credentials='omit') {
-        return this.promiseInTime(fetch(url, {
-            method: 'GET', 
-            credentials,
-        }), 5000)
-        .then(function(resp) { 
+    loadHTML(url, credentials = "omit") {
+        return this.promiseInTime(
+            fetch(url, {
+                method: "GET",
+                credentials,
+            }),
+            5000
+        ).then(function (resp) {
             if (!resp.ok) {
-                const err = new Error(resp.statusText); 
+                const err = new Error(resp.statusText);
                 err.status = resp.status;
                 throw err;
             }
@@ -272,18 +304,20 @@ export default ({
     },
 
     loadJson(url, credentials) {
-        return this.promiseInTime(fetch(url, {
-            method: 'GET', 
-            credentials
-        }), 5000)
-        .then(function(resp) { 
+        return this.promiseInTime(
+            fetch(url, {
+                method: "GET",
+                credentials,
+            }),
+            5000
+        ).then(function (resp) {
             if (!resp.ok) {
-                const err = new Error(resp.statusText); 
+                const err = new Error(resp.statusText);
                 err.status = resp.status;
                 throw err;
             }
 
             return resp.json();
         });
-    }
-});
+    },
+};

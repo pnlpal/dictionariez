@@ -1,14 +1,6 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS205: Consider reworking code to avoid use of IIFEs
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-import {
-  getSentenceFromSelection
-} from 'get-selection-more';
+import { getSentenceFromSelection } from "get-selection-more";
 
-export var getWordAtPoint = function(elem, x, y){
+export var getWordAtPoint = function (elem, x, y) {
     let range;
     if (elem.nodeType === elem.TEXT_NODE) {
         range = elem.ownerDocument.createRange();
@@ -17,9 +9,13 @@ export var getWordAtPoint = function(elem, x, y){
         const endPos = range.endOffset;
         while (currentPos < endPos) {
             range.setStart(elem, currentPos);
-            range.setEnd(elem, currentPos+1);
-            if ((range.getBoundingClientRect().left <= x) && (range.getBoundingClientRect().right >= x) &&
-            (range.getBoundingClientRect().top <= y) && (range.getBoundingClientRect().bottom >= y)) {
+            range.setEnd(elem, currentPos + 1);
+            if (
+                range.getBoundingClientRect().left <= x &&
+                range.getBoundingClientRect().right >= x &&
+                range.getBoundingClientRect().top <= y &&
+                range.getBoundingClientRect().bottom >= y
+            ) {
                 range.detach();
                 var sel = window.getSelection();
                 sel.removeAllRanges();
@@ -37,7 +33,7 @@ export var getWordAtPoint = function(elem, x, y){
             range = el.ownerDocument.createRange();
             range.selectNodeContents(el);
             var react = range.getBoundingClientRect();
-            if ((react.left <= x) && (react.right >= x) && (react.top <= y) && (react.bottom >= y)) {
+            if (react.left <= x && react.right >= x && react.top <= y && react.bottom >= y) {
                 range.detach();
                 return getWordAtPoint(el, x, y);
             } else {
@@ -47,33 +43,35 @@ export var getWordAtPoint = function(elem, x, y){
     }
 };
 
-export var getWordFromSelection = function(fromAllFrames = false) { 
+export var getWordFromSelection = function (fromAllFrames = false) {
     let word = window.getSelection().toString().trim();
     if (!word && fromAllFrames) {
-        for (var frame of window.frames) { 
-            try { 
+        for (var frame of window.frames) {
+            try {
                 word = frame.getSelection().toString().trim();
-                if (word) { break; } 
+                if (word) {
+                    break;
+                }
             } catch (error) {}
         }
     }
     return word;
 };
 
-export var getSentenceOfSelection = function(window_ = window) {
+export var getSentenceOfSelection = function (window_ = window) {
     const selection = window_.getSelection();
 
     try {
-        if (navigator.userAgent.includes("Gecko")) { 
+        if (navigator.userAgent.includes("Gecko")) {
             return getSentenceFromSelection(selection);
-        } else { 
+        } else {
             const range = selection.getRangeAt(0);
 
             const range1 = range.cloneRange();
             range1.detach();
 
-            selection.modify('move', 'backward', 'sentence');
-            selection.modify('extend', 'forward', 'sentence');
+            selection.modify("move", "backward", "sentence");
+            selection.modify("extend", "forward", "sentence");
 
             const text = selection.toString().trim();
 
@@ -82,8 +80,8 @@ export var getSentenceOfSelection = function(window_ = window) {
 
             return text;
         }
-    } catch (error) {  
-        try { 
+    } catch (error) {
+        try {
             // Fallback for browsers that don't support modify
             return getSentenceFromSelection(selection);
         } catch (error1) {
@@ -92,39 +90,36 @@ export var getSentenceOfSelection = function(window_ = window) {
     }
 };
 
-export var getSentenceFromAllFrames = function() { 
+export var getSentenceFromAllFrames = function () {
     let sentence = getSentenceOfSelection();
-    if (sentence) { return sentence; }
+    if (sentence) {
+        return sentence;
+    }
 
-    return (() => {
-        const result = [];
-        for (var frame of window.frames) { 
-            try { 
-                sentence = getSentenceOfSelection(frame);
-                if (sentence) { break; } else {
-                    result.push(undefined);
-                } 
-            } catch (error) {}
-        }
-        return result;
-    })();
+    for (var frame of window.frames) {
+        try {
+            sentence = getSentenceOfSelection(frame);
+            if (sentence) {
+                return sentence;
+            }
+        } catch (error) {}
+    }
+
+    return null;
 };
 
-
-export var checkEditable = function(element) {
+export var checkEditable = function (element) {
     let curNode = element;
-    while (curNode) { 
+    while (curNode) {
         if (curNode.isContentEditable || ["input", "textarea"].includes(curNode.nodeName.toLowerCase())) {
             return true;
         }
         curNode = curNode.parentElement;
     }
-    // check the direct children of the node, sometimes the editor could be wrapped by a div. 
-    for (var node of (element?.children || [])) {
+    // check the direct children of the node, sometimes the editor could be wrapped by a div.
+    for (var node of element?.children || []) {
         if (node.isContentEditable || ["input", "textarea"].includes(node.nodeName.toLowerCase())) {
             return true;
         }
     }
 };
-
-

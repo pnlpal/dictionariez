@@ -1,10 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS207: Consider shorter variations of null checks
- * DS208: Avoid top-level this
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 import dict from "./dict.js";
 import message from "./message.js";
 import storage from "./storage.js";
@@ -21,7 +14,7 @@ const convertCn2T = function (result) {
         cnConverter = OpenCC.Converter({ from: "cn", to: "tw" });
     }
     result.defs?.forEach(({ def }) => def?.forEach((text, i) => (def[i] = cnConverter(text))));
-    return (result.w = cnConverter(result.w));
+    result.w = cnConverter(result.w);
 };
 
 const setEnglishProns = (result) =>
@@ -147,16 +140,16 @@ export default {
                 if (process.env.PRODUCT === "Ordböcker") {
                     if (n === "Swedish") {
                         if (!this.otherSupportedLanguages.includes(n)) {
-                            return this.otherSupportedLanguages.push(n);
+                            this.otherSupportedLanguages.push(n);
                         }
                     } else {
                         if (!setting.configCache.otherDisabledLanguages.includes(n)) {
-                            return setting.configCache.otherDisabledLanguages.push(n);
+                            setting.configCache.otherDisabledLanguages.push(n);
                         }
                     }
                 } else {
                     if (!this.otherSupportedLanguages.includes(n)) {
-                        return this.otherSupportedLanguages.push(n);
+                        this.otherSupportedLanguages.push(n);
                     }
                 }
             });
@@ -186,7 +179,7 @@ export default {
             return this.parse(sender.tab.id, w);
         });
 
-        return message.on("get real person voice", ({ w }, sender) => {
+        message.on("get real person voice", ({ w }, sender) => {
             if (w && setting.getValue("enableRealPron")) {
                 if (w.split(" ").length === 1) {
                     return this.parse(sender.tab.id, w.replaceAll("·", ""), "ldoce");

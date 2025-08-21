@@ -299,7 +299,7 @@ dictApp.controller("dictCtrl", [
                 sendMessageToDictPage({ ...request, type: "look up in dynamic dict" });
             }
 
-            return $scope.$apply();
+            $scope.$apply();
         });
 
         window.addEventListener("message", function (event) {
@@ -307,7 +307,7 @@ dictApp.controller("dictCtrl", [
                 $scope.dictFrameIsLoaded = true;
                 $scope.dictFrameIsNotLoaded = false;
                 $scope.querying = false;
-                return $scope.$apply();
+                $scope.$apply();
             }
         });
 
@@ -315,15 +315,15 @@ dictApp.controller("dictCtrl", [
             $scope.dictFrameIsLoaded = false;
             clearTimeout($scope._checkFrameTimer);
 
-            return ($scope._checkFrameTimer = setTimeout(function () {
+            $scope._checkFrameTimer = setTimeout(function () {
                 if ($scope.dictFrameIsLoaded) {
                     $scope.dictFrameIsNotLoaded = false;
                 } else {
                     $scope.dictFrameIsNotLoaded = true;
                 }
 
-                return $scope.$apply();
-            }, 2000));
+                $scope.$apply();
+            }, 2000);
         };
 
         $(baseNode).on("starrr:change", function (e, value) {
@@ -338,7 +338,7 @@ dictApp.controller("dictCtrl", [
                 if ($scope.historyIndex >= 0) {
                     const item = $scope.history[$scope.historyIndex];
                     if (item && item[$scope.word] != null) {
-                        return (item[$scope.word] = value);
+                        item[$scope.word] = value;
                     }
                 }
             }
@@ -349,7 +349,7 @@ dictApp.controller("dictCtrl", [
             if (node.is(".sound")) {
                 const a = node.next("audio");
                 if (a.length) {
-                    return a[0].play();
+                    a[0].play();
                 }
             }
         };
@@ -358,13 +358,13 @@ dictApp.controller("dictCtrl", [
         $(document).click(_handler);
 
         $(document).on("touchend focus", "input.dict-input", function () {
-            return this.select();
+            this.select();
         });
 
         $(document).keyup(function (evt) {
             const code = evt.charCode || evt.keyCode;
             if (code === 27) {
-                return $("input.dict-input", baseNode)[0].select();
+                $("input.dict-input", baseNode)[0].select();
             }
         });
 
@@ -404,7 +404,7 @@ dictApp.controller("dictCtrl", [
             if (stop) {
                 evt.preventDefault();
                 evt.stopPropagation();
-                return $scope.$apply();
+                $scope.$apply();
             }
         });
 
@@ -420,12 +420,11 @@ dictApp.controller("dictCtrl", [
     },
 ]);
 
-import("../header.html").then({ default: headerDom })(function () {
-    let setupAppDescription;
+import("../header.html").then(({ default: headerDom }) => {
     $(document.body).append(headerDom);
     angular.bootstrap(document.getElementById("fairy-dict"), ["fairyDictApp"]);
 
-    return (setupAppDescription = function () {
+    const setupAppDescription = function () {
         const appDescription =
             process.env.PRODUCT === "Dictionariez"
                 ? require("../description-and-badge.html").default
@@ -434,6 +433,7 @@ import("../header.html").then({ default: headerDom })(function () {
         document.querySelector("#app-description").innerHTML = appDescription;
 
         const { version } = chrome.runtime.getManifest();
-        return (document.querySelector("#app-description .badge").innerText = "V" + version);
-    })();
+        document.querySelector("#app-description .badge").innerText = "V" + version;
+    };
+    setupAppDescription();
 });

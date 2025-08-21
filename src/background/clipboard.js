@@ -1,34 +1,31 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 import message from "./message.js";
 import setting from "./setting.js";
 import plainLookup from "./plain-lookup.js";
 import utils from "utils";
 
 export default (currentTab) =>
-    new Promise(function (resolve, reject) {
+    new Promise((resolve, reject) => {
         if (!setting.getValue("enableReadClipboard")) {
-            return resolve();
+            resolve();
+            return;
         }
         if (!currentTab?.url?.startsWith("http")) {
-            return resolve();
+            resolve();
+            return;
         }
 
         chrome.tabs.sendMessage(currentTab.id, { type: "read clipboard text" });
 
-        message.on("clipboard text", function (request) {
+        message.on("clipboard text", (request) => {
             setting.setValue("readClipboardError", undefined);
-            return resolve(plainLookup.checkTypeOfSupport(request.text));
+            resolve(plainLookup.checkTypeOfSupport(request.text));
         });
 
-        message.on("read clipboard text error", function (request) {
+        message.on("read clipboard text error", (request) => {
             setting.setValue("enableReadClipboard", false);
             setting.setValue("readClipboardError", "Read clipboard failed: " + request.error);
-            return resolve();
+            resolve();
         });
 
-        return setTimeout(resolve, 5000);
+        setTimeout(resolve, 5000);
     });

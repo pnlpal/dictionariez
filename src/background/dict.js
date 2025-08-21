@@ -1,9 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS208: Avoid top-level this
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 import storage from "./storage.js";
 import message from "./message.js";
 
@@ -33,7 +27,7 @@ export default {
                 const s = dictMap[d.dictName];
                 if (s) {
                     Object.assign(d, s);
-                    return changed.push(d);
+                    changed.push(d);
                 }
             });
 
@@ -48,15 +42,15 @@ export default {
                 this.allDicts.splice(i, 1);
             }
 
-            return storage.remove("dict-" + dictName);
+            storage.remove("dict-" + dictName);
         });
 
         message.on("dictionary-add", ({ dict }) => {
-            return this.addToDictionariez(dict);
+            this.addToDictionariez(dict);
         });
 
-        return message.on("restore-default-dicts", () => {
-            return this.restoreDefaultDicts();
+        message.on("restore-default-dicts", () => {
+            this.restoreDefaultDicts();
         });
     },
 
@@ -81,17 +75,17 @@ export default {
                 if (d.chatgptPrompt) {
                     d = Object.assign({}, chatgptDefault, d);
                 }
-                return allDicts.push(d);
+                allDicts.push(d);
             });
 
             extraDicts.forEach((d) => {
                 const locDict = allDicts.find((d1) => d1.dictName === d.dictName);
 
                 if (locDict) {
-                    return Object.assign(locDict, d);
+                    Object.assign(locDict, d);
                 } else {
                     d.sequence = allDicts.length;
-                    return allDicts.push(d);
+                    allDicts.push(d);
                 }
             });
 
@@ -108,11 +102,11 @@ export default {
                 Object.assign(d, chatgptDefault);
             }
             if (d.windowUrl === "https://chatgpt.com" && d.inputSelector === "main form textarea") {
-                return Object.assign(d, chatgptDefault);
+                Object.assign(d, chatgptDefault);
             }
         });
 
-        return (this.allDicts = allDicts);
+        this.allDicts = allDicts;
     },
 
     addToDictionariez(d) {
@@ -164,7 +158,7 @@ export default {
                 d = Object.assign({}, chatgptDefault, d);
             }
             this.allDicts.push(d);
-            return added.push(d);
+            added.push(d);
         });
 
         if (added.length) {
@@ -239,9 +233,9 @@ export default {
                 var domains = domain.split(".");
                 domains.pop();
 
-                domains.forEach(function (s) {
+                domains.forEach((s) => {
                     if (s.toLowerCase().startsWith(key)) {
-                        return results.push(dict);
+                        results.push(dict);
                     }
                 });
             }

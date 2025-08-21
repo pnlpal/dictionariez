@@ -1,9 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-
 let setupAppDescription;
 import angular from "angular";
 import utils from "utils";
@@ -45,9 +39,7 @@ dictApp.controller("optionCtrl", [
 
         $scope.version = chrome.runtime.getManifest().version;
         $scope.allSK = ["", "Ctrl", "Shift", "Alt", "Meta"];
-        $scope.allLetters = __range__("A".charCodeAt(0), "Z".charCodeAt(0), true).map((code) =>
-            String.fromCharCode(code)
-        );
+        $scope.allLetters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
         $scope.allLetters.unshift("Disabled");
 
         $scope.extraKeys = Object.keys(utils.extraKeyMap);
@@ -79,7 +71,7 @@ dictApp.controller("optionCtrl", [
                 value = $scope.setting[key];
             }
 
-            return chrome.runtime.sendMessage({
+            chrome.runtime.sendMessage({
                 type: "save setting",
                 key,
                 value,
@@ -93,7 +85,7 @@ dictApp.controller("optionCtrl", [
             } else {
                 $scope.setting.otherDisabledLanguages.push(lang);
             }
-            return chrome.runtime.sendMessage({
+            chrome.runtime.sendMessage({
                 type: "save setting",
                 key: "otherDisabledLanguages",
                 value: $scope.setting.otherDisabledLanguages,
@@ -107,7 +99,7 @@ dictApp.controller("optionCtrl", [
             function (config) {
                 // window.setting = config
                 $scope.setting = config;
-                return $scope.$apply();
+                $scope.$apply();
             }
         );
 
@@ -115,7 +107,7 @@ dictApp.controller("optionCtrl", [
 
         $scope.markColorEvent = {
             onChange(api, color, $event) {
-                return $scope.changeKey(color, "markColor");
+                $scope.changeKey(color, "markColor");
             },
         };
 
@@ -142,18 +134,17 @@ And use "allDicts" to access all the dicts in your collection.
 Read more here: https://pnl.dev/topic/52/help-more-dictionaries-needed
 \
 `);
-            return (window.addDict = window.addExtraDict =
-                async function (dict) {
-                    await utils.send("dictionary-add", { dict });
-                    return location.reload();
-                });
+            window.addDict = window.addExtraDict = async function (dict) {
+                await utils.send("dictionary-add", { dict });
+                location.reload();
+            };
         };
 
-        return setupDevFunctions();
+        setupDevFunctions();
     },
 ]);
 
-(setupAppDescription = function () {
+setupAppDescription = function () {
     const appDescription =
         process.env.PRODUCT === "Dictionariez"
             ? require("../description-and-badge.html").default
@@ -162,14 +153,6 @@ Read more here: https://pnl.dev/topic/52/help-more-dictionaries-needed
     document.querySelector("#app-description").innerHTML = appDescription;
 
     const { version } = chrome.runtime.getManifest();
-    return (document.querySelector("#app-description .badge").innerText = "V" + version);
-})();
-function __range__(left, right, inclusive) {
-    let range = [];
-    let ascending = left < right;
-    let end = !inclusive ? right : ascending ? right + 1 : right - 1;
-    for (let i = left; ascending ? i < end : i > end; ascending ? i++ : i--) {
-        range.push(i);
-    }
-    return range;
-}
+    document.querySelector("#app-description .badge").innerText = "V" + version;
+};
+setupAppDescription();
