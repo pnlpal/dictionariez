@@ -3,12 +3,15 @@ import setting from "./setting.js";
 import plainLookup from "./plain-lookup.js";
 import utils from "utils";
 
+const CLIPBOARD_TIMEOUT_MS = 5000;
+
 export default (currentTab) =>
-    new Promise((resolve, reject) => {
+    new Promise((resolve) => {
         if (!setting.getValue("enableReadClipboard")) {
             resolve();
             return;
         }
+
         if (!currentTab?.url?.startsWith("http")) {
             resolve();
             return;
@@ -23,9 +26,10 @@ export default (currentTab) =>
 
         message.on("read clipboard text error", (request) => {
             setting.setValue("enableReadClipboard", false);
-            setting.setValue("readClipboardError", "Read clipboard failed: " + request.error);
+            setting.setValue("readClipboardError", `Read clipboard failed: ${request.error}`);
             resolve();
         });
 
-        setTimeout(resolve, 5000);
+        // Timeout fallback
+        setTimeout(resolve, CLIPBOARD_TIMEOUT_MS);
     });

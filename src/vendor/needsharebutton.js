@@ -12,7 +12,7 @@
     if (typeof(parent) == 'string') {
             var matchesSelector = elem.matches || elem.webkitMatchesSelector || elem.mozMatchesSelector || elem.msMatchesSelector;
 
-            if (!!matchesSelector) {
+            if (matchesSelector) {
                 while (elem) {
                 if (matchesSelector.bind(elem)(parent)) {
                   return elem;

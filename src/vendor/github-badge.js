@@ -16,7 +16,7 @@ import $ from "jquery";
 	gitLinks.each(function() {
 		var a = $(this);
 		var link = a.attr("href");
-		var re = /github.com\/([^\/]+)\/([^\/]+)\/?/;
+		var re = /github.com\/([^/]+)\/([^/]+)\/?/;
 		var matches = link.match(re);
 		if (!matches || matches.length < 3) {
 			return;

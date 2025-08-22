@@ -1,9 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 import $ from "jquery";
 import angular from "angular";
 import utils from "utils";
@@ -54,7 +48,7 @@ dictApp.controller("dictCtrl", [
                     // origin: window.top?.location?.origin,
                     // url: window.top?.location?.href
                 },
-                async function ({
+                async ({
                     currentDictName,
                     nextDictName,
                     previousDictName,
@@ -65,7 +59,7 @@ dictApp.controller("dictCtrl", [
                     r,
                     sentence,
                     windowUrl,
-                }) {
+                }) => {
                     $scope.allDicts = allDicts;
                     $scope.currentDictName = currentDictName;
                     $scope.nextDictName = nextDictName;
@@ -75,21 +69,22 @@ dictApp.controller("dictCtrl", [
                     $scope.sentence = sentence;
                     $scope._lastQueryWord = $scope.word;
                     $scope.history = history;
+
                     if (windowUrl) {
                         $scope.windowUrl = windowUrl;
-                    }
-                    if (windowUrl) {
                         $scope.trustedWindowUrl = $sce.trustAsResourceUrl(windowUrl);
                     }
+
                     $scope.$apply();
                     $("#fairy-dict input.dict-input").focus();
 
                     if (!$scope.setting?.disableWordHistory) {
                         await import("../starrr.js");
-                        if ($(".starrr", baseNode).data("star-rating")) {
-                            $(".starrr", baseNode).data("star-rating").setRating(r);
+                        const starrrElement = $(".starrr", baseNode);
+                        if (starrrElement.data("star-rating")) {
+                            starrrElement.data("star-rating").setRating(r);
                         } else {
-                            $(".starrr", baseNode).starrr({ numStars: 3, rating: r });
+                            starrrElement.starrr({ numStars: 3, rating: r });
                         }
                     }
 
@@ -104,24 +99,24 @@ dictApp.controller("dictCtrl", [
             {
                 type: "setting",
             },
-            function (setting) {
+            (setting) => {
                 $scope.setting = setting;
-                return $scope.$apply();
+                $scope.$apply();
             }
         );
 
         $scope.openOptions = (to) => utils.send("open options", { to });
 
-        $scope.deleteHistory = async function (item, i) {
+        $scope.deleteHistory = async (item, i) => {
             await utils.send("remove history", item);
             const { history } = await utils.send("dictionary history", {
                 word: $scope.word,
             });
             $scope.history = history;
-            return $scope.$apply();
+            $scope.$apply();
         };
 
-        $scope.query = function ({
+        $scope.query = ({
             nextDict,
             previousDict,
             dictNumber,
@@ -131,21 +126,19 @@ dictApp.controller("dictCtrl", [
             dictName,
             w,
             newDictWindow,
-        } = {}) {
+        } = {}) => {
             // if not $scope.word
             //     $scope.initial = true
             //     return
 
             $scope.initial = false;
+
             if (w) {
                 $scope.querying = true;
-            }
-            if (w) {
                 $scope.word = w;
-            }
-            if (w) {
                 $scope.sentence = null;
             }
+
             if (dictName && !newDictWindow) {
                 $scope.currentDictName = dictName;
             }
@@ -172,7 +165,7 @@ dictApp.controller("dictCtrl", [
                     previousWord,
                     newDictWindow,
                 },
-                function (data) {
+                (data) => {
                     $scope.querying = false;
                     $scope._lastQueryWord = $scope.word;
                     if (data?.noUpdate) {
@@ -186,59 +179,59 @@ dictApp.controller("dictCtrl", [
         const sendMessageToDictPage = (message) =>
             document.getElementById("dict-result")?.contentWindow.postMessage(message, "*");
 
-        $scope.toggleDropdown = function (open) {
+        $scope.toggleDropdown = (open) => {
             if ($scope.inFrame) {
-                return window.top.postMessage({ type: "toggleDropdown", open }, "*");
+                window.top.postMessage({ type: "toggleDropdown", open }, "*");
             }
         };
 
-        $scope.scheduleDropdown = function (dropdownType, open) {
+        $scope.scheduleDropdown = (dropdownType, open) => {
             clearTimeout($scope.openDropdownTimer);
             clearTimeout($scope.closeDropdownTimer);
 
-            return ($scope.openDropdownTimer = setTimeout(function () {
+            $scope.openDropdownTimer = setTimeout(() => {
                 if (dropdownType === "history") {
                     $scope.isHistoryDropdownOpen = open;
                 } else if (dropdownType === "dict") {
                     $scope.isDictDropdownOpen = open;
                 }
                 window.top.postMessage({ type: "toggleDropdown", open }, "*");
-                return $scope.$apply();
-            }, 100));
+                $scope.$apply();
+            }, 100);
         };
 
-        $scope.scheduleCloseDropdown = function () {
+        $scope.scheduleCloseDropdown = () => {
             clearTimeout($scope.closeDropdownTimer);
             clearTimeout($scope.openDropdownTimer);
-            return ($scope.closeDropdownTimer = setTimeout(function () {
+            $scope.closeDropdownTimer = setTimeout(() => {
                 $scope.isHistoryDropdownOpen = false;
                 $scope.isDictDropdownOpen = false;
                 window.top.postMessage({ type: "toggleDropdown", open: false }, "*");
-                return $scope.$apply();
-            }, 100));
+                $scope.$apply();
+            }, 100);
         };
 
-        const parseAutocomplete = function (html) {
+        const parseAutocomplete = (html) => {
             if (!html) {
                 return [];
             }
             const nodes = $(html);
             const list = [];
-            nodes.find(".word-result-entry").each(function (i, item) {
+            nodes.find(".word-result-entry").each((i, item) => {
                 const w = $(item).find(".word").text();
                 const def = $(item).find(".definition").text();
                 const ipa = $(item).find(".word").attr("data-ipa");
 
                 if (i <= 11) {
-                    return list.push({ w, def, ipa });
+                    list.push({ w, def, ipa });
                 }
             }); // at most 12 items
 
             return list;
         };
 
-        $scope.autocomplete = debounce(async function () {
-            const cancelAutoCompleteIfQuerying = function () {
+        $scope.autocomplete = debounce(async () => {
+            const cancelAutoCompleteIfQuerying = () => {
                 if ($scope.querying || $scope.word === $scope._lastQueryWord) {
                     $scope.autocompletes = [];
                     $scope.toggleDropdown(false);
@@ -251,6 +244,7 @@ dictApp.controller("dictCtrl", [
             if (cancelAutoCompleteIfQuerying()) {
                 return;
             }
+
             const text = $scope.word.trim();
             if (text) {
                 const { results, html } = await utils.send("autocomplete", { text });
@@ -263,20 +257,20 @@ dictApp.controller("dictCtrl", [
             }
 
             $scope.toggleDropdown($scope.autocompletes.length > 0);
-            return $scope.$apply();
+            $scope.$apply();
         }, 500);
 
-        chrome.runtime.onMessage?.addListener(function (request, sender, sendResponse) {
+        chrome.runtime.onMessage?.addListener((request) => {
             // console.log(request)
             if (request.type === "querying") {
                 $scope.initial = false;
                 $scope.querying = true;
                 $scope.word = request.text;
-                setTimeout(function () {
+                setTimeout(() => {
                     $scope.querying = false;
                     $scope._lastQueryWord = $scope.word;
                     $("#fairy-dict input.dict-input").focus();
-                    return $scope.$apply();
+                    $scope.$apply();
                 }, 1000);
             }
 
@@ -302,7 +296,7 @@ dictApp.controller("dictCtrl", [
             $scope.$apply();
         });
 
-        window.addEventListener("message", function (event) {
+        window.addEventListener("message", (event) => {
             if (event.data?.type === "injectedInDict") {
                 $scope.dictFrameIsLoaded = true;
                 $scope.dictFrameIsNotLoaded = false;
@@ -311,22 +305,17 @@ dictApp.controller("dictCtrl", [
             }
         });
 
-        $scope.checkIfFrameIsLoaded = function () {
+        $scope.checkIfFrameIsLoaded = () => {
             $scope.dictFrameIsLoaded = false;
             clearTimeout($scope._checkFrameTimer);
 
-            $scope._checkFrameTimer = setTimeout(function () {
-                if ($scope.dictFrameIsLoaded) {
-                    $scope.dictFrameIsNotLoaded = false;
-                } else {
-                    $scope.dictFrameIsNotLoaded = true;
-                }
-
+            $scope._checkFrameTimer = setTimeout(() => {
+                $scope.dictFrameIsNotLoaded = !$scope.dictFrameIsLoaded;
                 $scope.$apply();
             }, 2000);
         };
 
-        $(baseNode).on("starrr:change", function (e, value) {
+        $(baseNode).on("starrr:change", (e, value) => {
             if ($scope.word) {
                 value ??= 0;
                 // console.log "[dictCtrl] rating word: #{$scope.word} #{value}"
@@ -344,8 +333,8 @@ dictApp.controller("dictCtrl", [
             }
         });
 
-        const _handler = function (evt) {
-            const node = $(event.target);
+        const _handler = (evt) => {
+            const node = $(evt.target);
             if (node.is(".sound")) {
                 const a = node.next("audio");
                 if (a.length) {
@@ -361,14 +350,14 @@ dictApp.controller("dictCtrl", [
             this.select();
         });
 
-        $(document).keyup(function (evt) {
+        $(document).keyup((evt) => {
             const code = evt.charCode || evt.keyCode;
             if (code === 27) {
                 $("input.dict-input", baseNode)[0].select();
             }
         });
 
-        $(document).keydown(function (evt) {
+        $(document).keydown((evt) => {
             const code = evt.charCode || evt.keyCode;
             const prevSK = $scope.setting.prevDictSK1;
             const nextSK = $scope.setting.nextDictSK1;
@@ -393,7 +382,7 @@ dictApp.controller("dictCtrl", [
                 stop = true;
             }
             if ((evt.ctrlKey || evt.metaKey) && evt.key.match(/\d/)) {
-                $scope.query({ dictNumber: parseInt(event.key.match(/\d/)[0]) });
+                $scope.query({ dictNumber: parseInt(evt.key.match(/\d/)[0]) });
                 stop = true;
             }
 
@@ -424,7 +413,7 @@ import("../header.html").then(({ default: headerDom }) => {
     $(document.body).append(headerDom);
     angular.bootstrap(document.getElementById("fairy-dict"), ["fairyDictApp"]);
 
-    const setupAppDescription = function () {
+    const setupAppDescription = () => {
         const appDescription =
             process.env.PRODUCT === "Dictionariez"
                 ? require("../description-and-badge.html").default
@@ -433,7 +422,7 @@ import("../header.html").then(({ default: headerDom }) => {
         document.querySelector("#app-description").innerHTML = appDescription;
 
         const { version } = chrome.runtime.getManifest();
-        document.querySelector("#app-description .badge").innerText = "V" + version;
+        document.querySelector("#app-description .badge").innerText = `V${version}`;
     };
     setupAppDescription();
 });

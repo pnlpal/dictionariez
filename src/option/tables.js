@@ -25,14 +25,14 @@ import "datatables.net-rowreorder-bs4/css/rowReorder.bootstrap4.css";
 const isSidePal = process.env.PRODUCT === "SidePal";
 
 const confirmDelete = (content, twice) =>
-    new Promise(function (resolve) {
+    new Promise((resolve) => {
         $("#confirm-delete-modal")
             .off("show.bs.modal")
             .on("show.bs.modal", () => $("#confirm-delete-modal .modal-body p").text(content));
 
         $("#confirm-delete-modal .modal-footer .button-confirm")
             .off("click")
-            .on("click", function (e) {
+            .on("click", (e) => {
                 if (twice) {
                     e.stopPropagation(); // prevent closing the modal
                     confirmDelete("Are you really sure?").then(resolve);
@@ -44,26 +44,16 @@ const confirmDelete = (content, twice) =>
         $("#confirm-delete-modal").modal("show");
     });
 
-const buildActionIcon = function (name) {
-    let cls, faIcon;
-    switch (name) {
-        case "remove":
-            faIcon = "fa-remove";
-            cls = "text-danger";
-            break;
-        case "export to Anki":
-            faIcon = "fa-share-square-o";
-            cls = "text-warning";
-            break;
-        case "saved in Anki":
-            faIcon = "fa-retweet";
-            cls = "text-muted";
-            break;
-        case "comment":
-            faIcon = "fa-comment-o";
-            cls = "text-muted";
-            break;
-    }
+const buildActionIcon = (name) => {
+    const iconMap = {
+        "remove": { faIcon: "fa-remove", cls: "text-danger" },
+        "export to Anki": { faIcon: "fa-share-square-o", cls: "text-warning" },
+        "saved in Anki": { faIcon: "fa-retweet", cls: "text-muted" },
+        "comment": { faIcon: "fa-comment-o", cls: "text-muted" }
+    };
+
+    const { faIcon, cls } = iconMap[name] || {};
+    if (!faIcon) return "";
 
     const iEl = `<i class='fa ${faIcon}' aria-hidden='true' data-action='${name}' title='${name}'></i>`;
     return `<a href='' class='action-button ${cls}' data-action='${name}' title='${name}'> ${iEl} </a>`;
@@ -81,12 +71,12 @@ const bravo = () =>
         dismissible: false,
     });
 
-const initHistory = async function () {
+const initHistory = async () => {
     if (!$("#table-history").length) {
         return;
     }
     const data = await utils.send("history");
-    var table = $("#table-history").DataTable({
+    const table = $("#table-history").DataTable({
         responsive: true,
         dom: '<"pull-left"f><"pull-left"i><"pull-right"B>tp',
         paging: false,
@@ -115,7 +105,7 @@ const initHistory = async function () {
                         return;
                     }
 
-                    confirmDelete(`Are you sure to delete all ${rowsData.length} records?`, twice).then(function () {
+                    confirmDelete(`Are you sure to delete all ${rowsData.length} records?`, twice).then(() => {
                         utils.send("remove history", { w: rowsData.map((item) => item.w) });
                         rows.remove().draw();
                     });
@@ -235,7 +225,7 @@ const initHistory = async function () {
 
     $("#table-history .starrr")
         .starrr({ numStars: 3 })
-        .on("starrr:change", async function (e, value) {
+        .on("starrr:change", async (e, value) => {
             const row = table.row($(e.currentTarget).closest("tr"));
             const rowData = row.data();
             await utils.send("rating", {
@@ -245,7 +235,7 @@ const initHistory = async function () {
             bravo();
         });
 
-    return $("#table-history tbody").on("click", "td", async function (e) {
+    return $("#table-history tbody").on("click", "td", async (e) => {
         let row, rowData;
         if ($(e.currentTarget).has(".action-button").length) {
             e.preventDefault();
@@ -283,7 +273,7 @@ const initHistory = async function () {
 
 initHistory();
 
-const initDictionary = async function () {
+const initDictionary = async () => {
     const { currentDictName, allDicts } = await utils.send("dictionary", { optionsPage: true });
 
     window.allDicts = allDicts;
@@ -365,9 +355,9 @@ const initDictionary = async function () {
         data: allDicts,
     });
 
-    table.on("row-reorder", function (e, diff) {
+    table.on("row-reorder", (e, diff) => {
         const dictMap = {};
-        diff.forEach(function (item) {
+        diff.forEach((item) => {
             const rowData = table.row(item.node).data();
             dictMap[rowData.dictName] = { sequence: item.newData };
         });
@@ -375,7 +365,7 @@ const initDictionary = async function () {
         utils.send("set-dictionary-reorder", { dictMap });
     });
 
-    $("#table-dictionary tbody").on("click", "td", async function (e) {
+    $("#table-dictionary tbody").on("click", "td", async (e) => {
         let row, rowData;
         if ($(e.currentTarget).has(".action-button").length) {
             e.preventDefault();
@@ -418,7 +408,7 @@ const initDictionary = async function () {
 
 initDictionary();
 
-utils.send("open options request to", function ({ to }) {
+utils.send("open options request to", ({ to }) => {
     if (to) {
         $(`.nav li a[href='#${to}']`)[0]?.click();
     }

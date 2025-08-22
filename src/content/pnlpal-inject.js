@@ -1,7 +1,7 @@
 import $ from "jquery";
 import utils from "utils";
 
-const addDictByTopic = async function (tid) {
+const addDictByTopic = async (tid) => {
     const topic = await $.get(`${location.origin}/api/topic/${tid}`).catch(console.error);
     let json = $(topic.posts[0].content).find("code.language-json").text();
     if (!json) {
@@ -16,7 +16,7 @@ const addDictByTopic = async function (tid) {
     await utils.send("look up", dict);
 };
 
-const addDictByParseContent = async function (contentNode) {
+const addDictByParseContent = async (contentNode) => {
     let json = $(contentNode).find("code.language-json").text();
     if (!json) {
         json = $(contentNode).find("code").text();
@@ -33,7 +33,9 @@ const addDictByParseContent = async function (contentNode) {
     await utils.send("look up", dict);
 };
 
-if (location.host === "pnlpal.dev" || location.host === "pnl.dev" || location.host === "localhost:4567") {
+const allowedHosts = ["pnlpal.dev", "pnl.dev", "localhost:4567"];
+
+if (allowedHosts.includes(location.host)) {
     if (process.env.PRODUCT !== "Dictionariez") {
         $("body").attr(`data-${process.env.PRODUCT.toLowerCase()}-version`, chrome.runtime.getManifest().version);
         $(".add-to-dictionariez").text(`Add to ${process.env.PRODUCT}`);
@@ -42,32 +44,29 @@ if (location.host === "pnlpal.dev" || location.host === "pnl.dev" || location.ho
     }
 
     $(document).on("click", ".add-to-dictionariez", function () {
-        $(this).text("waiting...");
-        $(this).addClass("disabled");
+        const $this = $(this);
+        $this.text("waiting...");
+        $this.addClass("disabled");
 
-        if ($(this).data("tid")) {
-            addDictByTopic($(this).data("tid")).then(
-                () => {
-                    $(this).text("Added!");
-                    $(this).removeClass("disabled");
-                },
-                (err) => {
-                    alert("Your json format has error: " + err.message);
-                    console.error("Your json format has error: ");
-                    console.error(err);
-                }
+        const handleSuccess = () => {
+            $this.text("Added!");
+            $this.removeClass("disabled");
+        };
+
+        const handleError = (err, context) => {
+            alert(`Your ${context} has error: ${err.message}`);
+            console.error(`Your ${context} has error:`, err);
+        };
+
+        if ($this.data("tid")) {
+            addDictByTopic($this.data("tid")).then(
+                handleSuccess,
+                (err) => handleError(err, "json format")
             );
         } else {
-            addDictByParseContent($(this).closest(".content, .preview")).then(
-                () => {
-                    $(this).text("Added!");
-                    $(this).removeClass("disabled");
-                },
-                (err) => {
-                    alert("Your content has error: " + err.message);
-                    console.error("Your content has error: ");
-                    console.error(err);
-                }
+            addDictByParseContent($this.closest(".content, .preview")).then(
+                handleSuccess,
+                (err) => handleError(err, "content")
             );
         }
 

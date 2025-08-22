@@ -9,7 +9,7 @@ import stringSimilarity from "string-similarity";
 import * as OpenCC from "opencc-js/cn2t";
 
 let cnConverter = null;
-const convertCn2T = function (result) {
+const convertCn2T = (result) => {
     if (!cnConverter) {
         cnConverter = OpenCC.Converter({ from: "cn", to: "tw" });
     }
@@ -69,14 +69,14 @@ export default {
     },
 
     checkLangs(w) {
-        const res = [];
-        for (var lang in langs) {
-            var n = langs[lang];
-            if (w.match(new RegExp(n.regex, "ug"))?.length === w.length && !this.isLangDisabled(lang)) {
-                res.push(lang);
+        const results = [];
+        for (const lang in langs) {
+            const langConfig = langs[lang];
+            if (w.match(new RegExp(langConfig.regex, "ug"))?.length === w.length && !this.isLangDisabled(lang)) {
+                results.push(lang);
             }
         }
-        return res;
+        return results;
     },
 
     checkType(w) {
@@ -84,8 +84,8 @@ export default {
             return setting.getValue("englishLookupSource"); // google, bingCN, wiktionary
         }
 
-        for (var name in parserDescs) {
-            var dictDesc = parserDescs[name];
+        for (const name in parserDescs) {
+            const dictDesc = parserDescs[name];
             if (dictDesc.supportChinese) {
                 if (utils.isChinese(w) && setting.getValue("enableLookupChinese")) {
                     return name;
@@ -93,7 +93,7 @@ export default {
             }
 
             if (dictDesc.languages) {
-                for (var lang of dictDesc.languages) {
+                for (const lang of dictDesc.languages) {
                     if (
                         w.match(new RegExp(langs[lang].regex, "ug"))?.length === w.length &&
                         !this.isLangDisabled(lang)
@@ -107,8 +107,8 @@ export default {
 
     fallbackDictFromGoogle(w) {
         // fallback to other dict if Google failed
-        for (var name in parserDescs) {
-            var dictDesc = parserDescs[name];
+        for (const name in parserDescs) {
+            const dictDesc = parserDescs[name];
             if (name === "google") {
                 continue;
             }
@@ -119,7 +119,7 @@ export default {
             }
 
             if (dictDesc.languages) {
-                for (var lang of dictDesc.languages) {
+                for (const lang of dictDesc.languages) {
                     if (
                         w.match(new RegExp(langs[lang].regex, "ug"))?.length === w.length &&
                         !this.isLangDisabled(lang)
@@ -135,21 +135,21 @@ export default {
     init() {
         this.typeCount = Object.keys(parserDescs).length;
         this.otherSupportedLanguages = [];
-        for (var dictDesc of Object.values(parserDescs)) {
-            dictDesc.languages?.forEach((n) => {
+        for (const dictDesc of Object.values(parserDescs)) {
+            dictDesc.languages?.forEach((language) => {
                 if (process.env.PRODUCT === "Ordböcker") {
-                    if (n === "Swedish") {
-                        if (!this.otherSupportedLanguages.includes(n)) {
-                            this.otherSupportedLanguages.push(n);
+                    if (language === "Swedish") {
+                        if (!this.otherSupportedLanguages.includes(language)) {
+                            this.otherSupportedLanguages.push(language);
                         }
                     } else {
-                        if (!setting.configCache.otherDisabledLanguages.includes(n)) {
-                            setting.configCache.otherDisabledLanguages.push(n);
+                        if (!setting.configCache.otherDisabledLanguages.includes(language)) {
+                            setting.configCache.otherDisabledLanguages.push(language);
                         }
                     }
                 } else {
-                    if (!this.otherSupportedLanguages.includes(n)) {
-                        this.otherSupportedLanguages.push(n);
+                    if (!this.otherSupportedLanguages.includes(language)) {
+                        this.otherSupportedLanguages.push(language);
                     }
                 }
             });
@@ -189,7 +189,7 @@ export default {
     }, // ignore phrase
 
     async parse(tabId, w, tname, prevResult, url) {
-        let html, lang, n;
+        let html;
         tname ??= this.checkType(w);
         if (!tname) {
             return;
@@ -204,7 +204,7 @@ export default {
             // prioritize other languages over English
             const langDesc = langs[possibleLangs[0]];
             if (langDesc.synthesis) {
-                url = url.replace("hl=en", "hl=" + langDesc.synthesis);
+                url = url.replace("hl=en", `hl=${langDesc.synthesis}`);
             }
         }
 
@@ -265,17 +265,17 @@ export default {
 
         // fix prons and lang for google result
         if (tname === "google") {
-            for (lang in langs) {
-                n = langs[lang];
-                if (n.symbol === result.langSymbol || n.aternative === result.langSymbol) {
+            for (const lang in langs) {
+                const langConfig = langs[lang];
+                if (langConfig.symbol === result.langSymbol || langConfig.aternative === result.langSymbol) {
                     if (this.isLangDisabled(lang)) {
                         return this.parse(tabId, w, this.fallbackDictFromGoogle(w), prevResult);
                     }
                     result.lang = lang;
-                    var detectedPron = result.prons[0];
+                    const detectedPron = result.prons[0];
                     if (!detectedPron.audio && result.langSymbol) {
-                        detectedPron.type = n.symbol;
-                        detectedPron.synthesis = n.synthesis;
+                        detectedPron.type = langConfig.symbol;
+                        detectedPron.synthesis = langConfig.synthesis;
                     } else if (detectedPron.type === "bre") {
                         detectedPron.symbol = `${detectedPron.symbol || ""} UK`;
                     }
@@ -324,7 +324,7 @@ export default {
                 });
             }
 
-            for (var targetLang of result?.langTargets || []) {
+            for (let targetLang of result?.langTargets || []) {
                 if (targetLang.lang) {
                     if (prevResult?.lang === targetLang.lang) {
                         continue;
@@ -360,11 +360,11 @@ export default {
                         if (targetLang.lang === "English") {
                             setEnglishProns(targetLang);
                         } else {
-                            n = langs[targetLang.lang];
-                            var synthesis = n.synthesis != null ? n.synthesis : `${n.symbol}-${n.symbol.toUpperCase()}`;
+                            const langConfig = langs[targetLang.lang];
+                            const synthesis = langConfig.synthesis != null ? langConfig.synthesis : `${langConfig.symbol}-${langConfig.symbol.toUpperCase()}`;
                             targetLang.prons[0].synthesis = synthesis;
-                            if (n.symbol) {
-                                targetLang.prons[0].symbol = `${n.symbol.toUpperCase()} ${
+                            if (langConfig.symbol) {
+                                targetLang.prons[0].symbol = `${langConfig.symbol.toUpperCase()} ${
                                     targetLang.prons[0].symbol || ""
                                 }`;
                             }
@@ -390,7 +390,7 @@ export default {
                 multipleResult.push(prevResult);
             }
 
-            if (!multipleResult.length) {
+            if (multipleResult.length === 0) {
                 // merge Tajik
                 if (possibleLangs.includes("Tajik")) {
                     return this.parseOtherLang(tabId, w, "Tajik", null, prevResult);

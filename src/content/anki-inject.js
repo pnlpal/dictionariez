@@ -77,20 +77,19 @@ const getAnkiInfo = (ankiSavedWord, ankiSkippedWord) =>
         }
     );
 
-const addSkipButton = async function () {
+const addSkipButton = async () => {
     await utils.checkInTime(() => $("button.btn-primary").length, 5000);
-    const btn = `\
-<button class="btn btn-secondary btn-skip mt-2" style="float: right">Skip</button>`;
+    const btn = `<button class="btn btn-secondary btn-skip mt-2" style="float: right">Skip</button>`;
     $(btn).insertAfter("button.btn-primary");
 
-    $(".btn-skip").on("click", function () {
+    $(".btn-skip").on("click", () => {
         $(".field:eq(0)").empty();
         $(".field:eq(1)").empty();
         getAnkiInfo(null, currentWordItem.w);
     });
 };
 
-const wordSavedCallback = async function (ev) {
+const wordSavedCallback = async (ev) => {
     if (!ev.target.classList.contains("btn-primary")) {
         return;
     }
@@ -107,8 +106,8 @@ const wordSavedCallback = async function (ev) {
     }
 };
 
-var renderLookupInfo = (wordItem, followedWords) =>
-    function (lookupInfo) {
+function renderLookupInfo(wordItem, followedWords) {
+    return function (lookupInfo) {
         if (lookupInfo?.images?.length) {
             $(".field:eq(0)").append(renderImages(lookupInfo.images));
         }
@@ -121,46 +120,47 @@ var renderLookupInfo = (wordItem, followedWords) =>
             $(".field:eq(1)").append(renderLookupWords(wordItem, lookupInfo));
         }
     };
+}
 
 const replaceW = (text, w) =>
     text
         .replaceAll(w, "<span style='font-weight: bold'>[?]</span>")
         .replaceAll(utils.toUpperFirst(w), "<span style='font-weight: bold'>[?]</span>");
 
-var renderTTS = function (s) {
+function renderTTS(s) {
     const sanitized = utils.sanitizeHTML(s);
     return `<tts service='android' voice='en-US' style='position: absolute; left: 9999px;'>${sanitized}</tts>`;
-};
+}
 
-var renderQuoteInfo = function (res) {
+function renderQuoteInfo(res) {
     const sanitizedSentence = utils.sanitizeHTML(res.sentence);
     const filteredSentence = replaceW(sanitizedSentence, res.w);
-    return `\
+    return `
 <blockquote style="font-style:italic;font-size: 16px; padding: 0.3em 5px 0.3em 20px;border-left:5px solid #78C0A8;">
 <span style="font-size: 16px;"> {sentence} </span>
 <div style="margin-top: 5px;">-- <a href="{s}" style="font-size: 15px;"> {sc} </a></div>
-</blockquote>\
+</blockquote>
 `
         .replace("{s}", res.s)
         .replace("{sc}", res.sc)
         .replace("{sentence}", filteredSentence);
-};
+}
 
-var renderImage = function (image) {
-    const dataImgTpl = `\
+function renderImage(image) {
+    const dataImgTpl = `
 <div class='dictionariez-anki-image-wrapper' contenteditable='false'>
 	<div class='dictionariez-anki-image-close' style='display: none;'>X</div>
 	<div style='max-width: 100%; max-height: 700px;
 		content: url("{dataUrl}");
 	' class='dictionariez-anki-image'>
 	</div>
-</div>\
+</div>
 `;
     return dataImgTpl.replace("{dataUrl}", image.dataUrl);
-};
+}
 
-var renderImages = function (images) {
-    const imgs = images.map(function (cur, i) {
+function renderImages(images) {
+    const imgs = images.map((cur, i) => {
         if (cur.dataUrl && i < 2) {
             // only display two images
             return renderImage(cur);
@@ -168,9 +168,9 @@ var renderImages = function (images) {
         return "";
     });
     return `<div class='fairydict-images'> ${imgs.join("")} </div>`;
-};
+}
 
-var renderLookupDefs = function (res, followedWords = []) {
+function renderLookupDefs(res, followedWords = []) {
     let pronHtml;
     const defTpl = (def) =>
         `<span class='fairydict-def' style='display: inline-flex;margin-bottom: 3px;'> ${def} </span>`;
@@ -192,7 +192,7 @@ var renderLookupDefs = function (res, followedWords = []) {
     let html = "";
 
     if (res?.prons && res.w) {
-        pronHtml = res.prons.reduce(function (prev, cur) {
+        pronHtml = res.prons.reduce((prev, cur) => {
             if (cur.synthesis || cur.audio) {
                 // prev += pronSymbolTpl(cur.symbol, cur.type)
                 prev += pronAudioTpl(res.w.replaceAll("·", ""), cur.audio, cur.type, cur.synthesis);
@@ -209,13 +209,13 @@ var renderLookupDefs = function (res, followedWords = []) {
         html += pronsTpl(pronHtml);
     }
 
-    const renderDef = function (def) {
+    const renderDef = (def) => {
         if (def) {
             return defTpl(followedWords.reduce((res, fw) => res.replace(fw, "[?]"), def));
         }
     };
 
-    const renderItem = function (item) {
+    const renderItem = (item) => {
         let posHtml = "";
         let defsHtml = "";
         let labelsHtml = "";
@@ -224,12 +224,12 @@ var renderLookupDefs = function (res, followedWords = []) {
             posHtml = posTpl(item.pos);
         }
         const labelsCon = (item.labels || [])
-            .map(function (name) {
+            .map((name) => {
                 if (name) {
                     return labelTpl(name);
                 }
             })
-            .reduce(function (prev, cur) {
+            .reduce((prev, cur) => {
                 if (cur) {
                     prev += cur;
                 }
@@ -241,7 +241,7 @@ var renderLookupDefs = function (res, followedWords = []) {
 
         const defs = Array.isArray(item.def) ? item.def : [item.def];
         const defsCon = defs
-            .map(function (def, i) {
+            .map((def, i) => {
                 if (def) {
                     if (defs.length === 1) {
                         return renderDef(def);
@@ -251,7 +251,7 @@ var renderLookupDefs = function (res, followedWords = []) {
                 }
                 return "";
             })
-            .reduce(function (prev, next) {
+            .reduce((prev, next) => {
                 if (next) {
                     return prev + "<br>" + next;
                 }
@@ -275,9 +275,9 @@ var renderLookupDefs = function (res, followedWords = []) {
     }
 
     return html;
-};
+}
 
-var renderLookupWords = function (wordItem, res) {
+function renderLookupWords(wordItem, res) {
     const wTpl = (w = "", w2 = "") =>
         `<strong class='fairydict-w' style='font-size: 20px;'> ${w} </strong> &nbsp; <span style='font-size: 13px;'>${w2}</span>`;
     const pronSymbolTpl = (symbol = "", type = "") =>
@@ -293,7 +293,7 @@ var renderLookupWords = function (wordItem, res) {
     wHtml = wTpl(res.w, w2);
 
     if (res?.prons && res.w) {
-        pronHtml = res.prons.reduce(function (prev, cur) {
+        pronHtml = res.prons.reduce((prev, cur) => {
             if (cur.synthesis || cur.audio || cur.symbol) {
                 if (cur.symbol) {
                     prev += pronSymbolTpl(cur.symbol, cur.type);
@@ -313,12 +313,12 @@ var renderLookupWords = function (wordItem, res) {
     if (pronHtml || wHtml) {
         return pronsTpl(wHtml, pronHtml);
     }
-};
+}
 
-var getEnglishPronAudio = async function (w) {
+async function getEnglishPronAudio(w) {
     const { prons } = await utils.send("get real person voice", { w });
 
-    for (var item of prons) {
+    for (const item of prons) {
         if (item.type === "ame" && item.audio) {
             $(".field .fairydict-pron-audio-ame").attr("data-mp3", item.audio);
         }
@@ -326,9 +326,9 @@ var getEnglishPronAudio = async function (w) {
             $(".field .fairydict-pron-audio-bre").attr("data-mp3", item.audio);
         }
     }
-};
+}
 
-export var initAnkiInjection = function () {
+export const initAnkiInjection = () => {
     if (["https://ankiweb.net", "https://ankiuser.net"].includes(location.origin) && location.pathname === "/add") {
         getAnkiInfo();
         addSkipButton();
