@@ -80,10 +80,6 @@ var options = {
                 exclude: /node_modules/,
             },
             {
-                test: /\.coffee$/,
-                loader: "coffee-loader",
-            },
-            {
                 test: require.resolve("jquery"),
                 use: [
                     {
