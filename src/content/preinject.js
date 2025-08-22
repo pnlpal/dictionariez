@@ -5,7 +5,7 @@ chrome.runtime.sendMessage(
         origin: location.origin,
         url: location.href,
     },
-    function (res) {
+    (res) => {
         if (res?.dictUrl || res?.isInSidePanelDict) {
             if (res.dict?.resources?.styles) {
                 for (const style of res.dict.resources.styles) {
@@ -13,9 +13,9 @@ chrome.runtime.sendMessage(
                 }
             }
             if (res.dict?.css) {
-                const style = document.createElement("style");
-                style.innerHTML = res.dict.css;
-                document.head.appendChild(style);
+                const styleElement = document.createElement("style");
+                styleElement.innerHTML = res.dict.css;
+                document.head.appendChild(styleElement);
             }
 
             require("./scrollbar.less");

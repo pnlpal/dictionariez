@@ -31,8 +31,8 @@ export default {
         if (sk2 && !event[sk2.toLowerCase() + "Key"]) {
             return false;
         }
-        if (utils.extraKeyMap[key]) {
-            if (event.keyCode !== utils.extraKeyMap[key]) {
+        if (this.extraKeyMap[key]) {
+            if (event.keyCode !== this.extraKeyMap[key]) {
                 return false;
             }
         } else if (key && event.keyCode !== key.charCodeAt(0)) {
@@ -52,11 +52,11 @@ export default {
 
     async checkInTime(func, t = 5000) {
         let timeIsUp = false;
-        utils.promisifiedTimeout(t).then(() => (timeIsUp = true));
+        this.promisifiedTimeout(t).then(() => (timeIsUp = true));
 
         const _check = () => {
             return new Promise(async (resolve, reject) => {
-                await utils.promisifiedTimeout(200);
+                await this.promisifiedTimeout(200);
                 if (func()) {
                     resolve();
                 } else if (timeIsUp) {
@@ -74,7 +74,7 @@ export default {
         return new Promise((resolve, reject) => {
             const timer = setTimeout(() => reject(new Error("timeout")), t);
 
-            return promise
+            promise
                 .then((value) => {
                     clearTimeout(timer);
                     return resolve(value);
@@ -92,9 +92,9 @@ export default {
             data = {};
         }
 
-        const p = new Promise(function (resolve, reject) {
+        const p = new Promise((resolve, reject) => {
             data.type = type;
-            return chrome.runtime.sendMessage(data, function (ret) {
+            chrome.runtime.sendMessage(data, (ret) => {
                 if (ret?.error) {
                     reject(typeof ret.error === "string" ? new Error(ret.error) : ret.error);
                 } else {
@@ -128,7 +128,7 @@ export default {
         }
 
         const p = new Promise((resolve, reject) =>
-            chrome.tabs.sendMessage(tabId, data, function (ret) {
+            chrome.tabs.sendMessage(tabId, data, (ret) => {
                 if (ret?.error) {
                     reject(typeof ret.error === "string" ? new Error(ret.error) : ret.error);
                 } else {
@@ -246,13 +246,13 @@ export default {
     },
 
     imageToDataUrl(src) {
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
             if (src.startsWith("data:")) {
-                return resolve(src);
+                resolve(src);
             } else {
-                return fetch(src)
+                fetch(src)
                     .then((response) => response.blob())
-                    .then(function (blob) {
+                    .then((blob) => {
                         const reader = new FileReader();
                         reader.onloadend = () => resolve(reader.result);
                         reader.onerror = reject;
@@ -263,7 +263,7 @@ export default {
     },
 
     imageSize(src) {
-        return new Promise(function (resolve) {
+        return new Promise((resolve) => {
             const img = new Image();
             img.onload = function () {
                 resolve({ width: this.width, height: this.height });
@@ -281,8 +281,17 @@ export default {
         return /Mobi|Android/i.test(navigator.userAgent);
     },
     async isFirefox() {
-        const ret = await browser?.runtime?.getBrowserInfo?.();
-        return ret?.name === "Firefox";
+        // Check if browser API exists (Firefox) or use userAgent as fallback
+        if (typeof browser !== "undefined" && browser?.runtime?.getBrowserInfo) {
+            try {
+                const ret = await browser.runtime.getBrowserInfo();
+                return ret?.name === "Firefox";
+            } catch (e) {
+                // Fallback to userAgent if browser API fails
+                return navigator.userAgent.includes("Firefox");
+            }
+        }
+        return false;
     },
 
     loadHTML(url, credentials = "omit") {
@@ -292,7 +301,7 @@ export default {
                 credentials,
             }),
             5000
-        ).then(function (resp) {
+        ).then((resp) => {
             if (!resp.ok) {
                 const err = new Error(resp.statusText);
                 err.status = resp.status;
@@ -310,7 +319,7 @@ export default {
                 credentials,
             }),
             5000
-        ).then(function (resp) {
+        ).then((resp) => {
             if (!resp.ok) {
                 const err = new Error(resp.statusText);
                 err.status = resp.status;

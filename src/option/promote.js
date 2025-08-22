@@ -1,36 +1,37 @@
-const promote = function () {
-    let width;
-    if (!localStorage.hasPromotedPNLReader && localStorage.visitOptionsCounter > 1) {
-        width = $(document.body).width() * 0.6;
+const promote = () => {
+    const visitCounter = parseInt(localStorage.visitOptionsCounter) || 0;
+
+    if (!localStorage.hasPromotedPNLReader && visitCounter > 1) {
+        const width = $(document.body).width() * 0.6;
         $("#pnl-reader-promo-modal").modal("show");
 
-        $(".btn-not-intersted").on("click", function (e) {
+        $(".btn-not-intersted").on("click", () => {
             localStorage.hasPromotedPNLReader = true;
             $("#pnl-reader-promo-modal").modal("hide");
         });
 
         $("#pnl-reader-promo-modal")
             .off("hide.bs.modal")
-            .on("hide.bs.modal", function (ev) {
-                if (localStorage.visitOptionsCounter > 2) {
+            .on("hide.bs.modal", () => {
+                if (visitCounter > 2) {
                     localStorage.hasPromotedPNLReader = true;
                 }
             });
-    } else if (!localStorage.hasPromotedCaptionz && localStorage.visitOptionsCounter > 3) {
-        width = $(document.body).width() * 0.8;
+    } else if (!localStorage.hasPromotedCaptionz && visitCounter > 3) {
+        const width = $(document.body).width() * 0.8;
         $("#captionz-promo-modal iframe").height(width / 2.67 + 10);
         $("#captionz-promo-modal").modal("show");
 
-        $(".btn-not-intersted").on("click", function (e) {
+        $(".btn-not-intersted").on("click", () => {
             localStorage.hasPromotedCaptionz = true;
             $("#captionz-promo-modal").modal("hide");
         });
 
         $("#captionz-promo-modal")
             .off("hide.bs.modal")
-            .on("hide.bs.modal", function (ev) {
+            .on("hide.bs.modal", () => {
                 $("#captionz-promo-modal iframe").remove();
-                if (localStorage.visitOptionsCounter > 2) {
+                if (visitCounter > 2) {
                     localStorage.hasPromotedCaptionz = true;
                 }
             });

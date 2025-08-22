@@ -1,7 +1,7 @@
 import utils from "utils";
 
 export const initClipboardReader = () =>
-    utils.listenToBackground("read clipboard text", async function () {
+    utils.listenToBackground("read clipboard text", async () => {
         try {
             const text = await navigator.clipboard.readText();
             chrome.runtime.sendMessage({

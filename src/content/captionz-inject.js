@@ -20,7 +20,7 @@ const setYtb = async () => {
     });
 };
 
-const observePathnameChange = function (callback) {
+const observePathnameChange = (callback) => {
     let lastPathname = location.pathname;
     const observer = new MutationObserver((mutations) =>
         mutations.forEach((mutation) => {
@@ -33,8 +33,8 @@ const observePathnameChange = function (callback) {
     observer.observe(document, { subtree: true, childList: true });
 };
 
-export var initCaptionzInjection = () => {
-    $(document).ready(async function () {
+export const initCaptionzInjection = () => {
+    $(document).ready(async () => {
         const { disableYtbCaptionz } = await utils.send("setting of ytb captionz");
         if (!disableYtbCaptionz) {
             if (
@@ -45,7 +45,7 @@ export var initCaptionzInjection = () => {
                 setYtb().catch(console.warn);
             }
 
-            observePathnameChange(function () {
+            observePathnameChange(() => {
                 if (
                     location.href.startsWith("https://www.youtube.com/watch") &&
                     location.search.includes("v=") &&

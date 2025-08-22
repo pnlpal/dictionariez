@@ -5,7 +5,7 @@ import { playAudios, playSynthesis } from "../other/speak.js";
 
 let creating = null; // A global promise to avoid concurrency issues
 
-const setupOffscreenDocument = async function () {
+const setupOffscreenDocument = async () => {
     const path = "offscreen.html";
     const offscreenUrl = chrome.runtime.getURL(path);
     const existingContexts = await chrome.runtime.getContexts({
@@ -19,23 +19,49 @@ const setupOffscreenDocument = async function () {
 
     if (creating) {
         return await creating;
-    } else {
-        creating = chrome.offscreen.createDocument({
-            url: path,
-            reasons: ["AUDIO_PLAYBACK"],
-            justification: "Play audio of the word",
+    }
+
+    creating = chrome.offscreen.createDocument({
+        url: path,
+        reasons: ["AUDIO_PLAYBACK"],
+        justification: "Play audio of the word",
+    });
+    await creating;
+    creating = null;
+};
+
+const sendAudioMessage = async (messageData) => {
+    const isFirefox = await utils.isFirefox();
+
+    if (!isFirefox) {
+        chrome.runtime.sendMessage({
+            type: "speak",
+            ...messageData,
         });
-        await creating;
-        creating = null;
+    } else {
+        // Handle Firefox-specific audio playback
+        if (messageData.ameSrc || messageData.breSrc) {
+            playAudios([messageData.ameSrc, messageData.breSrc].filter(Boolean));
+        }
+        if (messageData.otherSrc) {
+            playAudios([messageData.otherSrc]);
+        }
+        if (messageData.synthesisObj) {
+            playSynthesis(messageData.synthesisObj);
+        }
     }
 };
 
 export default {
     init() {
         message.on("play audios", async ({ ameSrc, breSrc, otherSrc, checkSetting, synthesisObj }) => {
-            if (!(await utils.isFirefox())) {
+            const isFirefox = await utils.isFirefox();
+
+            if (!isFirefox) {
                 await setupOffscreenDocument();
             }
+
+            // Apply audio settings if requested
             if (checkSetting) {
                 if (!setting.getValue("enableAmeAudio")) {
                     ameSrc = null;
@@ -45,36 +71,19 @@ export default {
                 }
             }
 
-            if (!(await utils.isFirefox())) {
-                chrome.runtime.sendMessage({
-                    type: "speak",
-                    ameSrc,
-                    breSrc,
-                });
-            } else {
-                playAudios([ameSrc, breSrc]);
+            // Play main audio sources (American and British English)
+            if (ameSrc || breSrc) {
+                await sendAudioMessage({ ameSrc, breSrc });
             }
 
+            // Play other language audio
             if (otherSrc) {
-                if (!(await utils.isFirefox())) {
-                    chrome.runtime.sendMessage({
-                        type: "speak",
-                        otherSrc,
-                    });
-                } else {
-                    playAudios([otherSrc]);
-                }
+                await sendAudioMessage({ otherSrc });
             }
 
+            // Play synthesized speech
             if (synthesisObj) {
-                if (!(await utils.isFirefox())) {
-                    chrome.runtime.sendMessage({
-                        type: "speak",
-                        synthesisObj,
-                    });
-                } else {
-                    playSynthesis(synthesisObj);
-                }
+                await sendAudioMessage({ synthesisObj });
             }
         });
     },

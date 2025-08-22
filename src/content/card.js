@@ -11,8 +11,8 @@ import "./card.less";
 
 const sys = location.search.match(/sys=(\w+)/)[1];
 
-const initWiki = function () {
-    const getWikipedia = async function (w) {
+const initWiki = () => {
+    const getWikipedia = async (w) => {
         const res = await utils.send("get wikipedia", { w });
 
         if (res?.extract_html) {
@@ -34,7 +34,7 @@ const initWiki = function () {
         }
     };
 
-    $(`\
+    $(`
 <a class="dictionaries-card-minimal-icon" href="" title="Open wikipedia" style="display: none;">
     <img src="https://en.m.wikipedia.org/static/favicon/wikipedia.ico" alt="Wiki"></img>
 </a>
@@ -53,16 +53,16 @@ const initWiki = function () {
     </div>
 
     <div class="dictionaries-wiki-image"> </div>
-    
+
     <div class="dictionaries-wiki-extract">
     </div>
-</div>\
+</div>
 `).appendTo("body");
 
     getWikipedia();
 };
 
-(async function () {
+(async () => {
     const setting = await utils.send("card setting", {
         sys,
         origin: location.origin,
@@ -75,12 +75,12 @@ const initWiki = function () {
     }
 })();
 
-$(document).on("click", "a.dictionaries-card-link", function (ev) {
+$(document).on("click", "a.dictionaries-card-link", (ev) => {
     window.top.location.href = ev.currentTarget.href;
     return false;
 });
 
-window.showCard = function (minimal) {
+window.showCard = (minimal) => {
     window.top.postMessage({ type: "show-card", sys, minimal }, "*");
     if (minimal) {
         $(".dictionaries-card-minimal-icon").show();
@@ -91,21 +91,21 @@ window.showCard = function (minimal) {
     }
 };
 
-$(document).on("click", "a.dictionaries-card-close", function (ev) {
+$(document).on("click", "a.dictionaries-card-close", (ev) => {
     showCard(true);
 
     utils.send("card minimal", { sys, minimal: true });
     return false;
 });
 
-$(document).on("click", "a.dictionaries-card-minimal-icon", function (ev) {
+$(document).on("click", "a.dictionaries-card-minimal-icon", (ev) => {
     showCard();
 
     utils.send("card minimal", { sys, minimal: false });
     return false;
 });
 
-$(document).on("click", "a.dictionaries-setting", function (ev) {
+$(document).on("click", "a.dictionaries-setting", (ev) => {
     utils.send("open options", { to: "function-setting", sys });
     return false;
 });
