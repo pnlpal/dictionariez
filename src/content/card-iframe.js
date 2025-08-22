@@ -2,13 +2,13 @@ import $ from "jquery";
 
 import "./card-iframe.less";
 
-const setupCardsPosition = function () {
+const setupCardsPosition = () => {
     const hasMax =
         $("iframe.dictionaries-card:visible").length !== $("iframe.dictionaries-card-minimal:visible").length;
 
     let maxiCount = 0;
     let miniCount = 0;
-    $("iframe.dictionaries-card:visible").each(function (i, el) {
+    $("iframe.dictionaries-card:visible").each((i, el) => {
         let bottom;
         if ($(el).hasClass("dictionaries-card-minimal")) {
             miniCount += 1;
@@ -32,7 +32,7 @@ const setupCardsPosition = function () {
 
 window.addEventListener(
     "message",
-    function (event) {
+    (event) => {
         // chrome-extension or moz-extension
         if (event?.data?.type) {
             if (event.data.type === "toggleDropdown") {

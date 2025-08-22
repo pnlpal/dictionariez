@@ -22,7 +22,7 @@ async function playAudios(urls) {
   const _play = (url) => {
     return new Promise((resolve) => {
       if (!url) {
-        return resolve();
+        resolve();
       }
 
       let audio = new Audio(url);

@@ -21,12 +21,12 @@ class AnkiWindow extends dw.DictWindow {
     }
 
     getStoredPosition() {
-        // bugfix: dont know how why, ankiWidth and ankiHeight are saved as number, need integer here.
+        // bugfix: don't know how why, ankiWidth and ankiHeight are saved as number, need integer here.
         return {
-            width: parseInt(setting.getValue("ankiWidth")),
-            height: parseInt(setting.getValue("ankiHeight")),
-            left: parseInt(setting.getValue("ankiLeft")),
-            top: parseInt(setting.getValue("ankiTop")),
+            width: parseInt(setting.getValue("ankiWidth"), 10),
+            height: parseInt(setting.getValue("ankiHeight"), 10),
+            left: parseInt(setting.getValue("ankiLeft"), 10),
+            top: parseInt(setting.getValue("ankiTop"), 10),
         };
     }
 }
@@ -92,6 +92,7 @@ export default {
 
     lookupInDicts(wordItem, lookupInfo) {
         let w;
+
         if (!lookupInfo) {
             ({ w } = wordItem);
         } else if (lookupInfo.length) {
@@ -137,13 +138,16 @@ export default {
                         await Promise.all(
                             images.map(async (image) => {
                                 const dataUrl = await utils.imageToDataUrl(image.src);
-                                image.dataUrl = dataUrl;
-                                return image;
+                                return { ...image, dataUrl };
                             })
                         );
 
+                    // Process images from lookup results
                     if (lookupInfo?.length) {
-                        await setDataToImages(lookupInfo[0]?.images || lookupInfo[1]?.images || []);
+                        const images = lookupInfo[0]?.images || lookupInfo[1]?.images || [];
+                        if (images.length > 0) {
+                            await setDataToImages(images);
+                        }
                     }
 
                     if (lookupInfo?.images?.length) {
@@ -151,21 +155,26 @@ export default {
                     }
 
                     this.lookupInDicts(this.anki.wordItem, lookupInfo);
-                    return { wordItem: this.anki.wordItem, lookupInfo, followedWords: lookupInfo?.map?.((n) => n.w) };
+                    return {
+                        wordItem: this.anki.wordItem,
+                        lookupInfo,
+                        followedWords: lookupInfo?.map?.(item => item.w)
+                    };
                 }
             }
         });
 
-        message.on("image to data url", async (request, sender) => {
+        message.on("image to data url", async (request) => {
             const dataUrl = await utils.imageToDataUrl(request.src);
             return { dataUrl };
         });
 
-        message.on("beforeunload anki window", (request, sender) => {
-            setting.setValue("ankiWidth", request.width);
-            setting.setValue("ankiHeight", request.height);
-            setting.setValue("ankiLeft", request.left);
-            setting.setValue("ankiTop", request.top);
+        message.on("beforeunload anki window", (request) => {
+            const { width, height, left, top } = request;
+            setting.setValue("ankiWidth", width);
+            setting.setValue("ankiHeight", height);
+            setting.setValue("ankiLeft", left);
+            setting.setValue("ankiTop", top);
         });
     },
 };

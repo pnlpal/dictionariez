@@ -1,4 +1,3 @@
-let setupAppDescription;
 import angular from "angular";
 import utils from "utils";
 import debounce from "lodash/debounce";
@@ -28,7 +27,7 @@ const dictApp = angular.module("fairyDictApp", ["ui.bootstrap", "color.picker"])
 dictApp.controller("optionCtrl", [
     "$scope",
     "$sce",
-    function ($scope, $sce) {
+    ($scope, $sce) => {
         $scope.isSidePal = process.env.PRODUCT === "SidePal";
         $scope.isDictionariez = process.env.PRODUCT === "Dictionariez";
         $scope.asciiTitle =
@@ -63,7 +62,7 @@ dictApp.controller("optionCtrl", [
             wiktionary: "Wiktionary",
         };
 
-        $scope.changeKey = debounce(function (value, key) {
+        $scope.changeKey = debounce((value, key) => {
             if (key) {
                 $scope.setting[key] = value;
             } else {
@@ -78,7 +77,7 @@ dictApp.controller("optionCtrl", [
             });
         }, 500);
 
-        $scope.toggleOtherDisabledLanguages = function (lang) {
+        $scope.toggleOtherDisabledLanguages = (lang) => {
             const idx = $scope.setting.otherDisabledLanguages.indexOf(lang);
             if (idx >= 0) {
                 $scope.setting.otherDisabledLanguages.splice(idx, 1);
@@ -96,7 +95,7 @@ dictApp.controller("optionCtrl", [
             {
                 type: "setting",
             },
-            function (config) {
+            (config) => {
                 // window.setting = config
                 $scope.setting = config;
                 $scope.$apply();
@@ -111,17 +110,17 @@ dictApp.controller("optionCtrl", [
             },
         };
 
-        const setupDevFunctions = function () {
+        const setupDevFunctions = () => {
             console.log(`\
-.--.        .                                    
-|   : o    _|_   o                    o          
+.--.        .
+|   : o    _|_   o                    o
 |   | .  .-.|    .  .-. .--. .-.  .--..  .-. ---.
-|   ; | (   |    | (   )|  |(   ) |   | (.-'  .' 
+|   ; | (   |    | (   )|  |(   ) |   | (.-'  .'
 '--'-' \`-\`-'\`-'-' \`-\`-' '  \`-\`-'\`-' -' \`-\`--''---
 
-Welcome to dictionariez! 
+Welcome to dictionariez!
 You can use the function "addDict" to add/change a dict to your dictionary list.
-For example: 
+For example:
 
 addDict({
   "dictName": "Google Image",
@@ -129,12 +128,12 @@ addDict({
   "css": "c-wiz[jsdata='deferred-i3']>div:first-child {display: none;} body {margin-top: 50px !important;}"
 })
 
-And use "allDicts" to access all the dicts in your collection. 
+And use "allDicts" to access all the dicts in your collection.
 
 Read more here: https://pnl.dev/topic/52/help-more-dictionaries-needed
 \
 `);
-            window.addDict = window.addExtraDict = async function (dict) {
+            window.addDict = window.addExtraDict = async (dict) => {
                 await utils.send("dictionary-add", { dict });
                 location.reload();
             };
@@ -144,7 +143,7 @@ Read more here: https://pnl.dev/topic/52/help-more-dictionaries-needed
     },
 ]);
 
-setupAppDescription = function () {
+const setupAppDescription = () => {
     const appDescription =
         process.env.PRODUCT === "Dictionariez"
             ? require("../description-and-badge.html").default
@@ -153,6 +152,6 @@ setupAppDescription = function () {
     document.querySelector("#app-description").innerHTML = appDescription;
 
     const { version } = chrome.runtime.getManifest();
-    document.querySelector("#app-description .badge").innerText = "V" + version;
+    document.querySelector("#app-description .badge").innerText = `V${version}`;
 };
 setupAppDescription();

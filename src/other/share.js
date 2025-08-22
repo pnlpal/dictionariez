@@ -1,4 +1,3 @@
-let setupAppDescription, setupAsciiTitle, setupProductName, toast;
 import "../vendor/needsharebutton.js";
 import "../vendor/needsharebutton.css";
 import "../vendor/github-badge.js";
@@ -10,12 +9,12 @@ import bootoast from "bootoast/dist/bootoast.min.js";
 document.title = `Share - ${process.env.PRODUCT}`;
 const { version } = chrome.runtime.getManifest();
 
-toast = function () {
+const toast = () => {
     const prevVersion = localStorage.getItem("dictionariez-version");
     localStorage.setItem("dictionariez-version", version);
     if (prevVersion && prevVersion !== version) {
         bootoast.toast({
-            message: "Bravo! You have successfully upgraded Dictionariez to v" + version,
+            message: `Bravo! You have successfully upgraded Dictionariez to v${version}`,
             type: "info",
             position: "top",
             timeout: 5,
@@ -25,7 +24,7 @@ toast = function () {
 };
 toast();
 
-setupAsciiTitle = function () {
+const setupAsciiTitle = () => {
     const asciiTitle =
         process.env.PRODUCT === "Dictionariez"
             ? require("../ascii-title.html").default
@@ -35,18 +34,18 @@ setupAsciiTitle = function () {
 };
 setupAsciiTitle();
 
-setupAppDescription = function () {
+const setupAppDescription = () => {
     const appDescription =
         process.env.PRODUCT === "Dictionariez"
             ? require("../description-and-badge.html").default
             : require(`../description-and-badge.${process.env.PRODUCT.toLowerCase()}.html`).default;
 
     document.querySelector("#app-description").innerHTML = appDescription;
-    document.querySelector("#app-description .badge").innerText = "V" + version;
+    document.querySelector("#app-description .badge").innerText = `V${version}`;
 };
 setupAppDescription();
 
-setupProductName = function () {
+const setupProductName = () => {
     const productName = process.env.PRODUCT;
     document.querySelectorAll(".productName").forEach((el) => (el.innerText = productName));
 };

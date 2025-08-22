@@ -118,7 +118,7 @@ const parseHTML = (htmlString, parserDesc) => {
   return result;
 };
 
-const getValueFromNode = ($node, desc) => {
+function getValueFromNode($node, desc) {
   let value = null;
   let $el = $node;
 

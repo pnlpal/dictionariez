@@ -1,6 +1,6 @@
 import { getSentenceFromSelection } from "get-selection-more";
 
-export var getWordAtPoint = function (elem, x, y) {
+export const getWordAtPoint = (elem, x, y) => {
     let range;
     if (elem.nodeType === elem.TEXT_NODE) {
         range = elem.ownerDocument.createRange();
@@ -17,7 +17,7 @@ export var getWordAtPoint = function (elem, x, y) {
                 range.getBoundingClientRect().bottom >= y
             ) {
                 range.detach();
-                var sel = window.getSelection();
+                const sel = window.getSelection();
                 sel.removeAllRanges();
                 sel.addRange(range);
                 sel.modify("move", "backward", "word");
@@ -29,10 +29,10 @@ export var getWordAtPoint = function (elem, x, y) {
             currentPos += 1;
         }
     } else {
-        for (var el of elem.childNodes) {
+        for (const el of elem.childNodes) {
             range = el.ownerDocument.createRange();
             range.selectNodeContents(el);
-            var react = range.getBoundingClientRect();
+            const react = range.getBoundingClientRect();
             if (react.left <= x && react.right >= x && react.top <= y && react.bottom >= y) {
                 range.detach();
                 return getWordAtPoint(el, x, y);
@@ -43,12 +43,12 @@ export var getWordAtPoint = function (elem, x, y) {
     }
 };
 
-export var getWordFromSelection = function (fromAllFrames = false) {
+export const getWordFromSelection = (fromAllFrames = false) => {
     let word = window.getSelection().toString().trim();
     if (!word && fromAllFrames) {
-        for (var frame of window.frames) {
+        for (let i = 0; i < window.frames.length; i++) {
             try {
-                word = frame.getSelection().toString().trim();
+                word = window.frames[i].getSelection().toString().trim();
                 if (word) {
                     break;
                 }
@@ -58,7 +58,7 @@ export var getWordFromSelection = function (fromAllFrames = false) {
     return word;
 };
 
-export var getSentenceOfSelection = function (window_ = window) {
+export const getSentenceOfSelection = (window_ = window) => {
     const selection = window_.getSelection();
 
     try {
@@ -90,15 +90,15 @@ export var getSentenceOfSelection = function (window_ = window) {
     }
 };
 
-export var getSentenceFromAllFrames = function () {
+export const getSentenceFromAllFrames = () => {
     let sentence = getSentenceOfSelection();
     if (sentence) {
         return sentence;
     }
 
-    for (var frame of window.frames) {
+    for (let i = 0; i < window.frames.length; i++) {
         try {
-            sentence = getSentenceOfSelection(frame);
+            sentence = getSentenceOfSelection(window.frames[i]);
             if (sentence) {
                 return sentence;
             }
@@ -108,7 +108,7 @@ export var getSentenceFromAllFrames = function () {
     return null;
 };
 
-export var checkEditable = function (element) {
+export const checkEditable = (element) => {
     let curNode = element;
     while (curNode) {
         if (curNode.isContentEditable || ["input", "textarea"].includes(curNode.nodeName.toLowerCase())) {
@@ -117,7 +117,7 @@ export var checkEditable = function (element) {
         curNode = curNode.parentElement;
     }
     // check the direct children of the node, sometimes the editor could be wrapped by a div.
-    for (var node of element?.children || []) {
+    for (const node of element?.children || []) {
         if (node.isContentEditable || ["input", "textarea"].includes(node.nodeName.toLowerCase())) {
             return true;
         }

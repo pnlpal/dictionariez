@@ -11,8 +11,8 @@ let screenHeight = 1000;
 let screenAvailLeft = 0;
 let screenAvailTop = 0;
 
-const getInfoOfSelectionCode = function () {
-    const getSentence = function () {
+const getInfoOfSelectionCode = () => {
+    const getSentence = () => {
         try {
             const selection = window.getSelection();
             const range = selection.getRangeAt(0);
@@ -82,10 +82,10 @@ class DictWindow {
     getStoredPosition() {
         // bugfix: dont know how why, windowWidth and windowHeight are saved as number, need integer here.
         return {
-            width: parseInt(setting.getValue("windowWidth")),
-            height: parseInt(setting.getValue("windowHeight")),
-            left: parseInt(setting.getValue("windowLeft")),
-            top: parseInt(setting.getValue("windowTop")),
+            width: parseInt(setting.getValue("windowWidth"), 10),
+            height: parseInt(setting.getValue("windowHeight"), 10),
+            left: parseInt(setting.getValue("windowLeft"), 10),
+            top: parseInt(setting.getValue("windowTop"), 10),
         };
     }
 
@@ -93,23 +93,34 @@ class DictWindow {
         let err;
         let { width, height, left, top } = this.getStoredPosition();
 
+        // Constants for default values
+        const MIN_WIDTH = 300;
+        const MIN_HEIGHT = 300;
+        const DEFAULT_WIDTH = 700;
+        const DEFAULT_HEIGHT = 820;
+        const DEFAULT_SCREEN_WIDTH = 1080;
+        const DEFAULT_SCREEN_HEIGHT = 1000;
+        const FALLBACK_LEFT = 600;
+        const FALLBACK_TOP = 300;
+
         // fix too small value
-        if (!width || width < 300) {
-            width = 700;
+        if (!width || width < MIN_WIDTH) {
+            width = DEFAULT_WIDTH;
         }
-        if (!height || height < 300) {
-            height = 820;
+        if (!height || height < MIN_HEIGHT) {
+            height = DEFAULT_HEIGHT;
         }
 
         const defaultLeft = this.isAnki
-            ? Math.round((screenWidth || 1080) / 2 + 400)
-            : Math.round((screenWidth || 1080) / 2 - width / 2);
-        const defaultTop = Math.round((screenHeight || 1000) / 2 - height / 2);
+            ? Math.round((screenWidth || DEFAULT_SCREEN_WIDTH) / 2 + 400)
+            : Math.round((screenWidth || DEFAULT_SCREEN_WIDTH) / 2 - width / 2);
+        const defaultTop = Math.round((screenHeight || DEFAULT_SCREEN_HEIGHT) / 2 - height / 2);
+
         if (isNaN(left)) {
-            left = defaultLeft || 600;
+            left = defaultLeft || FALLBACK_LEFT;
         }
         if (isNaN(top)) {
-            top = defaultTop || 300;
+            top = defaultTop || FALLBACK_TOP;
         }
 
         // setup the other cloned window
@@ -135,8 +146,8 @@ class DictWindow {
             if (height > screenHeight) {
                 height = screenHeight;
             }
-            left = Math.round((screenWidth || 1080) / 2 - width / 2);
-            top = Math.round((screenHeight || 1000) / 2 - height / 2);
+            left = Math.round((screenWidth || DEFAULT_SCREEN_WIDTH) / 2 - width / 2);
+            top = Math.round((screenHeight || DEFAULT_SCREEN_HEIGHT) / 2 - height / 2);
         }
 
         if (!this.wid) {
@@ -284,14 +295,14 @@ export default {
         }
 
         const results = [];
-        for (var win of this.dictWindows) {
+        for (const win of this.dictWindows) {
             result = win.refineTextWithAI(text);
             if (result) {
                 results.push(result);
             }
         }
 
-        if (!results.length) {
+        if (results.length === 0) {
             const aiDict = dict.getFirstAIDict();
             if (aiDict) {
                 result = this.create({ dictName: aiDict.dictName }).refineTextWithAI(text);
@@ -309,9 +320,9 @@ export default {
             storage.addHistory({ w, s, sc, sentence });
         } // ignore lookup from options page
 
-        if (this.dictWindows.length) {
+        if (this.dictWindows.length > 0) {
             result = null;
-            for (var win of this.dictWindows) {
+            for (const win of this.dictWindows) {
                 result = await win.lookup(w, sentence, languagePrompt);
             }
 
@@ -319,7 +330,7 @@ export default {
             return result;
         } else {
             if (screen?.width > 1080 && screen?.height > 800) {
-                screenWidth = screen.with;
+                screenWidth = screen.width;
                 screenHeight = screen.height;
                 screenAvailLeft = screen.availLeft;
                 screenAvailTop = screen.availTop;
@@ -349,9 +360,9 @@ export default {
     },
 
     destroyWin({ wid, tid } = {}) {
-        this.dictWindows.forEach(function (win) {
+        this.dictWindows.forEach((win) => {
             if (win.wid === wid || win.tid === tid) {
-                return win.reset();
+                win.reset();
             }
         });
         this.dictWindows = this.dictWindows.filter((win) => win.wid);
@@ -359,7 +370,7 @@ export default {
     },
 
     closeAllWindows() {
-        for (var win of this.dictWindows) {
+        for (const win of this.dictWindows) {
             try {
                 chrome.windows.remove(win.wid);
             } catch (err) {
@@ -395,25 +406,27 @@ export default {
 
         const data = await chrome.storage.local.get("dictWindows");
 
-        let i = 0;
-        return await (async () => {
-            const result = [];
-            for (var options of data?.dictWindows || []) {
-                if (options.wid && options.tid) {
-                    try {
-                        await chrome.windows.get(options.wid);
-                        var win = new DictWindow({ ...options, windex: i });
-                        this.dictWindows.push(win);
-                        result.push((i += 1));
-                    } catch (err) {
-                        result.push(console.warn("[dictWindow] restore error: ", err.message, "Ignored."));
-                    }
-                } else {
+        let windowIndex = 0;
+        const result = [];
+
+        for (const options of data?.dictWindows || []) {
+            if (options.wid && options.tid) {
+                try {
+                    await chrome.windows.get(options.wid);
+                    const win = new DictWindow({ ...options, windex: windowIndex });
+                    this.dictWindows.push(win);
+                    result.push(windowIndex);
+                    windowIndex += 1;
+                } catch (err) {
+                    console.warn("[dictWindow] restore error: ", err.message, "Ignored.");
                     result.push(undefined);
                 }
+            } else {
+                result.push(undefined);
             }
-            return result;
-        })();
+        }
+
+        return result;
     },
 
     mainDictWindow() {
@@ -421,11 +434,7 @@ export default {
     },
 
     getByTab(tid) {
-        for (var win of this.dictWindows) {
-            if (win.tid === tid) {
-                return win;
-            }
-        }
+        return this.dictWindows.find((win) => win.tid === tid);
     },
 
     async init() {
@@ -660,9 +669,10 @@ export default {
             if (sender.tab) {
                 win = this.getByTab(sender.tab.id);
 
+                // only show at the main window
                 if (win.windex !== 0) {
                     return;
-                } // only show at the main window.
+                }
                 if (!win?.word) {
                     return;
                 }
@@ -671,11 +681,11 @@ export default {
             }
 
             if (utils.isEnglish(win.word)) {
-                return utils.loadJson("https://en.m.wikipedia.org/api/rest_v1/page/summary/" + win.word);
+                return utils.loadJson(`https://en.m.wikipedia.org/api/rest_v1/page/summary/${win.word}`);
             } else if (utils.isChinese(win.word) && setting.getValue("enableLookupChinese")) {
-                return utils.loadJson("https://zh.wikipedia.org/api/rest_v1/page/summary/" + win.word);
+                return utils.loadJson(`https://zh.wikipedia.org/api/rest_v1/page/summary/${win.word}`);
             } else if (utils.isJapanese(win.word)) {
-                return utils.loadJson("https://ja.wikipedia.org/api/rest_v1/page/summary/" + win.word);
+                return utils.loadJson(`https://ja.wikipedia.org/api/rest_v1/page/summary/${win.word}`);
             }
         });
 
