@@ -11,43 +11,6 @@ let screenHeight = 1000;
 let screenAvailLeft = 0;
 let screenAvailTop = 0;
 
-const getInfoOfSelectionCode = () => {
-    const getSentence = () => {
-        try {
-            const selection = window.getSelection();
-            const range = selection.getRangeAt(0);
-            if (!selection.toString()) {
-                return;
-            }
-
-            const range1 = range.cloneRange();
-            range1.detach();
-
-            selection.modify("move", "backward", "sentence");
-            selection.modify("extend", "forward", "sentence");
-
-            const text = selection.toString().trim();
-
-            selection.removeAllRanges();
-            selection.addRange(range1);
-
-            return text;
-        } catch (err) {
-            // On firefox, unable to get sentence.
-            return;
-        }
-    };
-
-    return [
-        window.getSelection().toString().trim(),
-        getSentence(),
-        screen.width,
-        screen.height,
-        screen.availLeft,
-        screen.availTop,
-    ];
-};
-
 class DictWindow {
     wid = null;
     tid = null;
@@ -597,7 +560,7 @@ export default {
             };
         });
 
-        message.on("dictionary history", async (request, sender) => {
+        message.on("dictionary history", async () => {
             const history = await storage.getHistory(10); // at most show 8 words in the history list on dictionary header.
             return { history };
         });
@@ -646,7 +609,7 @@ export default {
             }
         });
 
-        message.on("beforeunload dict window", (request, sender) => {
+        message.on("beforeunload dict window", (request) => {
             setting.setValue("windowWidth", request.width);
             setting.setValue("windowHeight", request.height);
             setting.setValue("windowLeft", request.left);
@@ -689,7 +652,7 @@ export default {
             }
         });
 
-        message.on("card setting", ({ sys, origin }) => {
+        message.on("card setting", ({ sys }) => {
             let disabled;
             if (sys === "wiki") {
                 disabled = setting.getValue("disableWikipediaCard");

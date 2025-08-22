@@ -1,4 +1,3 @@
-import $ from "jquery";
 import message from "./message.js";
 import utils from "utils";
 import setting from "./setting.js";
@@ -158,7 +157,7 @@ export default {
                     return {
                         wordItem: this.anki.wordItem,
                         lookupInfo,
-                        followedWords: lookupInfo?.map?.(item => item.w)
+                        followedWords: lookupInfo?.map?.((item) => item.w),
                     };
                 }
             }

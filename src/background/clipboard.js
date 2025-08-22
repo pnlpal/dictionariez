@@ -1,7 +1,6 @@
 import message from "./message.js";
 import setting from "./setting.js";
 import plainLookup from "./plain-lookup.js";
-import utils from "utils";
 
 const CLIPBOARD_TIMEOUT_MS = 5000;
 

@@ -1,3 +1,6 @@
+/* eslint-env node */
+/* global __dirname, module, Buffer */
+
 var webpack = require("webpack"),
     path = require("path"),
     fileSystem = require("fs"),
@@ -234,7 +237,7 @@ var options = {
     ],
     ignoreWarnings: [
         {
-            module: /node_modules[\\\/]mocha[\\\/]mocha\.js/,
+            module: /node_modules[\\/]mocha[\\/]mocha\.js/,
             message: /Critical dependency: the request of a dependency is an expression/,
         },
     ],

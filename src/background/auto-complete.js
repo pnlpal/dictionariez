@@ -1,7 +1,5 @@
 import dict from "./dict.js";
 import message from "./message.js";
-import storage from "./storage.js";
-import setting from "./setting.js";
 import utils from "utils";
 
 message.on("autocomplete", async ({ text }) => {

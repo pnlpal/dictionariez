@@ -1,4 +1,3 @@
-import dict from "./dict.js";
 import message from "./message.js";
 import storage from "./storage.js";
 import setting from "./setting.js";
@@ -361,7 +360,10 @@ export default {
                             setEnglishProns(targetLang);
                         } else {
                             const langConfig = langs[targetLang.lang];
-                            const synthesis = langConfig.synthesis != null ? langConfig.synthesis : `${langConfig.symbol}-${langConfig.symbol.toUpperCase()}`;
+                            const synthesis =
+                                langConfig.synthesis != null
+                                    ? langConfig.synthesis
+                                    : `${langConfig.symbol}-${langConfig.symbol.toUpperCase()}`;
                             targetLang.prons[0].synthesis = synthesis;
                             if (langConfig.symbol) {
                                 targetLang.prons[0].symbol = `${langConfig.symbol.toUpperCase()} ${
