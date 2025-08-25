@@ -18,6 +18,8 @@ import "angularjs-color-picker/dist/angularjs-color-picker.min.css";
 import "angularjs-color-picker/dist/themes/angularjs-color-picker-bootstrap.min.css";
 import "angularjs-color-picker";
 
+import "./pnl-craft-topics.js";
+
 document.title = `Options - ${process.env.PRODUCT}`;
 
 const dictApp = angular.module("fairyDictApp", ["ui.bootstrap", "color.picker"]);
