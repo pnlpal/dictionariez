@@ -1,91 +1,82 @@
 <div id="fairy-dict" class="dictWrapper" ng-controller="dictCtrl">
-  <nav
-    class="navbar navbar-default navbar-fixed-top {{
+    <nav
+        class="navbar navbar-default navbar-fixed-top {{
 			inFrame ? 'in-frame' : ''
 		}}"
-  >
-    <!-- <div class="container">
-      <div class=""> -->
-    <form
-      class="navbar-form form-inline"
-      ng-submit="query({newDictWindow: $event.ctrlKey || $event.metaKey})"
     >
-      <!-- <i class="fa fa-laptop fa-lg default-page"></i> -->
-      <div class="form-group history-group pull-left" ng-show="previous">
-        <!-- history -->
-        <div
-          class="btn-group history"
-          uib-dropdown
-          keyboard-nav
-          is-open="isHistoryDropdownOpen"
-          on-toggle="scheduleDropdown('history', open)"
-          ng-mouseenter="scheduleDropdown('history', true)"
-          ng-mouseleave="scheduleCloseDropdown()"
-        >
-          <button
-            id="history-btn"
-            type="button"
-            class="btn btn-default ellipsis"
-            title="{{ previous.w }}"
-            ng-click="query({w: previous.w, newDictWindow: $event.ctrlKey || $event.metaKey})"
-          >
-            {{ previous.w }}
-          </button>
-          <button type="button" class="btn btn-default" uib-dropdown-toggle>
-            <i class="fa fa-history fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">History</span>
-          </button>
-          <ul
-            class="dropdown-menu"
-            uib-dropdown-menu
-            role="menu"
-            aria-labelledby="history-btn"
-            ng-mouseenter="scheduleDropdown('history', true)"
-            ng-mouseleave="scheduleCloseDropdown()"
-          >
-            <li role="menuitem" ng-repeat="item in history track by $index">
-              <a
-                ng-click="query({w: item.w, newDictWindow: $event.ctrlKey || $event.metaKey})"
-                title="{{ item.w }}"
-                ng-init="hideDeleteBtn=1"
-                ng-mouseenter="hideDeleteBtn=0"
-                ng-mouseleave="hideDeleteBtn=1"
-              >
-                <span
-                  class="ellipsis history-word"
-                  ng-class="{'text-bold': item.w === word}"
-                  >{{ item.w }}</span
+        <!-- <div class="container">
+      <div class=""> -->
+        <form class="navbar-form form-inline" ng-submit="query({newDictWindow: $event.ctrlKey || $event.metaKey})">
+            <!-- <i class="fa fa-laptop fa-lg default-page"></i> -->
+            <div class="form-group history-group pull-left" ng-show="previous">
+                <!-- history -->
+                <div
+                    class="btn-group history"
+                    uib-dropdown
+                    keyboard-nav
+                    is-open="isHistoryDropdownOpen"
+                    on-toggle="scheduleDropdown('history', open)"
+                    ng-mouseenter="scheduleDropdown('history', true)"
+                    ng-mouseleave="scheduleCloseDropdown()"
                 >
+                    <button
+                        id="history-btn"
+                        type="button"
+                        class="btn btn-default ellipsis"
+                        title="{{ previous.w }}"
+                        ng-click="query({w: previous.w, newDictWindow: $event.ctrlKey || $event.metaKey})"
+                    >
+                        {{ previous.w }}
+                    </button>
+                    <button type="button" class="btn btn-default" uib-dropdown-toggle>
+                        <i class="fa fa-history fa-lg" aria-hidden="true"></i>
+                        <span class="sr-only">History</span>
+                    </button>
+                    <ul
+                        class="dropdown-menu"
+                        uib-dropdown-menu
+                        role="menu"
+                        aria-labelledby="history-btn"
+                        ng-mouseenter="scheduleDropdown('history', true)"
+                        ng-mouseleave="scheduleCloseDropdown()"
+                    >
+                        <li role="menuitem" ng-repeat="item in history track by $index">
+                            <a
+                                ng-click="query({w: item.w, newDictWindow: $event.ctrlKey || $event.metaKey})"
+                                title="{{ item.w }}"
+                                ng-init="hideDeleteBtn=1"
+                                ng-mouseenter="hideDeleteBtn=0"
+                                ng-mouseleave="hideDeleteBtn=1"
+                            >
+                                <span class="ellipsis history-word" ng-class="{'text-bold': item.w === word}"
+                                    >{{ item.w }}</span
+                                >
 
-                <span class="pull-right">
-                  <i
-                    class="fa fa-star"
-                    aria-hidden="true"
-                    ng-repeat="i in [1,2,3]"
-                    ng-class="{vshow: item.r >= i}"
-                  ></i>
-                  <i
-                    class="fa fa-times text-danger delete-word"
-                    ng-class="{vhide: hideDeleteBtn}"
-                    ng-click="deleteHistory(item, $index);$event.stopPropagation();$event.preventDefault();"
-                    aria-hidden="true"
-                  ></i>
-                </span>
-              </a>
-            </li>
+                                <span class="pull-right">
+                                    <i
+                                        class="fa fa-star"
+                                        aria-hidden="true"
+                                        ng-repeat="i in [1,2,3]"
+                                        ng-class="{vshow: item.r >= i}"
+                                    ></i>
+                                    <i
+                                        class="fa fa-times text-danger delete-word"
+                                        ng-class="{vhide: hideDeleteBtn}"
+                                        ng-click="deleteHistory(item, $index);$event.stopPropagation();$event.preventDefault();"
+                                        aria-hidden="true"
+                                    ></i>
+                                </span>
+                            </a>
+                        </li>
 
-            <li class="divider"></li>
-            <li role="menuitem">
-              <a
-                ng-click="openOptions('history')"
-                href=""
-                class="text-blue more-btn"
-              >
-                <em>More...</em>
-              </a>
-            </li>
-          </ul>
-          <!-- <button
+                        <li class="divider"></li>
+                        <li role="menuitem">
+                            <a ng-click="openOptions('history')" href="" class="text-blue more-btn">
+                                <em>More...</em>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- <button
 						type="button"
 						class="btn btn-default"
 						ng-click="openOptions('history')"
@@ -93,263 +84,228 @@
 						<i class="fa fa-history fa-lg" aria-hidden="true"></i>
 						<span class="sr-only">History</span>
 					</button> -->
-        </div>
-      </div>
+                </div>
+            </div>
 
-      <div class="form-group dict-group pull-right">
-        <div class="btn-group dictionaries">
-          <button
-            type="button"
-            class="btn btn-default btn-sm hidden-xss"
-            title="{{ previousDictName }}"
-            ng-click="query({ previousDict: true, newDictWindow: $event.ctrlKey || $event.metaKey})"
-          >
-            <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
-            <span class="sr-only">Previous</span>
-          </button>
-          <!-- <button
+            <div class="form-group dict-group pull-right">
+                <div class="btn-group dictionaries">
+                    <button
+                        type="button"
+                        class="btn btn-default btn-sm hidden-xss"
+                        title="{{ previousDictName }}"
+                        ng-click="query({ previousDict: true, newDictWindow: $event.ctrlKey || $event.metaKey})"
+                    >
+                        <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
+                        <span class="sr-only">Previous</span>
+                    </button>
+                    <!-- <button
 						class="form-control btn  btn-default dict-name"
 						type="button"
 						ng-click="openOptions('dictionary')"
 					>
 						{{ currentDictName }}
 					</button> -->
-          <div
-            class="btn-group"
-            uib-dropdown
-            keyboard-nav
-            on-toggle="scheduleDropdown('dict', open)"
-            is-open="isDictDropdownOpen"
-            ng-mouseenter="scheduleDropdown('dict', true)"
-            ng-mouseleave="scheduleCloseDropdown()"
-          >
-            <button
-              uib-dropdown-toggle
-              class="form-control btn dropdown-toggle btn-default dict-name"
-              type="button"
-              id="dropdownMenu1"
-              title="{{ currentDictName }}"
-            >
-              <span class="span-name ellipsis">{{ currentDictName }}</span>
-              <span class="caret"></span>
-            </button>
+                    <div
+                        class="btn-group"
+                        uib-dropdown
+                        keyboard-nav
+                        on-toggle="scheduleDropdown('dict', open)"
+                        is-open="isDictDropdownOpen"
+                        ng-mouseenter="scheduleDropdown('dict', true)"
+                        ng-mouseleave="scheduleCloseDropdown()"
+                    >
+                        <button
+                            uib-dropdown-toggle
+                            class="form-control btn dropdown-toggle btn-default dict-name"
+                            type="button"
+                            id="dropdownMenu1"
+                            title="{{ currentDictName }}"
+                        >
+                            <span class="span-name ellipsis">{{ currentDictName }}</span>
+                            <span class="caret"></span>
+                        </button>
 
-            <ul
-              uib-dropdown-menu
-              class="dropdown-menu dict-list pull-right"
-              role="menu"
-              aria-labelledby="dropdownMenu1"
-              ng-mouseenter="scheduleDropdown('dict', true)"
-              ng-mouseleave="scheduleCloseDropdown()"
-            >
-              <li role="menuitem" ng-repeat="dict in allDicts">
-                <a
-                  ng-click="query({dictName: dict.dictName, newDictWindow: $event.ctrlKey || $event.metaKey})"
-                  title="{{ dict.dictName }}"
-                  class="ellipsis"
-                  ng-class="{'text-bold': currentDictName == dict.dictName}"
-                  >{{ dict.dictName }}</a
-                >
-              </li>
-              <li class="divider"></li>
-              <li role="menuitem">
-                <a
-                  ng-click="openOptions('dictionary')"
-                  href=""
-                  class="text-blue"
-                >
-                  <em>More...</em>
-                </a>
-              </li>
-            </ul>
-          </div>
-          <button
-            type="button"
-            class="btn btn-default btn-sm hidden-xss"
-            title="{{ nextDictName }}"
-            ng-click="query({ nextDict: true, newDictWindow: $event.ctrlKey || $event.metaKey})"
-          >
-            <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
-            <span class="sr-only">Next</span>
-          </button>
-        </div>
-      </div>
+                        <ul
+                            uib-dropdown-menu
+                            class="dropdown-menu dict-list pull-right"
+                            role="menu"
+                            aria-labelledby="dropdownMenu1"
+                            ng-mouseenter="scheduleDropdown('dict', true)"
+                            ng-mouseleave="scheduleCloseDropdown()"
+                        >
+                            <li role="menuitem" ng-repeat="dict in allDicts">
+                                <a
+                                    ng-click="query({dictName: dict.dictName, newDictWindow: $event.ctrlKey || $event.metaKey})"
+                                    title="{{ dict.dictName }}"
+                                    class="ellipsis"
+                                    ng-class="{'text-bold': currentDictName == dict.dictName}"
+                                    >{{ dict.dictName }}</a
+                                >
+                            </li>
+                            <li class="divider"></li>
+                            <li role="menuitem">
+                                <a ng-click="openOptions('dictionary')" href="" class="text-blue">
+                                    <em>More...</em>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <button
+                        type="button"
+                        class="btn btn-default btn-sm hidden-xss"
+                        title="{{ nextDictName }}"
+                        ng-click="query({ nextDict: true, newDictWindow: $event.ctrlKey || $event.metaKey})"
+                    >
+                        <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                        <span class="sr-only">Next</span>
+                    </button>
+                </div>
+            </div>
 
-      <div
-        class="form-group search-group"
-        ng-mouseenter="isHistoryDropdownOpen = isDictDropdownOpen = false"
-      >
-        <div
-          class="search-wrapper pull-left"
-          keyboard-nav
-          uib-dropdown
-          is-open="autocompletes.length > 0"
-        >
-          <input
-            type="text"
-            ng-model="word"
-            ng-change="autocomplete()"
-            class="dict-input form-control"
-            placeholder="Search"
-            uib-dropdown-toggle
-          />
-          <!-- <button
+            <div class="form-group search-group" ng-mouseenter="isHistoryDropdownOpen = isDictDropdownOpen = false">
+                <div class="search-wrapper pull-left" keyboard-nav uib-dropdown is-open="autocompletes.length > 0">
+                    <input
+                        type="text"
+                        ng-model="word"
+                        ng-change="autocomplete()"
+                        class="dict-input form-control"
+                        placeholder="Search"
+                        uib-dropdown-toggle
+                    />
+                    <!-- <button
 							uib-dropdown-toggle
 							class="form-control btn dropdown-toggle btn-default dict-name11"
 							type="button"
 							id="dropdownMenu-autocomplete"
 						></button> -->
-          <ul
-            ng-show="autocompletes.length"
-            uib-dropdown-menu
-            class="dropdown-menu autocomplete-list"
-            role="menu"
-            aria-labelledby="dropdownMenu-autocomplete"
-          >
-            <li role="menuitem" ng-repeat="item in autocompletes">
-              <a
-                ng-click="query({w: item.w, dictName: item.dictName, queryText: item.queryText, newDictWindow: $event.ctrlKey || $event.metaKey})"
-                title="{{ item.def }}"
-                href=""
-                class="ellipsis"
-              >
-                <span ng-show="item.dictName">{{item.dictName}}</span>
-                <em ng-show="item.dictName"
-                  >: {{item.queryText || _lastQueryWord}}</em
-                >
-                <span class="text-bold" ng-show="item.w"
-                  >{{item.w || item.dictName }}</span
-                >
-                <em>{{item.ipa}}</em>
-                <span class="">{{item.def}}</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-        <i
-          class="fa fa-search fa-lg"
-          aria-hidden="true"
-          ng-click="query({newDictWindow: $event.ctrlKey || $event.metaKey})"
-        ></i>
+                    <ul
+                        ng-show="autocompletes.length"
+                        uib-dropdown-menu
+                        class="dropdown-menu autocomplete-list"
+                        role="menu"
+                        aria-labelledby="dropdownMenu-autocomplete"
+                    >
+                        <li role="menuitem" ng-repeat="item in autocompletes">
+                            <a
+                                ng-click="query({w: item.w, dictName: item.dictName, queryText: item.queryText, newDictWindow: $event.ctrlKey || $event.metaKey})"
+                                title="{{ item.def }}"
+                                href=""
+                                class="ellipsis"
+                            >
+                                <span ng-show="item.dictName">{{item.dictName}}</span>
+                                <em ng-show="item.dictName">: {{item.queryText || _lastQueryWord}}</em>
+                                <span class="text-bold" ng-show="item.w">{{item.w || item.dictName }}</span>
+                                <em>{{item.ipa}}</em>
+                                <span class="">{{item.def}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <i
+                    class="fa fa-search fa-lg"
+                    aria-hidden="true"
+                    ng-click="query({newDictWindow: $event.ctrlKey || $event.metaKey})"
+                ></i>
 
-        <div class="querying text-center hidden-xss" ng-show="querying">
-          <i class="fa fa-spinner fa-spin fa-2x" title="Querying..."></i>
-        </div>
-        <div
-          ng-if="!setting.disableWordHistory"
-          id="fairy-stars"
-          class="starrr hidden-xss"
-          ng-hide="querying || !word"
-          title="Rating"
-        ></div>
-      </div>
-    </form>
-    <!-- </div>
+                <div class="querying text-center hidden-xss" ng-show="querying">
+                    <i class="fa fa-spinner fa-spin fa-2x" title="Querying..."></i>
+                </div>
+                <div
+                    ng-if="!setting.disableWordHistory"
+                    id="fairy-stars"
+                    class="starrr hidden-xss"
+                    ng-hide="querying || !word"
+                    title="Rating"
+                ></div>
+            </div>
+        </form>
+        <!-- </div>
     </div> -->
-  </nav>
+    </nav>
 
-  <div class="dict-body" ng-hide="inFrame || windowUrl">
-    <div class="dict-wait text-center" ng-show="querying">
-      <i class="fa fa-spinner fa-spin fa-4x" title="Querying..."></i>
+    <div class="dict-body" ng-hide="inFrame || windowUrl">
+        <div class="dict-wait text-center" ng-show="querying">
+            <i class="fa fa-spinner fa-spin fa-4x" title="Querying..."></i>
+        </div>
+
+        <div class="text-section text-center">
+            <h1 class="">
+                <!-- http://patorjk.com/software/taag/#p=display&h=1&v=1&f=Swan&t=Dictionariez -->
+                <span ng-bind-html="asciiTitleHtml"></span>
+            </h1>
+            <span id="app-description"></span>
+            <p>
+                Made with
+                <i class="fa fa-heart"></i>
+                at
+                <a href="https://github.com/pnlpal/dictionariez" target="_blank" class="link-github"
+                    ><i class="fa fa-github fa-2x" title="Bla Bla, it's Open Source."></i></a
+                >.
+            </p>
+            <p>
+                Share on:
+                <span
+                    class="need-share-button need-share-panel"
+                    data-share-icon-style="box"
+                    data-share-url="https://github.com/pnlpal/dictionariez"
+                    data-share-title="Dictionariez is a simple browser extension to help you break down language barriers"
+                    data-share-networks="Twitter,Pinterest,Facebook,Reddit,Linkedin,Tumblr,mailto,Evernote,Wechat,Douban"
+                >
+                </span>
+            </p>
+            <p>
+                Follow on:
+                <a class="text-danger" target="_blank" href="https://pnl.dev/topic/2/">
+                    Programming N' Language Community,</a
+                >
+                <a class="text-muted" target="_blank" href="https://discord.gg/sazRac4kSa"> Discord, </a>
+                <a class="text-muted" target="_blank" href="https://bsky.app/profile/pnlcommunity.bsky.social">
+                    BlueSky, or</a
+                ><a class="text-muted" target="_blank" href="https://t.me/programmingandlanguage"> Telegram </a>.
+            </p>
+            <p>
+                <a id="crafting-topic" class="crafting-topic-link" target="_blank" href="">
+                    <i class="fa fa-external-link external-link-icon" aria-hidden="true" title="External link"></i>
+                    <span class="crafting-topic-title"></span>
+                </a>
+            </p>
+            <p>Go to <a href="" ng-click="openOptions()" target="_blank">settings.</a></p>
+        </div>
     </div>
 
-    <div class="text-section text-center">
-      <h1 class="">
-        <!-- http://patorjk.com/software/taag/#p=display&h=1&v=1&f=Swan&t=Dictionariez -->
-        <span ng-bind-html="asciiTitleHtml"></span>
-      </h1>
-      <span id="app-description"></span>
-      <p>
-        Made with
-        <i class="fa fa-heart"></i>
-        at
-        <a
-          href="https://github.com/pnlpal/dictionariez"
-          target="_blank"
-          class="link-github"
-          ><i
-            class="fa fa-github fa-2x"
-            title="Bla Bla, it's Open Source."
-          ></i></a
-        >.
-      </p>
-      <p>
-        Share on:
-        <span
-          class="need-share-button need-share-panel"
-          data-share-icon-style="box"
-          data-share-url="https://github.com/pnlpal/dictionariez"
-          data-share-title="Dictionariez is a simple browser extension to help you break down language barriers"
-          data-share-networks="Twitter,Pinterest,Facebook,Reddit,Linkedin,Tumblr,mailto,Evernote,Wechat,Douban"
+    <div id="sidepal-body" ng-if="isSidePal">
+        <iframe
+            referrerpolicy="no-referrer"
+            ng-src="{{trustedWindowUrl}}"
+            ng-hide="!windowUrl || dictFrameIsNotLoaded"
+            id="dict-result"
+            width="100%"
+            height="100%"
+            style="height: 100vh"
+            frameborder="0"
+        ></iframe>
+        <div
+            class="well well-lg text-center"
+            ng-if="dictFrameIsNotLoaded"
+            style="
+                margin-top: 120px;
+                font-size: large;
+                color: #a94442;
+                background-color: #f2dede;
+                border-color: #ebccd1;
+            "
         >
-        </span>
-      </p>
-      <p>
-        Follow on:
-        <a class="text-danger" target="_blank" href="https://pnl.dev/topic/2/">
-          Programming N' Language Community,</a
-        >
-        <a
-          class="text-muted"
-          target="_blank"
-          href="https://discord.gg/sazRac4kSa"
-        >
-          Discord,
-        </a>
-        <a
-          class="text-muted"
-          target="_blank"
-          href="https://bsky.app/profile/pnlcommunity.bsky.social"
-        >
-          BlueSky, or</a
-        ><a
-          class="text-muted"
-          target="_blank"
-          href="https://t.me/programmingandlanguage"
-        >
-          Telegram </a
-        >.
-      </p>
-      <p>
-        Go to <a href="" ng-click="openOptions()" target="_blank">settings.</a>
-      </p>
+            <p>
+                Sorry, this dict couldn't be embed in SidePal. Please use
+                <a
+                    href="https://github.com/pnlpal/dictionariez"
+                    target="_blank"
+                    class="link-github"
+                    style="color: dodgerblue; background-color: unset; font-size: unset"
+                    >Dictionariez <i class="fa fa-github fa-2x" title="Bla Bla, it's Open Source."></i
+                ></a>
+                instead.
+            </p>
+        </div>
     </div>
-  </div>
-
-  <div id="sidepal-body" ng-if="isSidePal">
-    <iframe
-      referrerpolicy="no-referrer"
-      ng-src="{{trustedWindowUrl}}"
-      ng-hide="!windowUrl || dictFrameIsNotLoaded"
-      id="dict-result"
-      width="100%"
-      height="100%"
-      style="height: 100vh"
-      frameborder="0"
-    ></iframe>
-    <div
-      class="well well-lg text-center"
-      ng-if="dictFrameIsNotLoaded"
-      style="
-        margin-top: 120px;
-        font-size: large;
-        color: #a94442;
-        background-color: #f2dede;
-        border-color: #ebccd1;
-      "
-    >
-      <p>
-        Sorry, this dict couldn't be embed in SidePal. Please use
-        <a
-          href="https://github.com/pnlpal/dictionariez"
-          target="_blank"
-          class="link-github"
-          style="color: dodgerblue; background-color: unset; font-size: unset"
-          >Dictionariez
-          <i class="fa fa-github fa-2x" title="Bla Bla, it's Open Source."></i
-        ></a>
-        instead.
-      </p>
-    </div>
-  </div>
 </div>

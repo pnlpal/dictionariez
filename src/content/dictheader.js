@@ -423,6 +423,8 @@ import("../header.html").then(({ default: headerDom }) => {
 
         const { version } = chrome.runtime.getManifest();
         document.querySelector("#app-description .badge").innerText = `V${version}`;
+
+        import("../option/pnl-craft-topics.js");
     };
     setupAppDescription();
 });
