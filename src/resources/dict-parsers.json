@@ -1,324 +1,324 @@
 {
-  "google": {
-    "url": "https://www.google.com/search?hl=en&q=define+<word>",
-    "languages": ["German", "Spanish", "Italian", "Japanese"],
-    "credentials": "same-origin",
-    "result": {
-      "w": {
-        "selector": "[data-dobid='hdw']"
-      },
-      "langSymbol": {
-        "selector": "[data-language]",
-        "attr": "data-language"
-      },
-      "prons": [
-        {
-          "symbol": {
-            "selector": ".vmod[data-topic][data-hveid] [data-attrid='EntryHeader']",
-            "textRegex": "/[^/]+/",
-            "regexIndex": 0
-          },
-          "audio": {
-            "selector": "[data-tts-client-name][data-ved] audio source",
-            "attr": "src"
-          },
-          "type": "bre"
-        }
-      ],
-      "defs": {
-        "groups": ".vmod>.vmod[data-topic]",
+    "google": {
+        "url": "https://www.google.com/search?hl=en&q=define+<word>",
+        "languages": ["German", "Spanish", "Italian", "Japanese", "French"],
+        "credentials": "same-origin",
         "result": {
-          "pos": {
-            "selector": "i"
-          },
-          "def": {
-            "selector": "[data-dobid='dfn']",
-            "toArray": true
-          }
-        }
-      },
+            "w": {
+                "selector": "[data-dobid='hdw']"
+            },
+            "langSymbol": {
+                "selector": "[data-language]",
+                "attr": "data-language"
+            },
+            "prons": [
+                {
+                    "symbol": {
+                        "selector": ".vmod[data-topic][data-hveid] [data-attrid='EntryHeader']",
+                        "textRegex": "/[^/]+/",
+                        "regexIndex": 0
+                    },
+                    "audio": {
+                        "selector": "[data-tts-client-name][data-ved] audio source",
+                        "attr": "src"
+                    },
+                    "type": "bre"
+                }
+            ],
+            "defs": {
+                "groups": ".vmod>.vmod[data-topic]",
+                "result": {
+                    "pos": {
+                        "selector": "i"
+                    },
+                    "def": {
+                        "selector": "[data-dobid='dfn']",
+                        "toArray": true
+                    }
+                }
+            },
 
-      "defs2": {
-        "groups": "[data-tae]>[data-mh='-1']",
-        "result": {
-          "pos": {
-            "selector": "div"
-          },
-          "def": {
-            "selector": "ol>li span[lang]",
-            "max": 2,
-            "toArray": true
-          }
-        }
-      },
-      "images": {
-        "groups": ".vmod [data-topic] g-img",
-        "result": {
-          "src": {
-            "selector": "img",
-            "attr": "title"
-          }
-        }
-      }
-    }
-  },
-  "bingCN": {
-    "url": "https://cn.bing.com/dict/search?mkt=zh-cn&q=<word>",
-    "supportChinese": true,
-    "result": {
-      "w": {
-        "selector": "#headword"
-      },
-      "prons": [
-        {
-          "symbol": {
-            "selector": ".hd_area .hd_prUS"
-          },
-          "audio": {
-            "selector": ".hd_area .hd_prUS + .hd_tf a",
-            "attr": "data-mp3link",
-            "srcOrigin": "https://cn.bing.com"
-          },
-          "type": "ame"
-        },
-        {
-          "symbol": {
-            "selector": ".hd_area .hd_pr"
-          },
-          "audio": {
-            "selector": ".hd_area .hd_pr + .hd_tf a",
-            "attr": "data-mp3link",
-            "srcOrigin": "https://cn.bing.com"
-          },
-          "type": "bre"
-        },
-        {
-          "symbol": {
-            "selector": ".hd_area .hd_p1_1"
-          },
-          "type": "pinyin"
-        }
-      ],
-      "defs": {
-        "groups": "#homoid tr.def_row",
-        "result": {
-          "pos": {
-            "selector": ".pos"
-          },
-          "def": {
-            "selector": ".def_fl>.de_li1",
-            "toArray": true,
-            "strFilter": "\\d+[.]"
-          }
-        }
-      },
-      "defs2": {
-        "groups": ".qdef ul>li",
-        "result": {
-          "pos": {
-            "selector": ".pos"
-          },
-          "def": {
-            "selector": ".def"
-          }
-        }
-      }
-    }
-  },
-  "wiktionary": {
-    "url": "https://en.wiktionary.org/wiki/<word>",
-    "languages": [
-      "German",
-      "Spanish",
-      "French",
-      "Italian",
-      "Portuguese",
-      "Swedish",
-      "Finnish",
-      "Norwegian",
-      "Danish",
-      "Polish",
-      "Russian",
-      "Tajik",
-      "Vietnamese",
-      "Indonesian",
-      "Korean",
-      "Thai",
-      "Ukrainian"
-    ],
-    "result": {
-      "w": {
-        "selector": "h1#firstHeading"
-      },
-      "langTargets": {
-        "groups": ".mw-parser-output .mw-heading2",
-        "extendNextTo": ".mw-heading2",
-        "result": {
-          "lang": {
-            "selector": "h2",
-            "parents": ".mw-heading"
-          },
-          "prons": [
-            {
-              "symbol": {
-                "selector": "li .IPA"
-              },
-              "type": "unknow"
+            "defs2": {
+                "groups": "[data-tae]>[data-mh='-1']",
+                "result": {
+                    "pos": {
+                        "selector": "div"
+                    },
+                    "def": {
+                        "selector": "ol>li span[lang]",
+                        "max": 2,
+                        "toArray": true
+                    }
+                }
+            },
+            "images": {
+                "groups": ".vmod [data-topic] g-img",
+                "result": {
+                    "src": {
+                        "selector": "img",
+                        "attr": "title"
+                    }
+                }
             }
-          ],
-          "defs": {
-            "groups": "p~ol",
-            "extendPrev": ".mw-heading3, .mw-heading4",
-            "result": {
-              "pos": {
-                "selector1": ".mw-heading4 h4",
-                "selector": ".mw-heading3 h3"
-              },
-              "def": {
-                "selector": "ol>li",
-                "excludeChild": "div,ul,dl,ol",
-                "toArray": true,
-                "max": 2
-              },
-              "followWord": {
-                "selector": "ol>li .mention a[href]",
-                "attrOrText": "title"
-              },
-              "optionalFollowWord": {
-                "selector": "ol>li a[href]"
-              }
+        }
+    },
+    "bingCN": {
+        "url": "https://cn.bing.com/dict/search?mkt=zh-cn&q=<word>",
+        "supportChinese": true,
+        "result": {
+            "w": {
+                "selector": "#headword"
+            },
+            "prons": [
+                {
+                    "symbol": {
+                        "selector": ".hd_area .hd_prUS"
+                    },
+                    "audio": {
+                        "selector": ".hd_area .hd_prUS + .hd_tf a",
+                        "attr": "data-mp3link",
+                        "srcOrigin": "https://cn.bing.com"
+                    },
+                    "type": "ame"
+                },
+                {
+                    "symbol": {
+                        "selector": ".hd_area .hd_pr"
+                    },
+                    "audio": {
+                        "selector": ".hd_area .hd_pr + .hd_tf a",
+                        "attr": "data-mp3link",
+                        "srcOrigin": "https://cn.bing.com"
+                    },
+                    "type": "bre"
+                },
+                {
+                    "symbol": {
+                        "selector": ".hd_area .hd_p1_1"
+                    },
+                    "type": "pinyin"
+                }
+            ],
+            "defs": {
+                "groups": "#homoid tr.def_row",
+                "result": {
+                    "pos": {
+                        "selector": ".pos"
+                    },
+                    "def": {
+                        "selector": ".def_fl>.de_li1",
+                        "toArray": true,
+                        "strFilter": "\\d+[.]"
+                    }
+                }
+            },
+            "defs2": {
+                "groups": ".qdef ul>li",
+                "result": {
+                    "pos": {
+                        "selector": ".pos"
+                    },
+                    "def": {
+                        "selector": ".def"
+                    }
+                }
             }
-          }
         }
-      }
-    }
-  },
-  "ldoce": {
-    "url": "https://www.ldoceonline.com/dictionary/<word>",
-    "result": {
-      "prons": [
-        {
-          "audio": {
-            "selector": ".ldoceEntry .Head .amefile",
-            "attr": "data-src-mp3"
-          },
-          "type": "ame"
-        },
-        {
-          "audio": {
-            "selector": ".ldoceEntry .Head .brefile",
-            "attr": "data-src-mp3"
-          },
-          "type": "bre"
-        }
-      ]
-    }
-  },
-  "japan": {
-    "url": "https://www.japandict.com/<word>",
-    "languages": ["Japanese"],
-    "credentials": "same-origin",
-    "result": {
-      "w": {
-        "selector": "h1.display-1"
-      },
-      "prons": [
-        {
-          "symbol": {
-            "selector": ".justify-content-center .xxsmall"
-          },
-          "synthesis": "ja-JP"
-        }
-      ],
-      "defs": {
-        "container": ".tab-pane[id^='eng']",
-        "groups": "ul>li.list-group-item",
+    },
+    "wiktionary": {
+        "url": "https://en.wiktionary.org/wiki/<word>",
+        "languages": [
+            "German",
+            "Spanish",
+            "French",
+            "Italian",
+            "Portuguese",
+            "Swedish",
+            "Finnish",
+            "Norwegian",
+            "Danish",
+            "Polish",
+            "Russian",
+            "Tajik",
+            "Vietnamese",
+            "Indonesian",
+            "Korean",
+            "Thai",
+            "Ukrainian"
+        ],
         "result": {
-          "def": {
-            "selector": "div[lang='en']"
-          },
-          "labels": {
-            "selector": "span.badge",
-            "toArray": true
-          }
+            "w": {
+                "selector": "h1#firstHeading"
+            },
+            "langTargets": {
+                "groups": ".mw-parser-output .mw-heading2",
+                "extendNextTo": ".mw-heading2",
+                "result": {
+                    "lang": {
+                        "selector": "h2",
+                        "parents": ".mw-heading"
+                    },
+                    "prons": [
+                        {
+                            "symbol": {
+                                "selector": "li .IPA"
+                            },
+                            "type": "unknow"
+                        }
+                    ],
+                    "defs": {
+                        "groups": "p~ol",
+                        "extendPrev": ".mw-heading3, .mw-heading4",
+                        "result": {
+                            "pos": {
+                                "selector1": ".mw-heading4 h4",
+                                "selector": ".mw-heading3 h3"
+                            },
+                            "def": {
+                                "selector": "ol>li",
+                                "excludeChild": "div,ul,dl,ol",
+                                "toArray": true,
+                                "max": 2
+                            },
+                            "followWord": {
+                                "selector": "ol>li .mention a[href]",
+                                "attrOrText": "title"
+                            },
+                            "optionalFollowWord": {
+                                "selector": "ol>li a[href]"
+                            }
+                        }
+                    }
+                }
+            }
         }
-      }
-    }
-  },
-  "Tajik": {
-    "url": "https://vazhaju.tj/search/<word>",
-    "languages": ["Tajik"],
-    "result": {
-      "w": {
-        "selector": ".word .word-spelling>span"
-      },
-      "prons": [
-        {
-          "symbol": {
-            "selector": ".word .word-spelling [dir='rtl']"
-          }
-        }
-      ],
-      "defs": {
-        "container": ".panel>.panel-body>.word",
-        "groups": ".part-of-speech",
+    },
+    "ldoce": {
+        "url": "https://www.ldoceonline.com/dictionary/<word>",
         "result": {
-          "pos": {
-            "selector": "span.part-of-speech-name"
-          },
-          "def": {
-            "singleParents": ".part-of-speech-content",
-            "selector": ".part-of-speech-content .definition>span",
-            "toArray": true
-          }
+            "prons": [
+                {
+                    "audio": {
+                        "selector": ".ldoceEntry .Head .amefile",
+                        "attr": "data-src-mp3"
+                    },
+                    "type": "ame"
+                },
+                {
+                    "audio": {
+                        "selector": ".ldoceEntry .Head .brefile",
+                        "attr": "data-src-mp3"
+                    },
+                    "type": "bre"
+                }
+            ]
         }
-      }
-    }
-  },
-  "Indonesian": {
-    "url": "https://www.kamus.net/indonesia/<word>",
-    "languages": ["Indonesian"],
-    "result": {
-      "w": {
-        "selector": "#featured-term #featured-term-int"
-      },
-      "prons": [
-        {
-          "synthesis": "id-ID"
-        }
-      ],
-      "defs": {
-        "container": "#featured-term-trans",
-        "groups": ".trans-target",
+    },
+    "japan": {
+        "url": "https://www.japandict.com/<word>",
+        "languages": ["Japanese"],
+        "credentials": "same-origin",
         "result": {
-          "def": {
-            "selector": "p",
-            "toArray": true,
-            "excludeChild": ".pron"
-          }
+            "w": {
+                "selector": "h1.display-1"
+            },
+            "prons": [
+                {
+                    "symbol": {
+                        "selector": ".justify-content-center .xxsmall"
+                    },
+                    "synthesis": "ja-JP"
+                }
+            ],
+            "defs": {
+                "container": ".tab-pane[id^='eng']",
+                "groups": "ul>li.list-group-item",
+                "result": {
+                    "def": {
+                        "selector": "div[lang='en']"
+                    },
+                    "labels": {
+                        "selector": "span.badge",
+                        "toArray": true
+                    }
+                }
+            }
         }
-      }
-    }
-  },
-  "Ukrainian": {
-    "url": "https://slovnyk.ua/index.php?swrd=<word>",
-    "languages": ["Ukrainian"],
-    "result": {
-      "w": {
-        "selector": "h4.text-uppercase"
-      },
-      "prons": [
-        {
-          "synthesis": "uk-UA"
-        }
-      ],
-      "defs": {
-        "container": ".toggle-sum .toggle-content",
-        "groups": "p",
+    },
+    "Tajik": {
+        "url": "https://vazhaju.tj/search/<word>",
+        "languages": ["Tajik"],
         "result": {
-          "def": {}
+            "w": {
+                "selector": ".word .word-spelling>span"
+            },
+            "prons": [
+                {
+                    "symbol": {
+                        "selector": ".word .word-spelling [dir='rtl']"
+                    }
+                }
+            ],
+            "defs": {
+                "container": ".panel>.panel-body>.word",
+                "groups": ".part-of-speech",
+                "result": {
+                    "pos": {
+                        "selector": "span.part-of-speech-name"
+                    },
+                    "def": {
+                        "singleParents": ".part-of-speech-content",
+                        "selector": ".part-of-speech-content .definition>span",
+                        "toArray": true
+                    }
+                }
+            }
         }
-      }
+    },
+    "Indonesian": {
+        "url": "https://www.kamus.net/indonesia/<word>",
+        "languages": ["Indonesian"],
+        "result": {
+            "w": {
+                "selector": "#featured-term #featured-term-int"
+            },
+            "prons": [
+                {
+                    "synthesis": "id-ID"
+                }
+            ],
+            "defs": {
+                "container": "#featured-term-trans",
+                "groups": ".trans-target",
+                "result": {
+                    "def": {
+                        "selector": "p",
+                        "toArray": true,
+                        "excludeChild": ".pron"
+                    }
+                }
+            }
+        }
+    },
+    "Ukrainian": {
+        "url": "https://slovnyk.ua/index.php?swrd=<word>",
+        "languages": ["Ukrainian"],
+        "result": {
+            "w": {
+                "selector": "h4.text-uppercase"
+            },
+            "prons": [
+                {
+                    "synthesis": "uk-UA"
+                }
+            ],
+            "defs": {
+                "container": ".toggle-sum .toggle-content",
+                "groups": "p",
+                "result": {
+                    "def": {}
+                }
+            }
+        }
     }
-  }
 }

@@ -113,6 +113,28 @@ describe("background/plain-lookup", () => {
         expect(result.lang).to.equal("German");
         expect(result.w).to.equal("Leh·re·rin");
     });
+    it("should get definition of deux from French", async () => {
+        await enableLanguages(["French"], true);
+        const result = await utils.send("look up plain", {
+            w: "deux",
+        });
+        console.log(result);
+        expect(result.length).to.equal(1);
+        expect(result[0].defs.length).to.equal(2);
+        expect(result[0].lang).to.equal("French");
+        expect(result[0].w).to.equal("deux");
+    });
+    it("should get definition of terzogenito from Italian", async () => {
+        await enableLanguages(["Italian"], true);
+        const result = await utils.send("look up plain", {
+            w: "terzogenito",
+        });
+        console.log(result);
+        expect(result.length).to.equal(1);
+        expect(result[0].defs.length).to.equal(1);
+        expect(result[0].lang).to.equal("Italian");
+        expect(result[0].w).to.equal("terzogenito");
+    });
 
     it("should get definition of pie from both Spanish and English and Spanish comes first", async () => {
         await enableLanguages(["Spanish"]);

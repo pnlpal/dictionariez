@@ -1,97 +1,99 @@
 {
-  "English": {
-    "regex": "[a-zA-Z ]",
-    "symbol": "en",
-    "synthesis": "en-US"
-  },
-  "German": {
-    "regex": "[a-zA-Z]|[ÄÖÜẞäöüß ]",
-    "symbol": "de",
-    "synthesis": "de-DE"
-  },
-  "Spanish": {
-    "regex": "[a-zA-Z]|[ÑñÁÉÍÓÚÜáéíóúü ]",
-    "symbol": "es",
-    "synthesis": "es-ES"
-  },
-  "French": {
-    "regex": "[a-zA-Z]|[ÀàÂâÆæÇçÉéÈèÊêËëÎîÏïÔôŒœÙùÛûÜüŸÿ ]",
-    "symbol": "fr"
-  },
-  "Italian": {
-    "regex": "[a-zA-Z]|[àèéìíîòóùúÀÈÉÌÍÎÒÓÙÚ ]",
-    "symbol": "it"
-  },
-  "Portuguese": {
-    "regex": "[a-zA-Z]|[áâãàçéêíóôõú ]",
-    "symbol": "pt"
-  },
-  "Swedish": {
-    "regex": "[a-zA-ZäöåÄÖÅ ]",
-    "symbol": "se",
-    "synthesis": "sv-SE"
-  },
-  "Norwegian": {
-    "regex": "[a-zA-ZæøåÆØÅ ]",
-    "symbol": "no",
-    "synthesis": "nb-NO"
-  },
-  "Danish": {
-    "regex": "[a-zA-ZæøåÆØÅ ]",
-    "symbol": "dk",
-    "synthesis": "da-DK"
-  },
-  "Polish": {
-    "regex": "[a-zA-ZżźćńółęąśŻŹĆĄŚĘŁÓŃ ]",
-    "symbol": "pl",
-    "synthesis": "pl-PL"
-  },
-  "Finnish": {
-    "regex": "[a-zA-ZäöåÄÖÅ ]",
-    "symbol": "fi",
-    "synthesis": "fi-FI"
-  },
-  "Korean": {
-    "regex": "[\uac00-\ud7af]|[\u1100-\u11ff]|[\u3130-\u318f]|[\ua960-\ua97f]|[\ud7b0-\ud7ff]",
-    "symbol": "ko"
-  },
-  "Japanese": {
-    "regex": "[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]",
-    "symbol": "jp",
-    "aternative": "ja",
-    "synthesis": "ja-JP"
-  },
-  "Chinese": {
-    "regex": "[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\\u{20000}-\\u{2a6df}]|[\\u{2a700}-\\u{2b73f}]|[\\u{2b740}-\\u{2b81f}]|[\\u{2b820}-\\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\\u{2f800}-\\u{2fa1f}]",
-    "symbol": "zh",
-    "synthesis": "zh-CN"
-  },
-  "Tajik": {
-    "regex": "[\\u{0400}-\\u{04ff}]",
-    "synthesis": ""
-  },
-  "Russian": {
-    "symbol": "ru",
-    "regex": "[\u0410-\u0475]"
-  },
-  "Thai": {
-    "regex": "[\\u{0e00}-\\u{0e7f}]",
-    "symbol": "th",
-    "synthesis": "th-TH"
-  },
-  "Vietnamese": {
-    "regex": "[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\s]",
-    "symbol": "vi",
-    "synthesis": "vi-VN"
-  },
-  "Indonesian": {
-    "regex": "[a-zA-Z ]",
-    "symbol": "id",
-    "synthesis": "id-ID"
-  },
-  "Ukrainian": {
-    "regex": "[а-щьюяґєіїА-ЩЬЮЯҐЄІЇʼ’' \u0301]",
-    "symbol": "uk",
-    "synthesis": "uk-UA"
-  }
+    "English": {
+        "regex": "[a-zA-Z ]",
+        "symbol": "en",
+        "synthesis": "en-US"
+    },
+    "German": {
+        "regex": "[a-zA-Z]|[ÄÖÜẞäöüß ]",
+        "symbol": "de",
+        "synthesis": "de-DE"
+    },
+    "Spanish": {
+        "regex": "[a-zA-Z]|[ÑñÁÉÍÓÚÜáéíóúü ]",
+        "symbol": "es",
+        "synthesis": "es-ES"
+    },
+    "French": {
+        "regex": "[a-zA-Z]|[ÀàÂâÆæÇçÉéÈèÊêËëÎîÏïÔôŒœÙùÛûÜüŸÿ ]",
+        "symbol": "fr",
+        "synthesis": "fr-FR"
+    },
+    "Italian": {
+        "regex": "[a-zA-Z]|[àèéìíîòóùúÀÈÉÌÍÎÒÓÙÚ ]",
+        "symbol": "it",
+        "synthesis": "it-IT"
+    },
+    "Portuguese": {
+        "regex": "[a-zA-Z]|[áâãàçéêíóôõú ]",
+        "symbol": "pt"
+    },
+    "Swedish": {
+        "regex": "[a-zA-ZäöåÄÖÅ ]",
+        "symbol": "se",
+        "synthesis": "sv-SE"
+    },
+    "Norwegian": {
+        "regex": "[a-zA-ZæøåÆØÅ ]",
+        "symbol": "no",
+        "synthesis": "nb-NO"
+    },
+    "Danish": {
+        "regex": "[a-zA-ZæøåÆØÅ ]",
+        "symbol": "dk",
+        "synthesis": "da-DK"
+    },
+    "Polish": {
+        "regex": "[a-zA-ZżźćńółęąśŻŹĆĄŚĘŁÓŃ ]",
+        "symbol": "pl",
+        "synthesis": "pl-PL"
+    },
+    "Finnish": {
+        "regex": "[a-zA-ZäöåÄÖÅ ]",
+        "symbol": "fi",
+        "synthesis": "fi-FI"
+    },
+    "Korean": {
+        "regex": "[\uac00-\ud7af]|[\u1100-\u11ff]|[\u3130-\u318f]|[\ua960-\ua97f]|[\ud7b0-\ud7ff]",
+        "symbol": "ko"
+    },
+    "Japanese": {
+        "regex": "[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]",
+        "symbol": "jp",
+        "aternative": "ja",
+        "synthesis": "ja-JP"
+    },
+    "Chinese": {
+        "regex": "[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\\u{20000}-\\u{2a6df}]|[\\u{2a700}-\\u{2b73f}]|[\\u{2b740}-\\u{2b81f}]|[\\u{2b820}-\\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\\u{2f800}-\\u{2fa1f}]",
+        "symbol": "zh",
+        "synthesis": "zh-CN"
+    },
+    "Tajik": {
+        "regex": "[\\u{0400}-\\u{04ff}]",
+        "synthesis": ""
+    },
+    "Russian": {
+        "symbol": "ru",
+        "regex": "[\u0410-\u0475]"
+    },
+    "Thai": {
+        "regex": "[\\u{0e00}-\\u{0e7f}]",
+        "symbol": "th",
+        "synthesis": "th-TH"
+    },
+    "Vietnamese": {
+        "regex": "[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\s]",
+        "symbol": "vi",
+        "synthesis": "vi-VN"
+    },
+    "Indonesian": {
+        "regex": "[a-zA-Z ]",
+        "symbol": "id",
+        "synthesis": "id-ID"
+    },
+    "Ukrainian": {
+        "regex": "[а-щьюяґєіїА-ЩЬЮЯҐЄІЇʼ’' \u0301]",
+        "symbol": "uk",
+        "synthesis": "uk-UA"
+    }
 }
