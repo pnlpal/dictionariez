@@ -187,6 +187,23 @@ export default {
         });
     }, // ignore phrase
 
+    tryGoogleWithOtherHl(tabId, w, url) {
+        if (url.includes("hl=en")) {
+            const possibleLangs = this.checkLangs(w);
+            const parserDesc = parserDescs.google;
+            for (const lang of possibleLangs) {
+                if (lang !== "English" && parserDesc.languages.includes(lang)) {
+                    const langDesc = langs[lang];
+                    if (langDesc.synthesis) {
+                        const newGoogleUrl = url.replace("hl=en", `hl=${langDesc.synthesis}`);
+                        return this.parse(tabId, w, "google", null, newGoogleUrl);
+                    }
+                }
+            }
+        }
+        return null;
+    },
+
     async parse(tabId, w, tname, prevResult, url) {
         let html;
         tname ??= this.checkType(w);
@@ -201,9 +218,9 @@ export default {
 
         if (tname === "google" && possibleLangs.length > 0 && possibleLangs[0] !== "English") {
             // prioritize other languages over English
-            const langDesc = langs[possibleLangs[0]];
-            if (langDesc.synthesis) {
-                url = url.replace("hl=en", `hl=${langDesc.synthesis}`);
+            const promise_ = this.tryGoogleWithOtherHl(tabId, w, url);
+            if (promise_) {
+                return promise_;
             }
         }
 
@@ -258,6 +275,10 @@ export default {
         if (tname === "google" && (!result?.w || !result?.defs?.length)) {
             if (prevResult) {
                 return prevResult;
+            }
+            const promise_ = this.tryGoogleWithOtherHl(tabId, w, url);
+            if (promise_) {
+                return promise_;
             }
             return this.parse(tabId, w, this.fallbackDictFromGoogle(w), prevResult);
         }

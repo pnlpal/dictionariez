@@ -57,7 +57,7 @@ describe("lookup-parser-google", () => {
     });
 
     it("should get and parse the German word Lehrerin from Google", async () => {
-        const html = await utils.loadHTML("https://www.google.com/search?hl=en&q=define+Lehrerin", "same-origin");
+        const html = await utils.loadHTML("https://www.google.com/search?hl=de-DE&q=define+Lehrerin", "same-origin");
         const result = await parseHTML(html, parserDesc.google.result);
         // console.log(JSON.stringify(result, null, 2));
         expect(JSON.stringify(result, null, 2)).to.equal(
@@ -78,14 +78,7 @@ describe("lookup-parser-google", () => {
       ]
     }
   ],
-  "defs2": [
-    {
-      "pos": "",
-      "def": [
-        "Lärare"
-      ]
-    }
-  ],
+  "defs2": [],
   "images": []
 }`
         );

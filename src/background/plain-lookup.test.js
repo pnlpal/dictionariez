@@ -103,6 +103,17 @@ describe("background/plain-lookup", () => {
         });
     });
 
+    it("should get definition of Lehrerin from German", async () => {
+        await enableLanguages(["German"], true);
+        const result = await utils.send("look up plain", {
+            w: "Lehrerin",
+        });
+        // console.log(result);
+        expect(result.defs.length).to.equal(1);
+        expect(result.lang).to.equal("German");
+        expect(result.w).to.equal("Leh·re·rin");
+    });
+
     it("should get definition of pie from both Spanish and English and Spanish comes first", async () => {
         await enableLanguages(["Spanish"]);
         const result = await utils.send("look up plain", {
