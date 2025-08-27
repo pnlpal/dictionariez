@@ -249,4 +249,15 @@ describe("background/plain-lookup", () => {
             expect(result.w).to.equal("їжа");
         }
     });
+
+    it("should get definition of харчі from Ukrainian from slovnyk.ua if Ukrainian is enabled", async () => {
+        await enableLanguages(["Ukrainian"], false, false);
+        const result = await utils.send("look up plain", {
+            w: "харчі",
+        });
+
+        expect(result.prons[0].synthesis).to.equal("uk-UA");
+        expect(result.w).to.equal("харчі");
+        expect(result.defs.length).to.be.greaterThan(0);
+    });
 });
