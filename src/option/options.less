@@ -25,6 +25,15 @@ body {
     .table > thead > tr > th {
         border-bottom-color: var(--lighten-bkg-color);
     }
+    .table > tbody > tr.active > td,
+    .table > tbody > tr.active > th,
+    .table > tbody > tr > td.active,
+    .table > tbody > tr > th.active {
+        background-color: var(--lighten-bkg-color);
+        a {
+            background-color: var(--lighten-bkg-color);
+        }
+    }
 
     .nav-wrapper {
         @media screen and (max-width: 992px) {
