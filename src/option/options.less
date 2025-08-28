@@ -1,206 +1,209 @@
 body {
-  position: relative;
-
-  background-color: var(--bkg-color) !important;
-  color: var(--text-color) !important;
-
-  a,
-  input.form-control,
-  textarea.form-control,
-  button.btn-default,
-  pre,
-  ul.dropdown-menu,
-  ul.dropdown-menu > li,
-  ul.dropdown-menu > li > a,
-  .modal-header,
-  .modal-body,
-  .modal-footer {
-    background-color: var(--bkg-color);
-    color: var(--text-color);
-    border-color: var(--lighten-bkg-color);
-  }
-  img {
-    filter: brightness(0.8) contrast(1.2);
-  }
-  .table > thead > tr > th {
-    border-bottom-color: var(--lighten-bkg-color);
-  }
-
-  .nav-wrapper {
-    @media screen and (max-width: 992px) {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .nav {
-      position: fixed;
-      top: 20px;
-
-      @media screen and (max-width: 992px) {
-        bottom: 20px;
-        top: auto;
-        z-index: 9999;
-        background-color: var(--bkg-color);
-
-        &.nav-stacked > li {
-          float: left;
-        }
-      }
-    }
-  }
-
-  .indent {
-    margin-left: 20px;
-  }
-  .ellipsis {
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .ascii-title {
-    border: none;
-    background-color: initial;
-    margin: 0;
-    margin-bottom: 20px;
-    padding: 0;
-  }
-  .text-new {
-    color: red;
-  }
-
-  .link-github {
-    i {
-      vertical-align: middle;
-    }
-  }
-
-  @media screen and (max-width: 768px) {
-    .dataTables_info {
-      display: none;
-    }
-  }
-
-  #table-history {
-    .starrr {
-      .fa {
-        color: orange;
-      }
-    }
-    .dictionaries-history-word {
-      max-width: 130px;
-    }
-    .w-sentence {
-      max-width: 300px;
-    }
-    .link-s {
-      max-width: 150px;
-    }
-  }
-
-  #dictionary {
-    table.dataTable {
-      td.reorder {
-        text-align: left;
-      }
-    }
-  }
-
-  #shortcut-setting {
-    margin-bottom: 500px;
-  }
-
-  .container {
     position: relative;
-    font-size: 16px;
 
-    .buymeacoffee {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      img {
-        height: 50px;
+    background-color: var(--bkg-color) !important;
+    color: var(--text-color) !important;
 
-        @media screen and (max-width: 768px) {
-          height: 25px;
-        }
-      }
+    a,
+    input.form-control,
+    textarea.form-control,
+    button.btn-default,
+    pre,
+    ul.dropdown-menu,
+    ul.dropdown-menu > li,
+    ul.dropdown-menu > li > a,
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        background-color: var(--bkg-color);
+        color: var(--text-color);
+        border-color: var(--lighten-bkg-color);
     }
-  }
-
-  .function-setting {
-    .choose-mark-color {
-      margin-bottom: 20px;
-
-      color-picker {
-        position: absolute;
-        input {
-          width: 150px;
-        }
-      }
+    img {
+        filter: brightness(0.8) contrast(1.2);
     }
-  }
+    .table > thead > tr > th {
+        border-bottom-color: var(--lighten-bkg-color);
+    }
 
-  .promo-modal {
-    .modal-dialog {
-      top: 80px;
-      width: 80%;
-      &.small-dialog {
-        max-width: 960px;
-      }
-
-      .avatar {
-        position: absolute;
-        margin-top: -5px;
-        img {
-          border-radius: 50%;
-          width: 48px;
-          height: 48px;
+    .nav-wrapper {
+        @media screen and (max-width: 992px) {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-      }
-      .promo-text {
-        margin-left: 60px;
-      }
 
-      .modal-header {
-        background-color: #666;
-      }
-      .modal-body {
-        background-color: white;
-        iframe {
-          border-radius: 4px;
-          overflow-y: hidden;
-        }
-        .promo-text-wrapper {
-          min-height: 80px;
-          margin-bottom: 35px;
+        .nav {
+            position: fixed;
+            top: 20px;
 
-          .promo-text {
-            border: #c7c7c7 solid 1px;
-            border-radius: 15px;
-            padding: 10px 20px;
-            color: #333;
-            font-size: 18px;
-            a {
-              background-color: unset;
-              color: unset;
-              text-decoration: underline;
+            @media screen and (max-width: 992px) {
+                bottom: 20px;
+                top: auto;
+                z-index: 9999;
+                background-color: var(--bkg-color);
+
+                &.nav-stacked > li {
+                    float: left;
+                }
             }
-          }
         }
-
-        .promo-img {
-          display: block;
-          margin: auto;
-          border-radius: 5px;
-          height: 480px;
-        }
-      }
-      .modal-footer {
-        background-color: white;
-      }
     }
-  }
+
+    .indent {
+        margin-left: 20px;
+    }
+    .ellipsis {
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ascii-title {
+        border: none;
+        background-color: initial;
+        margin: 0;
+        margin-bottom: 20px;
+        padding: 0;
+    }
+    .text-new {
+        color: red;
+    }
+
+    .link-github {
+        i {
+            vertical-align: middle;
+        }
+        &:hover {
+            text-decoration: none;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .dataTables_info {
+            display: none;
+        }
+    }
+
+    #table-history {
+        .starrr {
+            .fa {
+                color: orange;
+            }
+        }
+        .dictionaries-history-word {
+            max-width: 130px;
+        }
+        .w-sentence {
+            max-width: 300px;
+        }
+        .link-s {
+            max-width: 150px;
+        }
+    }
+
+    #dictionary {
+        table.dataTable {
+            td.reorder {
+                text-align: left;
+            }
+        }
+    }
+
+    #shortcut-setting {
+        margin-bottom: 500px;
+    }
+
+    .container {
+        position: relative;
+        font-size: 16px;
+
+        .buymeacoffee {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            img {
+                height: 50px;
+
+                @media screen and (max-width: 768px) {
+                    height: 25px;
+                }
+            }
+        }
+    }
+
+    .function-setting {
+        .choose-mark-color {
+            margin-bottom: 20px;
+
+            color-picker {
+                position: absolute;
+                input {
+                    width: 150px;
+                }
+            }
+        }
+    }
+
+    .promo-modal {
+        .modal-dialog {
+            top: 80px;
+            width: 80%;
+            &.small-dialog {
+                max-width: 960px;
+            }
+
+            .avatar {
+                position: absolute;
+                margin-top: -5px;
+                img {
+                    border-radius: 50%;
+                    width: 48px;
+                    height: 48px;
+                }
+            }
+            .promo-text {
+                margin-left: 60px;
+            }
+
+            .modal-header {
+                background-color: #666;
+            }
+            .modal-body {
+                background-color: white;
+                iframe {
+                    border-radius: 4px;
+                    overflow-y: hidden;
+                }
+                .promo-text-wrapper {
+                    min-height: 80px;
+                    margin-bottom: 35px;
+
+                    .promo-text {
+                        border: #c7c7c7 solid 1px;
+                        border-radius: 15px;
+                        padding: 10px 20px;
+                        color: #333;
+                        font-size: 18px;
+                        a {
+                            background-color: unset;
+                            color: unset;
+                            text-decoration: underline;
+                        }
+                    }
+                }
+
+                .promo-img {
+                    display: block;
+                    margin: auto;
+                    border-radius: 5px;
+                    height: 480px;
+                }
+            }
+            .modal-footer {
+                background-color: white;
+            }
+        }
+    }
 }

@@ -791,6 +791,11 @@ boolbase@^1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==
 
+bootbox@^6.0.4:
+  version "6.0.4"
+  resolved "https://registry.yarnpkg.com/bootbox/-/bootbox-6.0.4.tgz#005f12d712da5d5723a13a0495e5fc4ad2cc1472"
+  integrity sha512-LoOT8WbiH6YjlhIxzJ3nZHK1p9tlcoa6QNILSGJMx9ihydzFk+DVzNVWNpHk8MZLOkizey1XhFu1dhoqk77xVg==
+
 bootoast@^1.0.1:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/bootoast/-/bootoast-1.1.4.tgz#47c0f0f53c103644f65be1dd3cdf3657db01d5cd"
@@ -3286,6 +3291,11 @@ select-hose@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
   integrity sha512-mEugaLK+YfkijB4fx0e6kImuJdCIt2LxCRcbEYPqRGCs4F2ogyfZU5IAZRdjCP8JPq2AtdNoC/Dux63d9Kiryg==
+
+select2@^4.1.0-rc.0:
+  version "4.1.0-rc.0"
+  resolved "https://registry.yarnpkg.com/select2/-/select2-4.1.0-rc.0.tgz#ba3cd3901dda0155e1c0219ab41b74ba51ea22d8"
+  integrity sha512-Hr9TdhyHCZUtwznEH2CBf7967mEM0idtJ5nMtjvk3Up5tPukOLXbHUNmh10oRfeNIhj+3GD3niu+g6sVK+gK0A==
 
 selfsigned@^2.4.1:
   version "2.4.1"

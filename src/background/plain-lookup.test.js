@@ -4,20 +4,7 @@ import { expect } from "chai";
 import allLangs from "../resources/langs.json";
 
 const enableLanguages = async (langs = ["Swedish"], withEnglish = true, withChinese = true) => {
-    const allOtherSupportedLanguages = Object.keys(allLangs).filter((l) => l !== "English" && l !== "Chinese");
-    const otherDisabledLanguages = allOtherSupportedLanguages.filter((l) => !langs.includes(l));
-    await utils.send("save setting", {
-        key: "enableLookupEnglish",
-        value: withEnglish,
-    });
-    await utils.send("save setting", {
-        key: "enableLookupChinese",
-        value: withChinese,
-    });
-    await utils.send("save setting", {
-        key: "otherDisabledLanguages",
-        value: otherDisabledLanguages,
-    });
+    await utils.enableLanguages(Object.keys(allLangs), langs, withEnglish, withChinese);
 };
 
 before(() => {

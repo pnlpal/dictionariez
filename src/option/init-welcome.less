@@ -1,0 +1,67 @@
+@import "select2-dark-theme.less";
+
+.modal-dialog {
+    margin-top: 130px;
+
+    .dictionariez-welcome-message {
+        font-size: 1.13em;
+        margin-bottom: 1.3em;
+        color: #2563eb;
+        font-weight: 500;
+        background: linear-gradient(90deg, #e3f0ff 0%, #f8fafc 100%);
+        border-radius: 1.2em;
+        padding: 1.1em 1.5em 1.1em 1.2em;
+        box-shadow: 0 2px 12px rgba(37, 99, 235, 0.07);
+        border: 1px solid #e0e7ef;
+
+        span {
+            color: #333;
+            font-weight: 400;
+        }
+        .community {
+            color: #1b7f3a;
+            font-weight: 500;
+        }
+    }
+
+    .dictionariez-select-label {
+        font-size: 1.07em;
+        font-weight: 500;
+        color: #2563eb;
+        margin-bottom: 0.4em;
+        display: block;
+    }
+
+    .dictionariez-mb-3 {
+        margin-bottom: 1.5em;
+    }
+
+    #lookup-languages {
+        border-radius: 1em !important;
+        min-height: 2.2em;
+    }
+
+    /* Dark theme support */
+    @media (prefers-color-scheme: dark) {
+        .dictionariez-welcome-message {
+            color: #90b4fa;
+            background: linear-gradient(90deg, #232b3b 0%, #1a2233 100%);
+            border: 1px solid #334155;
+            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.13);
+
+            span {
+                color: #e0e7ef;
+            }
+            .community {
+                color: #7ee787;
+            }
+            .link-github {
+                background-color: transparent;
+            }
+        }
+
+        .dictionariez-select-label {
+            color: #90b4fa;
+        }
+    }
+}

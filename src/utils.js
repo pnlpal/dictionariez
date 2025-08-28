@@ -329,4 +329,26 @@ export default {
             return resp.json();
         });
     },
+
+    async enableLanguages(allLanguages = [], enabledLanguages = ["Swedish"], withEnglish = true, withChinese = true) {
+        const allOtherSupportedLanguages = allLanguages.filter((l) => l !== "English" && l !== "Chinese");
+        const otherDisabledLanguages = allOtherSupportedLanguages.filter((l) => !enabledLanguages.includes(l));
+        await this.send("save setting", {
+            key: "enableLookupEnglish",
+            value: withEnglish,
+        });
+        await this.send("save setting", {
+            key: "enableLookupChinese",
+            value: withChinese,
+        });
+        await this.send("save setting", {
+            key: "otherDisabledLanguages",
+            value: otherDisabledLanguages,
+        });
+        return {
+            enableLookupEnglish: withEnglish,
+            enableLookupChinese: withChinese,
+            otherDisabledLanguages: otherDisabledLanguages,
+        };
+    },
 };

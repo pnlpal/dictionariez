@@ -19,6 +19,7 @@ import "angularjs-color-picker/dist/themes/angularjs-color-picker-bootstrap.min.
 import "angularjs-color-picker";
 
 import "./pnl-craft-topics.js";
+import initWelcome from "./init-welcome.js";
 
 document.title = `Options - ${process.env.PRODUCT}`;
 
@@ -98,6 +99,7 @@ dictApp.controller("optionCtrl", [
             (config) => {
                 // window.setting = config
                 $scope.setting = config;
+                initWelcome({ setting: $scope.setting, applySetting: $scope.$apply.bind($scope) });
                 $scope.$apply();
             }
         );

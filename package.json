@@ -29,6 +29,7 @@
         "angular-bootstrap": "^0.12.2",
         "angular-ui-bootstrap": "^2.5.6",
         "angularjs-color-picker": "^3.4.8",
+        "bootbox": "^6.0.4",
         "bootoast": "^1.0.1",
         "bootstrap": "^3.4.1",
         "datatables.net-bs": "^1.10.20",
@@ -45,6 +46,7 @@
         "moment": "^2.29.4",
         "opencc-js": "^1.0.5",
         "requirejs": "^2.3.7",
+        "select2": "^4.1.0-rc.0",
         "string-similarity": "^4.0.4"
     },
     "devDependencies": {
