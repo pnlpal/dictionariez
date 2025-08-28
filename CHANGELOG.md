@@ -1,3 +1,11 @@
+# v5.8.0 Aug 28, 2025
+- Added Ukrainian language support.
+- Introduced a warm welcome message and initial setup dialog for new users.
+- Improved German, French, and Italian dictionary lookups for broader word coverage.
+- Migrated all CoffeeScript files to JavaScript for better maintainability.
+- Expanded and improved unit test coverage.
+
+
 # v5.7.2 July 07, 2025
 - Expanded integration tests.
 - Retrieve definitions from other languages if a word has multiple possible languages.
