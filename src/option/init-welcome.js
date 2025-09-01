@@ -10,6 +10,9 @@ import utils from "utils";
 import allLangs from "../resources/langs.json";
 
 const welcomeSetup = ({ setting, applySetting }) => {
+    if (process.env.PRODUCT === "SidePal") {
+        return;
+    }
     if (setting.otherDisabledLanguages?.length) {
         return;
     }

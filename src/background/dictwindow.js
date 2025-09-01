@@ -324,7 +324,9 @@ export default {
 
     destroyWin({ wid, tid } = {}) {
         this.dictWindows.forEach((win) => {
-            if (win.wid === wid || win.tid === tid) {
+            if (wid && win.wid === wid) {
+                win.reset();
+            } else if (tid && win.tid === tid) {
                 win.reset();
             }
         });

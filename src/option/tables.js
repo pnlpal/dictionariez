@@ -22,8 +22,6 @@ import "datatables.net-buttons/js/buttons.html5.js";
 import "datatables.net-rowreorder-bs4";
 import "datatables.net-rowreorder-bs4/css/rowReorder.bootstrap4.css";
 
-const isSidePal = process.env.PRODUCT === "SidePal";
-
 const confirmDelete = (content, twice) =>
     new Promise((resolve) => {
         $("#confirm-delete-modal")
@@ -46,10 +44,10 @@ const confirmDelete = (content, twice) =>
 
 const buildActionIcon = (name) => {
     const iconMap = {
-        "remove": { faIcon: "fa-remove", cls: "text-danger" },
+        remove: { faIcon: "fa-remove", cls: "text-danger" },
         "export to Anki": { faIcon: "fa-share-square-o", cls: "text-warning" },
         "saved in Anki": { faIcon: "fa-retweet", cls: "text-muted" },
-        "comment": { faIcon: "fa-comment-o", cls: "text-muted" }
+        comment: { faIcon: "fa-comment-o", cls: "text-muted" },
     };
 
     const { faIcon, cls } = iconMap[name] || {};
@@ -123,16 +121,14 @@ const initHistory = async () => {
                     orthogonal: "download",
                 },
             },
-            !isSidePal
-                ? {
-                      text: "Start Anki Study",
-                      className: "btn btn-success",
-                      action() {
-                          const href = "https://ankiweb.net/study/";
-                          window.open(href, "_blank");
-                      },
-                  }
-                : null,
+            {
+                text: "Start Anki Study",
+                className: "btn btn-success",
+                action() {
+                    const href = "https://ankiweb.net/study/";
+                    window.open(href, "_blank");
+                },
+            },
         ].filter(Boolean),
         order: [[4, "desc"]],
         columns: [
@@ -199,7 +195,7 @@ const initHistory = async () => {
                 title: "Time",
                 data: "t",
                 width: "150px",
-                render(data, type) {
+                render(data) {
                     return moment(data).format("YYYY-MM-DD HH:mm:ss");
                 },
             },
@@ -208,9 +204,6 @@ const initHistory = async () => {
                 title: "Action",
                 render(data, type, row) {
                     if (type === "display") {
-                        if (isSidePal) {
-                            return buildActionIcon("remove");
-                        }
                         if (row.ankiSaved) {
                             return buildActionIcon("saved in Anki") + buildActionIcon("remove");
                         }

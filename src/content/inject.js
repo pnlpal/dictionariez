@@ -31,12 +31,11 @@ const setupStyles = () => {
 
 const run = () => {
     if (process.env.PRODUCT !== "SidePal") {
-        setupStyles();
         initYtbInjection();
         initCaptionzInjection();
-        initLookupParser();
     }
-
+    setupStyles();
+    initLookupParser();
     initAnkiInjection();
     initClipboardReader();
 
@@ -120,9 +119,7 @@ const run = () => {
                 return;
             }
 
-            if (process.env.PRODUCT !== "SidePal") {
-                plainLookupTooltip.init();
-            }
+            plainLookupTooltip.init();
 
             if (setting.enableReadClipboard) {
                 document.addEventListener(

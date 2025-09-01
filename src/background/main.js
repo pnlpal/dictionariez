@@ -2,6 +2,9 @@ import setting from "./setting.js";
 import storage from "./storage.js";
 import dict from "./dict.js";
 import dw from "./dictwindow.js";
+import ankiWindow from "./ankiwindow.js";
+import lookup from "./plain-lookup.js";
+import speak from "./speak.js";
 import "./auto-complete.js";
 
 import message from "./message.js";
@@ -14,16 +17,13 @@ const initPromises = (async function () {
     await storage.init();
     await dict.init();
     await dw.init();
+    await ankiWindow.init();
+
+    await lookup.init();
+    await speak.init();
 
     if (process.env.PRODUCT !== "SidePal") {
-        const lookup = require("./plain-lookup.js").default;
-        const speak = require("./speak.js").default;
-        const ankiWindow = require("./ankiwindow.js").default;
         const pnlpal = require("./pnlpal.js").default;
-
-        await ankiWindow.init();
-        await lookup.init();
-        await speak.init();
         await pnlpal.init();
 
         global.ankiWindow = ankiWindow;
@@ -34,6 +34,7 @@ const initPromises = (async function () {
     }
 
     global.dw = dw;
+    global.ankiWindow = ankiWindow;
     global.storage = storage;
     global.dict = dict;
     global.setting = setting;
@@ -71,16 +72,16 @@ chrome.runtime.onMessage.addListener(function (...args) {
     return true;
 });
 
+chrome.windows.onRemoved.addListener(async function (wid) {
+    await initPromises;
+    dw.destroyWin({ wid });
+    global.ankiWindow?.destroyWin({ wid });
+});
+chrome.tabs.onRemoved.addListener(async function (tid) {
+    await initPromises;
+    dw.destroyWin({ tid });
+});
 if (process.env.PRODUCT !== "SidePal") {
-    chrome.windows.onRemoved.addListener(async function (wid) {
-        await initPromises;
-        dw.destroyWin({ wid });
-        global.ankiWindow?.destroyWin({ wid });
-    });
-    chrome.tabs.onRemoved.addListener(async function (tid) {
-        await initPromises;
-        dw.destroyWin({ tid });
-    });
     chrome.windows.onFocusChanged.addListener(async function (wid) {
         await initPromises;
         if (wid > -1 && setting.getValue("enableAutoCloseMinidict")) {
