@@ -10,9 +10,6 @@ import utils from "utils";
 import allLangs from "../resources/langs.json";
 
 const welcomeSetup = ({ setting, applySetting }) => {
-    if (process.env.PRODUCT === "SidePal") {
-        return;
-    }
     if (setting.otherDisabledLanguages?.length) {
         return;
     }
@@ -34,7 +31,7 @@ const welcomeSetup = ({ setting, applySetting }) => {
         bootbox.dialog({
             size: "large",
             className: "modal-dialog-centered",
-            title: "🎉Settings saved! You're ready to explore Dictionariez.",
+            title: `🎉Settings saved! You're ready to explore ${process.env.PRODUCT}.`,
             message: `
             <p>Check out our Programming N' Language Community:</p>
             <ul style="list-style:none; padding-left:0;">
@@ -45,7 +42,7 @@ const welcomeSetup = ({ setting, applySetting }) => {
                         </a>
                     </strong>
                     <span style="display:block; margin-top:4px; color:#007bff; font-weight:500;">
-                        Enhance your Dictionariez, add more dictionaries to your collection.
+                        Enhance your ${process.env.PRODUCT}, add more dictionaries to your collection.
                     </span>
                 </li>
                 <li style="margin-bottom: 12px;">
@@ -153,7 +150,7 @@ const welcomeSetup = ({ setting, applySetting }) => {
             <br>
             <span>
                 Your all-in-one tool for looking up words and exploring languages with ease.<br>
-                Dictionariez is open-source, see our progress on
+                ${process.env.PRODUCT} is open-source, see our progress on
                 <a href="https://github.com/pnlpal/dictionariez" target="_blank" class="link-github">
                     <i class="fa fa-github fa-2x"
                         title="Bla Bla, it's Open Source."
@@ -163,7 +160,11 @@ const welcomeSetup = ({ setting, applySetting }) => {
             <br><br>
             <span>
                 To get started, select the languages you want to look up words in.<br>
-                You can always update your choices later in the extension options.<br>
+                ${
+                    process.env.PRODUCT !== "SidePal"
+                        ? "You can always update your choices later in the extension options."
+                        : ""
+                }
                 <span style="color:#1b7f3a;">Happy exploring and language learning!</span>
             </span>
         </div>
