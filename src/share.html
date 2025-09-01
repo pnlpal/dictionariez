@@ -1,159 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="./vendor/needsharebutton.css" />
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="./vendor/needsharebutton.css" />
 
-    <style>
-      /* For the dark or light theme */
-      :root {
-        color-scheme: light dark; /* both supported */
-      }
-      body {
-        --text-color: #222;
-        --bkg-color: #fbfbfb;
-        --lighten-bkg-color: #cccccc;
-      }
-      body.dark-theme {
-        --text-color: #c5c5c5;
-        --bkg-color: #333333;
-        --lighten-bkg-color: #4c4c4c;
-      }
+        <style>
+            /* For the dark or light theme */
+            :root {
+                color-scheme: light dark; /* both supported */
+            }
+            body {
+                --text-color: #222;
+                --bkg-color: #fbfbfb;
+                --lighten-bkg-color: #cccccc;
+            }
+            body.dark-theme {
+                --text-color: #c5c5c5;
+                --bkg-color: #333333;
+                --lighten-bkg-color: #4c4c4c;
+            }
 
-      @media (prefers-color-scheme: dark) {
-        /* defaults to dark theme */
-        body {
-          --text-color: #c5c5c5;
-          --bkg-color: #333333;
-          --lighten-bkg-color: #4c4c4c;
-        }
-        body.light-theme {
-          --text-color: #222;
-          --bkg-color: #fbfbfb;
-          --lighten-bkg-color: #cccccc;
-        }
-      }
+            @media (prefers-color-scheme: dark) {
+                /* defaults to dark theme */
+                body {
+                    --text-color: #c5c5c5;
+                    --bkg-color: #333333;
+                    --lighten-bkg-color: #4c4c4c;
+                }
+                body.light-theme {
+                    --text-color: #222;
+                    --bkg-color: #fbfbfb;
+                    --lighten-bkg-color: #cccccc;
+                }
+            }
 
-      body,
-      pre,
-      button.btn {
-        background-color: var(--bkg-color) !important;
-        color: var(--text-color) !important;
-        border-color: var(--lighten-bkg-color);
-      }
+            body,
+            pre,
+            button.btn {
+                background-color: var(--bkg-color) !important;
+                color: var(--text-color) !important;
+                border-color: var(--lighten-bkg-color);
+            }
 
-      .container {
-        text-align: center;
-        font-size: 18px;
-      }
-      .ascii-title {
-        border: none;
-        background-color: initial;
-        margin: 20px auto;
-        padding: 0;
-        font-size: larger;
-      }
-      .link-github {
-        vertical-align: middle;
-      }
-      .text-new {
-        color: red;
-      }
-    </style>
-  </head>
+            .container {
+                text-align: center;
+                font-size: 18px;
+            }
+            .ascii-title {
+                border: none;
+                background-color: initial;
+                margin: 20px auto;
+                padding: 0;
+                font-size: larger;
+            }
+            .link-github {
+                vertical-align: middle;
+            }
+            .text-new {
+                color: red;
+            }
+        </style>
+    </head>
 
-  <body>
-    <div class="container">
-      <div class="row">
-        <div>
-          <span id="ascii-title"></span>
-          <span id="app-description"></span>
-          <p></p>
-          <p>
-            Thanks for using. It's an open-source project, see how it develops
-            on github:
-            <a
-              href="https://github.com/pnlpal/dictionariez"
-              target="_blank"
-              class="link-github"
-              ><i
-                class="fa fa-github fa-2x"
-                title="Bla Bla, it's Open Source."
-              ></i></a
-            ><br />
-            Thank you for using <span class="productName"></span>! As the
-            developer, I create educational apps and handle all the marketing
-            myself. Now, I need your support. If you find
-            <span class="productName"></span> helpful, please share it with
-            others. Your support makes a big difference!
-          </p>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div>
+                    <span id="ascii-title"></span>
+                    <span id="app-description"></span>
+                    <p></p>
+                    <p>
+                        Thank you for using <span class="productName"></span>!<br />
+                        <span>
+                            This project is open-source, see its progress on
+                            <a href="https://github.com/pnlpal/dictionariez" target="_blank" class="link-github"
+                                ><i class="fa fa-github fa-2x" title="View on GitHub"></i> GitHub</a
+                            >.
+                        </span>
+                        <br /><br />
+                        As an indie developer, I build and maintain educational apps like
+                        <span class="productName"></span> and handle everything myself—including development and
+                        outreach.<br />
+                        If you find <span class="productName"></span> helpful, please consider sharing it with others.
+                        Your support truly makes a difference!
+                    </p>
 
-          <div class="wrapper">
-            <div
-              id="i-share"
-              data-share-networks="Twitter,Pinterest,Facebook,Reddit,Linkedin,Tumblr,mailto,Evernote,Wechat,Douban"
-              data-share-url="https://github.com/pnlpal/dictionariez"
-              data-share-title="Dictionariez is a simple browser extension to help you break down language barriers"
-              class="need-share-panel need-share-button"
-            ></div>
-          </div>
-          <br /><br /><br />
+                    <div class="wrapper">
+                        <div
+                            id="i-share"
+                            data-share-networks="Twitter,Pinterest,Facebook,Reddit,Linkedin,Tumblr,mailto,Evernote,Wechat,Douban"
+                            data-share-url="https://github.com/pnlpal/dictionariez"
+                            data-share-title="Dictionariez is a simple browser extension to help you break down language barriers"
+                            class="need-share-panel need-share-button"
+                        ></div>
+                    </div>
+                    <br /><br /><br />
 
-          <strong>I'd love to hear from you! </strong>
-          <p>
-            Have suggestions or feature requests? Feel free to share them on
-            GitHub or join the discussion in the
-            <a class="text-danger" target="_blank" href="https://pnl.dev">
-              Programming N' Language Community </a
-            >. Your input is invaluable in improving this project! You can also
-            connect with me on
-            <a
-              class="text-muted"
-              target="_blank"
-              href="https://discord.gg/sazRac4kSa"
-            >
-              Discord
-            </a>
-            , follow me on
-            <a
-              class="text-muted"
-              target="_blank"
-              href="https://bsky.app/profile/pnlcommunity.bsky.social"
-            >
-              BlueSky,
-            </a>
-            or
-            <a
-              class="text-muted"
-              target="_blank"
-              href="https://t.me/programmingandlanguage"
-            >
-              Telegram </a
-            >.
-          </p>
+                    <strong>I'd love to hear from you! </strong>
+                    <p>
+                        Have suggestions or feature requests? Feel free to share them on GitHub or join the discussion
+                        in the
+                        <a class="text-danger" target="_blank" href="https://pnl.dev">
+                            Programming N' Language Community </a
+                        >. Your input is invaluable in improving this project! You can also connect with me on
+                        <a class="text-muted" target="_blank" href="https://discord.gg/sazRac4kSa"> Discord </a>
+                        , follow me on
+                        <a class="text-muted" target="_blank" href="https://bsky.app/profile/pnlcommunity.bsky.social">
+                            BlueSky,
+                        </a>
+                        or
+                        <a class="text-muted" target="_blank" href="https://t.me/programmingandlanguage"> Telegram </a>.
+                    </p>
 
-          <p>
-            <strong
-              >Go to
-              <a href="options.html" target="_blank">settings.</a></strong
-            >
-          </p>
+                    <p>
+                        <strong>Go to <a href="options.html" target="_blank">settings.</a></strong>
+                    </p>
 
-          <br /><br /><br /><br /><br />
-          <p>
-            If it's really helpful to you, please consider a small donation:
-          </p>
-          <a
-            href="https://www.buymeacoffee.com/riveryoung"
-            class="buymeacoffee"
-            target="_blank"
-            ><img
-              src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
-              height="40"
-              alt="Buy Me A Coffee"
-          /></a>
+                    <br /><br /><br /><br /><br />
+                    <p>If it's really helpful to you, please consider a small donation:</p>
+                    <a href="https://www.buymeacoffee.com/riveryoung" class="buymeacoffee" target="_blank"
+                        ><img
+                            src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+                            height="40"
+                            alt="Buy Me A Coffee"
+                    /></a>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </body>
+    </body>
 </html>
