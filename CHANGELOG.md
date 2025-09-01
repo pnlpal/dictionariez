@@ -4,7 +4,7 @@
 - Improved German, French, and Italian dictionary lookups for broader word coverage.
 - Migrated all CoffeeScript files to JavaScript for better maintainability.
 - Expanded and improved unit test coverage.
-
+- Bring Exporting to Anki Integration to SidePal.
 
 # v5.7.2 July 07, 2025
 - Expanded integration tests.
