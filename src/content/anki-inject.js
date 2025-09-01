@@ -79,8 +79,11 @@ const getAnkiInfo = (ankiSavedWord, ankiSkippedWord) =>
 
 const addSkipButton = async () => {
     await utils.checkInTime(() => $("button.btn-primary").length, 5000);
-    const btn = `<button class="btn btn-secondary btn-skip mt-2" style="float: right">Skip</button>`;
-    $(btn).insertAfter("button.btn-primary");
+
+    if (!$(".btn-skip").length) {
+        const btn = `<button class="btn btn-secondary btn-skip mt-2" style="float: right">Skip</button>`;
+        $(btn).insertAfter("button.btn-primary");
+    }
 
     $(".btn-skip").on("click", () => {
         $(".field:eq(0)").empty();
