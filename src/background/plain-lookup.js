@@ -360,7 +360,14 @@ export default {
                     // Special handle for Norwegian on Wiktionary
                     // see https://en.wiktionary.org/wiki/bl%C3%A5kval#Norwegian
                     if (targetLang.lang.includes("Norwegian")) {
-                        targetLang.lang = "Norwegian";
+                        if (
+                            targetLang.lang.includes("Nynorsk") &&
+                            result.langTargets.find((l) => l.lang.includes("Bokmål") || l.lang === "Norwegian")
+                        ) {
+                            continue;
+                        } else {
+                            targetLang.lang = "Norwegian";
+                        }
                     }
 
                     if (targetLang.lang === "Svenska") {
