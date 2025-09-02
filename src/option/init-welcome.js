@@ -143,7 +143,7 @@ const welcomeSetup = ({ setting, applySetting }) => {
     bootbox.dialog({
         size: "large",
         className: "ask-user-languages modal-dialog-centered",
-        title: "👋 Welcome to Dictionariez!",
+        title: `👋 Welcome to ${process.env.PRODUCT}!`,
         message: `
         <div class="dictionariez-welcome-message">
             We're delighted to have you here! 
