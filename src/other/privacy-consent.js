@@ -20,7 +20,7 @@ acceptBtn.onclick = function () {
         key: "privacyConsent",
         value: "v1",
     });
-    location.pathname = "/options.html";
+    location.pathname = process.env.PRODUCT === "Dictionariez" ? "/options.html" : "/share.html";
 };
 
 // When the user clicks on decline button, prompt the user for confirmation
