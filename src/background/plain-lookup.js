@@ -137,7 +137,7 @@ export default {
         for (const dictDesc of Object.values(parserDescs)) {
             dictDesc.languages?.forEach((language) => {
                 if (process.env.PRODUCT === "Ordböcker") {
-                    if (language === "Swedish") {
+                    if (["Swedish", "Norwegian", "Danish"].includes(language)) {
                         if (!this.otherSupportedLanguages.includes(language)) {
                             this.otherSupportedLanguages.push(language);
                         }
