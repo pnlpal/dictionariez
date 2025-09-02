@@ -158,10 +158,6 @@ var options = {
                                     default_icon: "images/library-128.png",
                                 };
                             }
-                        } else if (env.BROWSER === "Edge") {
-                            if (env.PRODUCT === "Ordböcker") {
-                                json.name = "Ordböcker: dictionaries for learning Swedish";
-                            }
                         }
                         if (env.NODE_ENV === "development") {
                             if (env.BROWSER === "Firefox") {
