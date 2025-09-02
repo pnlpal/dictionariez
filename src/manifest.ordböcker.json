@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "minimum_chrome_version": "105",
-    "name": "Ordböcker: Swedish, Norwegian & Danish Dictionaries",
+    "name": "Ordböcker: Learn Swedish, Norwegian & Danish",
     "permissions": ["activeTab", "tabs", "storage", "contextMenus", "offscreen"],
     "background": {
         "service_worker": "background.bundle.js"
