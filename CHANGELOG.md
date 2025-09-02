@@ -5,6 +5,7 @@
 - Migrated all CoffeeScript files to JavaScript for better maintainability.
 - Expanded and improved unit test coverage.
 - Bring Exporting to Anki Integration to SidePal.
+- Ordböcker supports Norwegian & Danish.
 
 # v5.7.2 July 07, 2025
 - Expanded integration tests.
