@@ -968,7 +968,18 @@
 				</div>
 			</div>
 
-			<a href="https://www.buymeacoffee.com/riveryoung" class="buymeacoffee" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee"></a>
+			<div class="user-profile-wrapper">
+				<a class="avatar-wrapper" href="{{user.link}}" target="_blank">
+					<img ng-src="{{ user.pictureUrl }}" alt="" id="avatar">
+				</a>
+				<div class="user-info">
+					<a class="user-name" href="{{user.link}}" target="_blank">{{ user.username }}</a>
+					<a href="{{user.subscriptionLink}}" target="_blank" class="user-badge {{ user.isPro ? 'pro' : 'free' }}">
+						<span ng-if="user.isPro"><i class="fa fa-star"></i> Pro</span>
+						<span ng-if="!user.isPro" title="Get Pro to support the development and get more features!">Free</span>
+					</a>
+				</div>
+			</div>
 		</div>
 		<div
 			id="confirm-delete-modal"

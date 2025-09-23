@@ -95,7 +95,6 @@ const run = () => {
             type: "setting",
         },
         async (setting) => {
-            const mouseMoveTimer = null;
             let plainQuerying = null;
             let lastAutoSelection = "";
 

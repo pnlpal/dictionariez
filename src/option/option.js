@@ -20,6 +20,7 @@ import "angularjs-color-picker";
 
 import "./pnl-craft-topics.js";
 import initWelcome from "./init-welcome.js";
+import initUserProfile from "./user-profile.js";
 
 document.title = `Options - ${process.env.PRODUCT}`;
 
@@ -142,6 +143,7 @@ Read more here: https://pnl.dev/topic/52/help-more-dictionaries-needed
         };
 
         setupDevFunctions();
+        initUserProfile($scope);
     },
 ]);
 
