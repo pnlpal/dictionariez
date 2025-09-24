@@ -2,6 +2,7 @@ import storage from "./storage.js";
 import setting from "./setting.js"; // Import the setting module
 import message from "./message.js";
 import { expect } from "chai";
+import cloudStorage from "./storage-on-cloud.js";
 
 const wordDetail = {
     w: "test",
@@ -192,6 +193,19 @@ describe("storage for pro user", () => {
         const updatedWord = await storage.getWordDetail(wordDetail.w);
         expect(updatedWord.ankiSaved).to.be.true;
 
+        await storage.removeHistory(wordDetail.w);
+    });
+    it("should fall back to local storage when cloud storage fails", async function () {
+        sinon.stub(cloudStorage, "addHistory").throws(new Error("Cloud storage error"));
+        sinon.stub(cloudStorage, "getWordDetail").throws(new Error("Cloud storage error"));
+        await storage.addHistory(wordDetail);
+        expect(storage.history.length).to.equal(1);
+        const createdWord = await storage.getWordDetail(wordDetail.w);
+        expect(createdWord.w).to.equal(wordDetail.w);
+        expect(createdWord.sentence).to.equal(wordDetail.sentence);
+        expect(createdWord.s).to.equal(wordDetail.s);
+        expect(createdWord.sc).to.equal(wordDetail.sc);
+        expect(createdWord.t).to.is.a("number");
         await storage.removeHistory(wordDetail.w);
     });
 });

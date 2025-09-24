@@ -41,4 +41,34 @@ export default {
                 .catch((error) => reject(error));
         });
     },
+
+    async addHistory({ w, s, sc, r, sentence }) {
+        return await this.post("/api/user/words", {
+            word: w,
+            sentence: sentence,
+            rate: r,
+            source: s,
+            sourceContent: sc,
+        });
+    },
+    async getWordDetail(word, convertProItem) {
+        const res = await this.get(`/api/user/words/${encodeURIComponent(word)}`);
+        if (res?.word) {
+            return {
+                ...convertProItem(res),
+                previous: convertProItem(res.previous),
+            };
+        } else {
+            return null;
+        }
+    },
+    async getPreviousWord(w, convertProItem) {
+        if (w) {
+            const wordDetail = await this.getWordDetail(w, convertProItem);
+            return wordDetail?.previous;
+        } else {
+            const res = await this.get("/api/user/latest-word");
+            return convertProItem(res);
+        }
+    },
 };

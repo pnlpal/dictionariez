@@ -1,6 +1,6 @@
 import message from "./message.js";
 import setting from "./setting.js";
-import proHelper from "./pro-helper.js";
+import cloudStorage from "./storage-on-cloud.js";
 
 class Item {
     constructor({ w, s, sc, r, t = Date.now(), sentence, ankiSaved } = {}) {
@@ -30,7 +30,7 @@ class Item {
     update({ w, s, sc, r, t, sentence, ankiSaved }) {
         if (w) this.w = w;
         if (s) this.s = s;
-        if (sc) this.s = sc;
+        if (sc) this.sc = sc;
         if (r) this.r = r;
         if (t) this.t = t;
         if (sentence) this.sentence = sentence;
@@ -99,48 +99,50 @@ export default {
     },
 
     async getWordDetail(word) {
-        if (this.isProUser()) {
-            const res = await proHelper.get(`/api/user/words/${encodeURIComponent(word)}`);
-            if (res?.word) {
-                return {
-                    ...convertProItem(res),
-                    previous: convertProItem(res.previous),
-                };
-            } else {
-                return null;
-            }
-        } else {
+        async function getFromLocal() {
             const detail = this.history.find((item) => item.w === word);
             if (detail) {
                 detail.previous = await this.getPrevious(word);
             }
             return detail;
         }
+        if (this.isProUser()) {
+            try {
+                return await cloudStorage.getWordDetail(word, convertProItem);
+            } catch (error) {
+                console.error("Failed to get word detail from pro service, falling back to local storage:", error);
+                return await getFromLocal.call(this);
+            }
+        } else {
+            return await getFromLocal.call(this);
+        }
     },
 
     async getPrevious(w) {
         if (setting.getValue("disableWordHistory")) return;
-
-        if (this.isProUser()) {
-            if (w) {
-                const wordDetail = await this.getWordDetail(w);
-                return wordDetail?.previous;
-            } else {
-                const res = await proHelper.get("/api/user/latest-word");
-                return convertProItem(res);
-            }
-        } else {
+        async function getFromLocal() {
             const idx = this.history.findIndex((item) => item.w === w);
             const previous =
                 idx > 0 ? this.history[idx - 1] : idx === -1 ? this.history[this.history.length - 1] : undefined;
             if (previous) delete previous.previous;
             return previous;
         }
+
+        if (this.isProUser()) {
+            try {
+                return await cloudStorage.getPreviousWord(w, convertProItem);
+            } catch (error) {
+                console.error("Failed to get previous word from pro service, falling back to local storage:", error);
+                return getFromLocal.call(this);
+            }
+        } else {
+            return getFromLocal.call(this);
+        }
     },
 
     async getHistory(length) {
         if (this.isProUser()) {
-            const res = await proHelper.get("/api/user/words");
+            const res = await cloudStorage.get("/api/user/words");
             return res.data.map((item) => convertProItem(item));
         } else {
             let begin = 0;
@@ -161,7 +163,7 @@ export default {
         if (setting.getValue("disableWordHistory")) return;
 
         if (this.isProUser()) {
-            const res = await proHelper.get(`/api/user/words/${encodeURIComponent(w)}/next`);
+            const res = await cloudStorage.get(`/api/user/words/${encodeURIComponent(w)}/next`);
             return convertProItem(res);
         } else {
             const idx = this.history.findIndex((item) => item.w === w);
@@ -175,7 +177,7 @@ export default {
 
     async addRating(word, rating) {
         if (this.isProUser()) {
-            await proHelper.post(`/api/user/words/${encodeURIComponent(word)}/rate`, {
+            await cloudStorage.post(`/api/user/words/${encodeURIComponent(word)}/rate`, {
                 word: word,
                 rate: rating,
             });
@@ -189,7 +191,7 @@ export default {
 
     async savedAnki(word, saved = true) {
         if (this.isProUser()) {
-            await proHelper.post(`/api/user/words/${encodeURIComponent(word)}/saved-to-anki`, {
+            await cloudStorage.post(`/api/user/words/${encodeURIComponent(word)}/saved-to-anki`, {
                 word: word,
                 ankiSaved: saved,
             });
@@ -215,26 +217,33 @@ export default {
         }
     },
 
-    async addHistory({ w, s, sc, r, t, sentence }) {
+    async addHistory({ w, s, sc, r, sentence }) {
         if (setting.getValue("disableWordHistory")) return;
-        if (this.isProUser()) {
-            await proHelper.post("/api/user/words", {
-                word: w,
-                sentence: sentence,
-                rate: r,
-                source: s,
-                sourceContent: sc,
-            });
-        } else {
+
+        async function addToLocal() {
             const item = await this.getWordDetail(w);
-            if (!item) {
+            if (item) {
+                // Update the existing item
+                await item.update({ s, sc, r, t: Date.now(), sentence });
+            } else {
                 if (this.history.length >= this.maxLength) {
                     this.history.shift();
                 }
-                const newItem = new Item({ w, s, sc, r, t, sentence });
+                const newItem = new Item({ w, s, sc, r, sentence });
                 this.history.push(newItem);
                 await newItem.save();
             }
+        }
+
+        if (this.isProUser()) {
+            try {
+                await cloudStorage.addHistory({ w, s, sc, r, sentence });
+            } catch (error) {
+                console.error("Failed to add word to pro service, falling back to local storage:", error);
+                await addToLocal.call(this);
+            }
+        } else {
+            await addToLocal.call(this);
         }
     },
 
@@ -244,7 +253,7 @@ export default {
         }
 
         if (this.isProUser()) {
-            await proHelper.delete("/api/user/words", {
+            await cloudStorage.delete("/api/user/words", {
                 words: words,
             });
         } else {
@@ -287,11 +296,6 @@ export default {
         return new Promise((resolve) => {
             chrome.storage.sync.remove(k, resolve);
         });
-    },
-
-    async cget(k, defaultValue) {
-        const res = await this.get(k, defaultValue);
-        // console.log(res);
     },
 
     getAllByK(k) {
