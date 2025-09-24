@@ -1,55 +1,44 @@
-const pnlpalBaseUrl = "http://localhost:4567";
+const pnlBase = process.env.NODE_ENV === "development" ? "http://localhost:4567" : "https://pnl.dev";
 
 export default {
-  config: {},
-  isProUser: () => false,
-  async post(url, data) {
-    if (!this.config.csrf_token) await this.getConfig();
+    config: {},
+    async post(url, data) {
+        return new Promise((resolve, reject) => {
+            fetch(pnlBase + url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+                credentials: "include",
+            })
+                .then((response) => response.json())
+                .then((data) => resolve(data))
+                .catch((error) => reject(error));
+        });
+    },
+    async delete(url, data) {
+        return new Promise((resolve, reject) => {
+            fetch(pnlBase + url, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+                credentials: "include",
+            })
+                .then((response) => response.json())
+                .then((data) => resolve(data))
+                .catch((error) => reject(error));
+        });
+    },
 
-    return new Promise((resolve, reject) => {
-      fetch(pnlpalBaseUrl + url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-csrf-token": this.config.csrf_token,
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((data) => resolve(data))
-        .catch((error) => reject(error));
-    });
-  },
-  async delete(url, data) {
-    if (!this.config.csrf_token) await this.getConfig();
-
-    return new Promise((resolve, reject) => {
-      fetch(pnlpalBaseUrl + url, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "x-csrf-token": this.config.csrf_token,
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((data) => resolve(data))
-        .catch((error) => reject(error));
-    });
-  },
-
-  get(url) {
-    return new Promise((resolve, reject) => {
-      fetch(pnlpalBaseUrl + url)
-        .then((response) => response.json())
-        .then((data) => resolve(data))
-        .catch((error) => reject(error));
-    });
-  },
-
-  getConfig() {
-    return this.get("/api/config").then((data) => {
-      this.config = data;
-    });
-  },
+    get(url) {
+        return new Promise((resolve, reject) => {
+            fetch(pnlBase + url, { credentials: "include" })
+                .then((response) => response.json())
+                .then((data) => resolve(data))
+                .catch((error) => reject(error));
+        });
+    },
 };

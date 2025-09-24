@@ -1,6 +1,5 @@
 import storage from "./storage.js";
 import setting from "./setting.js"; // Import the setting module
-import proHelper from "./pro-helper.js";
 import message from "./message.js";
 import { expect } from "chai";
 
@@ -15,7 +14,7 @@ describe("storage for pro user", () => {
     beforeEach(() => {
         sinon.stub(message, "on");
         sinon.stub(setting, "getValue").returns(false);
-        sinon.stub(proHelper, "isProUser").returns(true);
+        sinon.stub(storage, "isProUser").returns(true);
         storage.history = [];
     });
     afterEach(() => {
