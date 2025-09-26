@@ -104,7 +104,7 @@ describe("storage for pro user", () => {
         await storage.getWordDetail(wordDetail.w);
         await storage.removeHistory(wordDetail.w);
         const removedWord = await storage.getWordDetail(wordDetail.w);
-        expect(removedWord).to.be.null;
+        expect(removedWord).to.be.undefined;
     });
 
     it("remove multiple words from pnlpal", async function () {
@@ -121,9 +121,9 @@ describe("storage for pro user", () => {
         expect(createdWord2.w).to.equal(wordDetail2.w);
         await storage.removeHistory([wordDetail.w, wordDetail2.w]);
         const removedWord = await storage.getWordDetail(wordDetail.w);
-        expect(removedWord).to.be.null;
+        expect(removedWord).to.be.undefined;
         const removedWord2 = await storage.getWordDetail(wordDetail2.w);
-        expect(removedWord2).to.be.null;
+        expect(removedWord2).to.be.undefined;
     });
     it("should get the previous word", async function () {
         await storage.addHistory(wordDetail);
@@ -207,5 +207,26 @@ describe("storage for pro user", () => {
         expect(createdWord.sc).to.equal(wordDetail.sc);
         expect(createdWord.t).to.is.a("number");
         await storage.removeHistory(wordDetail.w);
+    });
+    it("should fall back to local storage when cloud storage returns not-pro-user error", async function () {
+        // stub fetch
+        window.fetch = () => {
+            return {
+                json: async () => ({ error: "not-pro-user" }),
+                ok: false,
+                status: 403,
+            };
+        };
+
+        sinon.stub(cloudStorage, "getWordDetail").throws(new Error("Cloud storage error"));
+        await storage.addHistory(wordDetail);
+        expect(storage.history.length).to.equal(1);
+        const createdWord = await storage.getWordDetail(wordDetail.w);
+        expect(createdWord.w).to.equal(wordDetail.w);
+        expect(createdWord.sentence).to.equal(wordDetail.sentence);
+        expect(createdWord.s).to.equal(wordDetail.s);
+        expect(createdWord.sc).to.equal(wordDetail.sc);
+        expect(createdWord.t).to.is.a("number");
+        expect(setting.getValue("isPro")).to.be.false;
     });
 });

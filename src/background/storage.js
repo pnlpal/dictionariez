@@ -240,6 +240,9 @@ export default {
                 await cloudStorage.addHistory({ w, s, sc, r, sentence });
             } catch (error) {
                 console.error("Failed to add word to pro service, falling back to local storage:", error);
+                if (error.message === "not-pro-user") {
+                    setting.setValue("isPro", false);
+                }
                 await addToLocal.call(this);
             }
         } else {
