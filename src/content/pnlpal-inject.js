@@ -59,17 +59,18 @@ if (allowedHosts.includes(location.host)) {
         };
 
         if ($this.data("tid")) {
-            addDictByTopic($this.data("tid")).then(
-                handleSuccess,
-                (err) => handleError(err, "json format")
-            );
+            addDictByTopic($this.data("tid")).then(handleSuccess, (err) => handleError(err, "json format"));
         } else {
-            addDictByParseContent($this.closest(".content, .preview")).then(
-                handleSuccess,
-                (err) => handleError(err, "content")
+            addDictByParseContent($this.closest(".content, .preview")).then(handleSuccess, (err) =>
+                handleError(err, "content")
             );
         }
 
         return false;
     });
+
+    if (window.self === window.top) {
+        const userLoggedIn = !!document.querySelector("#logged-in-menu");
+        utils.send("user logged in status", { userLoggedIn, origin: location.origin });
+    }
 }

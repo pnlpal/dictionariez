@@ -2,6 +2,8 @@
 import utils from "utils";
 import "./user-profile.less";
 
+const pnlBase = process.env.NODE_ENV === "development" ? "http://localhost:4567" : "https://pnl.dev";
+
 const defaultAvatarSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='75' height='75'><circle cx='37.5' cy='37.5' r='37.5' fill='%23e0e7ef'/><circle cx='37.5' cy='30' r='14' fill='%2390b4fa'/><ellipse cx='37.5' cy='56' rx='19' ry='12' fill='%2390b4fa'/></svg>`;
 async function loadImage(url) {
     const picRes = await fetch(url, { credentials: "include" });
@@ -18,10 +20,11 @@ function letterAvatar(letter, bg = "#90b4fa", color = "#fff") {
     return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
-export default async ($scope) => {
-    const pnlBase = process.env.NODE_ENV === "development" ? "http://localhost:4567" : "https://pnl.dev";
+async function updateUserProfile($scope) {
+    let loggedIn = false;
     const meRes = await fetch(`${pnlBase}/api/me`, { credentials: "include" });
     if (meRes.ok) {
+        loggedIn = true;
         const userslug = await meRes.json();
         const userRes = await fetch(`${pnlBase}/api${userslug}`);
         const user = await userRes.json();
@@ -39,7 +42,7 @@ export default async ($scope) => {
         $scope.user = user;
     } else {
         $scope.user = {
-            loggedIn: false,
+            loggedIn: loggedIn,
             username: "Login / Sign up",
             pictureUrl: defaultAvatarSvg,
             isPro: false,
@@ -48,4 +51,17 @@ export default async ($scope) => {
         };
     }
     $scope.$apply();
+    return loggedIn;
+}
+
+export default async ($scope) => {
+    let isUserLoggedIn = await updateUserProfile($scope);
+
+    utils.listenToBackground("user logged in status", ({ userLoggedIn, origin }) => {
+        console.log("User logged in status changed:", userLoggedIn);
+        if (userLoggedIn !== isUserLoggedIn && origin === pnlBase) {
+            isUserLoggedIn = userLoggedIn;
+            updateUserProfile($scope);
+        }
+    });
 };
