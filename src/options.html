@@ -116,7 +116,17 @@
 					
 
 					<div id="history" class="section">
-						<h1>History</h1>
+						<h1>History
+							<span class="fa-stack fa text-success cloud-sync-status" ng-if="setting.isPro && user.loggedIn" title="Your history is synced to the cloud">
+								<i class="fa fa-cloud fa-stack-2x"></i>
+								<i class="fa fa-check fa-stack-1x" style="color:#43c59e;"></i>
+							</span>
+							<span class="fa-stack fa text-danger cloud-sync-status" ng-if="!setting.isPro || !user.loggedIn" title="Your history is not synced to the cloud, please upgrade to Pro to enable cloud sync">
+								<i class="fa fa-cloud fa-stack-2x"></i>
+								<i class="fa fa-times fa-stack-1x" style="color:#e74c3c;"></i>
+							</span>
+						</h1>
+						
 						<div ng-if="setting.isPro && user.loggedIn === false" class="session-expired-alert">
 							<p>
 								<strong>Your session has expired.</strong><br>
