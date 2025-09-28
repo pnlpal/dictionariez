@@ -46,7 +46,7 @@ chrome.runtime.onInstalled.addListener(async function (details) {
             url: chrome.runtime.getURL("test.html"),
         });
 
-    if ([chrome.runtime.OnInstalledReason.UPDATE, chrome.runtime.OnInstalledReason.INSTALL].includes(details.reason)) {
+    if ([chrome.runtime.OnInstalledReason.INSTALL].includes(details.reason)) {
         await initPromises;
         if (process.env.PRODUCT !== "SidePal") {
             if (!setting.getValue("privacyConsent")) {
