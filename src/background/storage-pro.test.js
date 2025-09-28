@@ -8,7 +8,7 @@ const wordDetail = {
     w: "test",
     sentence: "this is a test sentence.",
     s: "http://test.com",
-    sc: "test source content",
+    sc: "test source title",
 };
 
 describe("storage for pro user", () => {

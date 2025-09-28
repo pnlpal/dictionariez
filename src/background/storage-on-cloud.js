@@ -51,7 +51,7 @@ export default {
             sentence: sentence,
             rate: r,
             source: s,
-            sourceContent: sc,
+            sourceTitle: sc,
         });
     },
     async getWordDetail(word, convertProItem) {

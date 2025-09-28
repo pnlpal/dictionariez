@@ -68,7 +68,7 @@ function convertProItem(item) {
     return {
         w: item.word,
         s: item.source,
-        sc: item.sourceContent,
+        sc: item.sourceTitle,
         r: item.rate,
         t: item.timestamp,
         sentence: item.sentence,
