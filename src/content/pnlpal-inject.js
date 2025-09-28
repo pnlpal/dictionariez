@@ -71,6 +71,7 @@ if (allowedHosts.includes(location.host)) {
 
     if (window.self === window.top) {
         const userLoggedIn = !!document.querySelector("#logged-in-menu");
-        utils.send("user logged in status", { userLoggedIn, origin: location.origin });
+        const userSubscribed = location.pathname === "/pro" && location.search.includes("success=true");
+        utils.send("user logged in status", { userLoggedIn, origin: location.origin, userSubscribed });
     }
 }

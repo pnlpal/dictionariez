@@ -57,11 +57,13 @@ async function updateUserProfile($scope) {
 export default async ($scope) => {
     let isUserLoggedIn = await updateUserProfile($scope);
 
-    utils.listenToBackground("user logged in status", ({ userLoggedIn, origin }) => {
-        console.log("User logged in status changed:", userLoggedIn);
-        if (userLoggedIn !== isUserLoggedIn && origin === pnlBase) {
-            isUserLoggedIn = userLoggedIn;
-            updateUserProfile($scope);
+    utils.listenToBackground("user logged in status", ({ userLoggedIn, origin, userSubscribed }) => {
+        if (origin === pnlBase) {
+            if (userLoggedIn !== isUserLoggedIn || userSubscribed) {
+                console.log("User status changed:", { userLoggedIn, userSubscribed });
+                isUserLoggedIn = userLoggedIn;
+                updateUserProfile($scope);
+            }
         }
     });
 };
