@@ -16,7 +16,7 @@ describe("storage for pro user", () => {
         sinon.stub(message, "on");
         sinon.stub(setting, "getValue").returns(false);
         sinon.stub(storage, "isProUser").returns(true);
-        storage.history = [];
+        storage.localHistory = [];
     });
     afterEach(() => {
         sinon.restore();
@@ -24,7 +24,7 @@ describe("storage for pro user", () => {
 
     it("should add the word to pnlpal", async function () {
         await storage.addHistory(wordDetail);
-        expect(storage.history.length).to.equal(0);
+        expect(storage.localHistory.length).to.equal(0);
 
         const createdWord = await storage.getWordDetail(wordDetail.w);
         expect(createdWord.w).to.equal(wordDetail.w);
@@ -37,7 +37,7 @@ describe("storage for pro user", () => {
 
     it("should update the existing word", async function () {
         await storage.addHistory(wordDetail);
-        expect(storage.history.length).to.equal(0);
+        expect(storage.localHistory.length).to.equal(0);
         const createdWord = await storage.getWordDetail(wordDetail.w);
 
         const wordDetail2 = {
@@ -48,7 +48,7 @@ describe("storage for pro user", () => {
         await storage.addHistory(wordDetail2);
         const updatedWord = await storage.getWordDetail(wordDetail2.w);
 
-        expect(storage.history.length).to.equal(0);
+        expect(storage.localHistory.length).to.equal(0);
         expect(updatedWord.w).to.equal(wordDetail2.w);
         expect(updatedWord.sentence).to.equal(wordDetail2.sentence);
         expect(updatedWord.s).to.equal(wordDetail2.s);
@@ -59,7 +59,7 @@ describe("storage for pro user", () => {
     });
     it("should not update the existing word if the new word is the same", async function () {
         await storage.addHistory(wordDetail);
-        expect(storage.history.length).to.equal(0);
+        expect(storage.localHistory.length).to.equal(0);
         const createdWord = await storage.getWordDetail(wordDetail.w);
 
         const wordDetail2 = {
@@ -67,13 +67,13 @@ describe("storage for pro user", () => {
         };
         await storage.addHistory(wordDetail2);
         const updatedWord = await storage.getWordDetail(wordDetail2.w);
-        expect(storage.history.length).to.equal(0);
+        expect(storage.localHistory.length).to.equal(0);
         expect(updatedWord.t).to.equal(createdWord.t);
         await storage.removeHistory(wordDetail.w);
     });
     it("should not update the existing word if the new word is the same but only sentence or source is null", async function () {
         await storage.addHistory(wordDetail);
-        expect(storage.history.length).to.equal(0);
+        expect(storage.localHistory.length).to.equal(0);
         const createdWord = await storage.getWordDetail(wordDetail.w);
 
         const wordDetail2 = {
@@ -82,7 +82,7 @@ describe("storage for pro user", () => {
         };
         await storage.addHistory(wordDetail2);
         const updatedWord = await storage.getWordDetail(wordDetail2.w);
-        expect(storage.history.length).to.equal(0);
+        expect(storage.localHistory.length).to.equal(0);
         expect(updatedWord.t).to.equal(createdWord.t);
 
         const wordDetail3 = {
@@ -92,7 +92,7 @@ describe("storage for pro user", () => {
         };
         await storage.addHistory(wordDetail3);
         const updatedWord3 = await storage.getWordDetail(wordDetail3.w);
-        expect(storage.history.length).to.equal(0);
+        expect(storage.localHistory.length).to.equal(0);
         expect(updatedWord3.t).to.equal(createdWord.t);
 
         await storage.removeHistory(wordDetail.w);
@@ -100,7 +100,7 @@ describe("storage for pro user", () => {
 
     it("remove the word from pnlpal", async function () {
         await storage.addHistory(wordDetail);
-        expect(storage.history.length).to.equal(0);
+        expect(storage.localHistory.length).to.equal(0);
         await storage.getWordDetail(wordDetail.w);
         await storage.removeHistory(wordDetail.w);
         const removedWord = await storage.getWordDetail(wordDetail.w);
@@ -114,7 +114,7 @@ describe("storage for pro user", () => {
             w: "test2",
         };
         await storage.addHistory(wordDetail2);
-        expect(storage.history.length).to.equal(0);
+        expect(storage.localHistory.length).to.equal(0);
         const createdWord = await storage.getWordDetail(wordDetail.w);
         const createdWord2 = await storage.getWordDetail(wordDetail2.w);
         expect(createdWord.w).to.equal(wordDetail.w);
@@ -199,7 +199,7 @@ describe("storage for pro user", () => {
         sinon.stub(cloudStorage, "addHistory").throws(new Error("Cloud storage error"));
         sinon.stub(cloudStorage, "getWordDetail").throws(new Error("Cloud storage error"));
         await storage.addHistory(wordDetail);
-        expect(storage.history.length).to.equal(1);
+        expect(storage.localHistory.length).to.equal(1);
         const createdWord = await storage.getWordDetail(wordDetail.w);
         expect(createdWord.w).to.equal(wordDetail.w);
         expect(createdWord.sentence).to.equal(wordDetail.sentence);
@@ -220,7 +220,7 @@ describe("storage for pro user", () => {
 
         sinon.stub(cloudStorage, "getWordDetail").throws(new Error("Cloud storage error"));
         await storage.addHistory(wordDetail);
-        expect(storage.history.length).to.equal(1);
+        expect(storage.localHistory.length).to.equal(1);
         const createdWord = await storage.getWordDetail(wordDetail.w);
         expect(createdWord.w).to.equal(wordDetail.w);
         expect(createdWord.sentence).to.equal(wordDetail.sentence);

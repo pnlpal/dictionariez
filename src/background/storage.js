@@ -78,12 +78,12 @@ function convertProItem(item) {
 
 export default {
     maxLength: 500,
-    history: [],
+    localHistory: [],
     isProUser() {
         return setting.getValue("isPro");
     },
     async init() {
-        this.history = await Item.getAll();
+        this.localHistory = await Item.getAll();
 
         message.on("history", () => {
             return this.getHistory();
@@ -98,55 +98,54 @@ export default {
         });
     },
 
+    async invokeWrapper(localFunc, cloudFunc, ...args) {
+        if (this.isProUser()) {
+            try {
+                return await cloudFunc.apply(cloudStorage, args);
+            } catch (error) {
+                console.error("Cloud function failed, falling back to local function:", error);
+                if (error.message === "not-pro-user") {
+                    setting.setValue("isPro", false);
+                }
+                return await localFunc.apply(this, args);
+            }
+        } else {
+            return await localFunc.apply(this, args);
+        }
+    },
+
     async getWordDetail(word) {
         async function getFromLocal() {
-            const detail = this.history.find((item) => item.w === word);
+            const detail = this.localHistory.find((item) => item.w === word);
             if (detail) {
                 detail.previous = await this.getPrevious(word);
             }
             return detail;
         }
-        if (this.isProUser()) {
-            try {
-                return await cloudStorage.getWordDetail(word, convertProItem);
-            } catch (error) {
-                console.error("Failed to get word detail from pro service, falling back to local storage:", error);
-                return await getFromLocal.call(this);
-            }
-        } else {
-            return await getFromLocal.call(this);
-        }
+
+        return this.invokeWrapper(getFromLocal, cloudStorage.getWordDetail, word, convertProItem);
     },
 
     async getPrevious(w) {
         if (setting.getValue("disableWordHistory")) return;
         async function getFromLocal() {
-            const idx = this.history.findIndex((item) => item.w === w);
+            const idx = this.localHistory.findIndex((item) => item.w === w);
             const previous =
-                idx > 0 ? this.history[idx - 1] : idx === -1 ? this.history[this.history.length - 1] : undefined;
+                idx > 0
+                    ? this.localHistory[idx - 1]
+                    : idx === -1
+                    ? this.localHistory[this.localHistory.length - 1]
+                    : undefined;
             if (previous) delete previous.previous;
             return previous;
         }
-
-        if (this.isProUser()) {
-            try {
-                return await cloudStorage.getPreviousWord(w, convertProItem);
-            } catch (error) {
-                console.error("Failed to get previous word from pro service, falling back to local storage:", error);
-                return getFromLocal.call(this);
-            }
-        } else {
-            return getFromLocal.call(this);
-        }
+        return this.invokeWrapper(getFromLocal, cloudStorage.getPreviousWord, w, convertProItem);
     },
 
     async getHistory(length) {
-        if (this.isProUser()) {
-            const res = await cloudStorage.get("/api/user/words");
-            return res.data.map((item) => convertProItem(item));
-        } else {
+        function getFromLocal() {
             let begin = 0;
-            let end = this.history.length;
+            let end = this.localHistory.length;
 
             if (length) {
                 begin = end - length;
@@ -155,62 +154,53 @@ export default {
                 }
             }
 
-            return this.history.slice(begin, end).toReversed();
+            return this.localHistory.slice(begin, end).toReversed();
         }
+        return this.invokeWrapper(getFromLocal, cloudStorage.getHistory, convertProItem);
     },
 
     async getNext(w, circle = false) {
         if (setting.getValue("disableWordHistory")) return;
 
-        if (this.isProUser()) {
-            const res = await cloudStorage.get(`/api/user/words/${encodeURIComponent(w)}/next`);
-            return convertProItem(res);
-        } else {
-            const idx = this.history.findIndex((item) => item.w === w);
-            if (idx < this.history.length - 1) {
-                return this.history[idx + 1];
+        function getFromLocal() {
+            const idx = this.localHistory.findIndex((item) => item.w === w);
+            if (idx < this.localHistory.length - 1) {
+                return this.localHistory[idx + 1];
             } else if (circle || !w) {
-                return this.history[0];
+                return this.localHistory[0];
             }
         }
+        return this.invokeWrapper(getFromLocal, cloudStorage.getNextWord, w, convertProItem);
     },
 
     async addRating(word, rating) {
-        if (this.isProUser()) {
-            await cloudStorage.post(`/api/user/words/${encodeURIComponent(word)}/rate`, {
-                word: word,
-                rate: rating,
-            });
-        } else {
+        async function updateLocal() {
             const item = await this.getWordDetail(word);
             if (item) {
                 await item.update({ r: rating });
             }
         }
+        return this.invokeWrapper(updateLocal, cloudStorage.addRating, word, rating);
     },
 
     async savedAnki(word, saved = true) {
-        if (this.isProUser()) {
-            await cloudStorage.post(`/api/user/words/${encodeURIComponent(word)}/saved-to-anki`, {
-                word: word,
-                ankiSaved: saved,
-            });
-        } else {
+        async function updateLocal() {
             const item = await this.getWordDetail(word);
             if (item) {
                 await item.update({ ankiSaved: saved });
             }
         }
+        return this.invokeWrapper(updateLocal, cloudStorage.savedAnki, word, saved);
     },
 
     getPreviousAnkiUnsaved(w) {
         if (setting.getValue("disableWordHistory")) return;
-        let idx = this.history.findIndex((item) => item.w === w);
-        idx ??= this.history.length - 1;
+        let idx = this.localHistory.findIndex((item) => item.w === w);
+        idx ??= this.localHistory.length - 1;
 
         while (idx > 0) {
             idx -= 1;
-            const item = this.history[idx];
+            const item = this.localHistory[idx];
             if (!item.ankiSaved) {
                 return item;
             }
@@ -226,45 +216,28 @@ export default {
                 // Update the existing item
                 await item.update({ s, sc, r, t: Date.now(), sentence });
             } else {
-                if (this.history.length >= this.maxLength) {
-                    this.history.shift();
+                if (this.localHistory.length >= this.maxLength) {
+                    this.localHistory.shift();
                 }
                 const newItem = new Item({ w, s, sc, r, sentence });
-                this.history.push(newItem);
+                this.localHistory.push(newItem);
                 await newItem.save();
             }
         }
 
-        if (this.isProUser()) {
-            try {
-                await cloudStorage.addHistory({ w, s, sc, r, sentence });
-            } catch (error) {
-                console.error("Failed to add word to pro service, falling back to local storage:", error);
-                if (error.message === "not-pro-user") {
-                    setting.setValue("isPro", false);
-                }
-                await addToLocal.call(this);
-            }
-        } else {
-            await addToLocal.call(this);
-        }
+        return this.invokeWrapper(addToLocal, cloudStorage.addHistory, { w, s, sc, r, sentence });
     },
 
     async removeHistory(words) {
         if (!Array.isArray(words)) {
             words = [words];
         }
-
-        if (this.isProUser()) {
-            await cloudStorage.delete("/api/user/words", {
-                words: words,
-            });
-        } else {
+        async function removeFromLocal() {
             const valids = [];
             words.forEach((w) => {
-                const idx = this.history.findIndex((item) => item.w === w);
+                const idx = this.localHistory.findIndex((item) => item.w === w);
                 if (idx >= 0) {
-                    this.history.splice(idx, 1);
+                    this.localHistory.splice(idx, 1);
                     valids.push(w);
                 }
             });
@@ -273,6 +246,8 @@ export default {
                 await Item.remove(valids);
             }
         }
+
+        return this.invokeWrapper(removeFromLocal, cloudStorage.removeHistory, words);
     },
 
     clearAll() {

@@ -27,7 +27,7 @@ const test_MAX_ITEMS = async () => {
     }
     await storage.set(data);
     await storage.init();
-    console.log(storage.history.length);
+    console.log(storage.localHistory.length);
 };
 
 test_MAX_ITEMS();

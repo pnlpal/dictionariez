@@ -41,7 +41,10 @@ export default {
         });
         return this.handleResponse(response);
     },
-
+    async getHistory(convertProItem) {
+        const res = await this.get("/api/user/words");
+        return res.data.map((item) => convertProItem(item));
+    },
     async addHistory({ w, s, sc, r, sentence }) {
         return await this.post("/api/user/words", {
             word: w,
@@ -68,5 +71,26 @@ export default {
             const res = await this.get("/api/user/latest-word");
             return convertProItem(res);
         }
+    },
+    async getNextWord(w, convertProItem) {
+        const res = await this.get(`/api/user/words/${encodeURIComponent(w)}/next`);
+        return convertProItem(res);
+    },
+    async removeHistory(words) {
+        return await this.delete("/api/user/words", {
+            words: words,
+        });
+    },
+    async addRating(word, rating) {
+        return await this.post(`/api/user/words/${encodeURIComponent(word)}/rate`, {
+            word: word,
+            rate: rating,
+        });
+    },
+    async savedAnki(word, saved = true) {
+        await this.post(`/api/user/words/${encodeURIComponent(word)}/saved-to-anki`, {
+            word: word,
+            ankiSaved: saved,
+        });
     },
 };

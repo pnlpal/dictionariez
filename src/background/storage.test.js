@@ -38,23 +38,23 @@ describe("background/storage", () => {
     it("should add the word to local history for non-pro users", async function () {
         chrome.storage.sync.set.resolves({});
         await storage.addHistory(wordDetail);
-        expect(storage.history.length).to.equal(1);
+        expect(storage.localHistory.length).to.equal(1);
         // expect(chrome.storage.sync.set.calledOnce).to.be.true;
 
-        expect(storage.history[0].w).to.equal(wordDetail.w);
-        expect(storage.history[0].sentence).to.equal(wordDetail.sentence);
-        expect(storage.history[0].s).to.equal(wordDetail.s);
-        expect(storage.history[0].sc).to.equal(wordDetail.sc);
-        expect(storage.history[0].r).to.equal(wordDetail.r);
-        expect(storage.history[0].t).to.is.a("number");
+        expect(storage.localHistory[0].w).to.equal(wordDetail.w);
+        expect(storage.localHistory[0].sentence).to.equal(wordDetail.sentence);
+        expect(storage.localHistory[0].s).to.equal(wordDetail.s);
+        expect(storage.localHistory[0].sc).to.equal(wordDetail.sc);
+        expect(storage.localHistory[0].r).to.equal(wordDetail.r);
+        expect(storage.localHistory[0].t).to.is.a("number");
     });
 
     it("should update the existing word in local history for non-pro users", async function () {
         chrome.storage.sync.set.resolves({});
-        storage.history = [];
+        storage.localHistory = [];
         await storage.addHistory(wordDetail);
-        expect(storage.history.length).to.equal(1);
-        const firstTime = storage.history[0].t;
+        expect(storage.localHistory.length).to.equal(1);
+        const firstTime = storage.localHistory[0].t;
         await utils.promisifiedTimeout(10);
         // now update it
         const wordDetail2 = {
@@ -63,14 +63,14 @@ describe("background/storage", () => {
             s: "http://test2.com",
         };
         await storage.addHistory(wordDetail2);
-        console.log(storage.history[0].t, firstTime);
-        expect(storage.history.length).to.equal(1);
-        expect(storage.history[0].w).to.equal(wordDetail2.w);
-        expect(storage.history[0].sentence).to.equal(wordDetail2.sentence);
-        expect(storage.history[0].s).to.equal(wordDetail2.s);
-        expect(storage.history[0].sc).to.equal(wordDetail2.sc);
-        expect(storage.history[0].r).to.equal(wordDetail2.r);
-        expect(storage.history[0].t).to.is.a("number");
-        expect(storage.history[0].t).to.be.greaterThan(firstTime);
+        console.log(storage.localHistory[0].t, firstTime);
+        expect(storage.localHistory.length).to.equal(1);
+        expect(storage.localHistory[0].w).to.equal(wordDetail2.w);
+        expect(storage.localHistory[0].sentence).to.equal(wordDetail2.sentence);
+        expect(storage.localHistory[0].s).to.equal(wordDetail2.s);
+        expect(storage.localHistory[0].sc).to.equal(wordDetail2.sc);
+        expect(storage.localHistory[0].r).to.equal(wordDetail2.r);
+        expect(storage.localHistory[0].t).to.is.a("number");
+        expect(storage.localHistory[0].t).to.be.greaterThan(firstTime);
     });
 });
