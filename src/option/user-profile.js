@@ -45,7 +45,6 @@ async function updateUserProfile($scope) {
             loggedIn: loggedIn,
             username: "Login / Sign up",
             pictureUrl: defaultAvatarSvg,
-            isPro: false,
             link: `${pnlBase}/login`,
             subscriptionLink: `${pnlBase}/pro`,
         };

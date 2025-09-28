@@ -117,6 +117,12 @@
 
 					<div id="history" class="section">
 						<h1>History</h1>
+						<div ng-if="setting.isPro && user.loggedIn === false" class="session-expired-alert">
+							<p>
+								<strong>Your session has expired.</strong><br>
+								Please <a href="{{user.link}}" target="_blank" class="btn btn-primary btn-sm" style="margin:0 0.5em;">Log in</a> again to sync your history.
+							</p>
+						</div>
 						<table ng-if="!setting.disableWordHistory"
 							id="table-history"
 							class="table table-condensed table-bordered111"
@@ -974,9 +980,9 @@
 				</a>
 				<div class="user-info">
 					<a class="user-name" href="{{user.link}}" target="_blank">{{ user.username }}</a>
-					<a href="{{user.subscriptionLink}}" target="_blank" class="user-badge {{ user.isPro ? 'pro' : 'free' }}">
-						<span ng-if="user.isPro"><i class="fa fa-star"></i> Pro</span>
-						<span ng-if="!user.isPro" title="Get Pro to support the development and get more features!">Free</span>
+					<a href="{{user.subscriptionLink}}" target="_blank" class="user-badge {{ setting.isPro ? 'pro' : 'free' }}">
+						<span ng-if="setting.isPro" title="You are a Pro user!"><i class="fa fa-star"></i> Pro</span>
+						<span ng-if="!setting.isPro" title="Get Pro to support the development and get more features!">Free</span>
 					</a>
 				</div>
 			</div>

@@ -142,64 +142,15 @@ body {
         }
     }
 
-    .promo-modal {
-        .modal-dialog {
-            top: 80px;
-            width: 80%;
-            &.small-dialog {
-                max-width: 960px;
-            }
-
-            .avatar {
-                position: absolute;
-                margin-top: -5px;
-                img {
-                    border-radius: 50%;
-                    width: 48px;
-                    height: 48px;
-                }
-            }
-            .promo-text {
-                margin-left: 60px;
-            }
-
-            .modal-header {
-                background-color: #666;
-            }
-            .modal-body {
-                background-color: white;
-                iframe {
-                    border-radius: 4px;
-                    overflow-y: hidden;
-                }
-                .promo-text-wrapper {
-                    min-height: 80px;
-                    margin-bottom: 35px;
-
-                    .promo-text {
-                        border: #c7c7c7 solid 1px;
-                        border-radius: 15px;
-                        padding: 10px 20px;
-                        color: #333;
-                        font-size: 18px;
-                        a {
-                            background-color: unset;
-                            color: unset;
-                            text-decoration: underline;
-                        }
-                    }
-                }
-
-                .promo-img {
-                    display: block;
-                    margin: auto;
-                    border-radius: 5px;
-                    height: 480px;
-                }
-            }
-            .modal-footer {
-                background-color: white;
-            }
-        }
+    .session-expired-alert {
+        background: #fffbe6;
+        border: 1px solid #ffe58f;
+        color: #ad6800;
+        padding: 1em 1.5em;
+        border-radius: 1em;
+        margin: 1em 0;
+        text-align: center;
+        font-size: 1.13em;
+        box-shadow: 0 2px 8px rgba(255, 215, 0, 0.07);
     }
 }
