@@ -229,7 +229,6 @@ describe("storage for pro user", () => {
     });
 
     it("should get limited history from cloud storage", async function () {
-        // stub fetch
         const words = [
             { ...wordDetail, w: "test1" },
             { ...wordDetail, w: "test2" },
@@ -272,5 +271,48 @@ describe("storage for pro user", () => {
         expect(word6).to.be.undefined;
         const delResponse2 = await storage.removeHistory("test5");
         expect(delResponse2.deleted).to.equal(1);
+    });
+    it("should sync local history to cloud when getting history", async function () {
+        storage.localHistory = [
+            { ...wordDetail, w: "local1", r: 1, ankiSaved: true, t: Date.now() - 2000 },
+            { ...wordDetail, w: "local2", t: Date.now() - 1000 },
+        ];
+        const history = await storage.syncThenGetHistory();
+        expect(history.find((item) => item.w === "local1")).to.exist;
+        expect(history.find((item) => item.w === "local1").r).to.equal(1);
+        expect(history.find((item) => item.w === "local1").ankiSaved).to.be.true;
+        expect(history.find((item) => item.w === "local2")).to.exist;
+        expect(history.find((item) => item.w === "local2").ankiSaved).to.be.false;
+
+        const createdWord = await storage.getWordDetail("local1");
+        expect(createdWord.w).to.equal("local1");
+        expect(createdWord.t).to.equal(history.find((item) => item.w === "local1").t);
+
+        expect(storage.localHistory.length).to.equal(0);
+        const { deleted } = await storage.removeHistory(["local1", "local2"]);
+        expect(deleted).to.equal(2);
+    });
+
+    it("should fall back to local if cloud storage is not available when sync local history", async function () {
+        // stub fetch using sinon
+        sinon.stub(window, "fetch").resolves({
+            json: async () => ({ error: "not-pro-user" }),
+            ok: false,
+            status: 403,
+        });
+
+        sinon.stub(cloudStorage, "getWordDetail").throws(new Error("Cloud storage error"));
+        storage.localHistory = [
+            { ...wordDetail, w: "local1", t: Date.now() - 2000 },
+            { ...wordDetail, w: "local2", t: Date.now() - 1000 },
+        ];
+        const history = await storage.syncThenGetHistory();
+        expect(history.find((item) => item.w === "local1")).to.exist;
+        expect(history.find((item) => item.w === "local2")).to.exist;
+
+        expect(storage.localHistory.length).to.equal(2);
+        expect(setting.getValue("isPro")).to.be.false;
+        const { deleted } = await storage.removeHistory(["local1", "local2"]);
+        expect(deleted).to.equal(2);
     });
 });

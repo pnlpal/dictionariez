@@ -54,6 +54,11 @@ export default {
             sourceTitle: sc,
         });
     },
+    async batchAddHistory(words) {
+        return await this.post("/api/user/words", {
+            words: words,
+        });
+    },
     async getWordDetail(word, convertProItem) {
         const res = await this.get(`/api/user/words/${encodeURIComponent(word)}`);
         if (res?.word) {

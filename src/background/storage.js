@@ -85,8 +85,8 @@ export default {
     async init() {
         this.localHistory = await Item.getAll();
 
-        message.on("history", () => {
-            return this.getHistory();
+        message.on("history", async () => {
+            return this.syncThenGetHistory();
         });
 
         message.on("remove history", ({ w }) => {
@@ -112,6 +112,32 @@ export default {
         } else {
             return await localFunc.apply(this, args);
         }
+    },
+
+    async syncThenGetHistory() {
+        if (this.isProUser() && this.localHistory.length) {
+            try {
+                await cloudStorage.batchAddHistory(
+                    this.localHistory.map((item) => ({
+                        word: item.w,
+                        source: item.s,
+                        sourceTitle: item.sc,
+                        rate: item.r,
+                        timestamp: item.t,
+                        sentence: item.sentence,
+                        ankiSaved: item.ankiSaved,
+                    }))
+                );
+                await Item.remove(this.localHistory.map((item) => item.w));
+                this.localHistory = [];
+            } catch (error) {
+                console.error("Failed to sync local history to cloud:", error);
+                if (error.message === "not-pro-user") {
+                    setting.setValue("isPro", false);
+                }
+            }
+        }
+        return this.getHistory();
     },
 
     async getWordDetail(word) {
@@ -245,6 +271,7 @@ export default {
             if (valids.length) {
                 await Item.remove(valids);
             }
+            return { deleted: valids.length };
         }
 
         return this.invokeWrapper(removeFromLocal, cloudStorage.removeHistory, words);
