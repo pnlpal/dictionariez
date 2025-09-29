@@ -209,14 +209,12 @@ describe("storage for pro user", () => {
         await storage.removeHistory(wordDetail.w);
     });
     it("should fall back to local storage when cloud storage returns not-pro-user error", async function () {
-        // stub fetch
-        window.fetch = () => {
-            return {
-                json: async () => ({ error: "not-pro-user" }),
-                ok: false,
-                status: 403,
-            };
-        };
+        // stub fetch using sinon
+        sinon.stub(window, "fetch").resolves({
+            json: async () => ({ error: "not-pro-user" }),
+            ok: false,
+            status: 403,
+        });
 
         sinon.stub(cloudStorage, "getWordDetail").throws(new Error("Cloud storage error"));
         await storage.addHistory(wordDetail);
@@ -228,5 +226,51 @@ describe("storage for pro user", () => {
         expect(createdWord.sc).to.equal(wordDetail.sc);
         expect(createdWord.t).to.is.a("number");
         expect(setting.getValue("isPro")).to.be.false;
+    });
+
+    it("should get limited history from cloud storage", async function () {
+        // stub fetch
+        const words = [
+            { ...wordDetail, w: "test1" },
+            { ...wordDetail, w: "test2" },
+            { ...wordDetail, w: "test3" },
+        ];
+
+        for (const word of words) {
+            await storage.addHistory(word);
+        }
+        expect(storage.localHistory.length).to.equal(0);
+        const history = await storage.getHistory(2, (item) => {
+            return { w: item.word };
+        });
+        expect(history.length).to.equal(2);
+        expect(history[0].w).to.equal("test3");
+        expect(history[1].w).to.equal("test2");
+        const { deleted } = await storage.removeHistory(words.map((w) => w.w));
+        expect(deleted).to.equal(3);
+    });
+
+    it("should remove history from cloud storage", async function () {
+        const words = [
+            { ...wordDetail, w: "test4" },
+            { ...wordDetail, w: "test5" },
+            { ...wordDetail, w: "test6" },
+        ];
+
+        for (const word of words) {
+            await storage.addHistory(word);
+        }
+        expect(storage.localHistory.length).to.equal(0);
+
+        const { deleted } = await storage.removeHistory(["test4", "test6"]);
+        expect(deleted).to.equal(2);
+        const word5 = await storage.getWordDetail("test5");
+        expect(word5.w).to.equal("test5");
+        const word4 = await storage.getWordDetail("test4");
+        expect(word4).to.be.undefined;
+        const word6 = await storage.getWordDetail("test6");
+        expect(word6).to.be.undefined;
+        const delResponse2 = await storage.removeHistory("test5");
+        expect(delResponse2.deleted).to.equal(1);
     });
 });

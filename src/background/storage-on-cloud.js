@@ -34,15 +34,15 @@ export default {
         return this.handleResponse(response);
     },
 
-    async get(url) {
-        const response = await fetch(pnlBase + url, {
+    async get(url, queryParams) {
+        const response = await fetch(pnlBase + url + "?" + new URLSearchParams(queryParams), {
             method: "GET",
             credentials: "include",
         });
         return this.handleResponse(response);
     },
-    async getHistory(convertProItem) {
-        const res = await this.get("/api/user/words");
+    async getHistory(limit, convertProItem) {
+        const res = await this.get("/api/user/words", limit ? { limit: limit } : {});
         return res.data.map((item) => convertProItem(item));
     },
     async addHistory({ w, s, sc, r, sentence }) {

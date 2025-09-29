@@ -156,7 +156,7 @@ export default {
 
             return this.localHistory.slice(begin, end).toReversed();
         }
-        return this.invokeWrapper(getFromLocal, cloudStorage.getHistory, convertProItem);
+        return this.invokeWrapper(getFromLocal, cloudStorage.getHistory, length, convertProItem);
     },
 
     async getNext(w, circle = false) {
