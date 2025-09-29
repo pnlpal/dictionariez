@@ -237,7 +237,7 @@ export default {
         if (setting.getValue("disableWordHistory")) return;
 
         async function addToLocal() {
-            const item = await this.getWordDetail(w);
+            const item = this.localHistory.find((item) => item.w === w);
             if (item) {
                 // Update the existing item
                 await item.update({ s, sc, r, t: Date.now(), sentence });
