@@ -60,8 +60,7 @@ export default async ($scope) => {
         if (origin === pnlBase) {
             if (userLoggedIn !== isUserLoggedIn || userSubscribed) {
                 console.log("User status changed:", { userLoggedIn, userSubscribed });
-                isUserLoggedIn = userLoggedIn;
-                updateUserProfile($scope);
+                location.reload();
             }
         }
     });
