@@ -126,7 +126,14 @@
 								<i class="fa fa-times fa-stack-1x" style="color:#e74c3c;"></i>
 							</span>
 						</h1>
-						
+						<div class="storage-almost-full-alert" ng-if="!setting.isPro && historyAlmostFull">
+							<p>
+								<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+								<strong>Your local storage is almost full.</strong><br>
+								Please consider to <a href="{{user.subscriptionLink}}" target="_blank" class="btn btn-primary btn-sm" style="margin:0 0.5em;">Upgrade to Pro</a> to enable cloud sync and get unlimited history.
+								Otherwise, the oldest word in history will be removed when the storage is full.
+							</p>
+						</div>
 						<div ng-if="setting.isPro && user.loggedIn === false" class="session-expired-alert">
 							<p>
 								<strong>Your session has expired.</strong><br>

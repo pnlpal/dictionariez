@@ -96,7 +96,7 @@ export default {
         _reduceHistoryToSaveQuota.call(this);
 
         message.on("history", async () => {
-            return this.syncThenGetHistory();
+            return { data: await this.syncThenGetHistory(), maxLength: !this.isProUser() ? this.maxLength : undefined };
         });
 
         message.on("remove history", ({ w }) => {

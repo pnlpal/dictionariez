@@ -22,6 +22,13 @@ function letterAvatar(letter, bg = "#90b4fa", color = "#fff") {
 
 async function updateUserProfile($scope) {
     let loggedIn = false;
+    $scope.user = {
+        loggedIn: loggedIn,
+        username: "Login / Sign up",
+        pictureUrl: defaultAvatarSvg,
+        link: `${pnlBase}/login`,
+        subscriptionLink: `${pnlBase}/pro`,
+    };
     const meRes = await fetch(`${pnlBase}/api/me`, { credentials: "include" });
     if (meRes.ok) {
         loggedIn = true;
@@ -40,14 +47,6 @@ async function updateUserProfile($scope) {
         }
         utils.send("save setting", { key: "isPro", value: user.isPro });
         $scope.user = user;
-    } else {
-        $scope.user = {
-            loggedIn: loggedIn,
-            username: "Login / Sign up",
-            pictureUrl: defaultAvatarSvg,
-            link: `${pnlBase}/login`,
-            subscriptionLink: `${pnlBase}/pro`,
-        };
     }
     $scope.$apply();
     return loggedIn;

@@ -21,6 +21,7 @@ import "angularjs-color-picker";
 import "./pnl-craft-topics.js";
 import initWelcome from "./init-welcome.js";
 import initUserProfile from "./user-profile.js";
+import initHistoryAndDicts from "./tables.js";
 
 document.title = `Options - ${process.env.PRODUCT}`;
 
@@ -101,11 +102,11 @@ dictApp.controller("optionCtrl", [
                 // window.setting = config
                 $scope.setting = config;
                 initWelcome({ setting: $scope.setting, applySetting: $scope.$apply.bind($scope) });
+                initHistoryAndDicts($scope);
+
                 $scope.$apply();
             }
         );
-
-        import(/* webpackChunkName: "tables" */ "./tables.js");
 
         $scope.markColorEvent = {
             onChange(api, color, $event) {
