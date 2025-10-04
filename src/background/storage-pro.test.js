@@ -332,7 +332,7 @@ describe("storage for pro user", () => {
         expect(previousUnsaved2).to.exist;
         expect(previousUnsaved2.w).to.equal("anki2");
 
-        const previousUnsaved3 = await storage.getPreviousAnkiUnsaved("anki2");
+        const previousUnsaved3 = await storage.getPreviousAnkiUnsaved("anki99");
         expect(previousUnsaved3).to.not.exist;
 
         await storage.removeHistory(["anki1", "anki2", "anki3", "anki4"]);

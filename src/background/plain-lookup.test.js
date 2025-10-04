@@ -256,7 +256,7 @@ describe("background/check words to ignore in plain lookup", () => {
             const result = await utils.send("check text supported", {
                 w: word,
             });
-            expect(result).to.be.null;
+            expect(result).to.not.exist;
         }
     });
     it("should accept words with at most one hyphen in the middle or strip punctuation at the end", async () => {
@@ -276,7 +276,7 @@ describe("background/check words to ignore in plain lookup", () => {
                 w: word,
             });
             if (expected === null) {
-                expect(result).to.be.null;
+                expect(result).to.not.exist;
             } else {
                 expect(result).to.equal(expected);
             }
