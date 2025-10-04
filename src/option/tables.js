@@ -75,10 +75,12 @@ export default ($scope) => {
             return;
         }
         const { data, maxLength } = await utils.send("history");
+        $scope.history = data;
         if (maxLength && data.length > maxLength - 30) {
             $scope.historyAlmostFull = true;
-            $scope.$apply();
         }
+        $scope.$apply();
+
         const table = $("#table-history").DataTable({
             responsive: true,
             dom: '<"pull-left"f><"pull-left"i><"pull-right"B>tp',

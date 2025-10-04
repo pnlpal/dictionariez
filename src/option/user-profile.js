@@ -46,6 +46,8 @@ async function updateUserProfile($scope) {
         }
         utils.send("save setting", { key: "isPro", value: user.isPro });
         $scope.user = user;
+    } else {
+        $scope.user.loggedIn = false;
     }
     $scope.$apply();
     return loggedIn;
