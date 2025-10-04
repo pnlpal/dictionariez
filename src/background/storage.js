@@ -56,10 +56,8 @@ class Item {
     }
 
     static remove(w) {
-        return new Promise((resolve) => {
-            const k = Array.isArray(w) ? w.map((x) => `w-${x}`) : `w-${w}`;
-            chrome.storage.sync.remove(k, resolve);
-        });
+        const k = Array.isArray(w) ? w.map((x) => `w-${x}`) : `w-${w}`;
+        return chrome.storage.sync.remove(k);
     }
 }
 
@@ -77,7 +75,7 @@ function convertProItem(item) {
 }
 
 export default {
-    maxLength: 500,
+    maxLength: 300,
     localHistory: [],
     isProUser() {
         return setting.getValue("isPro");
@@ -243,7 +241,10 @@ export default {
                 await item.update({ s, sc, r, t: Date.now(), sentence });
             } else {
                 if (this.localHistory.length >= this.maxLength) {
-                    this.localHistory.shift();
+                    const oldestItem = this.localHistory.shift();
+                    if (oldestItem) {
+                        await Item.remove(oldestItem.w);
+                    }
                 }
                 const newItem = new Item({ w, s, sc, r, sentence });
                 this.localHistory.push(newItem);
@@ -277,16 +278,12 @@ export default {
         return this.invokeWrapper(removeFromLocal, cloudStorage.removeHistory, words);
     },
 
-    clearAll() {
-        return new Promise((resolve) => {
-            chrome.storage.sync.clear(resolve);
-        });
+    async clearAll() {
+        return await chrome.storage.sync.clear();
     },
 
-    set(data) {
-        return new Promise((resolve) => {
-            chrome.storage.sync.set(data, resolve);
-        });
+    async set(data) {
+        return await chrome.storage.sync.set(data);
     },
 
     get(k, defaultValue) {
@@ -297,10 +294,8 @@ export default {
         });
     },
 
-    remove(k) {
-        return new Promise((resolve) => {
-            chrome.storage.sync.remove(k, resolve);
-        });
+    async remove(k) {
+        return await chrome.storage.sync.remove(k);
     },
 
     getAllByK(k) {

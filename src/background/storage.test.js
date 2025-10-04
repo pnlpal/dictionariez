@@ -73,4 +73,26 @@ describe("background/storage", () => {
         expect(storage.localHistory[0].t).to.is.a("number");
         expect(storage.localHistory[0].t).to.be.greaterThan(firstTime);
     });
+
+    it("should remove the oldest item when maxLength exceeded", async function () {
+        storage.maxLength = 3;
+        storage.localHistory = [
+            {
+                w: "w1",
+            },
+            {
+                w: "w2",
+            },
+            {
+                w: "w3",
+            },
+        ];
+        await storage.addHistory({
+            w: "w4",
+        });
+        expect(storage.localHistory.length).to.equal(3);
+        expect(storage.localHistory[0].w).to.equal("w2");
+        expect(storage.localHistory[1].w).to.equal("w3");
+        expect(storage.localHistory[2].w).to.equal("w4");
+    });
 });

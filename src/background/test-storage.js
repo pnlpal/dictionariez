@@ -15,12 +15,10 @@ const test_QUOTA_BYTES_PER_ITEM = async () => {
     console.log(data);
 };
 
-test_QUOTA_BYTES_PER_ITEM();
-
 const test_MAX_ITEMS = async () => {
     let i = 0;
     let data = {};
-    while (i < 512) {
+    while (i < 496) {
         let w = `w-${i}`;
         data[w] = { w, t: Date.now() };
         i += 1;
@@ -30,4 +28,7 @@ const test_MAX_ITEMS = async () => {
     console.log(storage.localHistory.length);
 };
 
-test_MAX_ITEMS();
+export default () => {
+    test_QUOTA_BYTES_PER_ITEM();
+    test_MAX_ITEMS();
+};
