@@ -75,8 +75,8 @@ export default {
         }
     },
 
-    getNextWord(prevWord) {
-        const item = storage.getPreviousAnkiUnsaved(prevWord);
+    async getNextWord(prevWord) {
+        const item = await storage.getPreviousAnkiUnsaved(prevWord);
         if (item?.w) {
             this.anki.wordItem = item;
             console.info(`Anki to save next word: ${item.w}`);
@@ -122,12 +122,12 @@ export default {
                     console.info(`Anki saved word: ${request.ankiSavedWord}`);
                     this.anki.wordItem = null;
                     await storage.savedAnki(request.ankiSavedWord);
-                    this.getNextWord(request.ankiSavedWord);
+                    await this.getNextWord(request.ankiSavedWord);
                 }
 
                 if (request.ankiSkippedWord) {
                     console.info(`Anki skipped word: ${request.ankiSkippedWord}`);
-                    this.getNextWord(request.ankiSkippedWord);
+                    await this.getNextWord(request.ankiSkippedWord);
                 }
 
                 if (this.anki.wordItem?.w) {

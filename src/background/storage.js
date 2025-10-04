@@ -231,16 +231,19 @@ export default {
 
     getPreviousAnkiUnsaved(w) {
         if (setting.getValue("disableWordHistory")) return;
-        let idx = this.localHistory.findIndex((item) => item.w === w);
-        idx ??= this.localHistory.length - 1;
+        async function getFromLocal() {
+            let idx = this.localHistory.findIndex((item) => item.w === w);
+            idx ??= this.localHistory.length - 1;
 
-        while (idx > 0) {
-            idx -= 1;
-            const item = this.localHistory[idx];
-            if (!item.ankiSaved) {
-                return item;
+            while (idx > 0) {
+                idx -= 1;
+                const item = this.localHistory[idx];
+                if (!item.ankiSaved) {
+                    return item;
+                }
             }
         }
+        return this.invokeWrapper(getFromLocal, cloudStorage.getPreviousAnkiUnsaved, w, convertProItem);
     },
 
     async addHistory({ w, s, sc, r, sentence }) {

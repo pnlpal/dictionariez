@@ -315,4 +315,26 @@ describe("storage for pro user", () => {
         const { deleted } = await storage.removeHistory(["local1", "local2"]);
         expect(deleted).to.equal(2);
     });
+    it("should get the previous anki unsaved word", async function () {
+        storage.localHistory = [
+            { ...wordDetail, w: "anki1", ankiSaved: true, t: Date.now() - 4000 },
+            { ...wordDetail, w: "anki2", ankiSaved: false, t: Date.now() - 3000 },
+            { ...wordDetail, w: "anki3", ankiSaved: false, t: Date.now() - 2000 },
+            { ...wordDetail, w: "anki4", ankiSaved: true, t: Date.now() - 1000 },
+        ];
+        await storage.syncThenGetHistory();
+
+        const previousUnsaved = await storage.getPreviousAnkiUnsaved("anki4");
+        expect(previousUnsaved).to.exist;
+        expect(previousUnsaved.w).to.equal("anki3");
+
+        const previousUnsaved2 = await storage.getPreviousAnkiUnsaved("anki3");
+        expect(previousUnsaved2).to.exist;
+        expect(previousUnsaved2.w).to.equal("anki2");
+
+        const previousUnsaved3 = await storage.getPreviousAnkiUnsaved("anki2");
+        expect(previousUnsaved3).to.not.exist;
+
+        await storage.removeHistory(["anki1", "anki2", "anki3", "anki4"]);
+    });
 });

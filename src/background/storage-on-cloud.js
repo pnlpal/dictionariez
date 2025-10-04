@@ -98,4 +98,8 @@ export default {
             ankiSaved: saved,
         });
     },
+    async getPreviousAnkiUnsaved(word, convertProItem) {
+        const res = await this.get(`/api/words/${encodeURIComponent(word)}/previous-anki-unsaved`);
+        return convertProItem(res);
+    },
 };

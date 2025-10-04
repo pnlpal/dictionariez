@@ -11,6 +11,6 @@ mocha.setup({ timeout: 4000 });
 // require("../content/lookup-parser.google.test.js");
 require("../background/plain-lookup.test.js");
 require("../background/storage.test.js");
-// require("../background/storage-pro.test.js");
+require("../background/storage-pro.test.js");
 
 mocha.run();
