@@ -429,11 +429,6 @@ export default {
                 if (possibleLangs.includes("Tajik")) {
                     return this.parseOtherLang(tabId, w, "Tajik", null, prevResult);
                 }
-
-                const upperFirst = utils.toUpperFirst(w);
-                if (!result && upperFirst !== w && html.find(`a[href='/wiki/${upperFirst}']`).get(0)) {
-                    return this.parse(tabId, upperFirst, "wiktionary", prevResult);
-                }
             }
 
             return multipleResult;
