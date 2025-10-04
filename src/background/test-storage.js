@@ -19,8 +19,8 @@ const test_MAX_ITEMS = async () => {
     let i = 0;
     let data = {};
     while (i < 496) {
-        let w = `w-${i}`;
-        data[w] = { w, t: Date.now() };
+        let w = `${i}`;
+        data[`w-${i}`] = { w, t: Date.now() };
         i += 1;
     }
     await storage.set(data);

@@ -81,7 +81,19 @@ export default {
         return setting.getValue("isPro");
     },
     async init() {
+        function _reduceHistoryToSaveQuota() {
+            if (this.localHistory.length > this.maxLength + 100) {
+                const excess = this.localHistory.length - (this.maxLength + 100);
+                const itemsToRemove = this.localHistory.splice(0, excess);
+                const wordsToRemove = itemsToRemove.map((item) => item.w);
+                console.warn(
+                    `Storage quota exceeded. Removing ${wordsToRemove.length} oldest items from local history.`
+                );
+                return Item.remove(wordsToRemove).then(console.log, console.error);
+            }
+        }
         this.localHistory = await Item.getAll();
+        _reduceHistoryToSaveQuota.call(this);
 
         message.on("history", async () => {
             return this.syncThenGetHistory();
