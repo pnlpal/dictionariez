@@ -23,7 +23,6 @@ function letterAvatar(letter, bg = "#90b4fa", color = "#fff") {
 async function updateUserProfile($scope) {
     let loggedIn = false;
     $scope.user = {
-        loggedIn: loggedIn,
         username: "Login / Sign up",
         pictureUrl: defaultAvatarSvg,
         link: `${pnlBase}/login`,

@@ -42,11 +42,11 @@ export default {
         return this.handleResponse(response);
     },
     async getHistory(limit, convertProItem) {
-        const res = await this.get("/api/user/words", limit ? { limit: limit } : {});
+        const res = await this.get("/api/words", limit ? { limit: limit } : {});
         return res.data.map((item) => convertProItem(item));
     },
     async addHistory({ w, s, sc, r, sentence }) {
-        return await this.post("/api/user/words", {
+        return await this.post("/api/words", {
             word: w,
             sentence: sentence,
             rate: r,
@@ -55,12 +55,12 @@ export default {
         });
     },
     async batchAddHistory(words) {
-        return await this.post("/api/user/words", {
+        return await this.post("/api/words", {
             words: words,
         });
     },
     async getWordDetail(word, convertProItem) {
-        const res = await this.get(`/api/user/words/${encodeURIComponent(word)}`);
+        const res = await this.get(`/api/words/${encodeURIComponent(word)}`);
         if (res?.word) {
             return {
                 ...convertProItem(res),
@@ -73,27 +73,27 @@ export default {
             const wordDetail = await this.getWordDetail(w, convertProItem);
             return wordDetail?.previous;
         } else {
-            const res = await this.get("/api/user/latest-word");
+            const res = await this.get("/api/latest-word");
             return convertProItem(res);
         }
     },
     async getNextWord(w, convertProItem) {
-        const res = await this.get(`/api/user/words/${encodeURIComponent(w)}/next`);
+        const res = await this.get(`/api/words/${encodeURIComponent(w)}/next`);
         return convertProItem(res);
     },
     async removeHistory(words) {
-        return await this.delete("/api/user/words", {
+        return await this.delete("/api/words", {
             words: words,
         });
     },
     async addRating(word, rating) {
-        return await this.post(`/api/user/words/${encodeURIComponent(word)}/rate`, {
+        return await this.post(`/api/words/${encodeURIComponent(word)}/rate`, {
             word: word,
             rate: rating,
         });
     },
     async savedAnki(word, saved = true) {
-        await this.post(`/api/user/words/${encodeURIComponent(word)}/saved-to-anki`, {
+        await this.post(`/api/words/${encodeURIComponent(word)}/saved-to-anki`, {
             word: word,
             ankiSaved: saved,
         });

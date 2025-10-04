@@ -73,5 +73,10 @@ if (allowedHosts.includes(location.host)) {
         const userLoggedIn = !!document.querySelector("#logged-in-menu");
         const userSubscribed = location.pathname === "/pro" && location.search.includes("success=true");
         utils.send("user logged in status", { userLoggedIn, origin: location.origin, userSubscribed });
+
+        // If user is on /words page, redirect to home page.
+        if (location.pathname === "/words") {
+            location.href = "/";
+        }
     }
 }
