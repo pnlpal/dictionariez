@@ -40,17 +40,21 @@ export default {
             return;
         }
 
-        // ignore one or two punctuation signs in the end
+        // Remove up to two trailing punctuation marks
         w = w.replace(/[,:;'"-?!.]{1,2}$/, "");
 
+        // Ignore single English letters (likely not a word)
         if (utils.hasEnglish(w) && w.length === 1) {
             return;
         }
 
-        // accept one hyphen in the middle, but not other punctuation signs
-        if (w.replace("-", "").match(/[,:;'"-?!.]/)) {
-            return;
-        }
+        // Only allow one hyphen in the middle, no other punctuation
+        // (e.g., "co-operate" is OK, "co--operate" or "co,operate" is not)
+        const hyphenSplit = w.split("-");
+        if (hyphenSplit.length > 2) return; // More than one hyphen
+
+        // Only allow letters (any language) and at most one hyphen
+        if (!/^[\p{L}]+(-[\p{L}]+)?$/u.test(w)) return;
 
         if (this.checkType(w)) {
             return w;

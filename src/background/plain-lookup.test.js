@@ -248,3 +248,38 @@ describe("background/plain-lookup", () => {
         expect(result.defs.length).to.be.greaterThan(0);
     });
 });
+describe("background/check words to ignore in plain lookup", () => {
+    it("should ignore single letters and words with punctuation", async () => {
+        await enableLanguages(["Swedish"], true, true);
+        const wordsToIgnore = ["I", "co--operate", "co,operate", "won't", "great!!!", "co⊙perate"];
+        for (const word of wordsToIgnore) {
+            const result = await utils.send("check text supported", {
+                w: word,
+            });
+            expect(result).to.be.null;
+        }
+    });
+    it("should accept words with at most one hyphen in the middle or strip punctuation at the end", async () => {
+        await enableLanguages(["Swedish", "Japanese"], true, true);
+        const wordsToAccept = [
+            { word: "co-operate", expected: "co-operate" },
+            { word: "fart!!", expected: "fart" },
+            { word: "fart.", expected: "fart" },
+            { word: "  regeringen ", expected: "regeringen" },
+            { word: "födda", expected: "födda" },
+            { word: "我", expected: "我" },
+            { word: "大臣", expected: "大臣" },
+            { word: "привіт", expected: null },
+        ];
+        for (const { word, expected } of wordsToAccept) {
+            const result = await utils.send("check text supported", {
+                w: word,
+            });
+            if (expected === null) {
+                expect(result).to.be.null;
+            } else {
+                expect(result).to.equal(expected);
+            }
+        }
+    });
+});
