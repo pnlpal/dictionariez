@@ -1,3 +1,11 @@
+# v6.0.0 Oct 05, 2025 
+- Introduced PNL Pro.
+- Enabled cloud sync for local history (Pro users).
+- Automatically remove oldest history items when exceeding chrome storage quota.
+- Added `dblclick` option: trigger lookup only on double-click if enabled.
+- Improved word validation checks.
+- Expanded unit test coverage.
+
 # v5.8.0 Aug 28, 2025
 - Added Ukrainian language support.
 - Introduced a warm welcome message and initial setup dialog for new users.
