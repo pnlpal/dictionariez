@@ -361,15 +361,13 @@ const run = () => {
                 let word = selObj.toString().trim();
 
                 // filter last auto selection word, let choose another word.
-                if (word === lastAutoSelection) {
+                if (!word || word === lastAutoSelection) {
                     word = getWordAtPoint(e.target, e.clientX, e.clientY);
-                    lastAutoSelection = word;
-                } else {
-                    lastAutoSelection = "";
                 }
 
-                if (word) {
+                if (word && word !== lastAutoSelection) {
                     handleLookupByMouse(e, word);
+                    lastAutoSelection = word;
                 }
             }
 
