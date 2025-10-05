@@ -6,8 +6,8 @@ const pnlBase = process.env.NODE_ENV === "development" ? "http://localhost:4567"
 
 const defaultAvatarSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='75' height='75'><circle cx='37.5' cy='37.5' r='37.5' fill='%23e0e7ef'/><circle cx='37.5' cy='30' r='14' fill='%2390b4fa'/><ellipse cx='37.5' cy='56' rx='19' ry='12' fill='%2390b4fa'/></svg>`;
 async function loadImage(url) {
-    const picRes = await fetch(url, { credentials: "include" });
-    if (picRes.ok) {
+    const picRes = await fetch(url, { credentials: "include" }).catch(() => null);
+    if (picRes && picRes.ok) {
         const blob = await picRes.blob();
         return URL.createObjectURL(blob);
     }
