@@ -40,6 +40,7 @@ export default {
         enableBreAudio: false,
         enableRealPron: false,
 
+        needDblclick: true,
         enablePlainSK1: false,
         plainSK1: "Ctrl",
 

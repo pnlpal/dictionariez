@@ -297,9 +297,22 @@
 									ng-model="setting.enablePlainLookup"
 									ng-click="changeKey(!setting.enablePlainLookup, 'enablePlainLookup')"
 								/>
-								Enable floating definition of seleted word, supporting multiple languages.
+								Show a floating definition popup when you select a word (supports multiple languages).
 							</label>
 						</div>
+						<div class="checkbox indent">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.needDblclick"
+									ng-click="changeKey(!setting.needDblclick, 'needDblclick')"
+								/>
+								Only trigger lookup when double-clicking a word.
+								<em class="text-new">New!</em>
+								<span class="text-muted">(If unchecked, selecting any word will show the definition popup)</span>
+							</label>
+						</div>	
+
 						<div class="checkbox indent" ng-if="!isSidePal">
 							<label>
 								<input
@@ -547,7 +560,6 @@
 									ng-click="changeKey(!setting.enableReadClipboard, 'enableReadClipboard')"
 								/>
 								Enable reading the clipboard to get the selected word. 
-								<em ng-if="!setting.readClipboardError" class="text-new">New!</em>
 								<em>{{setting.readClipboardError}}</em>
 							</label>
 						</div>

@@ -172,17 +172,31 @@ const run = () => {
 
             // 对 mouseup 事件做一个延时处理，
             // 	# 以避免取消选中后getSelection依然能获得文字。
-            $(document).on(
-                "mouseup",
-                debounce((e) => handleMouseUp(e), 100)
-            );
+            if (setting.needDblclick) {
+                $(document).on(
+                    "dblclick",
+                    debounce((e) => handleMouseUp(e), 100)
+                );
+                $(document).on(
+                    "mouseup",
+                    debounce((e) => handleMouseUp(e, false), 100)
+                );
+            } else {
+                $(document).on(
+                    "mouseup",
+                    debounce((e) => handleMouseUp(e), 100)
+                );
+            }
+
             $(document).on(
                 "touchstart",
                 debounce(async (e) => {
                     try {
                         await utils.checkInTime(() => window.getSelection()?.getRangeAt(0)?.toString(), 3000);
                         handleMouseUp(e);
-                    } catch (error) {}
+                    } catch (error) {
+                        console.error(error);
+                    }
                 }, 800)
             );
 
@@ -359,7 +373,7 @@ const run = () => {
                 }
             }
 
-            function handleMouseUp(event) {
+            function handleMouseUp(event, shouldLookUp = true) {
                 let text;
                 if (isInDict) {
                     window.top.postMessage({ type: "toggleDropdown", open: false }, "*");
@@ -381,6 +395,10 @@ const run = () => {
 
                     plainLookupTooltip.hide();
                     plainQuerying = null;
+                    return;
+                }
+
+                if (!shouldLookUp) {
                     return;
                 }
 
