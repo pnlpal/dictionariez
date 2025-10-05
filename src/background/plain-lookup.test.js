@@ -251,7 +251,18 @@ describe("background/plain-lookup", () => {
 describe("background/check words to ignore in plain lookup", () => {
     it("should ignore single letters and words with punctuation", async () => {
         await enableLanguages(["Swedish"], true, true);
-        const wordsToIgnore = ["I", "co--operate", "co,operate", "won't", "great!!!", "co⊙perate"];
+        const wordsToIgnore = [
+            "I",
+            "co--operate",
+            "co,operate",
+            "won't",
+            "great!!!",
+            "co⊙perate",
+            "привіт",
+            "їжа",
+            "我❤️你",
+            "だいがく",
+        ];
         for (const word of wordsToIgnore) {
             const result = await utils.send("check text supported", {
                 w: word,
@@ -260,7 +271,7 @@ describe("background/check words to ignore in plain lookup", () => {
         }
     });
     it("should accept words with at most one hyphen in the middle or strip punctuation at the end", async () => {
-        await enableLanguages(["Swedish", "Japanese"], true, true);
+        await enableLanguages(["Swedish", "Japanese", "Ukrainian"], true, true);
         const wordsToAccept = [
             { word: "co-operate", expected: "co-operate" },
             { word: "fart!!", expected: "fart" },
@@ -268,8 +279,11 @@ describe("background/check words to ignore in plain lookup", () => {
             { word: "  regeringen ", expected: "regeringen" },
             { word: "födda", expected: "födda" },
             { word: "我", expected: "我" },
+            { word: "我爱你", expected: "我爱你" },
             { word: "大臣", expected: "大臣" },
-            { word: "привіт", expected: null },
+            { word: "だいがく", expected: "だいがく" },
+            { word: "привіт", expected: "привіт" },
+            { word: "їжа", expected: "їжа" },
         ];
         for (const { word, expected } of wordsToAccept) {
             const result = await utils.send("check text supported", {

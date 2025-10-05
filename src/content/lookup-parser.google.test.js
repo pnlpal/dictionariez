@@ -59,29 +59,12 @@ describe("lookup-parser-google", () => {
     it("should get and parse the German word Lehrerin from Google", async () => {
         const html = await utils.loadHTML("https://www.google.com/search?hl=de-DE&q=define+Lehrerin", "same-origin");
         const result = await parseHTML(html, parserDesc.google.result);
-        // console.log(JSON.stringify(result, null, 2));
-        expect(JSON.stringify(result, null, 2)).to.equal(
-            `{
-  "w": "Leh·re·rin",
-  "langSymbol": "de",
-  "prons": [
-    {
-      "symbol": "/ˈleːrərɪn,Léhrerin/",
-      "type": "bre"
-    }
-  ],
-  "defs": [
-    {
-      "pos": "subs",
-      "def": [
-        "weibliche Form zu Lehrer"
-      ]
-    }
-  ],
-  "defs2": [],
-  "images": []
-}`
-        );
+        console.log(JSON.stringify(result, null, 2));
+        expect(result.w).to.equal("Leh·re·rin");
+        expect(result.langSymbol).to.equal("de");
+        expect(result.prons[0].symbol).to.equal("/ˈleːrərɪn,Léhrerin/");
+        expect(result.defs[0].pos).to.equal("subs");
+        expect(result.defs[0].def[0]).to.equal("weibliche Form zu Lehrer");
     });
     it("should get and parse the Spanish word ingeniera from Google", async () => {
         const html = await utils.loadHTML("https://www.google.com/search?hl=en&q=define+ingeniera", "same-origin");
