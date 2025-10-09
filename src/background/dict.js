@@ -14,7 +14,6 @@ const chatgptDefault = {
 };
 
 export default {
-    setting: undefined,
     allDicts: [],
 
     async init() {
@@ -62,37 +61,13 @@ export default {
         const allDicts = await storage.getAllByK("dict-");
 
         if (!allDicts.length) {
-            // get dicts from default and old settings
-            const dictSettings = await storage.get("dictionary-setting", {});
-            storage.remove("dictionary-setting");
-
-            const extraDicts = await storage.get("extra-dicts", []);
-            storage.remove("extra-dicts");
-
             defaultDicts.forEach((dict, originalIndex) => {
-                const settings = dictSettings[dict.dictName];
                 dict.sequence = originalIndex;
-                if (settings) {
-                    Object.assign(dict, settings);
-                }
-
                 if (dict.chatgptPrompt) {
                     dict = Object.assign({}, chatgptDefault, dict);
                 }
                 allDicts.push(dict);
             });
-
-            extraDicts.forEach((extraDict) => {
-                const localDict = allDicts.find((dict) => dict.dictName === extraDict.dictName);
-
-                if (localDict) {
-                    Object.assign(localDict, extraDict);
-                } else {
-                    extraDict.sequence = allDicts.length;
-                    allDicts.push(extraDict);
-                }
-            });
-
             storage.setAllByK("dict-", "dictName", allDicts);
         }
 
