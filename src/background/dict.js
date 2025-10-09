@@ -52,6 +52,10 @@ export default {
         message.on("restore-default-dicts", () => {
             this.restoreDefaultDicts();
         });
+
+        message.on("get-all-dicts", () => {
+            return this.allDicts;
+        });
     },
 
     async initAllDicts() {
@@ -236,9 +240,7 @@ export default {
                     const domainParts = domain.split(".");
                     domainParts.pop(); // Remove TLD
 
-                    const matchFound = domainParts.some((part) =>
-                        part.toLowerCase().startsWith(key)
-                    );
+                    const matchFound = domainParts.some((part) => part.toLowerCase().startsWith(key));
 
                     if (matchFound) {
                         results.push(dict);

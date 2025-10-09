@@ -277,7 +277,7 @@ export default ($scope) => {
     initHistory();
 
     const initDictionary = async () => {
-        const { currentDictName, allDicts } = await utils.send("dictionary", { optionsPage: true });
+        const allDicts = await utils.send("get-all-dicts");
 
         window.allDicts = allDicts;
 

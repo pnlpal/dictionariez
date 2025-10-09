@@ -533,7 +533,7 @@ export default {
                 } else {
                     previous = await storage.getPrevious();
                 }
-            } else if (!win && !request.optionsPage) {
+            } else if (!win) {
                 win = this.create();
                 win.tid = sender.tab.id;
                 win.dictName = currentDictName;
