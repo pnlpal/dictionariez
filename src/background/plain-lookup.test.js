@@ -271,7 +271,7 @@ describe("background/check words to ignore in plain lookup", () => {
         }
     });
     it("should accept words with at most one hyphen in the middle or strip punctuation at the end", async () => {
-        await enableLanguages(["Swedish", "Japanese", "Ukrainian"], true, true);
+        await enableLanguages(["Swedish", "Japanese", "Ukrainian", "Thai"], true, true);
         const wordsToAccept = [
             { word: "co-operate", expected: "co-operate" },
             { word: "fart!!", expected: "fart" },
@@ -284,6 +284,7 @@ describe("background/check words to ignore in plain lookup", () => {
             { word: "だいがく", expected: "だいがく" },
             { word: "привіт", expected: "привіт" },
             { word: "їжа", expected: "їжа" },
+            { word: "ศาสตร์", expected: "ศาสตร์" },
         ];
         for (const { word, expected } of wordsToAccept) {
             const result = await utils.send("check text supported", {

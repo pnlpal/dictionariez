@@ -54,7 +54,9 @@ export default {
         if (hyphenSplit.length > 2) return; // More than one hyphen
 
         // Only allow letters (any language) and at most one hyphen
-        if (!/^[\p{L}]+(-[\p{L}]+)?$/u.test(w)) return;
+        // \p{L}: any kind of letter from any language
+        // \p{M}: any kind of combining mark (accents, diacritics, etc.)
+        if (!/^[\p{L}\p{M}]+(-[\p{L}\p{M}]+)?$/u.test(w)) return;
 
         if (this.checkType(w)) {
             return w;
