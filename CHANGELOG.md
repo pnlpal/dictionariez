@@ -1,3 +1,7 @@
+# v6.1.0 Oct 10, 2025
+- Enabled cloud sync for dictionary collections (Pro users).
+- Fixed parsing of accent/diacritic marks for languages like Thai during lookups.
+
 # v6.0.0 Oct 05, 2025 
 - Introduced PNL Pro.
 - Enabled cloud sync for local history (Pro users).
