@@ -11,6 +11,7 @@ import "../vendor/font-awesome.css";
 import "./dictheader.less";
 
 import "./card-iframe.js";
+import { getCurrentCoupon } from "../option/user-profile.js";
 
 const inFrame = window.self !== window.top;
 // some ui need bootstrap, like dropdown.
@@ -101,6 +102,7 @@ dictApp.controller("dictCtrl", [
             },
             (setting) => {
                 $scope.setting = setting;
+                getCurrentCoupon($scope);
                 $scope.$apply();
             }
         );

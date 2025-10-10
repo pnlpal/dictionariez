@@ -54,6 +54,18 @@ async function updateUserProfile($scope) {
     return loggedIn;
 }
 
+async function getCurrentCoupon($scope) {
+    const res = await fetch(`${pnlBase}/api/pro`, { credentials: "include" });
+    if (res.ok) {
+        const data = await res.json();
+        if (data.currentCoupon) {
+            $scope.currentCoupon = data.currentCoupon;
+            $scope.currentCoupon.subscriptionLink = `${pnlBase}/pro`;
+            $scope.$apply();
+        }
+    }
+}
+
 export default async ($scope) => {
     let isUserLoggedIn = await updateUserProfile($scope);
 
@@ -66,3 +78,5 @@ export default async ($scope) => {
         }
     });
 };
+
+export { getCurrentCoupon };

@@ -270,6 +270,16 @@
                 </a>
             </p>
             <p>Go to <a href="" ng-click="openOptions()" target="_blank">settings.</a></p>
+
+            <a
+                id="launch-deal-banner"
+                ng-if="!setting.isPro && currentCoupon"
+                href="https://pnl.dev/pro"
+                target="_blank"
+            >
+                🎉 <strong>PNL Pro {{currentCoupon.name}}:</strong> {{currentCoupon.percent_off}}% OFF!
+                <span class="banner-time">Limited time only</span>
+            </a>
         </div>
     </div>
 
