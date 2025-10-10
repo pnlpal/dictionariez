@@ -45,6 +45,7 @@ async function updateUserProfile($scope) {
             user.pictureUrl = letterAvatar(firstLetter, "#90b4fa", "#fff");
         }
         utils.send("save setting", { key: "isPro", value: user.isPro });
+        $scope.setting.isPro = user.isPro;
         $scope.user = user;
     } else {
         $scope.user.loggedIn = false;

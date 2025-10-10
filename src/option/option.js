@@ -103,7 +103,7 @@ dictApp.controller("optionCtrl", [
                 $scope.setting = config;
                 initWelcome({ setting: $scope.setting, applySetting: $scope.$apply.bind($scope) });
                 initHistoryAndDicts($scope);
-
+                initUserProfile($scope);
                 $scope.$apply();
             }
         );
@@ -144,7 +144,6 @@ Read more here: https://pnl.dev/topic/52/help-more-dictionaries-needed
         };
 
         setupDevFunctions();
-        initUserProfile($scope);
     },
 ]);
 
