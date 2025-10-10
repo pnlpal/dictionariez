@@ -69,7 +69,11 @@ export default {
 
         message.on("get-all-dicts", async () => {
             await this.syncAllDictsWithCloud();
-            return this.allDicts;
+            return {
+                allDicts: this.allDicts,
+                lastTimeSyncDicts: setting.getValue("lastTimeSyncDicts"),
+                syncDictsError: this.syncDictsError,
+            };
         });
     },
 
@@ -95,6 +99,7 @@ export default {
         this.allDicts = allDicts;
     },
     async syncAllDictsWithCloud(actionable = {}) {
+        this.syncDictsError = null;
         if (this.isProUser()) {
             try {
                 const lastTimeSyncDicts = setting.getValue("lastTimeSyncDicts");
@@ -109,6 +114,8 @@ export default {
                 return res;
             } catch (error) {
                 console.error("syncAllDictsWithCloud error", error);
+                this.syncDictsError = error.message;
+                // if not pro user anymore, disable pro features
                 if (error.message === "not-pro-user") {
                     setting.setValue("isPro", false);
                 }

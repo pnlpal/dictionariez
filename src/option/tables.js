@@ -277,9 +277,11 @@ export default ($scope) => {
     initHistory();
 
     const initDictionary = async () => {
-        const allDicts = await utils.send("get-all-dicts");
+        const { allDicts, syncDictsError } = await utils.send("get-all-dicts");
 
         window.allDicts = allDicts;
+        $scope.syncDictsError = syncDictsError;
+        $scope.$apply();
 
         const table = $("#table-dictionary").DataTable({
             responsive: true,

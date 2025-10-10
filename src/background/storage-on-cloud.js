@@ -104,6 +104,6 @@ export default {
     },
 
     async syncAllDicts(allDicts, actionable = {}, lastTimeSyncDicts = null) {
-        return await this.post(`/api/dicts/sync`, { allDicts, actionable, lastTimeSyncDicts });
+        return await this.post(`/api/dicts/syncAllDicts`, { allDicts, actionable, lastTimeSyncDicts });
     },
 };
