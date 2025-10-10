@@ -121,10 +121,10 @@
 								<i class="fa fa-cloud fa-stack-2x"></i>
 								<i class="fa fa-check fa-stack-1x" style="color:#43c59e;"></i>
 							</span>
-							<span class="fa-stack fa text-danger cloud-sync-status" ng-if="!setting.isPro || !user.loggedIn" title="Your history is not synced to the cloud, please upgrade to Pro to enable cloud sync">
+							<a href="{{user.subscriptionLink}}" target="_blank" class="fa-stack fa text-danger cloud-sync-status" ng-if="!setting.isPro || !user.loggedIn" title="Your history is not synced to the cloud, please upgrade to Pro to enable cloud sync">
 								<i class="fa fa-cloud fa-stack-2x"></i>
 								<i class="fa fa-times fa-stack-1x" style="color:#e74c3c;"></i>
-							</span>
+							</a>
 						</h1>
 						<div class="storage-almost-full-alert" ng-if="!setting.isPro && historyAlmostFull">
 							<p>
@@ -153,9 +153,28 @@
 					</div>
 
 					<div id="dictionary" class="section">
-						<h1>Dictionaries</h1>
+						<h1>Dictionaries
+							<span class="fa-stack fa text-success cloud-sync-status" ng-if="setting.isPro && user.loggedIn && !syncDictsError" title="Your dictionaries are synced to the cloud">
+								<i class="fa fa-cloud fa-stack-2x"></i>
+								<i class="fa fa-check fa-stack-1x" style="color:#43c59e;"></i>
+							</span>
+							<span class="fa-stack fa text-danger cloud-sync-status" ng-if="setting.isPro && user.loggedIn && syncDictsError" title="Sync error: {{syncDictsError}}, please try again later or contact support at https://pnl.dev">
+								<i class="fa fa-cloud fa-stack-2x"></i>
+								<i class="fa fa-times fa-stack-1x" style="color:#e74c3c;"></i>
+							</span>
+							<a href="{{user.subscriptionLink}}" target="_blank" class="fa-stack fa text-danger cloud-sync-status" ng-if="!setting.isPro || !user.loggedIn" title="Your dictionaries are not synced to the cloud, please upgrade to Pro to enable cloud sync">
+								<i class="fa fa-cloud fa-stack-2x"></i>
+								<i class="fa fa-times fa-stack-1x" style="color:#e74c3c;"></i>
+							</a>
+						</h1>
+						<div ng-if="setting.isPro && user.loggedIn === false" class="session-expired-alert">
+							<p>
+								<strong>Your session has expired.</strong><br>
+								Please <a href="{{user.link}}" target="_blank" class="btn btn-primary btn-sm" style="margin:0 0.5em;">Log in</a> again to sync your dictionaries.
+							</p>
+						</div>
 						<p class="text-muted">
-							Tip: Hold the Ctrl key when you click on the dict name can open multiple dictionaries.
+							Tip: Ctrl + Click a dictionary name to open several dictionaries simultaneously.
 						</p>
 						<table
 							id="table-dictionary"
