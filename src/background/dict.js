@@ -1,5 +1,7 @@
-import storage from "./storage.js";
 import message from "./message.js";
+import setting from "./setting.js";
+import storage from "./storage.js";
+import cloudStorage from "./storage-on-cloud.js";
 
 const defaultDicts =
     process.env.PRODUCT === "Dictionariez"
@@ -13,59 +15,71 @@ const chatgptDefault = {
     submitButtonSelector: "main form button[data-testid='send-button'], main form button[data-testid='stop-button']",
 };
 
+function fixChatgptDict(dict) {
+    // fix old settings
+    if (dict.windowUrl === "https://chat.openai.com" || dict.submitButtonSelector === "main form button.mb-1") {
+        Object.assign(dict, chatgptDefault);
+    }
+    if (dict.windowUrl === "https://chatgpt.com" && dict.inputSelector === "main form textarea") {
+        Object.assign(dict, chatgptDefault);
+    }
+    if (dict.chatgptPrompt && (!dict.windowUrl || !dict.inputSelector || !dict.submitButtonSelector)) {
+        Object.assign(dict, chatgptDefault);
+    }
+    // migrate chatgptPrompt setting
+    if (!dict.prompt && dict.chatgptPrompt) {
+        dict.prompt = dict.chatgptPrompt;
+        delete dict.chatgptPrompt;
+    }
+    if (!dict.promptWithContext && dict.chatgptPromptWithContext) {
+        dict.promptWithContext = dict.chatgptPromptWithContext;
+        delete dict.chatgptPromptWithContext;
+    }
+}
+
 export default {
     allDicts: [],
+    syncPromise: null,
 
+    isProUser() {
+        return setting.getValue("isPro");
+    },
     async init() {
-        await this.initAllDicts();
+        await this.initLocalDicts();
 
-        message.on("set-dictionary-reorder", ({ dictMap }) => {
-            const changed = [];
+        if (!setting.getValue("lastTimeSyncDicts")) {
+            this.syncPromise = this.syncAllDictsWithCloud(); // no await, let it run in background.
+        }
 
-            this.allDicts.forEach((d) => {
-                const s = dictMap[d.dictName];
-                if (s) {
-                    Object.assign(d, s);
-                    changed.push(d);
-                }
-            });
-
-            this.allDicts.sort((a, b) => a.sequence - b.sequence);
-
-            return storage.setAllByK("dict-", "dictName", changed);
+        message.on("set-dictionary-reorder", async ({ dictMap }) => {
+            await this.reorderDicts(dictMap);
         });
 
-        message.on("dictionary-remove", ({ dictName }) => {
-            const index = this.allDicts.findIndex((dict) => dict.dictName === dictName);
-            if (index >= 0) {
-                this.allDicts.splice(index, 1);
-            }
-
-            storage.remove(`dict-${dictName}`);
+        message.on("dictionary-remove", async ({ dictName }) => {
+            await this.removeDict(dictName);
         });
 
-        message.on("dictionary-add", ({ dict }) => {
-            this.addToDictionariez(dict);
+        message.on("dictionary-add", async ({ dict }) => {
+            await this.addToDictionariez(dict);
         });
 
-        message.on("restore-default-dicts", () => {
-            this.restoreDefaultDicts();
+        message.on("restore-default-dicts", async () => {
+            await this.restoreDefaultDicts();
         });
 
-        message.on("get-all-dicts", () => {
+        message.on("get-all-dicts", async () => {
+            await this.syncAllDictsWithCloud();
             return this.allDicts;
         });
     },
 
-    async initAllDicts() {
+    async initLocalDicts() {
         const allDicts = await storage.getAllByK("dict-");
 
         if (!allDicts.length) {
             defaultDicts.forEach((dict, originalIndex) => {
                 dict.sequence = originalIndex;
-                if (dict.chatgptPrompt) {
-                    dict = Object.assign({}, chatgptDefault, dict);
-                }
+                fixChatgptDict(dict);
                 allDicts.push(dict);
             });
             storage.setAllByK("dict-", "dictName", allDicts);
@@ -75,20 +89,34 @@ export default {
 
         allDicts.forEach((dict, originalIndex) => {
             dict.sequence = originalIndex;
-
-            // fix old settings
-            if (dict.windowUrl === "https://chat.openai.com" || dict.submitButtonSelector === "main form button.mb-1") {
-                Object.assign(dict, chatgptDefault);
-            }
-            if (dict.windowUrl === "https://chatgpt.com" && dict.inputSelector === "main form textarea") {
-                Object.assign(dict, chatgptDefault);
-            }
+            fixChatgptDict(dict);
         });
 
         this.allDicts = allDicts;
     },
+    async syncAllDictsWithCloud(actionable = {}) {
+        if (this.isProUser()) {
+            try {
+                const lastTimeSyncDicts = setting.getValue("lastTimeSyncDicts");
+                const res = await cloudStorage.syncAllDicts(this.allDicts, actionable, lastTimeSyncDicts);
+                if (res && res.allDicts) {
+                    this.allDicts = res.allDicts;
+                    if (res.shouldUpdateClientSide) {
+                        await storage.setAllByK("dict-", "dictName", this.allDicts);
+                    }
+                    await setting.setValue("lastTimeSyncDicts", res.lastTimeSyncDicts);
+                }
+                return res;
+            } catch (error) {
+                console.error("syncAllDictsWithCloud error", error);
+                if (error.message === "not-pro-user") {
+                    setting.setValue("isPro", false);
+                }
+            }
+        }
+    },
 
-    addToDictionariez(dict) {
+    async addToDictionariez(dict) {
         if (dict.name) {
             dict.dictName = dict.name;
             delete dict.name;
@@ -113,37 +141,73 @@ export default {
             dict = existingDict;
         } else {
             dict.sequence = this.allDicts.length;
-            if (dict.chatgptPrompt) {
-                dict = Object.assign({}, chatgptDefault, dict);
-            }
+            fixChatgptDict(dict);
             this.allDicts.push(dict);
         }
 
-        return storage.setAllByK("dict-", "dictName", [dict]);
-    },
+        await storage.setAllByK("dict-", "dictName", [dict]);
+        this.syncPromise = this.syncAllDictsWithCloud({
+            action: "add",
+            dicts: [dict],
+        }); // no await, let it run in background.
 
-    restoreDefaultDicts() {
+        return dict;
+    },
+    async removeDict(dictName) {
+        const index = this.allDicts.findIndex((dict) => dict.dictName === dictName);
+        if (index >= 0) {
+            this.allDicts.splice(index, 1);
+        }
+
+        await storage.remove(`dict-${dictName}`);
+        this.syncPromise = this.syncAllDictsWithCloud({
+            action: "remove",
+            dictName,
+        }); // no await, let it run in background.
+    },
+    async restoreDefaultDicts() {
         const added = [];
 
         defaultDicts.forEach((defaultDict, originalIndex) => {
             const currentDict = this.allDicts.find((dict) => dict.dictName === defaultDict.dictName);
             if (currentDict) {
-                Object.assign(currentDict, defaultDict, defaultDict.chatgptPrompt ? chatgptDefault : null);
+                Object.assign(currentDict, defaultDict);
+                fixChatgptDict(currentDict);
                 return; // ignore existing ones
             }
 
             defaultDict.sequence = originalIndex;
-            if (defaultDict.chatgptPrompt) {
-                defaultDict = Object.assign({}, chatgptDefault, defaultDict);
-            }
+            fixChatgptDict(defaultDict);
             this.allDicts.push(defaultDict);
             added.push(defaultDict);
         });
 
         if (added.length > 0) {
             this.allDicts.sort((a, b) => a.sequence - b.sequence);
-            return storage.setAllByK("dict-", "dictName", added);
+            await storage.setAllByK("dict-", "dictName", added);
+
+            this.syncPromise = this.syncAllDictsWithCloud({
+                action: "add",
+                dicts: added,
+            }); // no await, let it run in background.
         }
+        return added;
+    },
+    async reorderDicts(dictMap) {
+        const changed = [];
+
+        this.allDicts.forEach((d) => {
+            const s = dictMap[d.dictName];
+            if (s) {
+                Object.assign(d, s);
+                changed.push(d);
+            }
+        });
+
+        this.allDicts.sort((a, b) => a.sequence - b.sequence);
+
+        await storage.setAllByK("dict-", "dictName", changed);
+        this.syncPromise = this.syncAllDictsWithCloud(); // no await, let it run in background.
     },
 
     getDict(dictName) {

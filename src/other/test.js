@@ -12,5 +12,6 @@ require("../content/lookup-parser.google.test.js");
 require("../background/plain-lookup.test.js");
 require("../background/storage.test.js");
 require("../background/storage-pro.test.js");
+require("../background/dict-pro.test.js");
 
 mocha.run();

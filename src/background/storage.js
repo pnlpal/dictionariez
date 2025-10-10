@@ -337,4 +337,10 @@ export default {
             })
         );
     },
+
+    deleteAllDictsOnCloud() {
+        if (this.isProUser()) {
+            return cloudStorage.post("/api/dicts/clear");
+        }
+    },
 };

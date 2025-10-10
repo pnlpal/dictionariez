@@ -102,4 +102,8 @@ export default {
         const res = await this.get(`/api/words/${encodeURIComponent(word)}/previous-anki-unsaved`);
         return convertProItem(res);
     },
+
+    async syncAllDicts(allDicts, actionable = {}, lastTimeSyncDicts = null) {
+        return await this.post(`/api/dicts/sync`, { allDicts, actionable, lastTimeSyncDicts });
+    },
 };
