@@ -2,6 +2,7 @@
     "manifest_version": 3,
     "minimum_chrome_version": "116",
     "name": "SidePal: Your Language and AI Ally in Side Panel",
+    "description": "Dictionaries, translations, and AI assistance right in your browser's side panel.",
     "permissions": [
         "activeTab",
         "tabs",
