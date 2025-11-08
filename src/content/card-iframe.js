@@ -37,9 +37,9 @@ window.addEventListener(
         if (event?.data?.type) {
             if (event.data.type === "toggleDropdown") {
                 if (event.data.open) {
-                    $("#dictionaries-iframe").addClass("dropdown-open");
+                    $("#dictionaries-iframe, .dictionariez-iframe").addClass("dropdown-open");
                 } else {
-                    $("#dictionaries-iframe").removeClass("dropdown-open");
+                    $("#dictionaries-iframe, .dictionariez-iframe").removeClass("dropdown-open");
                 }
             } else if (event.data.type === "close-card") {
                 $(".dictionaries-card-" + event.data.sys).hide();

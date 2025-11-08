@@ -52,7 +52,7 @@ const run = () => {
                 // append to html rather than body.
                 // some websites such as naver dict, may clear body when reload to another page.
                 // But somehow for ChatGPT, it has to append to body.
-                const iframeHtml = `<iframe id='dictionaries-iframe' src='${res.dictUrl}'> </iframe>`;
+                const iframeHtml = `<iframe id='dictionaries-iframe' class="dictionariez-iframe" src='${res.dictUrl}'> </iframe>`;
                 if (location.href.includes("chatgpt.com")) {
                     $(iframeHtml).appendTo("body");
                 } else {

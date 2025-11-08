@@ -1,145 +1,146 @@
 .dictionaries-tooltip {
-  opacity: unset !important; // Edge seems forcibly to set opacity to 0, so here has to use !important
-  display: none;
-  position: absolute;
-  max-width: 860px;
-  border: 1px solid #333;
+    opacity: unset !important; // Edge seems forcibly to set opacity to 0, so here has to use !important
+    display: none;
+    position: absolute;
+    max-width: 860px;
+    border: 1px solid #333;
 
-  // editable highlight might change nodes' background color, such as on twitter, so here has to use !important
-  background-color: #161616 !important;
+    // editable highlight might change nodes' background color, such as on twitter, so here has to use !important
+    background-color: #161616 !important;
 
-  border-radius: 5px;
-  padding: 10px;
+    border-radius: 5px;
+    padding: 10px;
 
-  z-index: 9999999999;
+    z-index: 9999999999;
 
-  text-align: left; // fix on w3cschool
+    text-align: left; // fix on w3cschool
 
-  .dictionaries-tooltip-content {
-    color: #fff;
-    font-size: 16px;
-    line-height: normal;
+    .dictionaries-tooltip-content {
+        color: #fff;
+        font-size: 16px;
+        line-height: normal;
 
-    .icon-fairydict-volume {
-      color: goldenrod;
+        .icon-fairydict-volume {
+            color: goldenrod;
+        }
+
+        .fairydict-w {
+            font-size: 18px;
+            margin-bottom: 4px;
+            color: #f5f5f5;
+        }
+
+        .fairydict-labels {
+            .fairydict-label {
+                border: 1px solid;
+                border-radius: 3px;
+                padding: 1px 2px;
+                margin-right: 3px;
+                border-color: dimgray;
+            }
+        }
+
+        .fairydict-content {
+            margin-top: 3px;
+            margin-bottom: 8px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            .fairydict-pos {
+                display: table-cell;
+                width: 40px;
+                padding-top: 1px;
+            }
+
+            .fairydict-defs {
+                display: table-cell;
+                padding-top: 1px;
+            }
+        }
     }
-
-    .fairydict-w {
-      font-size: 18px;
-      margin-bottom: 4px;
-      color: #f5f5f5;
-    }
-
-    .fairydict-labels {
-      .fairydict-label {
-        border: 1px solid;
-        border-radius: 3px;
-        padding: 1px 2px;
-        margin-right: 3px;
-        border-color: dimgray;
-      }
-    }
-
-    .fairydict-content {
-      margin-top: 3px;
-      margin-bottom: 8px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-
-      .fairydict-pos {
-        display: table-cell;
-        width: 40px;
-        padding-top: 1px;
-      }
-
-      .fairydict-defs {
-        display: table-cell;
-        padding-top: 1px;
-      }
-    }
-  }
 }
 
 .fairydict-spinner {
-  margin: 10px auto 0;
-  width: 70px;
-  text-align: center;
+    margin: 10px auto 0;
+    width: 70px;
+    text-align: center;
 }
 
 .fairydict-spinner > div {
-  width: 18px;
-  height: 18px;
-  background-color: #333;
+    width: 18px;
+    height: 18px;
+    background-color: #333;
 
-  border-radius: 100%;
-  display: inline-block;
-  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    border-radius: 100%;
+    display: inline-block;
+    -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
 }
 
 .fairydict-spinner .fairydict-bounce1 {
-  -webkit-animation-delay: -0.32s;
-  animation-delay: -0.32s;
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
 }
 
 .fairydict-spinner .fairydict-bounce2 {
-  -webkit-animation-delay: -0.16s;
-  animation-delay: -0.16s;
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.16s;
 }
 
 @-webkit-keyframes sk-bouncedelay {
-  0%,
-  80%,
-  100% {
-    -webkit-transform: scale(0);
-  }
-  40% {
-    -webkit-transform: scale(1);
-  }
+    0%,
+    80%,
+    100% {
+        -webkit-transform: scale(0);
+    }
+    40% {
+        -webkit-transform: scale(1);
+    }
 }
 
 @keyframes sk-bouncedelay {
-  0%,
-  80%,
-  100% {
-    -webkit-transform: scale(0);
-    transform: scale(0);
-  }
-  40% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
+    0%,
+    80%,
+    100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+    40% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
 }
 
-#dictionaries-iframe {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  opacity: 0.95;
+#dictionaries-iframe,
+.dictionariez-iframe {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0.95;
 
-  z-index: 9999999999;
-  border: none;
-  height: 50px;
+    z-index: 9999999999;
+    border: none;
+    height: 50px;
 
-  &.dropdown-open {
-    height: 420px;
-  }
+    &.dropdown-open {
+        height: 420px;
+    }
 }
 
 #captionz-ytb-btn {
-  float: right;
-  font-weight: 700;
-  color: grey;
-  display: inline-block;
-  font-size: 15px;
-  text-decoration: none;
-  position: relative;
-  top: 5px;
+    float: right;
+    font-weight: 700;
+    color: grey;
+    display: inline-block;
+    font-size: 15px;
+    text-decoration: none;
+    position: relative;
+    top: 5px;
 }
 
 .dictionariez-promotion {
-  display: none;
+    display: none;
 }
