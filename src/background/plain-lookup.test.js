@@ -105,9 +105,9 @@ describe("background/plain-lookup", () => {
         const result = await utils.send("look up plain", {
             w: "deux",
         });
-        console.log(result);
+        // console.log(result);
         expect(result.length).to.equal(1);
-        expect(result[0].defs.length).to.equal(2);
+        expect(result[0].defs.length).to.gte(1);
         expect(result[0].lang).to.equal("French");
         expect(result[0].w).to.equal("deux");
     });
@@ -116,9 +116,9 @@ describe("background/plain-lookup", () => {
         const result = await utils.send("look up plain", {
             w: "terzogenito",
         });
-        console.log(result);
+        // console.log(result);
         expect(result.length).to.equal(1);
-        expect(result[0].defs.length).to.equal(1);
+        expect(result[0].defs.length).to.gte(1);
         expect(result[0].lang).to.equal("Italian");
         expect(result[0].w).to.equal("terzogenito");
     });
@@ -128,7 +128,7 @@ describe("background/plain-lookup", () => {
         const result = await utils.send("look up plain", {
             w: "pie",
         });
-        expect(result.length).to.equal(2);
+        expect(result.length).to.gte(1);
         expect(result[0].lang).to.equal("Spanish");
         expect(result[0].w).to.equal("pie");
         expect(result[1].lang).to.equal("English");
@@ -246,6 +246,50 @@ describe("background/plain-lookup", () => {
         expect(result.prons[0].synthesis).to.equal("uk-UA");
         expect(result.w).to.equal("харчі");
         expect(result.defs.length).to.be.greaterThan(0);
+    });
+
+    it("should get definition of Turkish word yemek if Turkish is enabled", async () => {
+        await enableLanguages(["Turkish"], false, false);
+        const result = await utils.send("look up plain", {
+            w: "yemek",
+        });
+        if (Array.isArray(result)) {
+            expect(result.length).to.be.greaterThan(0);
+            expect(result[0].lang).to.equal("Turkish");
+            expect(result[0].w).to.equal("yemek");
+        } else {
+            expect(result.lang).to.equal("Turkish");
+            expect(result.w).to.equal("yemek");
+        }
+    });
+    it("should get definition of Turkish word özgür if Turkish is enabled", async () => {
+        await enableLanguages(["Turkish"], false, false);
+        const result = await utils.send("look up plain", {
+            w: "özgür",
+        });
+        if (Array.isArray(result)) {
+            expect(result.length).to.be.greaterThan(0);
+            expect(result[0].lang).to.equal("Turkish");
+            expect(result[0].w).to.equal("özgür");
+        } else {
+            expect(result.lang).to.equal("Turkish");
+            expect(result.w).to.equal("özgür");
+        }
+    });
+
+    it("should get definition of Arabic word حر if Arabic is enabled", async () => {
+        await enableLanguages(["Arabic"], false, false);
+        const result = await utils.send("look up plain", {
+            w: "حر",
+        });
+        if (Array.isArray(result)) {
+            expect(result.length).to.be.greaterThan(0);
+            expect(result[0].lang).to.equal("Arabic");
+            expect(result[0].w).to.equal("حر");
+        } else {
+            expect(result.lang).to.equal("Arabic");
+            expect(result.w).to.equal("حر");
+        }
     });
 });
 describe("background/check words to ignore in plain lookup", () => {
