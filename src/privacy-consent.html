@@ -1,128 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Privacy Consent</title>
-    <style>
-      /* Basic styling for the modal */
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Privacy Consent</title>
+        <style>
+            /* Basic styling for the modal */
 
-      .header {
-        text-align: center;
-      }
-      .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        font-size: 16px;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-        padding-top: 90px;
-      }
-      .modal-content {
-        background-color: #fff;
-        margin: 5% auto;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        width: 50%;
-        max-width: 480px;
-      }
-      .center {
-        text-align: center;
-      }
-      .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-      }
-      .close:hover,
-      .close:focus {
-        color: black;
-        text-decoration: none;
-      }
-      button {
-        background-color: #4caf50;
-        color: white;
-        padding: 10px 20px;
-        margin: 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-      }
-      button:hover {
-        background-color: #45a049;
-      }
-      #declineBtn {
-        background-color: #f44336;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="header">
-      <h1>
-        <!-- http://patorjk.com/software/taag/#p=display&h=1&v=1&f=Swan&t=Dictionariez -->
-        <span id="ascii-title"></span>
-      </h1>
-    </div>
-
-    <!-- The Modal -->
-    <div id="privacyModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 class="center">Privacy Notice</h2>
-        <p>
-          Your privacy is our priority. Dictionriez collects data in the
-          following ways:
-        </p>
-        <ul>
-          <li>
-            <strong>Word Lookups:</strong> When you look up a word on a webpage,
-            the word and the webpage URL are stored locally in the extension for
-            providing the service. You can disable this history feature in the
-            settings.
-          </li>
-          <li>
-            <strong>Settings Storage:</strong> Your preferences are stored
-            locally in your browser.
-          </li>
-          <li>
-            <strong>Clipboard Access:</strong> If you enable the "read
-            clipboard" feature, the extension will access clipboard content for
-            word lookups.
-          </li>
-          <li>
-            <strong>Tab URL:</strong> If you click on the watch-on-captionz
-            button on youtube, the extension will access the URL of the current
-            tab and send it to captionz server for proccessing. You can disable
-            the button in the settings.
-          </li>
-        </ul>
-        <p>
-          Your search history and settings are stored locally and synchronized
-          using your browser's built-in sync service. We do not transmit your
-          data to our servers or share it with third parties.
-        </p>
-
-        <a
-          id="link-to-mozilla"
-          href="https://addons.mozilla.org/en-US/firefox/addon/dictionaries/privacy/"
-          target="_blank"
-          >Read more at mozilla addon page.</a
-        >
-
-        <div class="center">
-          <button id="acceptBtn">Agree to continue</button>
-          <button id="declineBtn">Decline and Uninstall</button>
+            .header {
+                text-align: center;
+            }
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1;
+                font-size: 16px;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.4);
+                padding-top: 90px;
+            }
+            .modal-content {
+                background-color: #fff;
+                margin: 5% auto;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                width: 50%;
+                max-width: 480px;
+            }
+            .center {
+                text-align: center;
+            }
+            .close {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+            }
+            button {
+                background-color: #4caf50;
+                color: white;
+                padding: 10px 20px;
+                margin: 10px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+            button:hover {
+                background-color: #45a049;
+            }
+            #declineBtn {
+                background-color: #f44336;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>
+                <!-- http://patorjk.com/software/taag/#p=display&h=1&v=1&f=Swan&t=Dictionariez -->
+                <span id="ascii-title"></span>
+            </h1>
         </div>
-      </div>
-    </div>
-  </body>
+
+        <!-- The Modal -->
+        <div id="privacyModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 class="center">Privacy Notice</h2>
+                <p>
+                    Your privacy is our priority. Dictionariez is a freemium extension, and how your data is handled
+                    depends on your usage:
+                </p>
+                <ul>
+                    <li>
+                        <strong>Free Users:</strong> Your word lookup history and settings are stored <b>locally</b> in
+                        your browser using its built-in storage and sync features. We do <b>not</b> collect or transmit
+                        your data to our servers, nor do we share it with third parties.
+                    </li>
+                    <li>
+                        <strong>Pro Users (Cloud Sync):</strong> If you subscribe to the Pro plan and enable cloud sync,
+                        your lookup history and settings will be securely stored on our cloud servers to enable
+                        cross-device sync. For this, the extension uses cookies to keep you logged in and to provide the
+                        Pro service.
+                    </li>
+                    <li>
+                        <strong>Clipboard Access:</strong> If you enable the "read clipboard" feature, the extension
+                        will access clipboard content for word lookups, but this data is not sent anywhere unless you
+                        use cloud sync as a Pro user.
+                    </li>
+                    <li>
+                        <strong>Tab URL:</strong> If you use the "watch-on-captionz" button on YouTube, the extension
+                        will access the current tab's URL and send it to the Captionz server for processing. You can
+                        disable this feature in the settings.
+                    </li>
+                </ul>
+                <p>
+                    <b>Summary:</b> For free users, your data stays on your device. For Pro users, lookup history and
+                    settings are synced to the cloud for your convenience and cross-device access. You can clear your
+                    data at any time in the extension settings.
+                </p>
+
+                <a
+                    id="link-to-mozilla"
+                    href="https://addons.mozilla.org/en-US/firefox/addon/dictionaries/privacy/"
+                    target="_blank"
+                    >Read more at our Mozilla Add-on privacy page.</a
+                >
+
+                <div class="center">
+                    <button id="acceptBtn">Agree to continue</button>
+                    <button id="declineBtn">Decline and Uninstall</button>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
