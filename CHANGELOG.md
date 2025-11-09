@@ -1,3 +1,10 @@
+# v6.2.0 Nov 09, 2025 
+- Added support for Turkish and Arabic languages lookup.
+- Improved pronunciation by enhancing synthesis-based speech.
+- Fixed header display issue in Cambridge Pronunciation Dictionary.
+- Resolved fallback to synthesis speech for invalidated old pronunciations.
+- Fixed horizontal scrolling issue in Bing Dictionary.
+
 # v6.1.0 Oct 10, 2025
 - Enabled cloud sync for dictionary collections (Pro users).
 - Fixed parsing of accent/diacritic marks for languages like Thai during lookups.
