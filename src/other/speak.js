@@ -105,7 +105,7 @@ if (!navigator.userAgent.includes("Gecko/")) {
         if (type === "speak") {
             playAudios([ameSrc, breSrc, otherSrc]).catch(() => {
                 // fallback to synthesis if audio playback fails
-                if (w && synthesis) {
+                if (w) {
                     console.warn("Audio playback failed, falling back to synthesis.", w, synthesis);
                     playSynthesis({ text: w, lang: synthesis });
                 }

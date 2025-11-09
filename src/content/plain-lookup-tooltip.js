@@ -19,7 +19,13 @@ const setupAudioListener = () => {
                     utils.send("play audios", {
                         w: $(e.currentTarget).data("w"),
                         otherSrc: $(e.currentTarget).data("mp3"),
-                        synthesis: $(e.currentTarget).data("synthesis"),
+                        synthesis:
+                            $(e.currentTarget).data("synthesis") ||
+                            (e.currentTarget.classList.contains("fairydict-pron-audio-bre")
+                                ? "en-GB"
+                                : e.currentTarget.classList.contains("fairydict-pron-audio-ame")
+                                ? "en-US"
+                                : ""),
                     });
                 } else if ($(e.currentTarget).data("synthesis")) {
                     synthesisObj = {
