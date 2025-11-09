@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "minimum_chrome_version": "105",
     "name": "Dictionariez: Your Dictionary, Your Language",
-    "description": "A customizable dictionary extension that supports double-click lookups in 20+ languages, hundreds of dictionaries, and Anki integration.",
+    "description": "A customizable dictionary extension that supports double-click lookups in 20+ languages, 1000+ dictionaries, and Anki integration.",
     "permissions": ["activeTab", "tabs", "storage", "contextMenus", "offscreen"],
     "background": {
         "service_worker": "background.bundle.js"
