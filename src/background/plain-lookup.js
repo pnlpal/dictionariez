@@ -302,6 +302,7 @@ export default {
                     if (!detectedPron.audio && result.langSymbol) {
                         detectedPron.type = langConfig.symbol;
                         detectedPron.synthesis = langConfig.synthesis;
+                        detectedPron.symbol = langConfig.symbol.toUpperCase();
                     } else if (detectedPron.type === "bre") {
                         detectedPron.symbol = `${detectedPron.symbol || ""} UK`;
                     }
