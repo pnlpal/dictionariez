@@ -95,5 +95,10 @@
         "regex": "[а-щьюяґєіїА-ЩЬЮЯҐЄІЇʼ’' \u0301]",
         "symbol": "uk",
         "synthesis": "uk-UA"
+    },
+    "Turkish": {
+        "regex": "[a-zA-ZçğıöşüÇĞİÖŞÜ ]",
+        "symbol": "tr",
+        "synthesis": "tr-TR"
     }
 }
