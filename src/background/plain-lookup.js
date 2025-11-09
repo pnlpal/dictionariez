@@ -299,12 +299,14 @@ export default {
                     }
                     result.lang = lang;
                     const detectedPron = result.prons[0];
+                    detectedPron.synthesis = langConfig.synthesis;
+
                     if (!detectedPron.audio && result.langSymbol) {
                         detectedPron.type = langConfig.symbol;
-                        detectedPron.synthesis = langConfig.synthesis;
                         detectedPron.symbol = langConfig.symbol.toUpperCase();
                     } else if (detectedPron.type === "bre") {
                         detectedPron.symbol = `${detectedPron.symbol || ""} UK`;
+                        detectedPron.synthesis = "en-GB";
                     }
                 }
             }

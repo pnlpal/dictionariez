@@ -54,7 +54,7 @@ const sendAudioMessage = async (messageData) => {
 
 export default {
     init() {
-        message.on("play audios", async ({ ameSrc, breSrc, otherSrc, checkSetting, synthesisObj }) => {
+        message.on("play audios", async ({ w, ameSrc, breSrc, otherSrc, synthesis, checkSetting, synthesisObj }) => {
             const isFirefox = await utils.isFirefox();
 
             if (!isFirefox) {
@@ -73,12 +73,12 @@ export default {
 
             // Play main audio sources (American and British English)
             if (ameSrc || breSrc) {
-                await sendAudioMessage({ ameSrc, breSrc });
+                await sendAudioMessage({ w, ameSrc, breSrc, synthesis });
             }
 
             // Play other language audio
             if (otherSrc) {
-                await sendAudioMessage({ otherSrc });
+                await sendAudioMessage({ w, otherSrc, synthesis });
             }
 
             // Play synthesized speech

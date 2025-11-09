@@ -17,7 +17,9 @@ const setupAudioListener = () => {
 
                 if ($(e.currentTarget).data("mp3")) {
                     utils.send("play audios", {
+                        w: $(e.currentTarget).data("w"),
                         otherSrc: $(e.currentTarget).data("mp3"),
+                        synthesis: $(e.currentTarget).data("synthesis"),
                     });
                 } else if ($(e.currentTarget).data("synthesis")) {
                     synthesisObj = {
