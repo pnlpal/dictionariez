@@ -10,6 +10,8 @@ import "./auto-complete.js";
 import message from "./message.js";
 import readClipboard from "./clipboard.js";
 import contextMenu from "./contextMenu.js";
+import "./tts-speak.js";
+
 console.log("PRODUCT: ", process.env.PRODUCT);
 
 const initPromises = (async function () {

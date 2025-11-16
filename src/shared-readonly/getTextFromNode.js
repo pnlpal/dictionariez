@@ -1,3 +1,5 @@
+// This file is auto-copied. Do not edit directly.
+
 function removeEmojisAndSymbols(text) {
   return (
     text

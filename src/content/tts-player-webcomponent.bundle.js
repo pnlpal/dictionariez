@@ -1,3 +1,5 @@
+// This file is auto-copied. Do not edit directly.
+
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 

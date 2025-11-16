@@ -1,3 +1,5 @@
+// This file is auto-copied. Do not edit directly.
+
 class ErrorWithMoreInfo extends Error {
   constructor(msg, moreInfo) {
     super(msg);
