@@ -9,7 +9,8 @@ var webpack = require("webpack"),
     CopyWebpackPlugin = require("copy-webpack-plugin"),
     HtmlWebpackPlugin = require("html-webpack-plugin"),
     // WriteFilePlugin = require("write-file-webpack-plugin"),
-    TerserPlugin = require("terser-webpack-plugin");
+    TerserPlugin = require("terser-webpack-plugin"),
+    CopyPlugin = require("copy-webpack-plugin");
 
 // load the secrets
 var alias = {};
@@ -229,6 +230,10 @@ var options = {
             filename: "test.html",
             chunks: ["test"],
             cache: false,
+        }),
+
+        new CopyPlugin({
+            patterns: [{ from: "src/content/*.bundle.js", to: "[name][ext]" }],
         }),
     ],
     ignoreWarnings: [

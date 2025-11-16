@@ -55,7 +55,7 @@
         "@eslint/json": "^0.13.1",
         "chai": "^5.1.1",
         "clean-webpack-plugin": "^4.0.0",
-        "copy-webpack-plugin": "^12.0.2",
+        "copy-webpack-plugin": "^13.0.1",
         "css-loader": "^7.1.2",
         "eslint": "^9.33.0",
         "expose-loader": "^5.0.0",
