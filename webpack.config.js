@@ -24,6 +24,8 @@ if (fileSystem.existsSync(secretsPath)) {
 }
 alias.utils = path.join(__dirname, "src/shared-readonly/utils.js");
 
+const testEntry = env.NODE_ENV === "development" ? { test: path.join(__dirname, "src", "other", "test.js") } : {};
+
 var options = {
     mode: process.env.NODE_ENV || "development",
     entry: {
@@ -37,8 +39,8 @@ var options = {
         examples: path.join(__dirname, "src", "other", "example.js"),
         share: path.join(__dirname, "src", "other", "share.js"),
         speak: path.join(__dirname, "src", "other", "speak.js"),
-        test: path.join(__dirname, "src", "other", "test.js"),
         privacy: path.join(__dirname, "src", "other", "privacy-consent.js"),
+        ...testEntry,
     },
     chromeExtensionBoilerplate: {
         enableBackgroundAutoReload: true, // always true when "enableContentScriptsAutoReload" is set true
@@ -225,17 +227,19 @@ var options = {
             cache: false,
         }),
 
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, "src", "test.html"),
-            filename: "test.html",
-            chunks: ["test"],
-            cache: false,
-        }),
+        env.NODE_ENV === "development"
+            ? new HtmlWebpackPlugin({
+                  template: path.join(__dirname, "src", "test.html"),
+                  filename: "test.html",
+                  chunks: ["test"],
+                  cache: false,
+              })
+            : null,
 
         new CopyPlugin({
             patterns: [{ from: "src/content/*.bundle.js", to: "[name][ext]" }],
         }),
-    ],
+    ].filter(Boolean),
     ignoreWarnings: [
         {
             module: /node_modules[\\/]mocha[\\/]mocha\.js/,
