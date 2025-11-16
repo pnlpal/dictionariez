@@ -22,7 +22,7 @@ var fileExtensions = ["jpg", "jpeg", "png", "gif", "eot", "otf", "svg", "ttf", "
 if (fileSystem.existsSync(secretsPath)) {
     alias["secrets"] = secretsPath;
 }
-alias.utils = path.join(__dirname, "src/utils.js");
+alias.utils = path.join(__dirname, "src/shared-readonly/utils.js");
 
 var options = {
     mode: process.env.NODE_ENV || "development",

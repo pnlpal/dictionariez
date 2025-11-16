@@ -1,5 +1,5 @@
 import lookupParser from "../content/lookup-parser.js";
-import utils from "../utils.js";
+import utils from "utils";
 import { expect } from "chai";
 import enableLanguages from "../option/enableLanguages.js";
 

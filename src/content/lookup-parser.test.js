@@ -1,5 +1,5 @@
 import { parseHTML } from "./lookup-parser.js";
-import utils from "../utils.js";
+import utils from "utils";
 import parserDesc from "../resources/dict-parsers.json";
 import { expect } from "chai";
 
