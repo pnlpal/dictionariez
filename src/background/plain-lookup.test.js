@@ -1,11 +1,7 @@
 import lookupParser from "../content/lookup-parser.js";
 import utils from "../utils.js";
 import { expect } from "chai";
-import allLangs from "../resources/langs.json";
-
-const enableLanguages = async (langs = ["Swedish"], withEnglish = true, withChinese = true) => {
-    await utils.enableLanguages(Object.keys(allLangs), langs, withEnglish, withChinese);
-};
+import enableLanguages from "../option/enableLanguages.js";
 
 before(() => {
     lookupParser();

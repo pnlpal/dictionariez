@@ -5,19 +5,17 @@ import "select2/dist/css/select2.min.css";
 import "./init-welcome.less";
 import "bootstrap/js/modal.js";
 import bootbox from "bootbox";
-
-import utils from "utils";
 import allLangs from "../resources/langs.json";
+import enableLanguages from "./enableLanguages.js";
 
 const welcomeSetup = ({ setting, applySetting }) => {
     if (setting.otherDisabledLanguages?.length) {
         return;
     }
-    const enableLanguages = async (langs = ["Swedish"]) => {
+    const setLanguageSettings = async (langs = ["Swedish"]) => {
         const withEnglish = langs.includes("English");
         const withChinese = langs.includes("Chinese");
-        const { enableLookupEnglish, enableLookupChinese, otherDisabledLanguages } = await utils.enableLanguages(
-            Object.keys(allLangs),
+        const { enableLookupEnglish, enableLookupChinese, otherDisabledLanguages } = await enableLanguages(
             langs,
             withEnglish,
             withChinese
@@ -183,7 +181,7 @@ const welcomeSetup = ({ setting, applySetting }) => {
                         bootbox.alert("Please select at least one language to look up.");
                         return false;
                     }
-                    enableLanguages(lookup).then(() => {
+                    setLanguageSettings(lookup).then(() => {
                         // Save the user's lookup languages here (e.g., via AJAX or local storage)
                         // $.ajax({ ... });
                         success(lookup);
