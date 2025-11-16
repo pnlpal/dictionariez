@@ -2909,10 +2909,18 @@ window.showTTSPlayer = (text, lang, options) => {
   return window._pnlTTSPlayerInstance.show(text, lang, options);
 };
 
-showTTSPlayer(
-  "The pendulum of an antique clock swung soundlessly on the wall, its rhythmic ticking absent in the stillness.",
-  "en"
-);
+window.addEventListener("message", (event) => {
+  if (event.source !== window) return; // Only accept messages from the same window
+  // Only accept messages from same origin for security
+  if (event.origin !== window.location.origin) {
+    return;
+  }
+
+  const { command, text, lang } = event.data;
+  if (text && command === "pnl-tts-play") {
+    window.showTTSPlayer(text, lang);
+  }
+});
 
 })();
 
