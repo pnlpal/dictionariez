@@ -16,8 +16,8 @@ import "./pnl-craft-topics.less";
 
     function showNextTopic(topics) {
         const titleSpan = topicElement.querySelector(".crafting-topic-title");
-        const nextIndex = parseInt(localStorage.getItem("next-crafting-topic-index") || 0);
-        const topic = topics[nextIndex];
+        const nextIndex = parseInt(localStorage.getItem("next-crafting-topic-index")) || 0;
+        const topic = topics[nextIndex] || topics[0];
 
         // Start slide out
         titleSpan.classList.remove("slide-in");
@@ -35,7 +35,11 @@ import "./pnl-craft-topics.less";
     fetch("https://pnl.dev/api/category/6/crafting")
         .then((response) => response.json())
         .then((data) => {
-            const topics = data.topics.filter((topic) => topic.uid === 1 && !topic.deleted);
+            const topics = data.topics.filter((topic) => (topic.showInExtension || topic.pinned) && !topic.deleted);
+            if (!topics.length) {
+                topicElement.style.display = "none";
+                return;
+            }
 
             let showInterval;
             clearInterval(showInterval);
