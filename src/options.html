@@ -327,7 +327,6 @@
 									ng-click="changeKey(!setting.needDblclick, 'needDblclick')"
 								/>
 								Only trigger lookup when double-clicking a word.
-								<em class="text-new">New!</em>
 								<span class="text-muted">(If unchecked, selecting any word will show the definition popup)</span>
 							</label>
 						</div>	
@@ -591,6 +590,19 @@
 									ng-click="changeKey(!setting.enableAutoCloseMinidict, 'enableAutoCloseMinidict')"
 								/>
 								Automatically close the popup dict window when focus normal window.
+							</label>
+						</div>
+
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.disableTTS"
+									ng-click="changeKey(!setting.disableTTS, 'disableTTS')"
+								/>
+								Disable Text-to-Speech (TTS) when selecting text.
+								<em class="text-pro badge" title="This is a Pro feature!">Pro</em>
+								<em class="text-new">New!</em>
 							</label>
 						</div>
 

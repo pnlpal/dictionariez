@@ -3,7 +3,11 @@ import debounce from "lodash/debounce";
 import { detectLanguage } from "../shared-readonly/detectLanguage.js";
 import getTextFromNode from "../shared-readonly/getTextFromNode.js";
 
-export default () => {
+export default (setting) => {
+    if (setting.disableTTS) {
+        return;
+    }
+
     let currentBubble = null;
 
     function createBubble(text, lang) {

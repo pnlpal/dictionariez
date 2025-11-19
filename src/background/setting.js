@@ -72,6 +72,7 @@ export default {
         enableReadClipboard: false,
 
         privacyConsent: "",
+        disableTTS: false,
         isPro: undefined,
     },
 
