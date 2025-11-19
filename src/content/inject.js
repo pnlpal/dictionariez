@@ -88,6 +88,12 @@ const run = () => {
                     ).appendTo("body");
                 }
             }
+
+            if (isInDict && res.dict?.ttsHelperSelector) {
+                document.querySelectorAll(res.dict.ttsHelperSelector).forEach((el) => {
+                    el.classList.add("pnl-tts-helper");
+                });
+            }
         }
     );
 

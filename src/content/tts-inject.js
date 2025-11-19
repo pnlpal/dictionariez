@@ -1,6 +1,7 @@
 import utils from "utils";
 import debounce from "lodash/debounce";
 import { detectLanguage } from "../shared-readonly/detectLanguage.js";
+import getTextFromNode from "../shared-readonly/getTextFromNode.js";
 
 export default () => {
     let currentBubble = null;
@@ -157,6 +158,70 @@ export default () => {
         createBubble(text, lang);
     };
 
+    const injectSpeakerIconInElements = (selector) => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach((el) => {
+            if (el.classList.contains("pnl-tts-empowered")) {
+                return; // Already has speaker icon
+            }
+
+            el.classList.add("pnl-tts-empowered");
+
+            // Create a real speaker element instead of using pseudo-element
+            const speakerIcon = document.createElement("span");
+            speakerIcon.className = "pnl-tts-icon";
+            speakerIcon.textContent = "🔊";
+            speakerIcon.title = "Read this text aloud";
+
+            // Insert at the beginning of the element
+            el.insertBefore(speakerIcon, el.firstChild);
+
+            // Add click handler ONLY to the speaker icon
+            speakerIcon.addEventListener("click", async (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+
+                const text = getTextFromNode(el);
+                if (!text) return;
+
+                const lang = (await detectLanguage(text)) || localStorage.getItem("pnl-sentence-lang-detected");
+                if (lang) {
+                    localStorage.setItem("pnl-sentence-lang-detected", lang);
+                }
+
+                window.postMessage({ command: "pnl-tts-play", text, lang }, window.location.origin);
+            });
+        });
+
+        // Add the CSS for the speaker icon
+        if (!document.querySelector("#pnl-tts-icon-styles")) {
+            const style = document.createElement("style");
+            style.id = "pnl-tts-icon-styles";
+            style.textContent = `
+            .pnl-tts-icon {
+                opacity: 0;
+                margin-right: 6px;
+                cursor: pointer;
+                user-select: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.9em;
+                transition: opacity 0.2s ease;
+                vertical-align: middle;
+            }
+            .pnl-tts-empowered:hover .pnl-tts-icon {
+                opacity: 1;
+            }
+            .pnl-tts-icon:hover {
+                transform: scale(1.1);
+                opacity: 1 !important;
+            }
+        `;
+            document.head.appendChild(style);
+        }
+    };
+
     // Remove bubble when clicking elsewhere
     document.addEventListener("click", (e) => {
         if (!e.target.closest(".pnl-sentence-selected-bubble")) {
@@ -166,4 +231,5 @@ export default () => {
 
     window.addEventListener("mouseup", debounce(handleSentenceSelected, 250));
     window.addEventListener("touchend", debounce(handleSentenceSelected, 250));
+    injectSpeakerIconInElements(".pnl-tts-helper");
 };

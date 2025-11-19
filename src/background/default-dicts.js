@@ -25,6 +25,7 @@ export default [
     {
         dictName: "Urban Dictionary",
         windowUrl: "https://www.urbandictionary.com/define.php?term=<word>",
+        ttsHelperSelector: ".definition .example.italic",
         resources: {
             styles: ["urban.less"],
         },
@@ -47,6 +48,7 @@ export default [
         entry: "OxfordLearner",
         fixSpaceInWords: "-",
         windowUrl: "https://www.oxfordlearnersdictionaries.com/search/english/?q=<word>",
+        ttsHelperSelector: "ul.examples>li",
         resources: {
             styles: ["oxfordlearner.less"],
         },
@@ -55,6 +57,7 @@ export default [
         dictName: "Cambridge English",
         windowUrl: "https://dictionary.cambridge.org/dictionary/english/<word>",
         css: "#header, #ad_topslot_a {display: none;}",
+        ttsHelperSelector: ".def-body .examp",
     },
     {
         dictName: "thefreedictionary.com",
