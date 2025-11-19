@@ -29,8 +29,7 @@
                 padding: 20px;
                 border-radius: 10px;
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-                width: 50%;
-                max-width: 480px;
+                max-width: 870px; /* Increased width for additional content */
             }
             .center {
                 text-align: center;
@@ -89,15 +88,21 @@
                         your data to our servers, nor do we share it with third parties.
                     </li>
                     <li>
-                        <strong>Pro Users (Cloud Sync):</strong> If you subscribe to the Pro plan and enable cloud sync,
-                        your lookup history and settings will be securely stored on our cloud servers to enable
-                        cross-device sync. For this, the extension uses cookies to keep you logged in and to provide the
-                        Pro service.
+                        <strong>TTS Trial (Free Users):</strong> Free users can trial our Text-to-Speech (TTS) service
+                        with limited usage. When using this feature,
+                        <b>the selected text is temporarily sent to our servers</b> to generate speech audio. Text
+                        content is processed in real-time and <b>not permanently stored</b> after processing.
+                    </li>
+                    <li>
+                        <strong>Pro Users (Cloud Sync & TTS):</strong> If you subscribe to the Pro plan, your lookup
+                        history and settings will be securely stored on our cloud servers to enable cross-device sync.
+                        Pro users also get unlimited TTS usage, which sends selected text to our servers for speech
+                        generation. For these services, the extension uses cookies to keep you logged in.
                     </li>
                     <li>
                         <strong>Clipboard Access:</strong> If you enable the "read clipboard" feature, the extension
                         will access clipboard content for word lookups, but this data is not sent anywhere unless you
-                        use cloud sync as a Pro user.
+                        use cloud sync or TTS features.
                     </li>
                     <li>
                         <strong>Tab URL:</strong> If you use the "watch-on-captionz" button on YouTube, the extension
@@ -106,9 +111,10 @@
                     </li>
                 </ul>
                 <p>
-                    <b>Summary:</b> For free users, your data stays on your device. For Pro users, lookup history and
-                    settings are synced to the cloud for your convenience and cross-device access. You can clear your
-                    data at any time in the extension settings.
+                    <b>Summary:</b> For free users, your data stays on your device except when using TTS trial (text
+                    sent for speech generation). For Pro users, lookup history, settings, and TTS text are
+                    processed/synced via our cloud servers. You can disable TTS and clear your data at any time in the
+                    extension settings.
                 </p>
 
                 <a
