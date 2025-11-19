@@ -1,3 +1,7 @@
+# v6.3.0 Nov 19, 2025 
+- Introduced TTS Pro: select any text on any website to read aloud.
+- Added TTS helper speaker to select dictionaries (e.g., Cambridge English) for reading example sentences.
+
 # v6.2.0 Nov 09, 2025 
 - Added support for Turkish and Arabic languages lookup.
 - Improved pronunciation by enhancing synthesis-based speech.
