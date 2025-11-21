@@ -3,7 +3,7 @@
 ## Data Collection and Storage
 
 ### Free Version
-By default, Dictionariez does not collect any browser information or personal user data. Your lookup history and settings are stored locally in your browser's storage and synced using the browser's built-in sync service.
+By default, Dictionariez/Ordböcker/SidePal does not collect any browser information or personal user data. Your lookup history and settings are stored locally in your browser's storage and synced using the browser's built-in sync service.
 
 **TTS Trial**: Free users can trial our Text-to-Speech (TTS) service with limited usage. When using this feature, the selected text is temporarily sent to our servers to generate speech audio.
 
@@ -47,7 +47,7 @@ We use cookies and local storage to:
 
 ## Third-Party Services
 
-This extension integrates with various dictionary websites and services. These third-party services may use cookies or web storage according to their own privacy policies. Dictionariez does not modify or control third-party behavior. Your interactions with these services are governed by their respective privacy policies, just as if you visited their websites directly.
+This extension integrates with various dictionary websites and services. These third-party services may use cookies or web storage according to their own privacy policies. Dictionariez/Ordböcker/SidePal does not modify or control third-party behavior. Your interactions with these services are governed by their respective privacy policies, just as if you visited their websites directly.
 
 Our TTS service may utilize third-party speech synthesis providers, which process text according to their own privacy policies.
 
