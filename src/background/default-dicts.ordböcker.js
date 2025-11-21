@@ -3,6 +3,7 @@ export default [
         dictName: "Glosbe (Sv-En)",
         windowUrl: "https://glosbe.com/sv/en/<word>",
         css: ".navbar, #topBannerContainer, #topTrufleContainer {display: none !important;}",
+        ttsHelperSelector: ".translation__example p[lang='sv']",
     },
     {
         dictName: "chatgpt definition",
@@ -29,6 +30,7 @@ export default [
         dictName: "tyda.se",
         windowUrl: "https://tyda.se/search/<word>?lang%5B0%5D=en&lang%5B1%5D=sv",
         css: "#header {display: none !important;} #search-box {margin-left: 0 !important; z-index: 2 !important;} .page-searchresult .image-wrapper {text-align: start !important;} body {margin-top: 10px !important;}",
+        ttsHelperSelector: ".sample ul>li",
     },
     {
         dictName: "GoogleTranslate(SE -> EN)",

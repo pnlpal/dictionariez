@@ -92,6 +92,9 @@ const run = () => {
             if (isInDict && res.dict?.ttsHelperSelector) {
                 document.querySelectorAll(res.dict.ttsHelperSelector).forEach((el) => {
                     el.classList.add("pnl-tts-helper");
+                    if (el.lang) {
+                        el.setAttribute("data-tts-lang", el.lang);
+                    }
                 });
             }
         }
