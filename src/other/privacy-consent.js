@@ -56,3 +56,7 @@ if (!navigator.userAgent.includes("Gecko/")) {
 
     document.querySelector("#ascii-title").innerHTML = asciiTitle;
 })();
+
+document.querySelectorAll(".product-name").forEach((el) => {
+    el.textContent = process.env.PRODUCT;
+});
