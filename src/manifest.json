@@ -21,6 +21,7 @@
         {
             "js": ["tts-player-webcomponent.bundle.js"],
             "matches": ["<all_urls>"],
+            "run_at": "document_end",
             "all_frames": true
         }
     ],
