@@ -1,3 +1,6 @@
+# v6.3.1 Nov 22, 2025 
+- Improved TTS player by implementing lazy loading, ensuring compatibility with all websites (e.g., Epic Games login page).
+
 # v6.3.0 Nov 19, 2025 
 - Introduced TTS Pro: select any text on any website to read aloud.
 - Added TTS helper speaker to select dictionaries (e.g., Cambridge English) for reading example sentences.
