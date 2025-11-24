@@ -53,10 +53,16 @@ export default (setting) => {
         // Calculate position at bottom right of the last line
         const x = endRect.right + window.scrollX;
         const y = endRect.bottom + window.scrollY;
+        let bubbleRight;
 
         // Safety check - if position is still invalid, don't show bubble
         if (x <= 0 || y <= 0) {
             return;
+        }
+
+        const viewportWidth = window.innerWidth;
+        if (viewportWidth - x < 90) {
+            bubbleRight = 20;
         }
 
         const ttsSpeakerHtml = setting.disableTTS
@@ -77,8 +83,8 @@ export default (setting) => {
         // Rest of your existing code...
         bubble.style.cssText = `
         position: absolute;
-        left: ${x + 8}px;
         top: ${y + 8}px;
+        ${bubbleRight ? `right: ${bubbleRight}px;` : `left: ${x + 8}px;`}
         background: #1a1a1a;
         color: white;
         padding: 8px 12px;
