@@ -177,7 +177,12 @@ export default (setting) => {
 
     const handleSentenceSelected = async (ev) => {
         const text = window.getSelection().toString().trim();
-        if (!text || !utils.isSentence(text) || ev.target.closest(".pnl-sentence-selected-bubble")) {
+        if (
+            !text ||
+            !utils.isSentence(text) ||
+            ev.target.closest(".pnl-sentence-selected-bubble") ||
+            ev.target.closest("pnl-tts-player")
+        ) {
             removeBubble();
             return;
         }
@@ -256,10 +261,8 @@ export default (setting) => {
     };
 
     // Remove bubble when clicking elsewhere
-    document.addEventListener("click", (e) => {
-        if (!e.target.closest(".pnl-sentence-selected-bubble")) {
-            removeBubble();
-        }
+    document.addEventListener("click", () => {
+        removeBubble();
     });
 
     window.addEventListener("mouseup", debounce(handleSentenceSelected, 250));
