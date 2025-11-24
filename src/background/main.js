@@ -11,6 +11,7 @@ import message from "./message.js";
 import readClipboard from "./clipboard.js";
 import contextMenu from "./contextMenu.js";
 import "./tts-speak.js";
+import "./translate.js";
 
 console.log("PRODUCT: ", process.env.PRODUCT);
 

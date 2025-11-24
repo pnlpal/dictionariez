@@ -12,7 +12,7 @@ import { initAnkiInjection } from "./anki-inject.js";
 import initLookupParser from "./lookup-parser.js";
 import { initClipboardReader } from "./read-clipboard.js";
 import plainLookupTooltip from "./plain-lookup-tooltip.js";
-import initTTSPlayer from "./tts-inject.js";
+import initTTSAndTranslator from "./tts-translator-inject.js";
 
 import {
     getWordAtPoint,
@@ -129,7 +129,7 @@ const run = () => {
             }
 
             plainLookupTooltip.init();
-            initTTSPlayer(setting);
+            initTTSAndTranslator(setting);
 
             if (setting.enableReadClipboard) {
                 document.addEventListener(

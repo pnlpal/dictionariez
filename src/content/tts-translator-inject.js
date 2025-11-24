@@ -23,13 +23,12 @@ export default (setting) => {
         const endRange = document.createRange();
         endRange.setStart(range.endContainer, range.endOffset);
         endRange.setEnd(range.endContainer, range.endOffset);
+        const selectionRect = range.getBoundingClientRect();
 
         let endRect = endRange.getBoundingClientRect();
 
         // If the end rect is invalid (all zeros or very small), fall back to selection rect
         if (endRect.width === 0 && endRect.height === 0) {
-            const selectionRect = range.getBoundingClientRect();
-
             // For multi-line selections, get the bottom-right of the last line
             const rects = range.getClientRects();
             if (rects.length > 0) {
@@ -66,6 +65,9 @@ export default (setting) => {
         <div class="pnl-tts-speaker" title="Read this sentence aloud by ${process.env.PRODUCT}">
             🔊
         </div>
+        <div class="pnl-translator-icon" title="Translate this text">
+            🌐
+        </div>
         `;
 
         // Rest of your existing code...
@@ -83,6 +85,9 @@ export default (setting) => {
         cursor: pointer;
         user-select: none;
         animation: pnl-bubble-fade-in 0.2s ease-out;
+        display: flex;
+        gap: 8px;
+        align-items: center;
     `;
 
         // Update arrow position for right-aligned bubble
@@ -113,20 +118,44 @@ export default (setting) => {
 .pnl-sentence-selected-bubble:hover:before {
     border-bottom-color: #333 !important;
 }
-.pnl-tts-speaker {
+.pnl-tts-speaker, .pnl-translator-icon {
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: 20px;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+.pnl-tts-speaker:hover, .pnl-translator-icon:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 `;
             document.head.appendChild(style);
         }
 
-        // Rest of your code...
-        bubble.addEventListener("click", (e) => {
+        const ttsIcon = bubble.querySelector(".pnl-tts-speaker");
+        const translatorIcon = bubble.querySelector(".pnl-translator-icon");
+
+        ttsIcon.addEventListener("click", (e) => {
             e.stopPropagation();
             window.postMessage({ command: "pnl-tts-play", text, lang }, window.location.origin);
+            removeBubble();
+        });
+
+        translatorIcon.addEventListener("click", (e) => {
+            e.stopPropagation();
+            window.postMessage(
+                {
+                    command: "pnl-translate",
+                    text,
+                    lang,
+                    selectionRect,
+                    translatorSettings: setting.translatorSettings ? JSON.parse(setting.translatorSettings) : {},
+                },
+                window.location.origin
+            );
             removeBubble();
         });
 

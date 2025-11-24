@@ -74,6 +74,7 @@ export default {
         privacyConsent: "",
         disableTTS: false,
         isPro: undefined,
+        translatorSettings: "",
     },
 
     init() {
