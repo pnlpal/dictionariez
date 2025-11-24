@@ -117,6 +117,7 @@ export default (setting) => {
 }
 .pnl-sentence-selected-bubble:hover:before {
     border-bottom-color: #333 !important;
+    transition: all 0.2s ease;
 }
 .pnl-tts-speaker, .pnl-translator-icon {
     display: flex;
