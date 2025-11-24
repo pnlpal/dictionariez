@@ -183,14 +183,12 @@ export default (setting) => {
 
     const handleSentenceSelected = async (ev) => {
         const text = window.getSelection().toString().trim();
-        if (
-            !text ||
-            !utils.isSentence(text) ||
-            ev.target.closest(".pnl-sentence-selected-bubble") ||
-            ev.target.closest("pnl-tts-player")
-        ) {
+        if (!text || !utils.isSentence(text) || ev.target.closest("pnl-tts-player")) {
             removeBubble();
             return;
+        }
+        if (ev.target.closest(".pnl-sentence-selected-bubble")) {
+            return; // Clicked inside the bubble, do nothing
         }
 
         const lang = (await detectLanguage(text)) || localStorage.getItem("pnl-sentence-lang-detected");
@@ -267,7 +265,13 @@ export default (setting) => {
     };
 
     // Remove bubble when clicking elsewhere
-    document.addEventListener("click", () => {
+    document.addEventListener("click", (ev) => {
+        if (
+            ev.target.classList.contains("pnl-sentence-selected-bubble") ||
+            ev.target.closest(".pnl-sentence-selected-bubble")
+        ) {
+            return;
+        }
         removeBubble();
     });
 

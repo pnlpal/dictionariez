@@ -1,3 +1,7 @@
+# v6.4.0 Nov 24, 2025
+- Introduced PNL Translator: select any text on any website to translate. 
+- Improved some minor UI regarding the bubble position and styles.
+
 # v6.3.1 Nov 22, 2025 
 - Improved TTS player by implementing lazy loading, ensuring compatibility with all websites (e.g., Epic Games login page).
 
