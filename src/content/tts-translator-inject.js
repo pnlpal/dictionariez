@@ -4,7 +4,7 @@ import { detectLanguage } from "../shared-readonly/detectLanguage.js";
 import getTextFromNode from "../shared-readonly/getTextFromNode.js";
 
 export default (setting) => {
-    if (setting.disableTTS) {
+    if (setting.disableTTS && setting.disableTranslator) {
         return;
     }
 
@@ -59,14 +59,18 @@ export default (setting) => {
             return;
         }
 
+        const ttsSpeakerHtml = setting.disableTTS
+            ? ""
+            : `<div class="pnl-tts-speaker" title="Read this sentence aloud by ${process.env.PRODUCT}">🔊</div>`;
+        const translatorIconHtml = setting.disableTranslator
+            ? ""
+            : `<div class="pnl-translator-icon" title="Translate this text by ${process.env.PRODUCT}">🌐</div>`;
+
         const bubble = document.createElement("div");
         bubble.className = "pnl-sentence-selected-bubble";
         bubble.innerHTML = `
-        <div class="pnl-tts-speaker" title="Read this sentence aloud by ${process.env.PRODUCT}">
-            🔊
-        </div>
-        <div class="pnl-translator-icon" title="Translate this text">
-            🌐
+        ${ttsSpeakerHtml}
+        ${translatorIconHtml}
         </div>
         `;
 
@@ -139,13 +143,13 @@ export default (setting) => {
         const ttsIcon = bubble.querySelector(".pnl-tts-speaker");
         const translatorIcon = bubble.querySelector(".pnl-translator-icon");
 
-        ttsIcon.addEventListener("click", (e) => {
+        ttsIcon?.addEventListener("click", (e) => {
             e.stopPropagation();
             window.postMessage({ command: "pnl-tts-play", text, lang }, window.location.origin);
             removeBubble();
         });
 
-        translatorIcon.addEventListener("click", (e) => {
+        translatorIcon?.addEventListener("click", (e) => {
             e.stopPropagation();
             window.postMessage(
                 {
@@ -173,12 +177,7 @@ export default (setting) => {
 
     const handleSentenceSelected = async (ev) => {
         const text = window.getSelection().toString().trim();
-        if (
-            !text ||
-            !utils.isSentence(text) ||
-            ev.target.closest("pnl-tts-player") ||
-            ev.target.closest(".pnl-sentence-selected-bubble")
-        ) {
+        if (!text || !utils.isSentence(text) || ev.target.closest(".pnl-sentence-selected-bubble")) {
             removeBubble();
             return;
         }

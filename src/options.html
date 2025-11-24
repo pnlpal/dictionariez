@@ -606,6 +606,19 @@
 							</label>
 						</div>
 
+						<div class="checkbox">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.disableTranslator"
+									ng-click="changeKey(!setting.disableTranslator, 'disableTranslator')"
+								/>
+								Disable Translator when selecting text.
+								<em class="text-pro badge" title="This is a Pro feature!">Pro</em>
+								<em class="text-new">New!</em>
+							</label>
+						</div>
+
 						<div>
 							<label for="excluded-websites">
 								<span>Don't run on these websites:</span>
