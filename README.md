@@ -52,9 +52,9 @@ We look forward to hearing from you and helping you achieve your language learni
 
 ![Promo Banner](readme_images/all-in-one.jpg)
 ![Alt text](readme_images/s1-final.jpg)
-![Alt text](readme_images/english.jpg)
-![Alt text](readme_images/s2-final.jpg)
-![Alt text](readme_images/s3-final.jpg)
+![Alt text](readme_images/screenshot-1.png)
+![Alt text](readme_images/screenshot-2.png)
+![Alt text](readme_images/screenshot-3.png)
 
 # More dictionaries are needed!
 
