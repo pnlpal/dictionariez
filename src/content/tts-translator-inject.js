@@ -83,7 +83,7 @@ export default (setting) => {
         // Rest of your existing code...
         bubble.style.cssText = `
         position: absolute;
-        top: ${y + 8}px;
+        top: ${y + 16}px;
         ${bubbleRight ? `right: ${bubbleRight}px;` : `left: ${x + 8}px;`}
         background: #1a1a1a;
         color: white;
