@@ -51,6 +51,37 @@ export default {
     return true;
   },
 
+  // Check if only the selected key is pressed, no other keys
+  isOnlySKPressed(ev, sk = "Ctrl") {
+    if (!ev.key) return false;
+    if (!sk || sk === "None") return false;
+
+    const skMap = {
+      Ctrl: "Control",
+      Shift: "Shift",
+      Alt: "Alt",
+      Meta: "Meta",
+    };
+    const isKeyPressed = ev.key === skMap[sk];
+
+    const hasOtherKeys =
+      (sk !== "Ctrl" && ev.ctrlKey) ||
+      (sk !== "Meta" && ev.metaKey) ||
+      (sk !== "Shift" && ev.shiftKey) ||
+      (sk !== "Alt" && ev.altKey);
+
+    // Check if any letter, number, or special keys are pressed
+    const isAlphanumeric =
+      ev.key.length === 1 ||
+      ["Enter", "Space", "Tab", "Escape", "Backspace", "Delete"].includes(
+        ev.key
+      ) ||
+      ev.key.startsWith("F") || // Function keys
+      ["Home", "End", "PageUp", "PageDown", "Insert"].includes(ev.key);
+
+    return isKeyPressed && !hasOtherKeys && !isAlphanumeric;
+  },
+
   promisify(cb) {
     return new Promise((resolve) => cb(resolve));
   },
