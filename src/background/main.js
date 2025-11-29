@@ -143,3 +143,5 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
     await initPromises;
     contextMenu.handler(info, tab);
 });
+
+chrome.runtime.setUninstallURL("https://forms.gle/9Jmz1d7PtxqMzSNq5");
