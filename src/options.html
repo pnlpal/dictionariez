@@ -593,60 +593,60 @@
 							</label>
 						</div>
 						
+						<br>
+						<div><p>Sentence/Paragraph Selection Bubble (TTS & Translation) <em class="text-new">New!</em></p>
+							<div class="checkbox indent">
+								<label>
+									Show bubble only when key is pressed: 
+								</label>
 
-						<div class="checkbox">
-							<label>
-								Need to press key
-							</label>
+								<div class="btn-group" uib-dropdown uib-keyboard-nav>
+									<button
+										uib-dropdown-toggle
+										class="form-control btn dropdown-toggle btn-default"
+										type="button"
+										id="btn-sentenceBubbleSK"
+									>
+										{{ setting.sentenceBubbleSK || 'None (always show)' }}
+										<span class="caret"></span>
+									</button>
 
-							<div class="btn-group" uib-dropdown uib-keyboard-nav>
-								<button
-									uib-dropdown-toggle
-									class="form-control btn dropdown-toggle btn-default"
-									type="button"
-									id="btn-sentenceBubbleSK"
-								>
-									{{ setting.sentenceBubbleSK || 'None' }}
-									<span class="caret"></span>
-								</button>
-
-								<ul
-									uib-dropdown-menu
-									class="dropdown-menu"
-									role="menu"
-									aria-labelledby="btn-sentenceBubbleSK"
-								>
-									<li role="menuitem" ng-repeat="item in allSK">
-										<a ng-click="changeKey(item, 'sentenceBubbleSK')">{{ item || 'None' }}</a>
-									</li>
-								</ul>
+									<ul
+										uib-dropdown-menu
+										class="dropdown-menu"
+										role="menu"
+										aria-labelledby="btn-sentenceBubbleSK"
+									>
+										<li role="menuitem" ng-repeat="item in allSK">
+											<a ng-click="changeKey(item, 'sentenceBubbleSK')">{{ item || 'None (always show)' }}</a>
+										</li>
+									</ul>
+								</div>
 							</div>
-						</div>
 
-						<div class="checkbox">
-							<label>
-								<input
-									type="checkbox"
-									ng-model="setting.disableTTS"
-									ng-click="changeKey(!setting.disableTTS, 'disableTTS')"
-								/>
-								Disable Text-to-Speech (TTS) when selecting text.
-								<em class="text-pro badge" title="This is a Pro feature!">Pro</em>
-								<em class="text-new">New!</em>
-							</label>
-						</div>
+							<div class="checkbox indent">
+								<label>
+									<input
+										type="checkbox"
+										ng-model="setting.disableTTS"
+										ng-click="changeKey(!setting.disableTTS, 'disableTTS')"
+									/>
+									Hide Text-to-Speech (TTS) button in the popup bubble
+									<em class="text-pro badge" title="TTS reads selected text aloud with natural AI voices. Pro users get unlimited usage.">Pro</em>
+								</label>
+							</div>
 
-						<div class="checkbox">
-							<label>
-								<input
-									type="checkbox"
-									ng-model="setting.disableTranslator"
-									ng-click="changeKey(!setting.disableTranslator, 'disableTranslator')"
-								/>
-								Disable Translator when selecting text.
-								<em class="text-pro badge" title="This is a Pro feature!">Pro</em>
-								<em class="text-new">New!</em>
-							</label>
+							<div class="checkbox indent">
+								<label>
+									<input
+										type="checkbox"
+										ng-model="setting.disableTranslator"
+										ng-click="changeKey(!setting.disableTranslator, 'disableTranslator')"
+									/>
+									Hide Translation button in the popup bubble
+									<em class="text-pro badge" title="Translate selected text between languages instantly. Pro users get unlimited translations.">Pro</em>
+								</label>
+							</div>
 						</div>
 
 						<div>
