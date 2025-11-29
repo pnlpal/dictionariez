@@ -191,6 +191,12 @@ export default (setting) => {
             return; // Clicked inside the bubble, do nothing
         }
 
+        // Only show bubble if Ctrl key is pressed
+        if (setting.sentenceBubbleSK && !isOnlySKPressed(ev)) {
+            removeBubble();
+            return;
+        }
+
         const lang = (await detectLanguage(text)) || localStorage.getItem("pnl-sentence-lang-detected");
         if (lang) {
             localStorage.setItem("pnl-sentence-lang-detected", lang);
@@ -272,10 +278,62 @@ export default (setting) => {
         ) {
             return;
         }
+
         removeBubble();
     });
 
     window.addEventListener("mouseup", debounce(handleSentenceSelected, 250));
     window.addEventListener("touchend", debounce(handleSentenceSelected, 250));
     injectSpeakerIconInElements(".pnl-tts-helper");
+
+    // Check if only the selected key is pressed, no other keys
+    const isOnlySKPressed = (ev) => {
+        if (!ev.key) return false;
+        const sk = setting.sentenceBubbleSK;
+        if (!sk || sk === "None") return false;
+        const skMap = {
+            Ctrl: "Control",
+            Shift: "Shift",
+            Alt: "Alt",
+            Meta: "Meta",
+        };
+        const isKeyPressed = ev.key === skMap[sk];
+
+        const hasOtherKeys =
+            (sk !== "Ctrl" && ev.ctrlKey) ||
+            (sk !== "Meta" && ev.metaKey) ||
+            (sk !== "Shift" && ev.shiftKey) ||
+            (sk !== "Alt" && ev.altKey);
+
+        // Check if any letter, number, or special keys are pressed
+        const isAlphanumeric =
+            ev.key.length === 1 ||
+            ["Enter", "Space", "Tab", "Escape", "Backspace", "Delete"].includes(ev.key) ||
+            ev.key.startsWith("F") || // Function keys
+            ["Home", "End", "PageUp", "PageDown", "Insert"].includes(ev.key);
+
+        return isKeyPressed && !hasOtherKeys && !isAlphanumeric;
+    };
+
+    let skHasDown = false;
+    const handleKeyDown = (ev) => {
+        // Only respond to Ctrl key alone
+        if (isOnlySKPressed(ev)) {
+            skHasDown = true;
+        } else {
+            skHasDown = false;
+        }
+    };
+
+    // Show/hide bubble based on Ctrl key state
+    const handleKeyUp = (ev) => {
+        // Only respond to Ctrl key alone
+        if (isOnlySKPressed(ev) && skHasDown) {
+            handleSentenceSelected(ev);
+        } else {
+            removeBubble();
+        }
+    };
+    window.addEventListener("keydown", debounce(handleKeyDown, 250));
+    window.addEventListener("keyup", debounce(handleKeyUp, 250));
 };

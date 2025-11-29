@@ -592,6 +592,36 @@
 								Automatically close the popup dict window when focus normal window.
 							</label>
 						</div>
+						
+
+						<div class="checkbox">
+							<label>
+								Need to press key
+							</label>
+
+							<div class="btn-group" uib-dropdown uib-keyboard-nav>
+								<button
+									uib-dropdown-toggle
+									class="form-control btn dropdown-toggle btn-default"
+									type="button"
+									id="btn-sentenceBubbleSK"
+								>
+									{{ setting.sentenceBubbleSK || 'None' }}
+									<span class="caret"></span>
+								</button>
+
+								<ul
+									uib-dropdown-menu
+									class="dropdown-menu"
+									role="menu"
+									aria-labelledby="btn-sentenceBubbleSK"
+								>
+									<li role="menuitem" ng-repeat="item in allSK">
+										<a ng-click="changeKey(item, 'sentenceBubbleSK')">{{ item || 'None' }}</a>
+									</li>
+								</ul>
+							</div>
+						</div>
 
 						<div class="checkbox">
 							<label>

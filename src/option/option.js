@@ -78,7 +78,8 @@ dictApp.controller("optionCtrl", [
                 key,
                 value,
             });
-        }, 500);
+            $scope.$apply();
+        }, 100);
 
         $scope.toggleOtherDisabledLanguages = (lang) => {
             const idx = $scope.setting.otherDisabledLanguages.indexOf(lang);

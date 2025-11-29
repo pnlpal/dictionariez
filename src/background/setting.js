@@ -72,6 +72,8 @@ export default {
         enableReadClipboard: false,
 
         privacyConsent: "",
+
+        sentenceBubbleSK: "",
         disableTTS: false,
         disableTranslator: false,
         translatorSettings: "",
