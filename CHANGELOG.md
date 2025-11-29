@@ -1,3 +1,7 @@
+# v6.4.1 Nov 29, 2025 
+- Added option to show text selection bubble only when a modifier key is pressed.
+- Added survey prompt on extension uninstall.
+
 # v6.4.0 Nov 24, 2025
 - Introduced PNL Translator: select any text on any website to translate. 
 - Improved some minor UI regarding the bubble position and styles.
