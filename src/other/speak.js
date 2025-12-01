@@ -71,18 +71,30 @@ function playSynthesis({ text, lang, name, voice } = {}) {
             v =
                 voices.find((x) => x.name === voice) ||
                 voices.find((x) => x.name.startsWith("Google") && x.lang === lang) || // Google first
-                voices.find((x) => x.name.startsWith("Microsoft David") && x.lang === lang) ||
+                voices.find((x) => x.name.startsWith("Microsoft Zira") && x.lang === lang) || // Windows 10+ female
+                voices.find((x) => x.name.startsWith("Microsoft David") && x.lang === lang) || // Windows male
+                voices.find((x) => x.name.startsWith("Microsoft Hazel") && x.lang === lang) || // Windows UK
+                voices.find((x) => x.name.includes("Natural") && x.lang === lang) || // Windows Neural voices
                 voices.find((x) => x.lang === lang);
         } else if (utils.isMac()) {
-            voices.find((x) => x.name === voice) ||
+            v =
+                voices.find((x) => x.name === voice) ||
                 voices.find((x) => x.name.startsWith("Google") && x.lang === lang) || // Google first
+                voices.find((x) => x.name === "Alex" && x.lang === lang) || // Alex is great for English
+                voices.find((x) => x.name === "Ava" && x.lang === lang) || // Ava is also high quality
+                voices.find((x) => x.name === "Allison" && x.lang === lang) || // Good US English
+                voices.find((x) => x.name === "Tom" && x.lang === lang) || // Good US English male
+                voices.find((x) => x.name === "Alva" && x.lang === lang) || // Good Swedish
+                voices.find((x) => x.name === "Oskar" && x.lang === lang) || // Good Swedish
+                voices.find((x) => x.name === "Daniel" && x.lang === lang) || // Decent UK English
                 voices.find((x) => x.name === "Samantha" && x.lang === lang) || // macOS default
-                voices.find((x) => x.name === "Daniel" && x.lang === lang) ||
                 voices.find((x) => x.lang === lang);
         } else {
             v =
                 voices.find((x) => x.name === voice) ||
                 voices.find((x) => x.name.startsWith("Google") && x.lang === lang) ||
+                voices.find((x) => x.name.includes("Enhanced") && x.lang === lang) || // Enhanced voices
+                voices.find((x) => x.name.includes("Natural") && x.lang === lang) || // Neural/Natural voices
                 voices.find((x) => x.lang === lang);
         }
         if (v) {
