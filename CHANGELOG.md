@@ -1,3 +1,7 @@
+# v6.4.2 Dec 01, 2025 
+- Added more fallback voices for speech synthesis on different operating systems.
+- Fixed speech synthesis voice selection on macOS.
+
 # v6.4.1 Nov 29, 2025 
 - Added option to show text selection bubble only when a modifier key is pressed.
 - Added survey prompt on extension uninstall.
