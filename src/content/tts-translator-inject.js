@@ -90,7 +90,7 @@ export default (setting) => {
         padding: 8px 12px;
         border-radius: 0 8px 8px 8px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        z-index: 999999;
+        z-index: 2147483647;
         font-size: 16px;
         cursor: pointer;
         user-select: none;
