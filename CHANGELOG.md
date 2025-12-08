@@ -1,3 +1,9 @@
+# v6.4.3 Dec 08, 2025
+- Fixed the translator's font size on websites with low `rem` unit settings.
+- Fixed the translator's `z-index` to prevent overlapping issues on some websites.
+- Removed the upfront privacy consent dialog.
+- Added the ability to close the translator by pressing the `ESC` key.
+
 # v6.4.2 Dec 01, 2025 
 - Added more fallback voices for speech synthesis on different operating systems.
 - Fixed speech synthesis voice selection on macOS.
