@@ -39,7 +39,6 @@ var options = {
         examples: path.join(__dirname, "src", "other", "example.js"),
         share: path.join(__dirname, "src", "other", "share.js"),
         speak: path.join(__dirname, "src", "other", "speak.js"),
-        privacy: path.join(__dirname, "src", "other", "privacy-consent.js"),
         ...testEntry,
     },
     chromeExtensionBoilerplate: {
@@ -183,12 +182,6 @@ var options = {
                     force: true,
                 },
             ],
-        }),
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, "src", "privacy-consent.html"),
-            filename: "privacy-consent.html",
-            chunks: ["privacy"],
-            cache: false,
         }),
         new HtmlWebpackPlugin({
             template: path.join(__dirname, "src", "options.html"),

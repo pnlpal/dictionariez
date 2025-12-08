@@ -51,18 +51,10 @@ chrome.runtime.onInstalled.addListener(async function (details) {
 
     if ([chrome.runtime.OnInstalledReason.INSTALL].includes(details.reason)) {
         await initPromises;
-        if (process.env.PRODUCT !== "SidePal") {
-            if (!setting.getValue("privacyConsent")) {
-                chrome.tabs.create({
-                    url: chrome.runtime.getURL("privacy-consent.html"),
-                });
-                return;
-            }
-        } else {
-            chrome.tabs.create({
-                url: chrome.runtime.getURL("share.html"),
-            });
-        }
+
+        chrome.tabs.create({
+            url: chrome.runtime.getURL(process.env.PRODUCT === "Ordböcker" ? "share.html" : "options.html"),
+        });
     }
 });
 
