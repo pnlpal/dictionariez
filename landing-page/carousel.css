@@ -19,6 +19,9 @@
     overflow-x: auto;
     scroll-behavior: smooth;
     margin: 0;
+
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
 }
 
 .carousel-track .carousel-item,
@@ -32,6 +35,8 @@
     border-radius: 1em;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     object-fit: contain;
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .carousel-track .carousel-item.video {

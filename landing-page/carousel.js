@@ -55,12 +55,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function updateCarousel() {
         const visibleCount = getVisibleCount();
-        carouselItems.forEach((item, i) => {
-            if (i >= current && i < current + visibleCount) {
-                item.style.display = "block";
-            } else {
-                item.style.display = "none";
-            }
+        // Calculate the translateX value
+        track.scrollTo({
+            left: current * carouselItemWidth,
+            behavior: "smooth",
         });
         leftBtn.disabled = current === 0;
         rightBtn.disabled = current + visibleCount >= carouselItems.length;
