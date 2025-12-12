@@ -4,7 +4,32 @@ document.addEventListener("DOMContentLoaded", function () {
     const carouselItems = Array.from(track.querySelectorAll("img, .carousel-item.video"));
     const leftBtn = document.querySelector(".carousel-btn.left");
     const rightBtn = document.querySelector(".carousel-btn.right");
+    const previewsBar = document.querySelector(".carousel-previews");
     let current = 0;
+
+    // --- PREVIEW THUMBS ---
+    function renderPreviews(visibleCount) {
+        previewsBar.innerHTML = "";
+        carouselItems.forEach((item, i) => {
+            let thumb;
+            if (item.classList.contains("video")) {
+                thumb = document.createElement("div");
+                thumb.className = "carousel-preview-thumb video";
+                thumb.innerHTML = "&#9654;"; // play icon
+            } else {
+                thumb = document.createElement("img");
+                thumb.className = "carousel-preview-thumb";
+                thumb.src = item.src;
+                thumb.alt = item.alt || `Preview ${i + 1}`;
+            }
+            if (i >= current && i < current + visibleCount) thumb.classList.add("active");
+            thumb.addEventListener("click", () => {
+                current = i;
+                updateCarousel();
+            });
+            previewsBar.appendChild(thumb);
+        });
+    }
 
     function getCarouselItemWidth() {
         let item = carouselItems[current];
@@ -25,7 +50,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function updateTrackWidth() {
         const { count, itemWidth } = getVisibleCountAndWidth();
-        // Set track width to fit exactly N items
         track.style.width = count * itemWidth + "px";
         track.style.margin = "0 auto";
     }
@@ -42,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
         leftBtn.disabled = current === 0;
         rightBtn.disabled = current + visibleCount >= carouselItems.length;
         updateTrackWidth();
+        renderPreviews(visibleCount);
     }
 
     leftBtn.addEventListener("click", () => {
@@ -66,7 +91,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Update on resize
     window.addEventListener("resize", () => {
-        // Ensure current is in a valid range after resize
         const { count: visibleCount } = getVisibleCountAndWidth();
         if (current + visibleCount > carouselItems.length) {
             current = Math.max(0, carouselItems.length - visibleCount);

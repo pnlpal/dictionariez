@@ -98,3 +98,40 @@
         height: auto;
     }
 }
+
+.carousel-previews {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5em;
+    margin-top: 1em;
+}
+
+.carousel-preview-thumb {
+    width: 48px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 0.4em;
+    border: 2px solid transparent;
+    opacity: 0.6;
+    cursor: pointer;
+    transition: border 0.2s, opacity 0.2s;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-preview-thumb.active {
+    border: 2px solid #ffd700;
+    opacity: 1;
+}
+
+.carousel-preview-thumb.video {
+    background: #222;
+    color: #ffd700;
+    font-size: 1.5em;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
