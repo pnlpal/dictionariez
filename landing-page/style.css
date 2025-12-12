@@ -1,0 +1,202 @@
+body {
+    font-family: "Inter", Arial, sans-serif;
+    margin: 0;
+    background: #f7f8fa;
+    color: #222;
+}
+
+header {
+    background: #23272f;
+    color: #fff;
+    padding: 3.5rem 1rem 2.5rem 1rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-content {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.ascii-title {
+    font-family: "Fira Mono", "Consolas", "Menlo", "Monaco", monospace;
+    font-size: 1.1em;
+    color: #ffd700;
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+header h1 {
+    font-size: 2.6rem;
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+header p {
+    font-size: 1.25rem;
+    margin: 0 0 1.5rem 0;
+    color: #e0e0e0;
+}
+
+.open-source {
+    color: #ffd700;
+    font-weight: 600;
+}
+.github-bookmark {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    text-decoration: none;
+    background: #23272f;
+    color: #ffd700;
+    border-bottom-left-radius: 1.2em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    width: 110px;
+    height: 48px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    overflow: visible;
+    transition: box-shadow 0.18s;
+}
+.github-bookmark-inner {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0.5em 1.1em 0.5em 0.7em;
+    position: relative;
+}
+.github-bookmark img {
+    width: 28px;
+    height: 28px;
+    margin-right: 0.5em;
+    display: inline-block;
+    vertical-align: middle;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+    background: #fff;
+    border-radius: 50%;
+    padding: 2px;
+}
+.github-bookmark-text {
+    font-weight: 700;
+    font-size: 1.1em;
+    color: #ffd700;
+    letter-spacing: 0.01em;
+    font-family: inherit;
+    vertical-align: middle;
+}
+.github-bookmark::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 32px;
+    height: 16px;
+    background: #ffd700;
+    border-bottom-left-radius: 1.2em;
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
+}
+.github-bookmark:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    background: #1b212f;
+}
+
+.cta-buttons {
+    margin: 1.5rem 0 0 0;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.cta-buttons a {
+    background: #ffd700;
+    color: #23272f;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.9em 2em;
+    border-radius: 2em;
+    font-size: 1.1em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: background 0.18s, color 0.18s;
+    border: none;
+    display: inline-block;
+}
+.cta-buttons a:hover {
+    background: #ffe066;
+    color: #111;
+}
+
+.features {
+    max-width: 900px;
+    margin: 2.5rem auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem;
+}
+.feature {
+    background: #fff;
+    border-radius: 1.2em;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 220px;
+}
+.feature span {
+    font-size: 2.1em;
+    margin-bottom: 0.5em;
+    display: inline-block;
+}
+.feature h3 {
+    margin: 0 0 0.5em 0;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #23272f;
+}
+.feature p {
+    margin: 0;
+    color: #444;
+    font-size: 1em;
+}
+.screenshots {
+    max-width: 900px;
+    margin: 3rem auto 2rem auto;
+    padding: 0 1rem;
+    text-align: center;
+}
+.screenshots img {
+    max-width: 100%;
+    border-radius: 1em;
+    margin: 1.2em 0;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+footer {
+    background: #23272f;
+    color: #fff;
+    text-align: center;
+    padding: 2rem 1rem 1rem 1rem;
+    font-size: 1em;
+    margin-top: 2rem;
+}
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 2rem;
+    }
+    .features {
+        grid-template-columns: 1fr;
+    }
+}
