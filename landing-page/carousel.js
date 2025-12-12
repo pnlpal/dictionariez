@@ -96,4 +96,58 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     updateCarousel();
+
+    // Modal logic
+    const modal = document.getElementById("carousel-modal");
+    const modalBody = modal.querySelector(".carousel-modal-body");
+    const modalBackdrop = modal.querySelector(".carousel-modal-backdrop");
+
+    function showModalForItem(item) {
+        modalBody.innerHTML = "";
+        if (item.classList.contains("video")) {
+            // Clone the iframe for modal
+            const iframe = item.querySelector("iframe").cloneNode(true);
+            iframe.removeAttribute("width");
+            iframe.removeAttribute("height");
+            iframe.style.width = "80vw";
+            iframe.style.height = "45vw";
+            iframe.style.maxWidth = "900px";
+            iframe.style.maxHeight = "70vh";
+            modalBody.appendChild(iframe);
+        } else {
+            const img = document.createElement("img");
+            img.src = item.src;
+            img.alt = item.alt || "";
+            modalBody.appendChild(img);
+        }
+        modal.style.display = "flex";
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+        modalBody.innerHTML = "";
+        document.body.style.overflow = "";
+    }
+
+    modalBackdrop.addEventListener("click", closeModal);
+    window.addEventListener("keydown", (e) => {
+        if (modal.style.display === "flex" && (e.key === "Escape" || e.key === "Esc")) {
+            closeModal();
+        }
+    });
+
+    // Listen for click on carousel items
+    carouselItems.forEach((item) => {
+        item.style.cursor = "pointer";
+        if (item.classList.contains("video")) {
+            const overlay = item.querySelector(".carousel-video-overlay");
+            overlay.addEventListener("click", (e) => {
+                e.stopPropagation();
+                showModalForItem(item);
+            });
+        } else {
+            item.addEventListener("click", () => showModalForItem(item));
+        }
+    });
 });

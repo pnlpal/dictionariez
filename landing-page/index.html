@@ -111,6 +111,7 @@
                             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
                             allowfullscreen
                         ></iframe>
+                        <div class="carousel-video-overlay"></div>
                     </div>
                     <img src="s1-final.jpg" alt="Dictionariez popup example" class="carousel-item" />
                     <img src="screenshot-1.png" alt="Dictionariez screenshot 1" class="carousel-item" />
@@ -118,6 +119,12 @@
                     <img src="screenshot-3.png" alt="Dictionariez screenshot 3" class="carousel-item" />
                 </div>
                 <button class="carousel-btn right" aria-label="Next">&#8594;</button>
+            </div>
+            <div id="carousel-modal" class="carousel-modal" style="display: none">
+                <div class="carousel-modal-backdrop"></div>
+                <div class="carousel-modal-content">
+                    <div class="carousel-modal-body"></div>
+                </div>
             </div>
             <div class="carousel-previews"></div>
         </section>
