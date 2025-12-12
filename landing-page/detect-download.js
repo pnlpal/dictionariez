@@ -51,4 +51,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     btn.textContent = `Download for ${browser}`;
     btn.href = url;
+
+    const otherBtn = document.getElementById("other-browsers-btn");
+    const otherList = document.getElementById("other-browsers-list");
+    otherBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        const expanded = otherBtn.getAttribute("aria-expanded") === "true";
+        otherBtn.setAttribute("aria-expanded", !expanded);
+        otherList.hidden = expanded;
+    });
+    document.addEventListener("click", function () {
+        otherBtn.setAttribute("aria-expanded", "false");
+        otherList.hidden = true;
+    });
+    otherBtn.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            otherList.hidden = false;
+            otherBtn.setAttribute("aria-expanded", "true");
+            otherList.querySelector("a").focus();
+        }
+    });
 });

@@ -11,7 +11,6 @@ header {
     padding: 3.5rem 1rem 2.5rem 1rem;
     text-align: center;
     position: relative;
-    overflow: hidden;
     min-height: 320px;
     display: flex;
     flex-direction: column;
@@ -56,10 +55,12 @@ header p {
     margin: 1.5rem 0 0 0;
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
+    position: relative;
 }
-.cta-buttons a {
+.cta-buttons #download-btn {
     background: #ffd700;
     color: #23272f;
     text-decoration: none;
@@ -72,9 +73,65 @@ header p {
     border: none;
     display: inline-block;
 }
-.cta-buttons a:hover {
+.cta-buttons #download-btn:hover {
     background: #ffe066;
     color: #111;
+}
+.other-browsers-dropdown {
+    position: absolute;
+    right: 1rem;
+    display: inline-block;
+}
+#other-browsers-btn {
+    background: none;
+    border: none;
+    color: #006e48;
+    padding: 0.5em 1em;
+    border-radius: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1em;
+    text-decoration: underline;
+    transition: color 0.2s;
+    box-shadow: none;
+}
+#other-browsers-btn:hover,
+#other-browsers-btn:focus {
+    color: #003d28;
+    background: none;
+    text-decoration: underline;
+}
+#other-browsers-list {
+    position: absolute;
+    right: 0;
+    top: 110%;
+    min-width: 200px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    z-index: 10;
+    list-style: none;
+    margin: 0;
+    padding: 0.5em 0;
+}
+#other-browsers-list[hidden] {
+    display: none;
+}
+#other-browsers-list li {
+    margin: 0;
+}
+#other-browsers-list a {
+    display: block;
+    padding: 0.5em 1em;
+    color: #333;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+#other-browsers-list a:hover,
+#other-browsers-list a:focus {
+    background: #f0f0f0;
+    color: #006e48;
 }
 
 .features {
