@@ -35,16 +35,14 @@
 }
 
 .carousel-track .carousel-item.video {
-    width: 100%;
-    max-width: 600px;
+    width: 600px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .carousel-track .carousel-item.video iframe {
-    width: 100%;
-    max-width: 600px;
+    width: 600px;
     height: 340px;
     border-radius: 1em;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
@@ -83,7 +81,7 @@
     .carousel-track img,
     .carousel-track .carousel-item.video,
     .carousel-track .carousel-item.video iframe {
-        max-width: 250px;
+        width: 250px;
         max-height: 140px;
         height: auto;
     }
@@ -93,7 +91,7 @@
     .carousel-track img,
     .carousel-track .carousel-item.video,
     .carousel-track .carousel-item.video iframe {
-        max-width: 100vw;
+        width: 100vw;
         max-height: 120px;
         height: auto;
     }

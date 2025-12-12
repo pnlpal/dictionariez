@@ -5,6 +5,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const leftBtn = document.querySelector(".carousel-btn.left");
     const rightBtn = document.querySelector(".carousel-btn.right");
     const previewsBar = document.querySelector(".carousel-previews");
+
+    const carouselItemWidth = (() => {
+        let item = carouselItems[1];
+        const itemWidth = item.clientWidth;
+        const marginRight = parseFloat(getComputedStyle(item).marginRight) || 0;
+        const totalWidth = itemWidth + marginRight * 2;
+        // console.log(totalWidth, "carousel item width", item);
+        return totalWidth;
+    })();
+
     let current = 0;
 
     // --- PREVIEW THUMBS ---
@@ -31,31 +41,20 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function getCarouselItemWidth() {
-        let item = carouselItems[current];
-        if (!item) return 1;
-        const itemWidth = item.getBoundingClientRect().width;
-        const marginRight = parseFloat(getComputedStyle(item).marginRight) || 0;
-        return itemWidth + marginRight * 2;
-    }
-
-    function getVisibleCountAndWidth() {
+    function getVisibleCount() {
         // Use the first item to measure width
         const maxAvailWidth = window.innerWidth - 200;
-        const itemWidth = getCarouselItemWidth();
-        if (!itemWidth) return { count: 1, itemWidth: 1 };
-        const count = Math.max(1, Math.floor(maxAvailWidth / itemWidth));
-        return { count, itemWidth };
+        const count = Math.max(1, Math.floor(maxAvailWidth / carouselItemWidth));
+        return count;
     }
 
     function updateTrackWidth() {
-        const { count, itemWidth } = getVisibleCountAndWidth();
-        track.style.width = count * itemWidth + "px";
+        track.style.width = getVisibleCount() * carouselItemWidth + "px";
         track.style.margin = "0 auto";
     }
 
     function updateCarousel() {
-        const { count: visibleCount } = getVisibleCountAndWidth();
+        const visibleCount = getVisibleCount();
         carouselItems.forEach((item, i) => {
             if (i >= current && i < current + visibleCount) {
                 item.style.display = "block";
@@ -76,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
     rightBtn.addEventListener("click", () => {
-        const { count: visibleCount } = getVisibleCountAndWidth();
+        const visibleCount = getVisibleCount();
         if (current + visibleCount < carouselItems.length) {
             current++;
             updateCarousel();
@@ -91,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Update on resize
     window.addEventListener("resize", () => {
-        const { count: visibleCount } = getVisibleCountAndWidth();
+        const visibleCount = getVisibleCount();
         if (current + visibleCount > carouselItems.length) {
             current = Math.max(0, carouselItems.length - visibleCount);
         }
