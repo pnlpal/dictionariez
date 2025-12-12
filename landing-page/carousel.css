@@ -1,0 +1,100 @@
+.carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2em;
+    margin: 2em auto; /* Center the whole carousel */
+    max-width: 100%; /* Responsive, can set a max if you want */
+    width: fit-content; /* Shrink to fit content */
+    outline: none;
+}
+
+.carousel-track {
+    width: auto; /* Let the track size to its content */
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    margin: 0;
+}
+
+.carousel-track .carousel-item,
+.carousel-track img {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 0 0.5em;
+    display: block;
+    border-radius: 1em;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    object-fit: contain;
+}
+
+.carousel-track .carousel-item.video {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-track .carousel-item.video iframe {
+    width: 100%;
+    max-width: 600px;
+    height: 340px;
+    border-radius: 1em;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+.carousel-btn {
+    margin: 0 0.2em;
+    background: rgba(200, 200, 200, 0.35);
+    border: 1px solid #e0e0e0;
+    color: #888;
+    font-size: 2em;
+    border-radius: 50%;
+    width: 2em;
+    height: 2em;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, border 0.18s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    box-shadow: none;
+}
+.carousel-btn:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+}
+.carousel-btn:hover:not(:disabled),
+.carousel-btn:focus:not(:disabled) {
+    background: #eee;
+    color: #444;
+    border: 1.5px solid #bbb;
+    outline: none;
+}
+
+@media (max-width: 900px) {
+    .carousel-track .carousel-item,
+    .carousel-track img,
+    .carousel-track .carousel-item.video,
+    .carousel-track .carousel-item.video iframe {
+        max-width: 250px;
+        max-height: 140px;
+        height: auto;
+    }
+}
+@media (max-width: 600px) {
+    .carousel-track .carousel-item,
+    .carousel-track img,
+    .carousel-track .carousel-item.video,
+    .carousel-track .carousel-item.video iframe {
+        max-width: 100vw;
+        max-height: 120px;
+        height: auto;
+    }
+}

@@ -1,3 +1,5 @@
+@import url("carousel.css");
+
 body {
     font-family: "Inter", Arial, sans-serif;
     margin: 0;
@@ -169,18 +171,7 @@ header p {
     color: #444;
     font-size: 1em;
 }
-.screenshots {
-    max-width: 900px;
-    margin: 3rem auto 2rem auto;
-    padding: 0 1rem;
-    text-align: center;
-}
-.screenshots img {
-    max-width: 100%;
-    border-radius: 1em;
-    margin: 1.2em 0;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-}
+
 footer {
     background: #23272f;
     color: #fff;

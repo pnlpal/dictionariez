@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="style.css" />
         <link rel="stylesheet" href="github.css" />
         <script src="detect-download.js"></script>
+        <script src="carousel.js"></script>
         <script src="github-badge.js" async="true"></script>
     </head>
     <body>
@@ -98,6 +99,28 @@
             </div>
         </header>
 
+        <section class="screenshots">
+            <div class="carousel" tabindex="0" aria-label="Screenshots carousel">
+                <button class="carousel-btn left" aria-label="Previous">&#8592;</button>
+                <div class="carousel-track">
+                    <div class="carousel-item video">
+                        <iframe
+                            src="https://www.youtube.com/embed/12XlGQCynsM"
+                            title="YouTube video player"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+                            allowfullscreen
+                        ></iframe>
+                    </div>
+                    <img src="s1-final.jpg" alt="Dictionariez popup example" class="carousel-item" />
+                    <img src="screenshot-1.png" alt="Dictionariez screenshot 1" class="carousel-item" />
+                    <img src="screenshot-2.png" alt="Dictionariez screenshot 2" class="carousel-item" />
+                    <img src="screenshot-3.png" alt="Dictionariez screenshot 3" class="carousel-item" />
+                </div>
+                <button class="carousel-btn right" aria-label="Next">&#8594;</button>
+            </div>
+        </section>
+
         <section class="features">
             <div class="feature">
                 <span>⚡</span>
@@ -147,14 +170,6 @@
                     smarter searching.
                 </p>
             </div>
-        </section>
-
-        <section class="screenshots">
-            <h2>Screenshots</h2>
-            <img src="s1-final.jpg" alt="Dictionariez popup example" />
-            <img src="screenshot-1.png" alt="Dictionariez screenshot 1" />
-            <img src="screenshot-2.png" alt="Dictionariez screenshot 2" />
-            <img src="screenshot-3.png" alt="Dictionariez screenshot 3" />
         </section>
 
         <footer>
