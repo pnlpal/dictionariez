@@ -51,10 +51,12 @@ We look forward to hearing from you and helping you achieve your language learni
 # Screenshot
 
 ![Promo Banner](readme_images/all-in-one.jpg)
-![Alt text](readme_images/s1-final.jpg)
 ![Alt text](readme_images/screenshot-1.png)
 ![Alt text](readme_images/screenshot-2.png)
 ![Alt text](readme_images/screenshot-3.png)
+![Alt text](readme_images/screenshot-4.png)
+![Alt text](readme_images/screenshot-5.png)
+
 
 # More dictionaries are needed!
 
