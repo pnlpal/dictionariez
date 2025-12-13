@@ -184,6 +184,12 @@ footer {
     header h1 {
         font-size: 2rem;
     }
+    .ascii-title {
+        font-size: 0.8em;
+    }
+    .other-browsers-dropdown {
+        position: relative;
+    }
     .features {
         grid-template-columns: 1fr;
     }
