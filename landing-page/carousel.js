@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function getVisibleCount() {
         // Use the first item to measure width
-        const maxAvailWidth = window.innerWidth - 200;
+        const maxAvailWidth = window.innerWidth - 145;
         const count = Math.max(1, Math.floor(maxAvailWidth / carouselItemWidth));
         return count;
     }
