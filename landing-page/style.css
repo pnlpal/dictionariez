@@ -172,6 +172,35 @@ header p {
     font-size: 1em;
 }
 
+/* FAQ Section */
+.faq {
+    max-width: 800px;
+    margin: 3em auto 2em auto;
+    padding: 0 1em;
+}
+.faq h2 {
+    text-align: center;
+    color: #23272f;
+    margin-bottom: 1.5em;
+}
+.faq-item {
+    margin-bottom: 1.5em;
+    background: #fff;
+    border-radius: 0.8em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 1.2em 1.5em;
+}
+.faq-item h3 {
+    margin: 0 0 0.5em 0;
+    color: #006e48;
+    font-size: 1.1em;
+}
+.faq-item p {
+    margin: 0;
+    color: #444;
+    font-size: 1em;
+}
+
 footer {
     background: #23272f;
     color: #fff;
