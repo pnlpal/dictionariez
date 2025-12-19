@@ -25,6 +25,19 @@ fetch("comments.json")
                 commentElement.style.transform = "scale(1)";
                 commentElement.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
             };
+
+            // Determine platform icon from the internet
+            let platformIcon = "";
+            if (comment.from === "chrome") {
+                platformIcon = `<img src='https://www.google.com/chrome/static/images/chrome-logo.svg' alt='Chrome' style='width: 16px; height: 16px; margin-left: 5px; vertical-align: bottom;' />`;
+            } else if (comment.from === "firefox") {
+                platformIcon = `<img src='https://upload.wikimedia.org/wikipedia/commons/a/a0/Firefox_logo%2C_2019.svg' alt='Firefox' style='width: 16px; height: 16px; margin-left: 5px; vertical-align: bottom;' />`;
+            } else if (comment.from === "edge") {
+                platformIcon = `<img src='https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg' alt='Edge' style='width: 16px; height: 16px; margin-left: 5px; vertical-align: bottom;' />`;
+            } else if (comment.from === "youtube") {
+                platformIcon = `<img src='https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png' alt='YouTube' style='width: 16px; height: 16px; margin-left: 5px; vertical-align: bottom;' />`;
+            }
+
             commentElement.innerHTML = `
                             <p style="margin: 0; font-weight: bold;">
                                 <a href="${
@@ -32,11 +45,11 @@ fetch("comments.json")
                                 }" target="_blank" style="color: #2196f3; text-decoration: none;">${
                 comment.username
             }</a>
-                                <span style="font-size: 0.8em; color: #666;">(<a href="${
+                                <span style="font-size: 0.8em; color: #666;"><a href="${
                                     comment.link
-                                }" target="_blank" style="color: #666; text-decoration: none;">${
+                                }" target="_blank" style="color: #666; text-decoration: none;"> - ${
                 comment.date
-            }</a>)</span>
+            }${platformIcon}</a></span>
                             </p>
                             <p style="margin: 0.5em 0;">${comment.comment}</p>
                             <p style="margin: 0; font-size: 0.9em; color: #ff9800; display: ${
