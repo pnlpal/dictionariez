@@ -180,6 +180,7 @@ header p {
 }
 .handpicked-comments .comments-container {
     max-width: 1200px;
+    gap: 1.5em;
 }
 @media (max-width: 1200px) {
     .handpicked-comments .comments-container {

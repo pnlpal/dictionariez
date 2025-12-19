@@ -37,7 +37,6 @@ fetch("comments.json")
                             background-color: ${index % 2 === 0 ? "#e3f2fd" : "#ede7f6"};
                             padding: 1em;
                             border-radius: 12px;
-                            width: 100%;
                             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                             transition: transform 0.2s, box-shadow 0.2s;
                         `;
@@ -95,7 +94,6 @@ fetch("comments.json")
                         background-color: #fff3e0;
                         padding: 1em;
                         border-radius: 12px;
-                        width: 100%;
                         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                         text-align: center;
                         transition: transform 0.2s, box-shadow 0.2s;

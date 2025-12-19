@@ -171,6 +171,19 @@
     display: flex;
 }
 
+@media (max-width: 600px) {
+    .carousel-previews {
+        gap: 0.2em;
+    }
+    .carousel-preview-thumb {
+        width: 32px;
+        height: 21px;
+    }
+    .carousel-preview-thumb.video {
+        font-size: 0.5em;
+    }
+}
+
 /* carousel modal  */
 .carousel-modal {
     position: fixed;
