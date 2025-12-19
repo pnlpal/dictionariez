@@ -1,3 +1,27 @@
+function commentLinkOfDifferentBrowser() {
+    let platform = "Chrome Web Store";
+    let url =
+        "https://chromewebstore.google.com/detail/dictionariez-your-diction/diojcfpekhhnndfmggknljpnfpcccbhc/reviews";
+
+    const ua = navigator.userAgent;
+
+    if (
+        ua.includes("Firefox") ||
+        ua.includes("Waterfox") ||
+        ua.includes("LibreWolf") ||
+        ua.includes("PaleMoon") ||
+        ua.includes("IceCat") ||
+        ua.includes("Basilisk")
+    ) {
+        platform = "Mozilla Add-ons";
+        url = "https://addons.mozilla.org/en-US/firefox/addon/dictionaries/reviews/";
+    } else if (ua.includes("Edg")) {
+        platform = "Edge Add-ons";
+        url =
+            "https://microsoftedge.microsoft.com/addons/detail/dictionaries-one-to-rule/jdgglojanbnghagoeffacmjodigadoof";
+    }
+    return { platform, url };
+}
 // Fetch and display comments from comments.json
 fetch("comments.json")
     .then((response) => response.json())
@@ -60,6 +84,7 @@ fetch("comments.json")
         });
 
         // Add a "See more comments" card
+        const { platform, url } = commentLinkOfDifferentBrowser();
         const seeMoreCard = document.createElement("div");
         seeMoreCard.classList.add("comment");
         seeMoreCard.style = `
@@ -85,10 +110,10 @@ fetch("comments.json")
         };
         seeMoreCard.innerHTML = `
                         <p style="margin: 0; font-weight: bold; font-size: 1.2em; color: #ff9800;">Want to see more reviews?</p>
-                        <a href="https://chromewebstore.google.com/detail/dictionariez-your-diction/diojcfpekhhnndfmggknljpnfpcccbhc/reviews" 
+                        <a href="${url}" 
                            target="_blank" 
                            style="margin-top: 0.5em; color: #2196f3; text-decoration: none; font-size: 1em;">
-                           Read more on the Chrome Web Store
+                           Read more on ${platform}
                         </a>
                     `;
         container.appendChild(seeMoreCard);
