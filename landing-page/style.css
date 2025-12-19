@@ -181,6 +181,11 @@ header p {
 .handpicked-comments .comments-container {
     max-width: 1200px;
 }
+@media (max-width: 1200px) {
+    .handpicked-comments .comments-container {
+        max-width: 94%;
+    }
+}
 
 /* FAQ Section */
 .faq {
