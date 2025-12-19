@@ -172,6 +172,16 @@ header p {
     font-size: 1em;
 }
 
+/* Comments Section */
+.handpicked-comments h2 {
+    text-align: center;
+    color: #23272f;
+    margin-bottom: 1.5em;
+}
+.handpicked-comments .comments-container {
+    max-width: 1200px;
+}
+
 /* FAQ Section */
 .faq {
     max-width: 800px;

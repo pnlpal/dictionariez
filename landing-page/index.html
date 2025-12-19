@@ -11,6 +11,7 @@
         <script src="detect-download.js"></script>
         <script src="carousel.js"></script>
         <script src="github-badge.js" async="true"></script>
+        <script src="getComments.js" async="true"></script>
     </head>
     <body>
         <a href="https://github.com/pnlpal/dictionariez/" class="github-corner" aria-label="View source on GitHub"
@@ -185,6 +186,18 @@
                     Set keyboard shortcuts to match your workflow and enjoy auto-complete suggestions for faster,
                     smarter searching.
                 </p>
+            </div>
+        </section>
+        <section
+            class="handpicked-comments"
+            style="display: flex; justify-content: center; flex-direction: column; align-items: center"
+        >
+            <h2>What Users Say</h2>
+            <div
+                class="comments-container"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3em"
+            >
+                <!-- Comments will be dynamically loaded here -->
             </div>
         </section>
         <section class="faq">
