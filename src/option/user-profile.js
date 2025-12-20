@@ -58,10 +58,12 @@ async function getCurrentCoupon($scope) {
     const res = await fetch(`${pnlBase}/api/pro`, { credentials: "include" });
     if (res.ok) {
         const data = await res.json();
-        if (data.currentCoupon) {
+        if (data.currentCoupon && $scope) {
             $scope.currentCoupon = data.currentCoupon;
             $scope.currentCoupon.subscriptionLink = `${pnlBase}/pro`;
             $scope.$apply();
+        } else {
+            return data.currentCoupon;
         }
     }
 }

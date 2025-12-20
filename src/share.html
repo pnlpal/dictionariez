@@ -5,87 +5,199 @@
         <link rel="stylesheet" href="./vendor/needsharebutton.css" />
 
         <style>
-            /* For the dark or light theme */
             :root {
-                color-scheme: light dark; /* both supported */
+                color-scheme: light dark;
             }
+
             body {
-                --text-color: #222;
-                --bkg-color: #fbfbfb;
-                --lighten-bkg-color: #cccccc;
+                margin: 0;
+                font-family: "Space Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
+                color: #111;
+                background: linear-gradient(135deg, #fefefe, #eef3ff 40%, #f4f4ff 70%);
             }
+
             body.dark-theme {
-                --text-color: #c5c5c5;
-                --bkg-color: #333333;
-                --lighten-bkg-color: #4c4c4c;
+                color: #e7e7e7;
+                background: linear-gradient(135deg, #151515, #1f2431 50%, #141a24 90%);
             }
 
-            @media (prefers-color-scheme: dark) {
-                /* defaults to dark theme */
-                body {
-                    --text-color: #c5c5c5;
-                    --bkg-color: #333333;
-                    --lighten-bkg-color: #4c4c4c;
-                }
-                body.light-theme {
-                    --text-color: #222;
-                    --bkg-color: #fbfbfb;
-                    --lighten-bkg-color: #cccccc;
-                }
+            main {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 48px 24px 96px;
+                font-size: 1rem;
+                line-height: 1.6;
             }
 
-            body,
-            pre,
-            button.btn {
-                background-color: var(--bkg-color) !important;
-                color: var(--text-color) !important;
-                border-color: var(--lighten-bkg-color);
+            header.hero {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                margin-bottom: 48px;
             }
 
-            .container {
-                text-align: center;
-                font-size: 18px;
+            header.hero h1 {
+                font-size: clamp(2rem, 4vw, 3rem);
+                margin: 0;
             }
-            .ascii-title {
+
+            header.hero p {
+                font-size: 1.25rem;
+                line-height: 1.6;
+            }
+
+            .hero-highlight {
+                padding: 12px 16px;
+                border-left: 4px solid #5d5fee;
+                background: rgba(93, 95, 238, 0.08);
+                border-radius: 6px;
+                font-size: 1.25rem;
+            }
+
+            .support-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 24px;
+                margin-bottom: 64px;
+            }
+
+            .support-card {
+                background: rgba(255, 255, 255, 0.94);
+                border: 1px solid rgba(0, 0, 0, 0.05);
+                border-radius: 18px;
+                padding: 28px;
+                box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .support-card h3 {
+                margin: 0;
+                font-size: 1.4rem;
+            }
+
+            .card-icon {
+                font-size: 2rem;
+            }
+
+            .support-card p {
+                margin: 0;
+                line-height: 1.5;
+            }
+
+            .btn-primary,
+            .btn-ghost {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 12px 18px;
+                border-radius: 999px;
+                text-decoration: none;
+                font-weight: 600;
+                transition: transform 0.15s ease;
+            }
+
+            .btn-primary {
+                background: #5d5fee;
+                color: #fff;
                 border: none;
-                background-color: initial;
-                margin: 20px auto;
-                padding: 0;
-                font-size: larger;
             }
-            .link-github {
-                vertical-align: middle;
+
+            .btn-ghost {
+                border: 1px solid rgba(0, 0, 0, 0.15);
+                color: inherit;
             }
-            .text-new {
-                color: red;
+
+            .btn-primary:hover,
+            .btn-ghost:hover {
+                transform: translateY(-2px);
+            }
+
+            .share-wrapper {
+                padding: 16px 0px;
+            }
+
+            .community {
+                border-top: 1px solid rgba(0, 0, 0, 0.08);
+                padding-top: 32px;
+                display: grid;
+                gap: 12px;
+            }
+
+            .community-links {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .community-links a {
+                color: inherit;
+                text-decoration: none;
+                border-bottom: 1px dotted currentColor;
+            }
+
+            .donation {
+                margin-top: 24px;
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+
+            @media (max-width: 600px) {
+                main {
+                    padding: 32px 20px 64px;
+                }
+
+                .support-card {
+                    padding: 22px;
+                }
             }
         </style>
     </head>
 
     <body>
-        <div class="container">
-            <div class="row">
-                <div>
-                    <span id="ascii-title"></span>
-                    <span id="app-description"></span>
-                    <p></p>
-                    <p>
-                        Thank you for using <span class="productName"></span>!<br />
-                        <span>
-                            This project is open-source, see its progress on
-                            <a href="https://github.com/pnlpal/dictionariez" target="_blank" class="link-github"
-                                ><i class="fa fa-github fa-2x" title="View on GitHub"></i> GitHub</a
-                            >.
-                        </span>
-                        <br /><br />
-                        As an indie developer, I build and maintain educational apps like
-                        <span class="productName"></span> and handle everything myself—including development and
-                        outreach.<br />
-                        If you find <span class="productName"></span> helpful, please consider sharing it with others.
-                        Your support truly makes a difference!
-                    </p>
+        <main>
+            <header class="hero">
+                <h1>Thank you for using <span class="productName"></span> <span id="app-version"></span></h1>
+                <p>
+                    I am River, the author of this project. I design, code, localize, and answer every message myself.
+                    If <span class="productName"></span>
+                    makes your study sessions smoother, please trade a few seconds to keep this indie learning tool
+                    alive.
+                </p>
+                <div class="hero-highlight">
+                    Pick one or more actions below and you instantly boost development time, morale, and reach.
+                </div>
+            </header>
 
-                    <div class="wrapper">
+            <section class="support-grid">
+                <article class="support-card">
+                    <div class="card-icon">⭐</div>
+                    <h3>1. Star it on GitHub</h3>
+                    <p>
+                        Stars act as public testimonials that this work matters. They help me stay motivated and signal
+                        to other learners that <span class="productName"></span> is worth their time.
+                    </p>
+                    <a
+                        class="btn-primary link-github"
+                        href="https://github.com/pnlpal/dictionariez"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                    </a>
+                </article>
+
+                <article class="support-card">
+                    <div class="card-icon">📣</div>
+                    <h3>2. Share it forward</h3>
+                    <p>
+                        A single post can introduce thousands of language learners to faster lookups and better TTS.
+                        Drop it into your favorite community or DM someone who needs it.
+                    </p>
+                    <div class="share-wrapper">
                         <div
                             id="i-share"
                             data-share-networks="Twitter,Pinterest,Facebook,Reddit,Linkedin,Tumblr,mailto,Evernote,Wechat,Douban"
@@ -94,38 +206,57 @@
                             class="need-share-panel need-share-button"
                         ></div>
                     </div>
-                    <br /><br /><br />
+                </article>
 
-                    <strong>I'd love to hear from you! </strong>
+                <article class="support-card">
+                    <div class="card-icon">🚀</div>
+                    <h3>3. Subscribe to PNL Pro</h3>
                     <p>
-                        Have suggestions or feature requests? Feel free to share them on GitHub or join the discussion
-                        in the
-                        <a class="text-danger" target="_blank" href="https://pnl.dev">
-                            Programming N' Language Community </a
-                        >. Your input is invaluable in improving this project! You can also connect with me on
-                        <a class="text-muted" target="_blank" href="https://discord.gg/sazRac4kSa"> Discord </a>
-                        , follow me on
-                        <a class="text-muted" target="_blank" href="https://bsky.app/profile/pnlcommunity.bsky.social">
-                            BlueSky,
-                        </a>
-                        or
-                        <a class="text-muted" target="_blank" href="https://t.me/programmingandlanguage"> Telegram </a>.
+                        PNL Pro funds dedicated development time while giving you advanced learning workflows across my
+                        indie tools.
                     </p>
+                    <a class="btn-ghost" href="https://pnl.dev/pro" target="_blank" rel="noreferrer">
+                        Explore PNL Pro
+                    </a>
+                    <a id="launch-deal-banner" href="https://pnl.dev/pro" target="_blank">
+                        🎉 <strong class="coupon-name"></strong>: <span class="percent-off"></span>% OFF!
+                        <div class="banner-time">Limited time only</div>
+                    </a>
+                </article>
+            </section>
 
-                    <p>
-                        <strong>Go to <a href="options.html" target="_blank">settings.</a></strong>
-                    </p>
+            <section class="community">
+                <strong>Let's keep the conversation going</strong>
+                <p>
+                    Feature ideas, bug reports, or just a quick hello, everything lands directly in my inbox. Join the
+                    Programming N' Language community or reach out through the channels below.
+                </p>
+                <div class="community-links">
+                    <a href="https://pnl.dev" target="_blank" rel="noreferrer">Community site</a>
+                    <a href="https://discord.gg/sazRac4kSa" target="_blank" rel="noreferrer">Discord</a>
+                    <a href="https://bsky.app/profile/pnlcommunity.bsky.social" target="_blank" rel="noreferrer"
+                        >BlueSky</a
+                    >
+                    <a href="https://t.me/programmingandlanguage" target="_blank" rel="noreferrer">Telegram</a>
+                    <a href="options.html" target="_blank" rel="noreferrer">Open settings</a>
+                </div>
 
-                    <br /><br />
-                    <p>If it's really helpful to you, please consider a small donation:</p>
-                    <a href="https://www.buymeacoffee.com/riveryoung" class="buymeacoffee" target="_blank"
-                        ><img
+                <div class="donation">
+                    <span>If you prefer direct support:</span>
+                    <a
+                        href="https://www.buymeacoffee.com/riveryoung"
+                        class="buymeacoffee"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        <img
                             src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
                             height="40"
                             alt="Buy Me A Coffee"
-                    /></a>
+                        />
+                    </a>
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
     </body>
 </html>
