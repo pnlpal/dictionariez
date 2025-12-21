@@ -264,15 +264,18 @@ export default {
     }
   },
 
-  isSentence(str = "") {
+  isSentence(str = "", minLength = 4) {
     if (this.hasChinese(str) || this.hasJapanese(str) || this.hasKorean(str)) {
-      return str.length > 4;
+      return str.length >= minLength;
     } else {
       const simpleStopWords = [
         "a",
         "an",
         "en",
         "ett",
+        "i",
+        "på",
+        "om",
         "the",
         "to",
         "in",
@@ -282,21 +285,17 @@ export default {
         "for",
         "with",
         "by",
-        "and",
-        "or",
-        "but",
-        "nor",
-        "so",
-        "yet",
-        "as",
-        "if",
+        "under",
+        "off",
+        "mid",
+        "up",
       ];
       return (
         str
           .split(/\s/)
           .filter(
             (w) => w.length > 1 && !simpleStopWords.includes(w.toLowerCase())
-          ).length > 3
+          ).length >= minLength
       );
     }
   },

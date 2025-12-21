@@ -183,7 +183,7 @@ export default (setting) => {
 
     const handleSentenceSelected = async (ev) => {
         const text = window.getSelection().toString().trim();
-        if (!text || !utils.isSentence(text) || ev.target.closest("pnl-tts-player")) {
+        if (!text || !utils.isSentence(text, 3) || ev.target.closest("pnl-tts-player")) {
             removeBubble();
             return;
         }
