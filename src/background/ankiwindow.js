@@ -134,6 +134,7 @@ export default {
                     const lookupInfo = await plainLookup.parse({
                         tabId: sender.tab.id,
                         w: this.anki.wordItem.w.toLowerCase(),
+                        detectedLangInContext: this.anki.wordItem.detectedLangInContext,
                     });
 
                     const setDataToImages = async (images) =>

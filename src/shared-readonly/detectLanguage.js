@@ -52,11 +52,6 @@ export async function detectLanguage(text, node = null) {
   if (!text || text.trim().length === 0) {
     return;
   }
-  // On the extension's options page, chrome.i18n.detectLanguage not work properly.
-  // So we skip the detection there.
-  if (location.origin.includes("extension://")) {
-    return "en";
-  }
 
   // Check for explicit language attribute on the node, esp for translated text.
   if (getLangAttribute(node)) {

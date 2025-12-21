@@ -22,6 +22,8 @@ import "datatables.net-buttons/js/buttons.html5.js";
 import "datatables.net-rowreorder-bs4";
 import "datatables.net-rowreorder-bs4/css/rowReorder.bootstrap4.css";
 
+import detectLanguage from "../content/detect-language.js";
+
 const confirmDelete = (content, twice) =>
     new Promise((resolve) => {
         $("#confirm-delete-modal")
@@ -254,7 +256,10 @@ export default ($scope) => {
                         bravo();
                         break;
                     case "export to Anki":
-                        await utils.send("open anki", rowData);
+                        await utils.send("open anki", {
+                            ...rowData,
+                            detectedLangInContext: await detectLanguage(rowData.sentence),
+                        });
                         break;
                 }
             }
