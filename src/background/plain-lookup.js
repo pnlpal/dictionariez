@@ -31,7 +31,7 @@ const setEnglishProns = (result) =>
     ]));
 
 export default {
-    checkTypeOfSupport(w) {
+    checkTypeOfSupport(w, detectedLangInContext = "") {
         w = w.trim();
         if (!w) {
             return;
@@ -58,7 +58,8 @@ export default {
         // \p{M}: any kind of combining mark (accents, diacritics, etc.)
         if (!/^[\p{L}\p{M}]+(-[\p{L}\p{M}]+)?$/u.test(w)) return;
 
-        if (this.checkType(w)) {
+        const possibleLangs = this.checkLangs(w, detectedLangInContext);
+        if (this.checkType(w, possibleLangs)) {
             return w;
         }
     },
@@ -73,8 +74,28 @@ export default {
         return setting.getValue("otherDisabledLanguages", []).includes(lang);
     },
 
-    checkLangs(w) {
+    checkLangs(w, detectedLangInContext = "") {
         const results = [];
+        if (detectedLangInContext) {
+            for (const lang in langs) {
+                const langConfig = langs[lang];
+                if (
+                    detectedLangInContext == langConfig.symbol ||
+                    langConfig.synthesis?.startsWith(detectedLangInContext)
+                ) {
+                    if (
+                        w.match(new RegExp(langConfig.regex, "ug"))?.length === w.length &&
+                        !this.isLangDisabled(lang)
+                    ) {
+                        results.push(lang);
+                    }
+                }
+            }
+            if (results.length > 0) {
+                return results;
+            }
+        }
+
         for (const lang in langs) {
             const langConfig = langs[lang];
             if (w.match(new RegExp(langConfig.regex, "ug"))?.length === w.length && !this.isLangDisabled(lang)) {
@@ -84,25 +105,29 @@ export default {
         return results;
     },
 
-    checkType(w) {
-        if (utils.isEnglish(w) && setting.getValue("enableLookupEnglish")) {
+    checkType(w, possibleLangs = null) {
+        const checkPossibleLangs = (lang_) => {
+            if (!possibleLangs) {
+                return true;
+            }
+            return possibleLangs.includes(lang_);
+        };
+
+        if (utils.isEnglish(w) && setting.getValue("enableLookupEnglish") && checkPossibleLangs("English")) {
             return setting.getValue("englishLookupSource"); // google, bingCN, wiktionary
         }
 
         for (const name in parserDescs) {
             const dictDesc = parserDescs[name];
             if (dictDesc.supportChinese) {
-                if (utils.isChinese(w) && setting.getValue("enableLookupChinese")) {
+                if (utils.isChinese(w) && setting.getValue("enableLookupChinese") && checkPossibleLangs("Chinese")) {
                     return name;
                 }
             }
 
             if (dictDesc.languages) {
                 for (const lang of dictDesc.languages) {
-                    if (
-                        w.match(new RegExp(langs[lang].regex, "ug"))?.length === w.length &&
-                        !this.isLangDisabled(lang)
-                    ) {
+                    if (checkPossibleLangs(lang) && !this.isLangDisabled(lang)) {
                         return name;
                     }
                 }
@@ -162,11 +187,11 @@ export default {
 
         setting.configCache.otherSupportedLanguages = this.otherSupportedLanguages;
 
-        message.on("check text supported", ({ w }) => {
-            return this.checkTypeOfSupport(w);
+        message.on("check text supported", ({ w, detectedLangInContext }) => {
+            return this.checkTypeOfSupport(w, detectedLangInContext);
         });
 
-        message.on("look up plain", ({ w, s, sc, sentence }, sender) => {
+        message.on("look up plain", ({ w, s, sc, sentence, detectedLangInContext }, sender) => {
             w = w.trim().toLowerCase();
             if (!w) {
                 return;
@@ -181,28 +206,35 @@ export default {
                 });
             } // ignore lookup from options page
 
-            return this.parse(sender.tab.id, w);
+            return this.parse({ tabId: sender.tab.id, w, detectedLangInContext });
         });
 
         message.on("get real person voice", ({ w }, sender) => {
             if (w && setting.getValue("enableRealPron")) {
                 if (w.split(" ").length === 1) {
-                    return this.parse(sender.tab.id, w.replaceAll("·", ""), "ldoce");
+                    return this.parse({ tabId: sender.tab.id, w: w.replaceAll("·", ""), tname: "ldoce" });
                 }
             }
         });
     }, // ignore phrase
 
-    tryGoogleWithOtherHl(tabId, w, url) {
+    tryGoogleWithOtherHl({ tabId, w, url, detectedLangInContext }) {
         if (url.includes("hl=en")) {
-            const possibleLangs = this.checkLangs(w);
+            const possibleLangs = this.checkLangs(w, detectedLangInContext);
             const parserDesc = parserDescs.google;
             for (const lang of possibleLangs) {
                 if (lang !== "English" && parserDesc.languages.includes(lang)) {
                     const langDesc = langs[lang];
                     if (langDesc.synthesis) {
                         const newGoogleUrl = url.replace("hl=en", `hl=${langDesc.synthesis}`);
-                        return this.parse(tabId, w, "google", null, newGoogleUrl);
+                        return this.parse({
+                            tabId,
+                            w,
+                            tname: "google",
+                            prevResult: null,
+                            url: newGoogleUrl,
+                            detectedLangInContext,
+                        });
                     }
                 }
             }
@@ -210,58 +242,64 @@ export default {
         return null;
     },
 
-    async parse(tabId, w, tname, prevResult, url) {
-        let html;
-        tname ??= this.checkType(w);
+    async parse({ tabId, w, tname, prevResult, url, detectedLangInContext }) {
+        const possibleLangs = this.checkLangs(w, detectedLangInContext);
+
+        tname ??= this.checkType(w, possibleLangs);
         if (!tname) {
             return;
         }
 
         const dictDesc = parserDescs[tname];
-        const possibleLangs = this.checkLangs(w);
         const requestWord = possibleLangs.includes("Ukrainian") ? w.replace(/\u0301/g, "") : w;
         url = (url || dictDesc.url).replace("<word>", requestWord);
 
-        if (tname === "google" && possibleLangs.length > 0 && possibleLangs[0] !== "English") {
+        if (tname === "google" && possibleLangs.length > 0 && possibleLangs[0] !== "English" && url.includes("hl=en")) {
             // prioritize other languages over English
-            const promise_ = this.tryGoogleWithOtherHl(tabId, w, url);
+            const promise_ = this.tryGoogleWithOtherHl({ tabId, w, url, detectedLangInContext });
             if (promise_) {
                 return promise_;
             }
         }
 
+        let html;
         try {
             html = await utils.loadHTML(url, dictDesc.credentials);
         } catch (err) {
             if (err.message === "timeout" && utils.isEnglish(w) && !prevResult) {
-                return this.parse(tabId, w, tname === "wiktionary" ? "google" : "wiktionary");
+                return this.parse({
+                    tabId,
+                    w,
+                    tname: tname === "wiktionary" ? "google" : "wiktionary",
+                    detectedLangInContext,
+                });
             } else if (tname === "google" && !prevResult) {
-                return this.parse(tabId, w, this.fallbackDictFromGoogle(w), prevResult);
+                return this.parse({ tabId, w, tname: this.fallbackDictFromGoogle(w), prevResult });
             } else if (err.status === 404 && tname === "wiktionary") {
                 if (url.includes("en.wiktionary.org") && possibleLangs.includes("Swedish")) {
-                    return this.parse(
+                    return this.parse({
                         tabId,
                         w,
-                        "wiktionary",
+                        tname: "wiktionary",
                         prevResult,
-                        url.replace(/\w+.wiktionary.org/, "sv.wiktionary.org")
-                    );
+                        url: url.replace(/\w+.wiktionary.org/, "sv.wiktionary.org"),
+                    });
                 } else if (!url.includes("de.wiktionary.org") && possibleLangs.includes("German")) {
-                    return this.parse(
+                    return this.parse({
                         tabId,
                         w,
-                        "wiktionary",
+                        tname: "wiktionary",
                         prevResult,
-                        url.replace(/\w+.wiktionary.org/, "de.wiktionary.org")
-                    );
+                        url: url.replace(/\w+.wiktionary.org/, "de.wiktionary.org"),
+                    });
                 } else if (!url.includes("uk.wiktionary.org") && possibleLangs.includes("Ukrainian")) {
-                    return this.parse(
+                    return this.parse({
                         tabId,
                         w,
-                        "wiktionary",
+                        tname: "wiktionary",
                         prevResult,
-                        url.replace(/\w+.wiktionary.org/, "uk.wiktionary.org")
-                    );
+                        url: url.replace(/\w+.wiktionary.org/, "uk.wiktionary.org"),
+                    });
                 } else if (possibleLangs.includes("Tajik")) {
                     return this.parseOtherLang(tabId, w, "Tajik", null, prevResult);
                 } else if (possibleLangs.includes("Indonesian")) {
@@ -278,15 +316,15 @@ export default {
         const result = await utils.sendToTab(tabId, { type: "parse lookup result", html, parserDesc: dictDesc.result });
         // console.log "parse:", w, "from:", tname, "result:", result
         // fallback to wiktionary if google failed
-        if (tname === "google" && (!result?.w || !result?.defs?.length)) {
+        if (tname === "google" && (!result?.w || !result?.defs?.length) && url.includes("hl=en")) {
             if (prevResult) {
                 return prevResult;
             }
-            const promise_ = this.tryGoogleWithOtherHl(tabId, w, url);
+            const promise_ = this.tryGoogleWithOtherHl({ tabId, w, url, detectedLangInContext });
             if (promise_) {
                 return promise_;
             }
-            return this.parse(tabId, w, this.fallbackDictFromGoogle(w), prevResult);
+            return this.parse({ tabId, w, tname: this.fallbackDictFromGoogle(w), prevResult, detectedLangInContext });
         }
 
         // fix prons and lang for google result
@@ -295,7 +333,13 @@ export default {
                 const langConfig = langs[lang];
                 if (langConfig.symbol === result.langSymbol || langConfig.aternative === result.langSymbol) {
                     if (this.isLangDisabled(lang)) {
-                        return this.parse(tabId, w, this.fallbackDictFromGoogle(w), prevResult);
+                        return this.parse({
+                            tabId,
+                            w,
+                            tname: this.fallbackDictFromGoogle(w),
+                            prevResult,
+                            detectedLangInContext,
+                        });
                     }
                     result.lang = lang;
                     const detectedPron = result.prons[0];
@@ -314,7 +358,13 @@ export default {
 
         // check other possible languages in fallback dict like wiktionary
         if (tname === "google" && possibleLangs.length > 1) {
-            return this.parse(tabId, w, this.fallbackDictFromGoogle(w), result);
+            return this.parse({
+                tabId,
+                w,
+                tname: this.fallbackDictFromGoogle(w),
+                prevResult: result,
+                detectedLangInContext,
+            });
         }
 
         // special handle of bing when look up Chinese
@@ -330,7 +380,13 @@ export default {
                 // parse the second language if possible.
                 const otherPossibleLangs = possibleLangs.filter((l) => l !== result?.lang);
                 if (otherPossibleLangs.length && !prevResult) {
-                    return this.parse(tabId, w, this.fallbackDictFromGoogle(w), result.w ? result : null);
+                    return this.parse({
+                        tabId,
+                        w,
+                        tname: this.fallbackDictFromGoogle(w),
+                        prevResult: result.w ? result : null,
+                        detectedLangInContext,
+                    });
                 }
             }
         }
@@ -420,7 +476,13 @@ export default {
                         }
 
                         multipleResult.push(targetLang);
-                        await this.parseFollowWordsOnWiktionary(tabId, w, targetLang, multipleResult);
+                        await this.parseFollowWordsOnWiktionary(
+                            tabId,
+                            w,
+                            targetLang,
+                            multipleResult,
+                            detectedLangInContext
+                        );
                     }
                 }
             }
@@ -442,7 +504,7 @@ export default {
         return result;
     },
 
-    async parseFollowWordsOnWiktionary(tabId, w, targetLang, multipleResult) {
+    async parseFollowWordsOnWiktionary(tabId, w, targetLang, multipleResult, detectedLangInContext) {
         // use followWord fist, then try optionalFollowWord
         let followWords = targetLang.defs?.map((n) => n.followWord).filter((n) => n);
         followWords = [...new Set(followWords)]; // remove duplicate
@@ -452,22 +514,40 @@ export default {
 
         if (followWords?.length && multipleResult.length < 5) {
             if (isUniqueWord(followWords[0]) && followWords[0][0] === w[0]) {
-                await this.parse(tabId, followWords[0], "wiktionary", multipleResult);
+                await this.parse({
+                    tabId,
+                    w: followWords[0],
+                    tname: "wiktionary",
+                    prevResult: multipleResult,
+                    detectedLangInContext,
+                });
             }
             if (isUniqueWord(followWords[1]) && followWords[1][0] === w[0]) {
-                await this.parse(tabId, followWords[1], "wiktionary", multipleResult);
+                await this.parse({
+                    tabId,
+                    w: followWords[1],
+                    tname: "wiktionary",
+                    prevResult: multipleResult,
+                    detectedLangInContext,
+                });
             }
         }
 
         if (optionalFollowWord && multipleResult.length < 5) {
             if (isUniqueWord(optionalFollowWord) && stringSimilarity.compareTwoStrings(w, optionalFollowWord) > 0.7) {
-                return await this.parse(tabId, optionalFollowWord, "wiktionary", multipleResult);
+                return await this.parse({
+                    tabId,
+                    w: optionalFollowWord,
+                    tname: "wiktionary",
+                    prevResult: multipleResult,
+                    detectedLangInContext,
+                });
             }
         }
     },
 
-    async parseOtherLang(tabId, w, lang, wiktionaryResult, prevResult) {
-        const result = await this.parse(tabId, w, lang);
+    async parseOtherLang(tabId, w, tname, wiktionaryResult, prevResult) {
+        const result = await this.parse({ tabId, w, tname });
 
         // wiktionary result is first.
         if (wiktionaryResult && result?.w !== wiktionaryResult.w) {

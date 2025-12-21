@@ -13,6 +13,7 @@ import initLookupParser from "./lookup-parser.js";
 import { initClipboardReader } from "./read-clipboard.js";
 import plainLookupTooltip from "./plain-lookup-tooltip.js";
 import initTTSAndTranslator from "./tts-translator-inject.js";
+import detectLanguage from "./detect-language.js";
 
 import {
     getWordAtPoint,
@@ -291,13 +292,15 @@ const run = () => {
 
             const handleLookupByMouse = debounce(
                 async (event, text) => {
-                    if (!text) {
+                    if (!text || !utils.isValidWordOrPhrase(text)) {
                         return;
                     }
                     if (text === plainQuerying) {
                         return;
                     }
-                    let sentence = "";
+                    const sentence = getSentenceOfSelection();
+                    const detectedLangInContext = await detectLanguage(sentence, window.getSelection().focusNode);
+
                     const markWordAfterward = (lookupResult) => {
                         // highlight selected words is a special feature
                         // even if the floating definition is turned off, still highlight can be working.
@@ -309,7 +312,6 @@ const run = () => {
                     // popup window
                     if (!setting.enableMouseSK1 || (setting.mouseSK1 && utils.checkEventKey(event, setting.mouseSK1))) {
                         if (process.env.PRODUCT === "SidePal" || setting.enableMinidict) {
-                            sentence = getSentenceOfSelection();
                             chrome.runtime.sendMessage(
                                 {
                                     type: "look up",
@@ -326,7 +328,7 @@ const run = () => {
                     }
 
                     // floating definition
-                    text = await utils.send("check text supported", { w: text });
+                    text = await utils.send("check text supported", { w: text, detectedLangInContext });
                     if (!text) {
                         return;
                     }
@@ -335,9 +337,7 @@ const run = () => {
                         if (!setting.enablePlainSK1 || utils.checkEventKey(event, setting.plainSK1)) {
                             plainLookupTooltip.showPlainContent(null, event);
                             plainQuerying = text;
-                            if (!sentence) {
-                                sentence = getSentenceOfSelection();
-                            }
+
                             await utils.send(
                                 "look up plain",
                                 {
@@ -346,6 +346,7 @@ const run = () => {
                                     w: text,
                                     s: location.href,
                                     sc: document.title,
+                                    detectedLangInContext,
                                 },
                                 (res) => {
                                     if (plainQuerying !== text) {

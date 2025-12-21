@@ -131,7 +131,10 @@ export default {
                 }
 
                 if (this.anki.wordItem?.w) {
-                    const lookupInfo = await plainLookup.parse(sender.tab.id, this.anki.wordItem.w.toLowerCase());
+                    const lookupInfo = await plainLookup.parse({
+                        tabId: sender.tab.id,
+                        w: this.anki.wordItem.w.toLowerCase(),
+                    });
 
                     const setDataToImages = async (images) =>
                         await Promise.all(

@@ -1,6 +1,6 @@
 import utils from "utils";
 import debounce from "lodash/debounce";
-import { detectLanguage } from "../shared-readonly/detectLanguage.js";
+import detectLanguage from "./detect-language.js";
 import getTextFromNode from "../shared-readonly/getTextFromNode.js";
 
 export default (setting) => {
@@ -197,11 +197,7 @@ export default (setting) => {
             return;
         }
 
-        const lang = (await detectLanguage(text)) || localStorage.getItem("pnl-sentence-lang-detected");
-        if (lang) {
-            localStorage.setItem("pnl-sentence-lang-detected", lang);
-        }
-
+        const lang = await detectLanguage(text, window.getSelection().focusNode);
         // Show TTS bubble
         createBubble(text, lang);
     };
@@ -232,11 +228,7 @@ export default (setting) => {
                 const text = getTextFromNode(el);
                 if (!text) return;
 
-                const lang = (await detectLanguage(text)) || localStorage.getItem("pnl-sentence-lang-detected");
-                if (lang) {
-                    localStorage.setItem("pnl-sentence-lang-detected", lang);
-                }
-
+                const lang = await detectLanguage(text, el);
                 window.postMessage({ command: "pnl-tts-play", text, lang }, window.location.origin);
             });
         });

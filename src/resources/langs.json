@@ -1,6 +1,6 @@
 {
     "English": {
-        "regex": "[a-zA-Z ]",
+        "regex": "[a-zA-Z- ]",
         "symbol": "en",
         "synthesis": "en-US"
     },

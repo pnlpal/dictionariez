@@ -3,7 +3,7 @@
 import getTextFromNode from "./getTextFromNode.js";
 
 const getLangAttribute = (node) => {
-  if (!node) return null;
+  if (!node || !node.getAttribute) return null;
   return node.getAttribute("data-tts-lang") || node.getAttribute("data-lang");
 };
 
@@ -27,6 +27,10 @@ async function detectLanguageFromNode(node, depth) {
   const text = getTextFromNode(node);
   if (!text || (text.length < 20 && depth > 1)) {
     // Require more text from nodes for reliability
+    console.log(
+      "Not enough text for reliable detection. Going up one level...",
+      node.parentNode
+    );
     return detectLanguageFromNode(node.parentNode, depth - 1);
   }
 
@@ -36,6 +40,10 @@ async function detectLanguageFromNode(node, depth) {
     return result.languages[0].language;
   } else {
     // If still not reliable, go one level up
+    console.log(
+      "Detection still not reliable. Going up one level...",
+      node.parentNode
+    );
     return detectLanguageFromNode(node.parentNode, depth - 1);
   }
 }
@@ -66,7 +74,8 @@ export async function detectLanguage(text, node = null) {
       // --- FALLBACK LOGIC ---
       // If not reliable, try again with more context from parent nodes.
       console.log(
-        "Initial detection not reliable. Trying parent node for more context..."
+        "Initial detection not reliable. Trying parent node for more context...",
+        node.parentNode
       );
       return await detectLanguageFromNode(node.parentNode, 3); // Check up to 3 levels up
     }
