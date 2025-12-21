@@ -107,7 +107,7 @@ function playSynthesis({ text, lang, name, voice } = {}) {
         }
     }
 
-    console.log("speak", text, v);
+    // console.log("speak", text, v);
     window.speechSynthesis.speak(msg);
 }
 
