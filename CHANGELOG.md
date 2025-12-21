@@ -1,3 +1,9 @@
+# v6.4.4 Dec 21, 2025
+- Disabled the Captionz button on YouTube by default.
+- Fixed sentence searching on Captionz.
+- Improved lookup accuracy by detecting sentence language.
+- Enabled TTS and translations for shorter sentences (minimum 3 words).
+
 # v6.4.3 Dec 08, 2025
 - Fixed the translator's font size on websites with low `rem` unit settings.
 - Fixed the translator's `z-index` to prevent overlapping issues on some websites.
