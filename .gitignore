@@ -6,3 +6,6 @@ secrets.*.js
 *.zip
 
 .DS_Store
+
+landing-page/deploy.sh
+landing-page/nginx.backup.conf
