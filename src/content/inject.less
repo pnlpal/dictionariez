@@ -23,6 +23,10 @@
         font-size: 16px;
         line-height: normal;
 
+        strong {
+            font-weight: 700;
+        }
+
         .icon-fairydict-volume {
             color: goldenrod;
         }
@@ -64,6 +68,85 @@
             .fairydict-defs {
                 display: table-cell;
                 padding-top: 1px;
+            }
+        }
+
+        // AI Result Sections
+        .fairydict-ai-header {
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #333;
+
+            .fairydict-translation,
+            .fairydict-other-forms {
+                font-size: 0.85em;
+                color: #999;
+                margin-top: 6px;
+                line-height: 1.4;
+            }
+        }
+
+        .fairydict-ai-body {
+            .fairydict-definition {
+                font-size: 1.15em;
+                line-height: 1.7;
+                color: #f0f0f0;
+
+                .fairydict-pos {
+                    color: #bbb;
+                    font-size: smaller;
+                }
+                strong {
+                    font-weight: 700;
+                    color: cornflowerblue;
+                }
+            }
+
+            .fairydict-section-title {
+                font-weight: 600;
+                margin-top: 12px;
+                margin-bottom: 6px;
+                color: #ccc;
+                font-size: 0.9em;
+            }
+        }
+
+        .fairydict-ai-footer {
+            padding-top: 12px;
+            margin-top: 12px;
+            border-top: 1px solid #333;
+
+            .fairydict-synonyms {
+                margin-bottom: 12px;
+                font-size: 0.95em;
+                color: #ddd;
+
+                strong {
+                    color: #aaa;
+                    margin-right: 4px;
+                }
+            }
+
+            .fairydict-example {
+                margin-bottom: 8px;
+                line-height: 1.5;
+
+                .fairydict-example-text {
+                    color: #e8e8e8;
+                    font-style: italic;
+                }
+
+                .fairydict-example-translation {
+                    color: #999;
+                    font-size: 0.9em;
+                }
+            }
+
+            .fairydict-section-title {
+                font-weight: 600;
+                margin-bottom: 8px;
+                color: #aaa;
+                font-size: 0.9em;
             }
         }
     }

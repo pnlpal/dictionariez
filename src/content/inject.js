@@ -338,21 +338,39 @@ const run = () => {
                             plainLookupTooltip.showPlainContent(null, event);
                             plainQuerying = text;
 
+                            // await utils.send(
+                            //     "look up plain",
+                            //     {
+                            //         means: "mouse",
+                            //         sentence,
+                            //         w: text,
+                            //         s: location.href,
+                            //         sc: document.title,
+                            //         detectedLangInContext,
+                            //     },
+                            //     (res) => {
+                            //         if (plainQuerying !== text) {
+                            //             return;
+                            //         }
+                            //         plainLookupTooltip.renderPlainResult(res);
+                            //         plainQuerying = null;
+                            //         markWordAfterward(res);
+                            //     }
+                            // );
+
                             await utils.send(
-                                "look up plain",
+                                "look up in AI",
                                 {
                                     means: "mouse",
                                     sentence,
-                                    w: text,
-                                    s: location.href,
-                                    sc: document.title,
+                                    word: text,
                                     detectedLangInContext,
                                 },
                                 (res) => {
                                     if (plainQuerying !== text) {
                                         return;
                                     }
-                                    plainLookupTooltip.renderPlainResult(res);
+                                    plainLookupTooltip.renderAIResult(res.lookup);
                                     plainQuerying = null;
                                     markWordAfterward(res);
                                 }

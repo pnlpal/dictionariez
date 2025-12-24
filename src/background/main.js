@@ -12,6 +12,7 @@ import readClipboard from "./clipboard.js";
 import contextMenu from "./contextMenu.js";
 import "./tts-speak.js";
 import "./translate.js";
+import "./ai-lookup.js";
 
 console.log("PRODUCT: ", process.env.PRODUCT);
 

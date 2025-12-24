@@ -62,6 +62,16 @@ const pronSymbolTpl = (symbol = "", type = "", lang = "") =>
 const pronAudioTpl = (w, src = "", type = "", synthesis = "", lang = "") =>
     `<a class='fairydict-pron-audio fairydict-pron-audio-${type}' data-mp3='${src}' data-synthesis='${synthesis}' data-lang='${lang}' data-w='${w}'><i class='icon-fairydict-volume'></i></a>`;
 const pronsTpl = (w, prons) => `<div class='fairydict-prons'> ${w} ${prons} </div>`;
+const sectionTitleTpl = (title) => `<div class='fairydict-section-title'>${title}</div>`;
+const exampleTpl = (example, translation) =>
+    `<div class='fairydict-example'><span class='fairydict-example-text'>${example}</span>${
+        translation ? `<span class='fairydict-example-translation'> — ${translation}</span>` : ""
+    }</div>`;
+const synonymsTpl = (synonyms) => `<div class='fairydict-synonyms'><strong>Synonyms:</strong> ${synonyms}</div>`;
+const otherFormsTpl = (forms) => `<div class='fairydict-other-forms'>${forms}</div>`;
+const translationTpl = (translation) =>
+    `<div class='fairydict-translation'><strong>Translation:</strong> ${translation}</div>`;
+const definitionTpl = (def) => `<div class='fairydict-definition'>${def}</div>`;
 
 const renderQueryResult = (res) => {
     let html = "";
@@ -106,6 +116,88 @@ const renderQueryResult = (res) => {
 
     if (res?.defs) res.defs.forEach(renderItem);
     if (res?.defs2) res.defs2.forEach(renderItem);
+    return html;
+};
+
+const renderAIResult = (res) => {
+    let html = "";
+
+    // === HEADER SECTION ===
+    let headerHtml = "";
+
+    // Word and pronunciation
+    let wHtml = "";
+    let pronHtml = "";
+    if (res?.word) {
+        wHtml = wTpl(res.word);
+        if (res?.pronunciation) {
+            pronHtml = pronSymbolTpl(res.pronunciation, "", res.language || "");
+        }
+        if (res?.language) {
+            pronHtml += pronAudioTpl(res.word, "", "", res.language, res.language);
+        }
+    }
+    if (pronHtml || wHtml) headerHtml += pronsTpl(wHtml, pronHtml);
+
+    // Translation (if present)
+    if (res?.translation) {
+        headerHtml += translationTpl(res.translation);
+    }
+
+    // Other forms
+    if (res?.otherForms && res.otherForms.length > 0) {
+        const formsHtml = res.otherForms.map((form) => `<span class='fairydict-form'>${form}</span>`).join(", ");
+        headerHtml += otherFormsTpl(formsHtml);
+    }
+
+    if (headerHtml) {
+        html += `<div class='fairydict-ai-header'>${headerHtml}</div>`;
+    }
+
+    // === BODY SECTION ===
+    let bodyHtml = "";
+
+    // Definition with part of speech at the beginning - clean and focused
+    if (res?.definition) {
+        let defContent = res.definition;
+        // Add part of speech in brackets at the beginning of definition
+        if (res?.partOfSpeech) {
+            defContent = `${posTpl("(" + res.partOfSpeech + ")")} ${defContent}`;
+        }
+        bodyHtml += definitionTpl(defTpl(defContent));
+    }
+
+    // Most common meanings
+    if (res?.mostCommonMeanings && res.mostCommonMeanings.length > 0) {
+        bodyHtml += sectionTitleTpl("Other Common Meanings");
+        const meaningsHtml = res.mostCommonMeanings.map((meaning) => defTpl(meaning)).join("<br>");
+        bodyHtml += meaningsHtml;
+    }
+
+    if (bodyHtml) {
+        html += `<div class='fairydict-ai-body'>${bodyHtml}</div>`;
+    }
+
+    // === FOOTER SECTION ===
+    let footerHtml = "";
+
+    // Synonyms
+    if (res?.synonyms && res.synonyms.length > 0) {
+        const synonymsText = res.synonyms.join(", ");
+        footerHtml += synonymsTpl(synonymsText);
+    }
+
+    // Examples
+    if (res?.examples && res.examples.length > 0) {
+        footerHtml += sectionTitleTpl("Examples");
+        const examplesHtml = res.examples.map((ex) => exampleTpl(ex.example, ex.translation)).join("");
+        footerHtml += examplesHtml;
+    }
+
+    if (footerHtml) {
+        html += `<div class='fairydict-ai-footer'>${footerHtml}</div>`;
+    }
+
     return html;
 };
 
@@ -245,6 +337,16 @@ export default {
                 }
             }
         }
+
+        if (html) {
+            this.showPlainContent(html);
+        } else {
+            this.hide();
+        }
+        return html;
+    },
+    renderAIResult(res) {
+        const html = renderAIResult(res);
 
         if (html) {
             this.showPlainContent(html);
