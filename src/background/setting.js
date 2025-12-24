@@ -1,5 +1,6 @@
 import contextMenu from "./contextMenu.js";
 import message from "./message.js";
+import utils from "utils";
 
 export default {
     configCache: {
@@ -12,10 +13,10 @@ export default {
         ankiWidth: 700,
         ankiHeight: 820,
 
-        markWords: false,
+        markWords: true,
         markColor: "yellow",
-        enableMarkWordsSK1: false,
-        markWordsSK1: "Meta",
+        enableMarkWordsSK1: true,
+        markWordsSK1: utils.isMac() ? "Meta" : "Ctrl",
         markWordsKey: "B",
 
         disableWordHistory: false,
@@ -40,7 +41,7 @@ export default {
         enableBreAudio: false,
         enableRealPron: false,
 
-        needDblclick: true,
+        needDblclick: false,
         enablePlainSK1: false,
         plainSK1: "Ctrl",
 
