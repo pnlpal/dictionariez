@@ -361,9 +361,10 @@ const run = () => {
                             await utils.send(
                                 "look up in AI",
                                 {
-                                    means: "mouse",
                                     sentence,
                                     word: text,
+                                    s: location.href,
+                                    sc: document.title,
                                     detectedLangInContext,
                                 },
                                 (res) => {

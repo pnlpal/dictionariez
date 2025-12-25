@@ -2,6 +2,7 @@
 
 import message from "./message.js";
 import cloud from "./pnl-cloud.js";
+import storage from "./storage.js";
 import localStorageCacheFactory from "./localStorageCache.js";
 
 const { findInCache, addToCache } = localStorageCacheFactory("ai-lookup-cache", 20);
@@ -55,7 +56,16 @@ async function processNext() {
     }
 }
 
-message.on("look up in AI", async ({ word, sentence, detectedLangInContext }) => {
+message.on("look up in AI", async ({ word, sentence, s, sc, detectedLangInContext }) => {
+    if (s) {
+        storage.addHistory({
+            w: word,
+            s,
+            sc,
+            sentence,
+        });
+    } // ignore lookup from options page
+
     const key = `${word}||${sentence}||${detectedLangInContext}`;
 
     // Check in-memory cache first
