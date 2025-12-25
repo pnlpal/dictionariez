@@ -111,14 +111,14 @@ async function playSynthesis({ text, lang, name, voice } = {}) {
                 voices.find((x) => x.name.startsWith("Google") && x.lang?.startsWith(lang)) || // Google first
                 voices.find((x) => x.name.includes("Premium") && x.lang?.startsWith(lang)) || // Premium
                 voices.find((x) => x.name.includes("Enhanced") && x.lang?.startsWith(lang)) || // Enhanced
-                voices.find((x) => x.name === "Alex" && x.lang?.startsWith(lang)) || // Alex is great for English
-                voices.find((x) => x.name === "Ava" && x.lang?.startsWith(lang)) || // Ava is also high quality
-                voices.find((x) => x.name === "Allison" && x.lang?.startsWith(lang)) || // Good US English
-                voices.find((x) => x.name === "Tom" && x.lang?.startsWith(lang)) || // Good US English male
-                voices.find((x) => x.name === "Alva" && x.lang?.startsWith(lang)) || // Good Swedish
-                voices.find((x) => x.name === "Oskar" && x.lang?.startsWith(lang)) || // Good Swedish
-                voices.find((x) => x.name === "Daniel" && x.lang?.startsWith(lang)) || // Decent UK English
-                voices.find((x) => x.name === "Samantha" && x.lang?.startsWith(lang)) || // macOS default
+                voices.find((x) => x.name.startsWith("Alex") && x.lang?.startsWith(lang)) || // Alex is great for English
+                voices.find((x) => x.name.startsWith("Ava") && x.lang?.startsWith(lang)) || // Ava is also high quality
+                voices.find((x) => x.name.startsWith("Allison") && x.lang?.startsWith(lang)) || // Good US English
+                voices.find((x) => x.name.startsWith("Tom") && x.lang?.startsWith(lang)) || // Good US English male
+                voices.find((x) => x.name.startsWith("Alva") && x.lang?.startsWith(lang)) || // Good Swedish
+                voices.find((x) => x.name.startsWith("Oskar") && x.lang?.startsWith(lang)) || // Good Swedish
+                voices.find((x) => x.name.startsWith("Daniel") && x.lang?.startsWith(lang)) || // Decent UK English
+                voices.find((x) => x.name.startsWith("Samantha") && x.lang?.startsWith(lang)) || // macOS default
                 voices.find((x) => x.lang?.startsWith(lang));
         } else {
             v =

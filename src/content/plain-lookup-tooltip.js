@@ -134,7 +134,64 @@ const renderAIResult = (res) => {
             pronHtml = pronSymbolTpl(res.pronunciation, "", res.language || "");
         }
         if (res?.language) {
-            pronHtml += pronAudioTpl(res.word, "", "", res.language, res.language);
+            if (res.language === "en") {
+                [
+                    {
+                        symbol: "UK",
+                        type: "bre",
+                        synthesis: "en-GB",
+                    },
+                    {
+                        symbol: "US",
+                        type: "ame",
+                        synthesis: "en-US",
+                    },
+                ].forEach((item) => {
+                    pronHtml += pronSymbolTpl(item.symbol, item.type, "English");
+                    pronHtml += pronAudioTpl(res.word, "", item.type, item.synthesis, "English");
+                });
+            } else if (res.language === "es") {
+                // for Spanish Spanish and US Spanish
+                [
+                    {
+                        symbol: "ES",
+                        type: "es-es",
+                        synthesis: "es-ES",
+                    },
+                    {
+                        symbol: "US",
+                        type: "es-us",
+                        synthesis: "es-US",
+                    },
+                ].forEach((item) => {
+                    pronHtml += pronSymbolTpl(item.symbol, item.type, "Spanish");
+                    pronHtml += pronAudioTpl(res.word, "", item.type, item.synthesis, "Spanish");
+                });
+            } else if (res.language === "zh") {
+                // for Mandarin and Cantonese
+                [
+                    {
+                        symbol: "普",
+                        type: "zh-cn",
+                        synthesis: "zh-CN",
+                    },
+                    {
+                        symbol: "粤",
+                        type: "yue-hk",
+                        synthesis: "zh-HK",
+                    },
+                    {
+                        symbol: "台",
+                        type: "zh-tw",
+                        synthesis: "zh-TW",
+                    },
+                ].forEach((item) => {
+                    pronHtml += pronSymbolTpl(item.symbol, item.type, "Chinese");
+                    pronHtml += pronAudioTpl(res.word, "", item.type, item.synthesis, "Chinese");
+                });
+            } else {
+                pronHtml += pronAudioTpl(res.word, "", "", res.language);
+            }
         }
     }
     if (pronHtml || wHtml) headerHtml += pronsTpl(wHtml, pronHtml);
