@@ -68,9 +68,7 @@ const exampleTpl = (example, translation) =>
         translation ? `<span class='fairydict-example-translation'> — ${translation}</span>` : ""
     }</div>`;
 const synonymsTpl = (synonyms) => `<div class='fairydict-synonyms'><strong>Synonyms:</strong> ${synonyms}</div>`;
-const otherFormsTpl = (forms) => `<div class='fairydict-other-forms'>${forms}</div>`;
-const translationTpl = (translation) =>
-    `<div class='fairydict-translation'><strong>Translation:</strong> ${translation}</div>`;
+const otherFormsTpl = (forms) => `<em class='fairydict-other-forms'>${forms}</em>`;
 const definitionTpl = (def) => `<div class='fairydict-definition'>${def}</div>`;
 
 const renderQueryResult = (res) => {
@@ -195,11 +193,6 @@ const renderAIResult = (res) => {
         }
     }
     if (pronHtml || wHtml) headerHtml += pronsTpl(wHtml, pronHtml);
-
-    // Translation (if present)
-    if (res?.translation) {
-        headerHtml += translationTpl(res.translation);
-    }
 
     // Other forms
     if (res?.otherForms && res.otherForms.length > 0) {
