@@ -83,10 +83,7 @@ export default {
                     detectedLangInContext == langConfig.symbol ||
                     langConfig.synthesis?.startsWith(detectedLangInContext)
                 ) {
-                    if (
-                        w.match(new RegExp(langConfig.regex, "ug"))?.length === w.length &&
-                        !this.isLangDisabled(lang)
-                    ) {
+                    if (w.match(new RegExp(langConfig.regex, "ug"))?.length === w.length) {
                         results.push(lang);
                     }
                 }
