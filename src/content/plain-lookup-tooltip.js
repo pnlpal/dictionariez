@@ -284,10 +284,10 @@ export default {
 
             const isOnSmallScreen = domW < 600;
 
-            if (domW - left < 300) {
-                left = domW - 300;
+            if (domW - left < 480) {
+                left = domW - 480;
             }
-            if (domH - top < 200) {
+            if (domH - top < 300) {
                 top = top - 10;
             }
             if (domH - top < 30) {
