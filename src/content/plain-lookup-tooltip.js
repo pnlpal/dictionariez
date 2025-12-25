@@ -63,10 +63,12 @@ const pronAudioTpl = (w, src = "", type = "", synthesis = "", lang = "") =>
     `<a class='fairydict-pron-audio fairydict-pron-audio-${type}' data-mp3='${src}' data-synthesis='${synthesis}' data-lang='${lang}' data-w='${w}'><i class='icon-fairydict-volume'></i></a>`;
 const pronsTpl = (w, prons) => `<div class='fairydict-prons'> ${w} ${prons} </div>`;
 const sectionTitleTpl = (title) => `<div class='fairydict-section-title'>${title}</div>`;
-const exampleTpl = (example, translation) =>
-    `<div class='fairydict-example'><span class='fairydict-example-text'>${example}</span>${
-        translation ? `<span class='fairydict-example-translation'> — ${translation}</span>` : ""
-    }</div>`;
+const exampleTpl = (example, translation, lang) =>
+    `<div class='fairydict-example'>
+    <span class='fairydict-example-text pnl-tts-empowered' data-tts-lang='${lang}'>
+        <span class="pnl-tts-icon">🔊</span>
+        ${example}
+    </span>${translation ? `<span class='fairydict-example-translation'> — ${translation}</span>` : ""}</div>`;
 const synonymsTpl = (synonyms) => `<div class='fairydict-synonyms'><strong>Synonyms:</strong> ${synonyms}</div>`;
 const otherFormsTpl = (forms) => `<em class='fairydict-other-forms'>${forms}</em>`;
 const definitionTpl = (def) => `<div class='fairydict-definition'>${def}</div>`;
@@ -240,7 +242,7 @@ const renderAIResult = (res) => {
     // Examples
     if (res?.examples && res.examples.length > 0) {
         footerHtml += sectionTitleTpl("Examples");
-        const examplesHtml = res.examples.map((ex) => exampleTpl(ex.example, ex.translation)).join("");
+        const examplesHtml = res.examples.map((ex) => exampleTpl(ex.example, ex.translation, res.language)).join("");
         footerHtml += examplesHtml;
     }
 

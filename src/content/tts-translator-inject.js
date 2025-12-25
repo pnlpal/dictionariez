@@ -219,18 +219,6 @@ export default (setting) => {
 
             // Insert at the beginning of the element
             el.insertBefore(speakerIcon, el.firstChild);
-
-            // Add click handler ONLY to the speaker icon
-            speakerIcon.addEventListener("click", async (e) => {
-                e.stopPropagation();
-                e.preventDefault();
-
-                const text = getTextFromNode(el);
-                if (!text) return;
-
-                const lang = await detectLanguage(text, el);
-                window.postMessage({ command: "pnl-tts-play", text, lang }, window.location.origin);
-            });
         });
 
         // Add the CSS for the speaker icon
@@ -239,8 +227,8 @@ export default (setting) => {
             style.id = "pnl-tts-icon-styles";
             style.textContent = `
             .pnl-tts-icon {
-                opacity: 0;
-                margin-right: 6px;
+                opacity: 0.7;
+                margin-right: 1px;
                 cursor: pointer;
                 user-select: none;
                 display: inline-flex;
@@ -260,6 +248,21 @@ export default (setting) => {
         `;
             document.head.appendChild(style);
         }
+
+        // Listen to tts-icon click events globally (for dynamically added elements) (also for examples in AI lookup results)
+        document.addEventListener("click", async (e) => {
+            if (!e.target.classList.contains("pnl-tts-icon")) {
+                return;
+            }
+            e.stopPropagation();
+            e.preventDefault();
+
+            const text = getTextFromNode(e.target.parentElement);
+            if (!text) return;
+
+            const lang = await detectLanguage(text, e.target.parentElement);
+            window.postMessage({ command: "pnl-tts-play", text, lang }, window.location.origin);
+        });
     };
 
     // Remove bubble when clicking elsewhere
