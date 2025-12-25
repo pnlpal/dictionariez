@@ -73,7 +73,7 @@ const synonymsTpl = (synonyms) => `<div class='fairydict-synonyms'><strong>Synon
 const otherFormsTpl = (forms) => `<em class='fairydict-other-forms'>${forms}</em>`;
 const definitionTpl = (def) => `<div class='fairydict-definition'>${def}</div>`;
 
-const renderQueryResult = (res) => {
+const genPlainResult = (res) => {
     let html = "";
 
     let wHtml = "";
@@ -119,7 +119,7 @@ const renderQueryResult = (res) => {
     return html;
 };
 
-const renderAIResult = (res) => {
+const genAIResult = (res) => {
     let html = "";
 
     // === HEADER SECTION ===
@@ -357,7 +357,7 @@ export default {
             }
         }
     },
-    showPlainContent(htmlContent, e) {
+    show(htmlContent, e) {
         $(".dictionaries-tooltip").fadeIn("slow");
         if (htmlContent) {
             $(".dictionaries-tooltip .fairydict-spinner").hide();
@@ -381,7 +381,7 @@ export default {
         let html = "";
         res = Array.isArray(res) ? res : [res];
         for (const item of res) {
-            html += renderQueryResult(item);
+            html += genPlainResult(item);
 
             if (item?.prons?.length && item.w) {
                 if (item.prons.some((v) => ["bre", "ame"].includes(v.type))) {
@@ -391,17 +391,17 @@ export default {
         }
 
         if (html) {
-            this.showPlainContent(html);
+            this.show(html);
         } else {
             this.hide();
         }
         return html;
     },
     renderAIResult(res) {
-        const html = renderAIResult(res);
+        const html = genAIResult(res);
 
         if (html) {
-            this.showPlainContent(html);
+            this.show(html);
         } else {
             this.hide();
         }

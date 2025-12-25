@@ -159,7 +159,7 @@ const run = () => {
                             return;
                         }
 
-                        plainLookupTooltip.showPlainContent(null, e);
+                        plainLookupTooltip.show(null, e);
                         plainQuerying = w;
                         utils.send(
                             "look up plain",
@@ -335,7 +335,7 @@ const run = () => {
 
                     if (setting.enablePlainLookup) {
                         if (!setting.enablePlainSK1 || utils.checkEventKey(event, setting.plainSK1)) {
-                            plainLookupTooltip.showPlainContent(null, event);
+                            plainLookupTooltip.show(null, event);
                             plainQuerying = text;
 
                             // await utils.send(
