@@ -443,10 +443,12 @@ export default {
     show(htmlContent = "", e = null) {
         $(".dictionaries-tooltip").fadeIn("slow");
         if (htmlContent) {
+            $(".dictionaries-tooltip").removeClass("loading");
             $(".dictionaries-tooltip .fairydict-spinner").hide();
             $(".dictionaries-tooltip .dictionaries-tooltip-content").append(htmlContent);
             $(".dictionaries-tooltip .fairydict-toolbar").addClass("showing");
         } else {
+            $(".dictionaries-tooltip").addClass("loading");
             $(".dictionaries-tooltip .fairydict-spinner").show();
             $(".dictionaries-tooltip .dictionaries-tooltip-content").empty();
             $(".dictionaries-tooltip .fairydict-toolbar").removeClass("showing");
