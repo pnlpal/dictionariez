@@ -45,6 +45,8 @@ export default {
         enablePlainSK1: false,
         plainSK1: "Ctrl",
 
+        defaultClickLookup: "plain", // plain, ai
+
         enableMinidict: process.env.PRODUCT === "SidePal" ? true : false,
         enableMouseSK1: false,
         mouseSK1: "Alt",

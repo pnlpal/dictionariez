@@ -344,49 +344,56 @@ const run = () => {
                             plainLookupTooltip.show(null, event);
                             plainQuerying = text;
 
-                            // await utils.send(
-                            //     "look up plain",
-                            //     {
-                            //         means: "mouse",
-                            //         sentence,
-                            //         w: text,
-                            //         s: location.href,
-                            //         sc: document.title,
-                            //         detectedLangInContext,
-                            //     },
-                            //     (res) => {
-                            //         if (plainQuerying !== text) {
-                            //             return;
-                            //         }
-                            //         plainLookupTooltip.renderPlainResult(res, text, sentence, detectedLangInContext);
-                            //         plainQuerying = null;
-                            //         markWordAfterward(res);
-                            //     }
-                            // );
-
-                            await utils.send(
-                                "look up in AI",
-                                {
-                                    sentence,
-                                    word: text,
-                                    s: location.href,
-                                    sc: document.title,
-                                    detectedLangInContext,
-                                },
-                                (res) => {
-                                    if (plainQuerying !== text) {
-                                        return;
-                                    }
-                                    plainLookupTooltip.renderAIResult(
-                                        res.lookup,
-                                        text,
+                            if ((window.defaultClickLookup || setting.defaultClickLookup) === "plain") {
+                                await utils.send(
+                                    "look up plain",
+                                    {
+                                        means: "mouse",
                                         sentence,
-                                        detectedLangInContext
-                                    );
-                                    plainQuerying = null;
-                                    markWordAfterward(res);
-                                }
-                            );
+                                        w: text,
+                                        s: location.href,
+                                        sc: document.title,
+                                        detectedLangInContext,
+                                    },
+                                    (res) => {
+                                        if (plainQuerying !== text) {
+                                            return;
+                                        }
+                                        plainLookupTooltip.renderPlainResult(
+                                            res,
+                                            text,
+                                            sentence,
+                                            detectedLangInContext
+                                        );
+                                        plainQuerying = null;
+                                        markWordAfterward(res);
+                                    }
+                                );
+                            } else {
+                                await utils.send(
+                                    "look up in AI",
+                                    {
+                                        sentence,
+                                        word: text,
+                                        s: location.href,
+                                        sc: document.title,
+                                        detectedLangInContext,
+                                    },
+                                    (res) => {
+                                        if (plainQuerying !== text) {
+                                            return;
+                                        }
+                                        plainLookupTooltip.renderAIResult(
+                                            res.lookup,
+                                            text,
+                                            sentence,
+                                            detectedLangInContext
+                                        );
+                                        plainQuerying = null;
+                                        markWordAfterward(res);
+                                    }
+                                );
+                            }
                         }
                     }
                 },

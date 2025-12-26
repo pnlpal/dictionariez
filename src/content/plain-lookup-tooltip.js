@@ -348,6 +348,8 @@ export default {
                                 );
                             }
                         );
+                        window.defaultClickLookup = "plain";
+                        utils.send("save setting", { key: "defaultClickLookup", value: "plain" });
                     }
                     break;
 
@@ -371,6 +373,8 @@ export default {
                                     );
                                 }
                             });
+                        window.defaultClickLookup = "ai";
+                        utils.send("save setting", { key: "defaultClickLookup", value: "ai" });
                     }
                     break;
 
