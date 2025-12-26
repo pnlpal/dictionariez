@@ -7,6 +7,20 @@ const getLangAttribute = (node) => {
   return node.getAttribute("data-tts-lang") || node.getAttribute("data-lang");
 };
 
+const callDetectLanguageAPI = async (text) => {
+  if (
+    typeof browser !== "undefined" &&
+    browser.i18n &&
+    browser.i18n.detectLanguage
+  ) {
+    // Firefox
+    return await browser.i18n.detectLanguage(text);
+  } else {
+    // Chrome
+    return await chrome.i18n.detectLanguage(text);
+  }
+};
+
 /**
  * A fallback function that attempts to detect language from a DOM node.
  * It recursively checks parent nodes if detection is not reliable.
@@ -34,7 +48,7 @@ async function detectLanguageFromNode(node, depth) {
     return detectLanguageFromNode(node.parentNode, depth - 1);
   }
 
-  const result = await chrome.i18n.detectLanguage(text);
+  const result = await callDetectLanguageAPI(text);
 
   if (result && result.isReliable && result.languages.length > 0) {
     return result.languages[0].language;
@@ -59,7 +73,7 @@ export async function detectLanguage(text, node = null) {
   }
 
   try {
-    const result = await chrome.i18n.detectLanguage(text);
+    const result = await callDetectLanguageAPI(text);
 
     if (result && result.isReliable && result.languages.length > 0) {
       return result.languages[0].language;
