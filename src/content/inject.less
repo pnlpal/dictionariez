@@ -4,14 +4,19 @@
     position: absolute;
     border: 1px solid #333;
 
-    max-width: 760px;
+    // responsive width on large screen, macbook air, etc.
+    // Note: the left position is set in JS code according to mouse position, so here only need to set width.
     &:not(.loading) {
-        min-width: 550px;
+        width: 650px;
+    }
+    @media (max-width: 1280px) {
+        &:not(.loading) {
+            width: 550px;
+        }
     }
     @media (max-width: 550px) {
-        max-width: 90vw;
-        &:not(.loading) {
-            min-width: 70vw;
+        .hidden-xss {
+            display: none !important;
         }
     }
 
@@ -142,6 +147,11 @@
             margin-bottom: 12px;
             border-bottom: 1px solid #333;
 
+            @media (max-width: 550px) {
+                padding-bottom: 5px;
+                margin-bottom: 5px;
+            }
+
             .fairydict-translation,
             .fairydict-other-forms {
                 font-size: 0.85em;
@@ -178,6 +188,10 @@
             padding-top: 12px;
             margin-top: 12px;
             border-top: 1px solid #333;
+            @media (max-width: 550px) {
+                padding-bottom: 5px;
+                margin-bottom: 5px;
+            }
 
             .fairydict-synonyms {
                 margin-bottom: 12px;

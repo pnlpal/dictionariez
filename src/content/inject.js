@@ -131,6 +131,7 @@ const run = () => {
 
             plainLookupTooltip.init();
             initTTSAndTranslator(setting);
+            window.plainLookupTooltip = plainLookupTooltip;
 
             if (setting.enableReadClipboard) {
                 document.addEventListener(

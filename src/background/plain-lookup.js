@@ -7,6 +7,9 @@ import langs from "../resources/langs.json";
 import stringSimilarity from "string-similarity";
 import * as OpenCC from "opencc-js/cn2t";
 
+import localStorageCacheFactory from "./localStorageCache.js";
+const { findInCache, addToCache } = localStorageCacheFactory("plain-lookup-cache", 5);
+
 let cnConverter = null;
 const convertCn2T = (result) => {
     if (!cnConverter) {
@@ -188,7 +191,7 @@ export default {
             return this.checkTypeOfSupport(w, detectedLangInContext);
         });
 
-        message.on("look up plain", ({ w, s, sc, sentence, detectedLangInContext }, sender) => {
+        message.on("look up plain", async ({ w, s, sc, sentence, detectedLangInContext }, sender) => {
             w = w.trim().toLowerCase();
             if (!w) {
                 return;
@@ -203,7 +206,15 @@ export default {
                 });
             } // ignore lookup from options page
 
-            return this.parse({ tabId: sender.tab.id, w, detectedLangInContext });
+            const cachedResult = await findInCache((item) => item.key === `${w} - ${detectedLangInContext}`);
+            if (cachedResult) {
+                return cachedResult.result;
+            }
+            const result = await this.parse({ tabId: sender.tab.id, w, detectedLangInContext });
+            if (result && (result?.length ? result[0]?.defs?.length : result?.defs?.length)) {
+                await addToCache({ key: `${w} - ${detectedLangInContext}`, result });
+            }
+            return result;
         });
 
         message.on("get real person voice", ({ w }, sender) => {

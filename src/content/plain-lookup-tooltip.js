@@ -77,8 +77,8 @@ const toolbarTpl = () => `
     <button class='fairydict-toolbar-btn fairydict-btn-plain' title='Dictionary Lookup' data-action='plain'>📖</button>
     <button class='fairydict-toolbar-btn fairydict-btn-ai' title='AI Lookup' data-action='ai'>🤖</button>
     <button class='fairydict-toolbar-btn fairydict-btn-app-lookup' title='Look up in App' data-action='app-lookup'>📚</button>
-    <button class='fairydict-toolbar-btn fairydict-btn-anki' title='Export to Anki' data-action='anki'>🗂️</button>
-    <button class='fairydict-toolbar-btn fairydict-btn-options' title='Open Options' data-action='options'>⚙️</button>
+    <button class='fairydict-toolbar-btn fairydict-btn-anki hidden-xss' title='Export to Anki' data-action='anki'>🗂️</button>
+    <button class='fairydict-toolbar-btn fairydict-btn-options hidden-xss' title='Open Options' data-action='options'>⚙️</button>
     <button class='fairydict-toolbar-btn fairydict-btn-close' title='Close' data-action='close'>✕</button>
 </div>`;
 
@@ -443,11 +443,9 @@ export default {
             const domW = window.innerWidth - rect.left;
             const domH = window.innerHeight - rect.top;
 
-            const isOnSmallScreen = domW < 600;
-
-            if (domW - left < 480) {
-                left = domW - 480;
-            }
+            // Corresponding to the width set in inject.less
+            const isOnSmallScreen = domW <= 550;
+            const isOnMacbookAir = domW <= 1280;
             if (domH - top < 300) {
                 top = top - 10;
             }
@@ -460,9 +458,24 @@ export default {
                     top,
                     left: "10px",
                     right: "10px",
+                    width: "auto", // override fixed width for small screens in inject.less
                 });
             } else {
-                $el.css({ top, left, marginRight: "10px" });
+                if (isOnMacbookAir) {
+                    if (domW - left < 590) {
+                        left = domW - 590;
+                    }
+                } else {
+                    // regular screen
+                    if (domW - left < 690) {
+                        left = domW - 690;
+                    }
+                }
+
+                $el.css({
+                    top,
+                    left,
+                });
             }
         }
     },
