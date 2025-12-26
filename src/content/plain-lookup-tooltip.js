@@ -76,7 +76,9 @@ const toolbarTpl = () => `
 <div class='fairydict-toolbar'>
     <button class='fairydict-toolbar-btn fairydict-btn-plain' title='Dictionary Lookup' data-action='plain'>📖</button>
     <button class='fairydict-toolbar-btn fairydict-btn-ai' title='AI Lookup' data-action='ai'>🤖</button>
-    <button class='fairydict-toolbar-btn fairydict-btn-app' title='Open Dictionariez' data-action='app'>⚙️</button>
+    <button class='fairydict-toolbar-btn fairydict-btn-app-lookup' title='Look up in App' data-action='app-lookup'>📚</button>
+    <button class='fairydict-toolbar-btn fairydict-btn-anki' title='Export to Anki' data-action='anki'>🗂️</button>
+    <button class='fairydict-toolbar-btn fairydict-btn-options' title='Open Options' data-action='options'>⚙️</button>
     <button class='fairydict-toolbar-btn fairydict-btn-close' title='Close' data-action='close'>✕</button>
 </div>`;
 
@@ -372,7 +374,31 @@ export default {
                     }
                     break;
 
-                case "app":
+                case "app-lookup":
+                    // Look up the word in the main app
+                    if (currentLookupData.word) {
+                        utils.send("open word in dictionary", { w: currentLookupData.word });
+                        self.hide();
+                    }
+                    break;
+
+                case "anki":
+                    // Export to Anki
+                    if (currentLookupData.word) {
+                        utils.send("export to anki", {
+                            word: currentLookupData.word,
+                            sentence: currentLookupData.sentence,
+                            data: currentLookupData.data,
+                        });
+                        // Show feedback
+                        $(this).css("background", "#4a4");
+                        setTimeout(() => {
+                            $(this).css("background", "");
+                        }, 500);
+                    }
+                    break;
+
+                case "options":
                     // Open main Dictionariez app
                     utils.send("open options page");
                     self.hide();

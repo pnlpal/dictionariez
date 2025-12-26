@@ -6,7 +6,7 @@
 
     max-width: 760px;
     &:not(.loading) {
-        min-width: 450px;
+        min-width: 550px;
     }
     @media (max-width: 550px) {
         max-width: 90vw;
@@ -34,7 +34,6 @@
         z-index: 10;
         float: right;
         margin-bottom: 6px;
-        margin-left: 50px;
         &.showing {
             display: flex;
         }
@@ -70,6 +69,16 @@
             &.fairydict-btn-close:hover {
                 background: #c44;
                 border-color: #c44;
+            }
+
+            &.fairydict-btn-anki:hover {
+                background: #3a8;
+                border-color: #3a8;
+            }
+
+            &.fairydict-btn-app-lookup:hover {
+                background: #58a;
+                border-color: #58a;
             }
         }
     }
