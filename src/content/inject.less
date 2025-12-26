@@ -18,6 +18,52 @@
     // Fix for Arabic as the default direction is rtl but the dictionary result is in English, so here has to force ltr.
     direction: ltr;
 
+    .fairydict-toolbar {
+        display: none;
+        gap: 4px;
+        z-index: 10;
+        float: right;
+        margin-bottom: 6px;
+        margin-left: 50px;
+        &.showing {
+            display: flex;
+        }
+
+        .fairydict-toolbar-btn {
+            width: 28px;
+            height: 28px;
+            border: 1px solid #444;
+            background: #2a2a2a;
+            color: #aaa;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            padding: 0;
+
+            &:hover {
+                background: #3a3a3a;
+                color: #fff;
+                border-color: #555;
+                transform: translateY(-1px);
+            }
+
+            &.active {
+                background: #5d5fee;
+                color: #fff;
+                border-color: #5d5fee;
+            }
+
+            &.fairydict-btn-close:hover {
+                background: #c44;
+                border-color: #c44;
+            }
+        }
+    }
+
     .dictionaries-tooltip-content {
         color: #fff;
         font-size: 16px;

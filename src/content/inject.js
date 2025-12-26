@@ -147,10 +147,12 @@ const run = () => {
                 );
             }
 
-            $(document).mousemove(
-                debounce((e) => {
+            $(document).on(
+                "mousemove",
+                debounce(async (e) => {
                     if ($(e.target).hasClass("dictionariez-w")) {
                         let w = $(e.target).data("w") || $(e.target).text();
+                        let sentence = $(e.target).data("sentence") || "";
                         w = w.trim();
                         if (w === plainQuerying) {
                             return;
@@ -161,16 +163,19 @@ const run = () => {
 
                         plainLookupTooltip.show(null, e);
                         plainQuerying = w;
+                        const detectedLangInContext = await detectLanguage(sentence, e.target);
                         utils.send(
                             "look up plain",
                             {
                                 w,
+                                sentence,
+                                detectedLangInContext,
                             },
                             (res) => {
                                 if (plainQuerying !== w) {
                                     return;
                                 }
-                                plainLookupTooltip.renderPlainResult(res);
+                                plainLookupTooltip.renderPlainResult(res, w, sentence, detectedLangInContext);
                                 plainQuerying = null;
                             }
                         );
@@ -352,7 +357,7 @@ const run = () => {
                             //         if (plainQuerying !== text) {
                             //             return;
                             //         }
-                            //         plainLookupTooltip.renderPlainResult(res);
+                            //         plainLookupTooltip.renderPlainResult(res, text, sentence, detectedLangInContext);
                             //         plainQuerying = null;
                             //         markWordAfterward(res);
                             //     }
@@ -371,7 +376,12 @@ const run = () => {
                                     if (plainQuerying !== text) {
                                         return;
                                     }
-                                    plainLookupTooltip.renderAIResult(res.lookup);
+                                    plainLookupTooltip.renderAIResult(
+                                        res.lookup,
+                                        text,
+                                        sentence,
+                                        detectedLangInContext
+                                    );
                                     plainQuerying = null;
                                     markWordAfterward(res);
                                 }

@@ -72,6 +72,21 @@ const exampleTpl = (example, translation, lang) =>
 const synonymsTpl = (synonyms) => `<div class='fairydict-synonyms'><strong>Synonyms:</strong> ${synonyms}</div>`;
 const otherFormsTpl = (forms) => `<em class='fairydict-other-forms'>${forms}</em>`;
 const definitionTpl = (def) => `<div class='fairydict-definition'>${def}</div>`;
+const toolbarTpl = () => `
+<div class='fairydict-toolbar'>
+    <button class='fairydict-toolbar-btn fairydict-btn-plain' title='Dictionary Lookup' data-action='plain'>📖</button>
+    <button class='fairydict-toolbar-btn fairydict-btn-ai' title='AI Lookup' data-action='ai'>🤖</button>
+    <button class='fairydict-toolbar-btn fairydict-btn-app' title='Open Dictionariez' data-action='app'>⚙️</button>
+    <button class='fairydict-toolbar-btn fairydict-btn-close' title='Close' data-action='close'>✕</button>
+</div>`;
+
+// Track current lookup state
+let currentLookupData = {
+    type: null, // 'plain' or 'ai'
+    word: null,
+    sentence: null,
+    detectedLangInContext: null,
+};
 
 const genPlainResult = (res) => {
     let html = "";
@@ -289,6 +304,7 @@ export default {
 
         $(`
 <div class="dictionaries-tooltip">
+    ${toolbarTpl()}
     <div class="fairydict-spinner">
     <div class="fairydict-bounce1"></div>
     <div class="fairydict-bounce2"></div>
@@ -300,6 +316,73 @@ export default {
 `).appendTo(this.$dictionariezTooltipContainer);
 
         setupAudioListener();
+        this.setupToolbarListeners();
+    },
+    setupToolbarListeners() {
+        const self = this;
+
+        $(document).on("click", ".fairydict-toolbar-btn", function (e) {
+            e.stopPropagation();
+            const action = $(this).data("action");
+
+            switch (action) {
+                case "plain":
+                    if (currentLookupData.type === "ai") {
+                        // Switch from AI to plain lookup
+                        self.show("", null);
+                        utils.send(
+                            "look up plain",
+                            {
+                                w: currentLookupData.word,
+                                sentence: currentLookupData.sentence || "",
+                                detectedLangInContext: currentLookupData.detectedLangInContext || "",
+                            },
+                            (res) => {
+                                self.renderPlainResult(
+                                    res,
+                                    currentLookupData.word,
+                                    currentLookupData.sentence,
+                                    currentLookupData.detectedLangInContext
+                                );
+                            }
+                        );
+                    }
+                    break;
+
+                case "ai":
+                    if (currentLookupData.type === "plain") {
+                        // Switch from plain to AI lookup
+                        self.show("", null);
+                        utils
+                            .send("look up in AI", {
+                                word: currentLookupData.word,
+                                sentence: currentLookupData.sentence || "",
+                                detectedLangInContext: currentLookupData.detectedLangInContext || "",
+                            })
+                            .then((res) => {
+                                if (res?.lookup) {
+                                    self.renderAIResult(
+                                        res.lookup,
+                                        currentLookupData.word,
+                                        currentLookupData.sentence,
+                                        currentLookupData.detectedLangInContext
+                                    );
+                                }
+                            });
+                    }
+                    break;
+
+                case "app":
+                    // Open main Dictionariez app
+                    utils.send("open options page");
+                    self.hide();
+                    break;
+
+                case "close":
+                    self.hide();
+                    break;
+            }
+        });
     },
     setupPlainContentPosition(e) {
         const $el = $(".dictionaries-tooltip");
@@ -357,17 +440,19 @@ export default {
             }
         }
     },
-    show(htmlContent, e) {
+    show(htmlContent = "", e = null) {
         $(".dictionaries-tooltip").fadeIn("slow");
         if (htmlContent) {
             $(".dictionaries-tooltip .fairydict-spinner").hide();
             $(".dictionaries-tooltip .dictionaries-tooltip-content").append(htmlContent);
+            $(".dictionaries-tooltip .fairydict-toolbar").addClass("showing");
         } else {
-            const clickInside = $(".dictionaries-tooltip").has(e.target).length;
             $(".dictionaries-tooltip .fairydict-spinner").show();
             $(".dictionaries-tooltip .dictionaries-tooltip-content").empty();
+            $(".dictionaries-tooltip .fairydict-toolbar").removeClass("showing");
 
             if (e) {
+                const clickInside = $(".dictionaries-tooltip").has(e.target).length;
                 if (!clickInside) {
                     this.setupPlainContentPosition(e);
                 }
@@ -377,9 +462,18 @@ export default {
     hide() {
         $(".dictionaries-tooltip").fadeOut().hide();
     },
-    renderPlainResult(res) {
+    renderPlainResult(res, word, sentence, detectedLangInContext) {
         let html = "";
         res = Array.isArray(res) ? res : [res];
+
+        // Update current lookup data
+        currentLookupData = {
+            type: "plain",
+            word: word,
+            sentence: sentence,
+            detectedLangInContext: detectedLangInContext,
+        };
+
         for (const item of res) {
             html += genPlainResult(item);
 
@@ -392,16 +486,30 @@ export default {
 
         if (html) {
             this.show(html);
+            // Update toolbar button states
+            $(".fairydict-btn-plain").addClass("active");
+            $(".fairydict-btn-ai").removeClass("active");
         } else {
             this.hide();
         }
         return html;
     },
-    renderAIResult(res) {
+    renderAIResult(res, word, sentence, detectedLangInContext) {
         const html = genAIResult(res);
+
+        // Update current lookup data
+        currentLookupData = {
+            type: "ai",
+            word,
+            sentence,
+            detectedLangInContext,
+        };
 
         if (html) {
             this.show(html);
+            // Update toolbar button states
+            $(".fairydict-btn-ai").addClass("active");
+            $(".fairydict-btn-plain").removeClass("active");
         } else {
             this.hide();
         }

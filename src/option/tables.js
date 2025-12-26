@@ -148,9 +148,11 @@ export default ($scope) => {
                     name: "w",
                     title: "Word",
                     data: "w",
-                    render(data, type) {
+                    render(data, type, rowData) {
                         if (type === "display") {
-                            return `<a href='', class='dictionaries-history-word dictionariez-w ellipsis' data-w='${data}'> ${data} </a>`;
+                            return `<a href='', class='dictionaries-history-word dictionariez-w ellipsis' data-w='${data}' data-sentence='${escape(
+                                rowData.sentence
+                            )}'> ${data} </a>`;
                         }
                         return data;
                     },
