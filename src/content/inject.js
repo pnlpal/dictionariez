@@ -165,21 +165,7 @@ const run = () => {
                         plainLookupTooltip.show(null, e);
                         plainQuerying = w;
                         const detectedLangInContext = await detectLanguage(sentence, e.target);
-                        utils.send(
-                            "look up plain",
-                            {
-                                w,
-                                sentence,
-                                detectedLangInContext,
-                            },
-                            (res) => {
-                                if (plainQuerying !== w) {
-                                    return;
-                                }
-                                plainLookupTooltip.renderPlainResult(res, w, sentence, detectedLangInContext);
-                                plainQuerying = null;
-                            }
-                        );
+                        plainOrAILookup(w, sentence, detectedLangInContext, true);
                     } else if (setting.enableSelectionOnMouseMove) {
                         if (!setting.enableSelectionSK1 || utils.checkEventKey(e, setting.selectionSK1)) {
                             handleSelectionWord(e);
@@ -296,6 +282,48 @@ const run = () => {
                 }
             });
 
+            const plainOrAILookup = async (text, sentence, detectedLangInContext, fromOptionsPage = false) => {
+                if ((window.defaultClickLookup || setting.defaultClickLookup) === "plain") {
+                    return await utils.send(
+                        "look up plain",
+                        {
+                            sentence,
+                            w: text,
+                            s: fromOptionsPage ? null : location.href,
+                            sc: fromOptionsPage ? null : document.title,
+                            detectedLangInContext,
+                        },
+                        (res) => {
+                            if (plainQuerying !== text) {
+                                return;
+                            }
+                            plainLookupTooltip.renderPlainResult(res, text, sentence, detectedLangInContext);
+                            plainQuerying = null;
+                            return res;
+                        }
+                    );
+                } else {
+                    return await utils.send(
+                        "look up in AI",
+                        {
+                            sentence,
+                            word: text,
+                            s: location.href,
+                            sc: document.title,
+                            detectedLangInContext,
+                        },
+                        (res) => {
+                            if (plainQuerying !== text) {
+                                return;
+                            }
+                            plainLookupTooltip.renderAIResult(res.lookup, text, sentence, detectedLangInContext);
+                            plainQuerying = null;
+                            return res;
+                        }
+                    );
+                }
+            };
+
             const handleLookupByMouse = debounce(
                 async (event, text) => {
                     if (!text || !utils.isValidWordOrPhrase(text)) {
@@ -344,56 +372,7 @@ const run = () => {
                             plainLookupTooltip.show(null, event);
                             plainQuerying = text;
 
-                            if ((window.defaultClickLookup || setting.defaultClickLookup) === "plain") {
-                                await utils.send(
-                                    "look up plain",
-                                    {
-                                        means: "mouse",
-                                        sentence,
-                                        w: text,
-                                        s: location.href,
-                                        sc: document.title,
-                                        detectedLangInContext,
-                                    },
-                                    (res) => {
-                                        if (plainQuerying !== text) {
-                                            return;
-                                        }
-                                        plainLookupTooltip.renderPlainResult(
-                                            res,
-                                            text,
-                                            sentence,
-                                            detectedLangInContext
-                                        );
-                                        plainQuerying = null;
-                                        markWordAfterward(res);
-                                    }
-                                );
-                            } else {
-                                await utils.send(
-                                    "look up in AI",
-                                    {
-                                        sentence,
-                                        word: text,
-                                        s: location.href,
-                                        sc: document.title,
-                                        detectedLangInContext,
-                                    },
-                                    (res) => {
-                                        if (plainQuerying !== text) {
-                                            return;
-                                        }
-                                        plainLookupTooltip.renderAIResult(
-                                            res.lookup,
-                                            text,
-                                            sentence,
-                                            detectedLangInContext
-                                        );
-                                        plainQuerying = null;
-                                        markWordAfterward(res);
-                                    }
-                                );
-                            }
+                            plainOrAILookup(text, sentence, detectedLangInContext).then(markWordAfterward);
                         }
                     }
                 },

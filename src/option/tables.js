@@ -150,8 +150,8 @@ export default ($scope) => {
                     data: "w",
                     render(data, type, rowData) {
                         if (type === "display") {
-                            return `<a href='', class='dictionaries-history-word dictionariez-w ellipsis' data-w='${data}' data-sentence='${escape(
-                                rowData.sentence
+                            return `<a href='', class='dictionaries-history-word dictionariez-w ellipsis' data-w='${data}' data-sentence='${utils.sanitizeHTML(
+                                rowData.sentence || ""
                             )}'> ${data} </a>`;
                         }
                         return data;
