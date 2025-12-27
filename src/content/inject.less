@@ -38,7 +38,6 @@
         gap: 4px;
         z-index: 10;
         float: right;
-        margin-bottom: 6px;
         &.showing {
             display: flex;
         }
@@ -97,13 +96,44 @@
             font-weight: 700;
         }
 
+        .fairydict-no-result {
+            padding: 40px 20px 20px 20px;
+            text-align: center;
+
+            p {
+                margin: 10px 0;
+                line-height: 1.6;
+
+                &:first-child {
+                    font-size: 16px;
+                    color: #ccc;
+                }
+            }
+
+            .fairydict-switch-to-ai-btn {
+                background: transparent;
+                color: #8b9dc3;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border: none;
+
+                &:hover {
+                    color: #a8b8d8;
+                }
+            }
+        }
+
+        .fairydict-prons {
+            margin-bottom: 4px;
+        }
         .icon-fairydict-volume {
             color: goldenrod;
         }
 
         .fairydict-w {
             font-size: 22px;
-            margin-bottom: 4px;
             color: #f5f5f5;
         }
 

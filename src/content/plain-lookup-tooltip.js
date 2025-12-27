@@ -323,7 +323,7 @@ export default {
     setupToolbarListeners() {
         const self = this;
 
-        $(document).on("click", ".fairydict-toolbar-btn", function (e) {
+        $(document).on("click", ".fairydict-toolbar-btn, .fairydict-switch-to-ai-btn", function (e) {
             e.stopPropagation();
             const action = $(this).data("action");
 
@@ -529,13 +529,18 @@ export default {
             }
         }
 
+        $(".fairydict-btn-plain").addClass("active");
+        $(".fairydict-btn-ai").removeClass("active");
+
         if (html) {
             this.show(html);
-            // Update toolbar button states
-            $(".fairydict-btn-plain").addClass("active");
-            $(".fairydict-btn-ai").removeClass("active");
         } else {
-            this.hide();
+            // show no result message, recommend switching to AI lookup
+            html = `<div class='fairydict-no-result'>
+                <p>😕 No dictionary result found for "${word}"</p>
+                <p>Try <button class='fairydict-switch-to-ai-btn' data-action="ai">🤖 AI Lookup</button> for a better explanation</p>
+            </div>`;
+            this.show(html);
         }
         return html;
     },
