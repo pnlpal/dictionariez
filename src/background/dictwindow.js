@@ -514,7 +514,7 @@ export default {
         });
 
         message.on("dictionary", async (request, sender) => {
-            let previous, r, sentence, w, windowUrl;
+            let previous, r, sentence, w, windowUrl, ankiSaved;
             let win = sender.tab
                 ? this.getByTab(sender.tab.id)
                 : // SidePal
@@ -530,6 +530,7 @@ export default {
                     const wordDetail = await storage.getWordDetail(w);
                     r = wordDetail?.r;
                     previous = wordDetail?.previous;
+                    ankiSaved = wordDetail?.ankiSaved;
                 } else {
                     previous = await storage.getPrevious();
                 }
@@ -557,6 +558,7 @@ export default {
                 previous,
                 w,
                 r,
+                ankiSaved,
                 sentence,
                 windowUrl,
             };

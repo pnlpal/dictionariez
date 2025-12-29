@@ -141,11 +141,11 @@ function renderQuoteInfo(res) {
     return `
 <blockquote style="font-style:italic;font-size: 16px; padding: 0.3em 5px 0.3em 20px;border-left:5px solid #78C0A8;">
 <span style="font-size: 16px;"> {sentence} </span>
-<div style="margin-top: 5px;">-- <a href="{s}" style="font-size: 15px;"> {sc} </a></div>
+${res.s && res.sc ? '<div style="margin-top: 5px;">-- <a href="{s}" style="font-size: 15px;"> {sc} </a></div>' : ""}
 </blockquote>
 `
         .replace("{s}", res.s)
-        .replace("{sc}", res.sc)
+        .replace("{sc}", res.sc || "")
         .replace("{sentence}", filteredSentence);
 }
 

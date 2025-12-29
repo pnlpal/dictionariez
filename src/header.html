@@ -217,6 +217,15 @@
                     ng-hide="querying || !word"
                     title="Rating"
                 ></div>
+                <button
+                    type="button"
+                    class="btn-export-to-anki hidden-xss {{ ankiSaved ? 'disabled' : ''}}"
+                    ng-hide="!word"
+                    title="{{ ankiSaved ? 'Word has been saved to Anki' : 'Export to Anki'}}"
+                    ng-click="exportToAnki($event);"
+                >
+                    {{ ankiSaved ? '☑️' : '🗂️' }}
+                </button>
             </div>
         </form>
         <!-- </div>

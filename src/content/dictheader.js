@@ -13,6 +13,8 @@ import "./dictheader.less";
 import "./card-iframe.js";
 import { getCurrentCoupon } from "../option/user-profile.js";
 
+import detectLanguage from "./detect-language.js";
+
 const inFrame = window.self !== window.top;
 // some ui need bootstrap, like dropdown.
 const dictApp = angular.module("fairyDictApp", ["ui.bootstrap"]);
@@ -58,6 +60,7 @@ dictApp.controller("dictCtrl", [
                     history,
                     w,
                     r,
+                    ankiSaved,
                     sentence,
                     windowUrl,
                 }) => {
@@ -68,6 +71,7 @@ dictApp.controller("dictCtrl", [
                     $scope.previous = previous;
                     $scope.word = w;
                     $scope.sentence = sentence;
+                    $scope.ankiSaved = ankiSaved;
                     $scope._lastQueryWord = $scope.word;
                     $scope.history = history;
 
@@ -315,6 +319,18 @@ dictApp.controller("dictCtrl", [
                 $scope.dictFrameIsNotLoaded = !$scope.dictFrameIsLoaded;
                 $scope.$apply();
             }, 2000);
+        };
+
+        $scope.exportToAnki = async (e) => {
+            e.stopPropagation();
+            if ($scope.ankiSaved) {
+                return;
+            }
+            utils.send("open anki", {
+                w: $scope.word,
+                sentence: $scope.sentence,
+                detectedLangInContext: await detectLanguage($scope.sentence),
+            });
         };
 
         $(baseNode).on("starrr:change", (e, value) => {
