@@ -400,10 +400,12 @@ export default {
                 case "anki":
                     // Export to Anki
                     if (currentLookupData.word) {
-                        utils.send("export to anki", {
-                            word: currentLookupData.word,
+                        utils.send("open anki", {
+                            w: currentLookupData.word,
                             sentence: currentLookupData.sentence,
-                            data: currentLookupData.data,
+                            detectedLangInContext: currentLookupData.detectedLangInContext,
+                            s: location.href,
+                            sc: document.title,
                         });
                         // Show feedback
                         $(this).css("background", "#4a4");
