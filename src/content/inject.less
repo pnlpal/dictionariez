@@ -125,6 +125,74 @@
             }
         }
 
+        .fairydict-ai-error {
+            padding: 40px 20px;
+            text-align: center;
+
+            .error-icon {
+                font-size: 48px;
+                margin-bottom: 16px;
+            }
+
+            .error-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: #f5f5f5;
+                margin-bottom: 12px;
+            }
+
+            .error-message {
+                font-size: 14px;
+                color: #aaa;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+
+            .fairydict-error-actions {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+
+            .fairydict-error-btn {
+                display: inline-block;
+                background: transparent;
+                color: #8b9dc3;
+                border: 1px solid #444;
+                padding: 8px 20px;
+                border-radius: 4px;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                text-decoration: none;
+                transition: all 0.2s ease;
+
+                &:hover {
+                    color: #a8b8d8;
+                    border-color: #5d5fee;
+                    background: rgba(93, 95, 238, 0.1);
+                }
+
+                &:active {
+                    background: rgba(93, 95, 238, 0.2);
+                }
+            }
+
+            .fairydict-error-link {
+                color: #888;
+                font-size: 13px;
+                text-decoration: none;
+                transition: color 0.2s ease;
+
+                &:hover {
+                    color: #aaa;
+                    text-decoration: underline;
+                }
+            }
+        }
+
         .fairydict-prons {
             margin-bottom: 4px;
         }

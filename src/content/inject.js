@@ -303,24 +303,32 @@ const run = () => {
                         }
                     );
                 } else {
-                    return await utils.send(
-                        "look up in AI",
-                        {
-                            sentence,
-                            word: text,
-                            s: location.href,
-                            sc: document.title,
-                            detectedLangInContext,
-                        },
-                        (res) => {
+                    return await utils
+                        .send(
+                            "look up in AI",
+                            {
+                                sentence,
+                                word: text,
+                                s: location.href,
+                                sc: document.title,
+                                detectedLangInContext,
+                            },
+                            (res) => {
+                                if (plainQuerying !== text) {
+                                    return;
+                                }
+                                plainLookupTooltip.renderAIResult(res, text, sentence, detectedLangInContext);
+                                plainQuerying = null;
+                                return res;
+                            }
+                        )
+                        .catch((err) => {
                             if (plainQuerying !== text) {
                                 return;
                             }
-                            plainLookupTooltip.renderAIResult(res.lookup, text, sentence, detectedLangInContext);
+                            plainLookupTooltip.renderAIError(err, text, sentence, detectedLangInContext);
                             plainQuerying = null;
-                            return res;
-                        }
-                    );
+                        });
                 }
             };
 

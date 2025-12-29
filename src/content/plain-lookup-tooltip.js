@@ -1,6 +1,8 @@
 import utils from "utils";
 import debounce from "lodash/debounce";
 
+const pnlBase = process.env.NODE_ENV === "development" ? "http://localhost:4567" : "https://pnl.dev";
+
 const setupAudioListener = () => {
     $(document).on(
         "click mouseover",
@@ -364,14 +366,20 @@ export default {
                                 detectedLangInContext: currentLookupData.detectedLangInContext || "",
                             })
                             .then((res) => {
-                                if (res?.lookup) {
-                                    self.renderAIResult(
-                                        res.lookup,
-                                        currentLookupData.word,
-                                        currentLookupData.sentence,
-                                        currentLookupData.detectedLangInContext
-                                    );
-                                }
+                                self.renderAIResult(
+                                    res,
+                                    currentLookupData.word,
+                                    currentLookupData.sentence,
+                                    currentLookupData.detectedLangInContext
+                                );
+                            })
+                            .catch((err) => {
+                                self.renderAIError(
+                                    err,
+                                    currentLookupData.word,
+                                    currentLookupData.sentence,
+                                    currentLookupData.detectedLangInContext
+                                );
                             });
                         window.defaultClickLookup = "ai";
                         utils.send("save setting", { key: "defaultClickLookup", value: "ai" });
@@ -545,8 +553,7 @@ export default {
         return html;
     },
     renderAIResult(res, word, sentence, detectedLangInContext) {
-        const html = genAIResult(res);
-
+        const { lookup, trialsUsed, trialsMaxAllowed, isProUser } = res;
         // Update current lookup data
         currentLookupData = {
             type: "ai",
@@ -555,14 +562,95 @@ export default {
             detectedLangInContext,
         };
 
+        const html = genAIResult(lookup);
+
         if (html) {
             this.show(html);
             // Update toolbar button states
             $(".fairydict-btn-ai").addClass("active");
             $(".fairydict-btn-plain").removeClass("active");
+
+            return html;
         } else {
-            this.hide();
+            return this.renderAIError(
+                new Error("No AI result, please try again later."),
+                word,
+                sentence,
+                detectedLangInContext
+            );
         }
+    },
+    renderAIError(error, word, sentence, detectedLangInContext) {
+        // Update current lookup data
+        currentLookupData = {
+            type: "ai",
+            word,
+            sentence,
+            detectedLangInContext,
+        };
+        error = error || new Error("Unknown error");
+
+        const getPrettyMessage = (msg) => {
+            if (!msg) return "";
+
+            const lowermsg = msg.toLowerCase();
+
+            if (
+                lowermsg.includes("failed to fetch") ||
+                lowermsg.includes("networkerror") ||
+                lowermsg.includes("network error") ||
+                lowermsg.includes("fetch failed")
+            ) {
+                return "Network error or server is unreachable. Please try again later.";
+            }
+            if (lowermsg.includes("timeout")) {
+                return "The request timed out. Please check your internet connection and try again.";
+            }
+            if (lowermsg.includes("forbidden")) {
+                return "You do not have permission to access this resource.";
+            }
+
+            if (lowermsg.includes("internal server error")) {
+                return "Server encountered an error. Please try again later.";
+            }
+
+            return msg;
+        };
+        const errorMsg = getPrettyMessage(error.message || error.status?.message || String(error));
+
+        let html = "";
+        if (errorMsg === "Unauthorized" || error.statusCode === 401) {
+            const loginUrl = `${pnlBase}/login`;
+            html = `<div class='fairydict-ai-error'>
+                <p class='error-icon'>🔒</p>
+                <p class='error-title'>Login Required</p>
+                <p class='error-message'>Please log in to use AI Lookup feature.</p>
+                <div class='fairydict-error-actions'>
+                    <a href='${loginUrl}' target='_blank' class='fairydict-error-btn'>Log In</a>
+                    <a href='https://pnl.dev/topic/1041' target='_blank' class='fairydict-error-link'>What is this?</a>
+                </div>
+            </div>`;
+        } else if (error.type === "trial-limit-reached") {
+            const upgradeUrl = `${pnlBase}/pro`;
+            const { trialsUsed, trialsMaxAllowed } = error;
+            html = `<div class='fairydict-ai-error'>
+                <p class='error-icon'>⚡</p>
+                <p class='error-title'>Trial Limit Reached</p>
+                <p class='error-message'>You've used (${trialsUsed}/${trialsMaxAllowed}) free AI lookups. Upgrade to PNL Pro for unlimited access.</p>
+                <a href='${upgradeUrl}' target='_blank' class='fairydict-error-btn'>Upgrade to Pro</a>
+            </div>`;
+        } else {
+            html = `<div class='fairydict-ai-error'>
+                <p class='error-icon'>⚠️</p>
+                <p class='error-title'>AI Lookup Failed</p>
+                <p class='error-message'>${errorMsg}</p>
+            </div>`;
+        }
+
+        this.show(html);
+        $(".fairydict-btn-ai").addClass("active");
+        $(".fairydict-btn-plain").removeClass("active");
+
         return html;
     },
 };
