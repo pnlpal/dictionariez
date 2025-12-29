@@ -565,12 +565,18 @@ export default {
         const html = genAIResult(lookup);
 
         if (html) {
-            this.show(html);
+            let finalHtml = html;
+            if (!isProUser && trialsUsed !== undefined && trialsMaxAllowed !== undefined) {
+                // Show trial usage info
+                const upgradeUrl = `${pnlBase}/pro`;
+                finalHtml += `<div class='fairydict-trial-info'>Trial usage: ${trialsUsed}/${trialsMaxAllowed} — <a href='${upgradeUrl}' target='_blank'>Upgrade to Pro</a></div>`;
+            }
+            this.show(finalHtml);
             // Update toolbar button states
             $(".fairydict-btn-ai").addClass("active");
             $(".fairydict-btn-plain").removeClass("active");
 
-            return html;
+            return finalHtml;
         } else {
             return this.renderAIError(
                 new Error("No AI result, please try again later."),
