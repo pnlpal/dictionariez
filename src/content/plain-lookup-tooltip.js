@@ -389,8 +389,11 @@ export default {
                 case "app-lookup":
                     // Look up the word in the main app
                     if (currentLookupData.word) {
-                        utils.send("open word in dictionary", { w: currentLookupData.word });
-                        self.hide();
+                        utils.send("look up", {
+                            w: currentLookupData.word,
+                            sentence: currentLookupData.sentence,
+                            detectedLangInContext: currentLookupData.detectedLangInContext,
+                        });
                     }
                     break;
 
