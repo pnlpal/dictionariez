@@ -30,8 +30,9 @@
 
     text-align: left; // fix on w3cschool
 
-    // Fix for Arabic as the default direction is rtl but the dictionary result is in English, so here has to force ltr.
-    direction: ltr;
+    [dir="auto"] {
+        text-align: start;
+    }
 
     .fairydict-toolbar {
         display: none;

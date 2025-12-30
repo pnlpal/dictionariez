@@ -52,12 +52,12 @@ const setupAudioListener = () => {
     );
 };
 
-const wTpl = (w) => `<strong class='fairydict-w'> ${w} </strong>`;
+const wTpl = (w) => `<strong class='fairydict-w' dir='auto'> ${w} </strong>`;
 const defTpl = (def) => `<span class='fairydict-def'> ${def} </span>`;
 const defsTpl = (defs) => `<span class='fairydict-defs'> ${defs} </span>`;
 const labelsTpl = (labels) => `<div class='fairydict-labels'> ${labels} </div>`;
 const labelTpl = (label) => `<span class='fairydict-label'> ${label} </span>`;
-const posTpl = (pos) => `<span class='fairydict-pos'> ${pos} </span>`;
+const posTpl = (pos) => `<span class='fairydict-pos' dir='auto'> ${pos} </span>`;
 const contentTpl = (content) => `<div class='fairydict-content'> ${content} </div>`;
 const pronSymbolTpl = (symbol = "", type = "", lang = "") =>
     `<span class='fairydict-symbol fairydict-symbol-${type}' title='${lang}'> <em> ${symbol} </em> </span>`;
@@ -66,14 +66,17 @@ const pronAudioTpl = (w, src = "", type = "", synthesis = "", lang = "") =>
 const pronsTpl = (w, prons) => `<div class='fairydict-prons'> ${w} ${prons} </div>`;
 const sectionTitleTpl = (title) => `<div class='fairydict-section-title'>${title}</div>`;
 const exampleTpl = (example, translation, lang) =>
-    `<div class='fairydict-example'>
+    `<div class='fairydict-example' dir='auto'>
     <span class='fairydict-example-text pnl-tts-empowered' data-tts-lang='${lang}'>
         <span class="pnl-tts-icon">🔊</span>
         ${example}
-    </span>${translation ? `<span class='fairydict-example-translation'> — ${translation}</span>` : ""}</div>`;
-const synonymsTpl = (synonyms) => `<div class='fairydict-synonyms'><strong>Synonyms:</strong> ${synonyms}</div>`;
-const otherFormsTpl = (forms) => `<em class='fairydict-other-forms'>${forms}</em>`;
-const definitionTpl = (def) => `<div class='fairydict-definition'>${def}</div>`;
+    </span>${
+        translation ? `<span class='fairydict-example-translation' dir='auto'> — ${translation}</span>` : ""
+    }</div>`;
+const synonymsTpl = (synonyms) =>
+    `<div class='fairydict-synonyms'><strong>Synonyms:</strong> <span dir='auto'>${synonyms}</span></div>`;
+const otherFormsTpl = (forms) => `<em class='fairydict-other-forms' dir='auto'>${forms}</em>`;
+const definitionTpl = (def) => `<div class='fairydict-definition' dir='auto'>${def}</div>`;
 const toolbarTpl = () => `
 <div class='fairydict-toolbar'>
     <button class='fairydict-toolbar-btn fairydict-btn-plain' title='Dictionary Lookup' data-action='plain'>📖</button>
@@ -242,7 +245,7 @@ const genAIResult = (res) => {
     if (res?.otherCommonMeanings && res.otherCommonMeanings.length > 0) {
         bodyHtml += sectionTitleTpl("Other Common Meanings");
         const meaningsHtml = res.otherCommonMeanings.map((meaning) => defTpl(meaning)).join("<br>");
-        bodyHtml += meaningsHtml;
+        bodyHtml += `<div dir='auto'>${meaningsHtml}</div>`;
     }
 
     if (bodyHtml) {
@@ -307,14 +310,14 @@ export default {
             : $("html");
 
         $(`
-<div class="dictionaries-tooltip">
+<div class="dictionaries-tooltip" dir="auto">
     ${toolbarTpl()}
     <div class="fairydict-spinner">
     <div class="fairydict-bounce1"></div>
     <div class="fairydict-bounce2"></div>
     <div class="fairydict-bounce3"></div>
     </div>
-    <div class="dictionaries-tooltip-content">
+    <div class="dictionaries-tooltip-content" dir="auto">
     </div>
 </div>
 `).appendTo(this.$dictionariezTooltipContainer);
