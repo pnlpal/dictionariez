@@ -1,3 +1,18 @@
+# v7.0.0 Dec 30, 2025
+- **AI Lookup**: Get contextual definitions, synonyms, examples, and pronunciations powered by AI.
+- Added a setting to customize the response language for AI lookups.
+- Enhanced the lookup bubble with quick actions: Switch between dictionary and AI lookup, Open App, Export to Anki, and Go to Settings.
+- Added direct Anki export functionality from the main app window.
+- Optimized TTS player and translator UI for smaller screens and fixed volume button sensitivity.
+- Added support for closing the TTS player with the ESC key.
+- Improved the responsive positioning of the lookup bubble on mobile and small screens.
+- Added "Help Me Refine" button for selected text in editable fields.
+- Implemented caching for recent lookup results to improve performance.
+- Enabled lookup on text selection by default.
+- Enabled word highlighting with the Meta key by default.
+- Improved phrase lookup support (allowing spaces and hyphens).
+- Fixed speech synthesis voice loading issues on Chrome.
+
 # v6.4.4 Dec 21, 2025
 - Disabled the Captionz button on YouTube by default.
 - Fixed sentence searching on Captionz.

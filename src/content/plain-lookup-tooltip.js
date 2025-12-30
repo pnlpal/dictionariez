@@ -640,7 +640,7 @@ export default {
                 <p class='error-message'>Please log in to use AI Lookup feature.</p>
                 <div class='fairydict-error-actions'>
                     <a href='${loginUrl}' target='_blank' class='fairydict-error-btn'>Log In</a>
-                    <a href='https://pnl.dev/topic/1041' target='_blank' class='fairydict-error-link'>What is this?</a>
+                    <a href='https://pnl.dev/topic/1048/dictionariez-v7-0-a-new-milestone-in-ai-powered-language-learning' target='_blank' class='fairydict-error-link'>What is this?</a>
                 </div>
             </div>`;
         } else if (error.type === "trial-limit-reached") {
