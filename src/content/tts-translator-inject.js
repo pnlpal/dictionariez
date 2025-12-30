@@ -79,7 +79,7 @@ export default (setting) => {
         const dictIconHtml = setting.disableAIHelper
             ? ""
             : isInEditable
-            ? `<div class="pnl-ai-helper-icon" title="Request AI dict to help me refine my writing by ${process.env.PRODUCT}">📚</div>`
+            ? `<div class="pnl-ai-helper-icon" title="Help ME Refine my writing by ${process.env.PRODUCT}">📚</div>`
             : "";
 
         if (!ttsSpeakerHtml && !translatorIconHtml && !dictIconHtml) {

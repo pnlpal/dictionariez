@@ -81,7 +81,7 @@ const toolbarTpl = () => `
 <div class='fairydict-toolbar'>
     <button class='fairydict-toolbar-btn fairydict-btn-plain' title='Dictionary Lookup' data-action='plain'>📖</button>
     <button class='fairydict-toolbar-btn fairydict-btn-ai' title='AI Lookup' data-action='ai'>🤖</button>
-    <button class='fairydict-toolbar-btn fairydict-btn-app-lookup' title='Look up in App' data-action='app-lookup'>📚</button>
+    <button class='fairydict-toolbar-btn fairydict-btn-app-lookup' title='Open other dictionaries' data-action='app-lookup'>📚</button>
     <button class='fairydict-toolbar-btn fairydict-btn-anki hidden-xss' title='Export to Anki' data-action='anki'>🗂️</button>
     <button class='fairydict-toolbar-btn fairydict-btn-options hidden-xss' title='Open Options' data-action='options'>⚙️</button>
     <button class='fairydict-toolbar-btn fairydict-btn-close' title='Close' data-action='close'>✕</button>
