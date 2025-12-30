@@ -4,8 +4,9 @@ import message from "./message.js";
 import cloud from "./pnl-cloud.js";
 import storage from "./storage.js";
 import localStorageCacheFactory from "./localStorageCache.js";
+import setting from "./setting.js";
 
-const { findInCache, addToCache } = localStorageCacheFactory("ai-lookup-cache", 20);
+const { findInCache, addToCache, clearCache } = localStorageCacheFactory("ai-lookup-cache", 20);
 
 // Simple in-memory cache for the last request
 let lastKey = null;
@@ -39,7 +40,12 @@ async function processNext() {
         }
 
         // Make API call
-        const result = await cloud.lookupInAI({ word, sentence, detectedLangInContext });
+        const result = await cloud.lookupInAI({
+            word,
+            sentence,
+            detectedLangInContext,
+            userLanguage: setting.getValue("aiResponseLanguage"),
+        });
         if (result?.lookup) {
             lastKey = key;
             lastResult = result;
@@ -91,7 +97,12 @@ message.on("look up in AI", async ({ word, sentence, s, sc, detectedLangInContex
     // Otherwise, process this request immediately
     isBusy = true;
     try {
-        const result = await cloud.lookupInAI({ word, sentence, detectedLangInContext });
+        const result = await cloud.lookupInAI({
+            word,
+            sentence,
+            detectedLangInContext,
+            userLanguage: setting.getValue("aiResponseLanguage"),
+        });
         if (result?.lookup) {
             lastKey = key;
             lastResult = result;
@@ -109,3 +120,5 @@ message.on("look up in AI", async ({ word, sentence, s, sc, detectedLangInContex
         throw e;
     }
 });
+
+export default { clearCache };

@@ -1,6 +1,7 @@
 import contextMenu from "./contextMenu.js";
 import message from "./message.js";
 import utils from "utils";
+import aiLookup from "./ai-lookup.js";
 
 export default {
     configCache: {
@@ -81,6 +82,7 @@ export default {
         disableTranslator: false,
         translatorSettings: "",
         isPro: undefined,
+        aiResponseLanguage: undefined,
     },
 
     init() {
@@ -94,6 +96,8 @@ export default {
                 } else {
                     contextMenu.createLookupItem();
                 }
+            } else if (request.key === "aiResponseLanguage") {
+                aiLookup.clearCache();
             }
             return this.setValue(request.key, request.value);
         });

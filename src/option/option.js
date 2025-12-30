@@ -22,6 +22,7 @@ import "./pnl-craft-topics.js";
 import initWelcome from "./init-welcome.js";
 import initUserProfile from "./user-profile.js";
 import initHistoryAndDicts from "./tables.js";
+import initAILanguageSelect from "./ai-language-select.js";
 
 document.title = `Options - ${process.env.PRODUCT}`;
 
@@ -41,6 +42,7 @@ dictApp.controller("optionCtrl", [
 
         $scope.version = chrome.runtime.getManifest().version;
         $scope.allSK = ["", "Ctrl", "Shift", "Alt", "Meta"];
+        $scope.specialKeys = ["No", "Ctrl", "Shift", "Alt", "Meta"];
         $scope.allLetters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
         $scope.allLetters.unshift("Disabled");
 
@@ -105,6 +107,7 @@ dictApp.controller("optionCtrl", [
                 initWelcome({ setting: $scope.setting, applySetting: $scope.$apply.bind($scope) });
                 initHistoryAndDicts($scope);
                 initUserProfile($scope);
+                initAILanguageSelect($scope);
                 $scope.$apply();
             }
         );

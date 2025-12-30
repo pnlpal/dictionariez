@@ -88,10 +88,20 @@ export default (cacheKey, maxCachedItems = 10) => {
         await setCache(cacheArr);
     }
 
+    function clearCache() {
+        console.info("Clearing local storage cache:", cacheKey);
+        if (isLocalStorageAvailable) {
+            localStorage.removeItem(cacheKey);
+        } else {
+            chrome.storage.local.remove(cacheKey);
+        }
+    }
+
     return {
         getCache,
         setCache,
         findInCache,
         addToCache,
+        clearCache,
     };
 };

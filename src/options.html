@@ -57,6 +57,12 @@
 							<a href="#function-setting">Settings</a>
 						</li>
 						<li role="presentation" class="">
+							<a href="#pro-setting">
+								Pro Settings
+								<i class="fa fa-star" style="color: gold; font-size: 0.8em; margin-left: 4px;"></i>
+							</a>
+						</li>
+						<li role="presentation" class="">
 							<a href="#shortcut-setting">Hotkeys</a>
 						</li>
 					</ul>
@@ -597,62 +603,6 @@
 								Automatically close the popup dict window when focus normal window.
 							</label>
 						</div>
-						
-						<br>
-						<div><p>Sentence/Paragraph Selection Bubble (TTS & Translation) <em class="text-new">New!</em></p>
-							<div class="checkbox indent">
-								<label>
-									Show bubble only when key is pressed: 
-								</label>
-
-								<div class="btn-group" uib-dropdown uib-keyboard-nav>
-									<button
-										uib-dropdown-toggle
-										class="form-control btn dropdown-toggle btn-default"
-										type="button"
-										id="btn-sentenceBubbleSK"
-									>
-										{{ setting.sentenceBubbleSK || 'None (always show)' }}
-										<span class="caret"></span>
-									</button>
-
-									<ul
-										uib-dropdown-menu
-										class="dropdown-menu"
-										role="menu"
-										aria-labelledby="btn-sentenceBubbleSK"
-									>
-										<li role="menuitem" ng-repeat="item in allSK">
-											<a ng-click="changeKey(item, 'sentenceBubbleSK')">{{ item || 'None (always show)' }}</a>
-										</li>
-									</ul>
-								</div>
-							</div>
-
-							<div class="checkbox indent">
-								<label>
-									<input
-										type="checkbox"
-										ng-model="setting.disableTTS"
-										ng-click="changeKey(!setting.disableTTS, 'disableTTS')"
-									/>
-									Hide Text-to-Speech (TTS) button in the popup bubble
-									<em class="text-pro badge" title="TTS reads selected text aloud with natural AI voices. Pro users get unlimited usage.">Pro</em>
-								</label>
-							</div>
-
-							<div class="checkbox indent">
-								<label>
-									<input
-										type="checkbox"
-										ng-model="setting.disableTranslator"
-										ng-click="changeKey(!setting.disableTranslator, 'disableTranslator')"
-									/>
-									Hide Translation button in the popup bubble
-									<em class="text-pro badge" title="Translate selected text between languages instantly. Pro users get unlimited translations.">Pro</em>
-								</label>
-							</div>
-						</div>
 
 						<div>
 							<label for="excluded-websites">
@@ -672,6 +622,99 @@
 									cols="10" 
 									rows="5">
 								</textarea>
+							</div>
+						</div>
+					</div>
+
+					<br />
+
+					<div id="pro-setting" class="section pro-setting">
+						<h1>Pro Settings 
+							<a href="https://pnl.dev/pro" target="_blank" class="pro-badge" title="Upgrade to Pro to unlock these features">
+								<i class="fa fa-star"></i> Pro
+							</a>
+						</h1>
+
+						<div class="pro-settings-wrapper">
+							<div class="pro-feature-section">
+								<h3>AI Lookup Settings
+									<a class="what-is-this" href='https://pnl.dev/topic/1041' title="What is this?" target="_blank">
+										<i class="fa fa-question-circle" aria-hidden="true"></i>
+									</a>
+								</h3>
+								<div class="form-group">
+									<label for="ai-response-language" class="select-label">
+										Response Language
+										<span class="text-muted">(Language for AI definitions and examples)</span>
+									</label>
+									<select id="ai-response-language" class="form-control">
+										<option value="">English (default)</option>
+									</select>
+									<p class="help-text text-muted">
+										For example, if you're learning Swedish but prefer German explanations, select German here.
+									</p>
+								</div>
+							</div>
+
+							<div class="pro-feature-section">
+								<h3>Sentence/Paragraph Selection Bubble</h3>
+								<p class="text-muted">Quick access to TTS and translation when selecting text</p>
+
+								<div class="checkbox">
+									<label>
+										Show the bubble only when key is pressed:
+									</label>
+									<div class="btn-group" uib-dropdown uib-keyboard-nav>
+										<button
+											uib-dropdown-toggle
+											class="form-control btn dropdown-toggle btn-default"
+											type="button"
+											id="btn-sentenceBubbleSK"
+										>
+											{{ setting.sentenceBubbleSK || 'None (always show)' }}
+											<span class="caret"></span>
+										</button>
+
+										<ul
+											uib-dropdown-menu
+											class="dropdown-menu"
+											role="menu"
+											aria-labelledby="btn-sentenceBubbleSK"
+										>
+											<li role="menuitem" ng-repeat="item in allSK">
+												<a ng-click="changeKey(item, 'sentenceBubbleSK')">{{ item || 'None (always show)' }}</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+
+								<div class="checkbox">
+									<label>
+										<input
+											type="checkbox"
+											ng-model="setting.disableTTS"
+											ng-click="changeKey(!setting.disableTTS, 'disableTTS')"
+										/>
+										Hide Text-to-Speech (TTS) button in the popup bubble
+										<a  class="what-is-this" href='https://pnl.dev/topic/1036/introducing-tts-pro-ai-powered-text-to-speech-comes-to-dictionariez-v6-3-0' title="What is this?" target="_blank">
+											<i class="fa fa-question-circle" aria-hidden="true"></i>
+										</a>
+									</label>
+								</div>
+
+								<div class="checkbox">
+									<label>
+										<input
+											type="checkbox"
+											ng-model="setting.disableTranslator"
+											ng-click="changeKey(!setting.disableTranslator, 'disableTranslator')"
+										/>
+										Hide Translation button in the popup bubble
+										<a class="what-is-this" href='https://pnl.dev/topic/1041/introducing-translation-pro-instant-text-translation-in-dictionariez' title="What is this?" target="_blank">
+											<i class="fa fa-question-circle" aria-hidden="true"></i>
+										</a>
+									</label>
+								</div>
 							</div>
 						</div>
 					</div>
