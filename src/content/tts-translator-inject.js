@@ -2,9 +2,10 @@ import utils from "utils";
 import debounce from "lodash/debounce";
 import detectLanguage from "./detect-language.js";
 import getTextFromNode from "../shared-readonly/getTextFromNode.js";
+import { checkEditable } from "./common-text-utils.js";
 
 export default (setting) => {
-    if (setting.disableTTS && setting.disableTranslator) {
+    if (setting.disableTTS && setting.disableTranslator && setting.disableAIHelper) {
         return;
     }
 
@@ -39,7 +40,7 @@ export default (setting) => {
                     left: lastRect.right,
                     top: lastRect.bottom,
                 };
-            } else {
+            } else if (selectionRect.right !== 0 || selectionRect.bottom !== 0) {
                 // Final fallback to selection rect
                 endRect = {
                     right: selectionRect.right,
@@ -47,6 +48,8 @@ export default (setting) => {
                     left: selectionRect.right,
                     top: selectionRect.bottom,
                 };
+            } else if (range.endContainer?.getBoundingClientRect) {
+                endRect = range.endContainer.getBoundingClientRect();
             }
         }
 
@@ -72,11 +75,23 @@ export default (setting) => {
             ? ""
             : `<div class="pnl-translator-icon" title="Translate this text by ${process.env.PRODUCT}">🌐</div>`;
 
+        const isInEditable = checkEditable(selection.focusNode);
+        const dictIconHtml = setting.disableAIHelper
+            ? ""
+            : isInEditable
+            ? `<div class="pnl-ai-helper-icon" title="Request AI dict to help me refine my writing by ${process.env.PRODUCT}">📚</div>`
+            : "";
+
+        if (!ttsSpeakerHtml && !translatorIconHtml && !dictIconHtml) {
+            return;
+        }
+
         const bubble = document.createElement("div");
         bubble.className = "pnl-sentence-selected-bubble";
         bubble.innerHTML = `
         ${ttsSpeakerHtml}
         ${translatorIconHtml}
+        ${dictIconHtml}
         </div>
         `;
 
@@ -129,7 +144,7 @@ export default (setting) => {
     border-bottom-color: #333 !important;
     transition: all 0.2s ease;
 }
-.pnl-tts-speaker, .pnl-translator-icon {
+.pnl-tts-speaker, .pnl-translator-icon, .pnl-ai-helper-icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -139,7 +154,7 @@ export default (setting) => {
     border-radius: 4px;
     transition: background-color 0.2s ease;
 }
-.pnl-tts-speaker:hover, .pnl-translator-icon:hover {
+.pnl-tts-speaker:hover, .pnl-translator-icon:hover, .pnl-ai-helper-icon:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 `;
@@ -148,6 +163,7 @@ export default (setting) => {
 
         const ttsIcon = bubble.querySelector(".pnl-tts-speaker");
         const translatorIcon = bubble.querySelector(".pnl-translator-icon");
+        const dictIcon = bubble.querySelector(".pnl-ai-helper-icon");
 
         ttsIcon?.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -167,6 +183,17 @@ export default (setting) => {
                 },
                 window.location.origin
             );
+            removeBubble();
+        });
+        dictIcon?.addEventListener("click", (e) => {
+            e.stopPropagation();
+            utils.send("look up", {
+                type: "look up",
+                w: text,
+                s: location.href,
+                sc: document.title,
+                isInEditable,
+            });
             removeBubble();
         });
 
@@ -297,6 +324,14 @@ export default (setting) => {
             // Only respond to Ctrl key alone
             if (utils.isOnlySKPressed(ev, setting.sentenceBubbleSK) && skHasDown) {
                 handleSentenceSelected(ev);
+            } else if (ev.key === "Control" || ev.key === "a") {
+                // Ctrl + A means select all, so if in editable, trigger the bubble
+                const isInEditable = checkEditable(window.getSelection().focusNode);
+                if (isInEditable) {
+                    handleSentenceSelected(ev);
+                } else {
+                    removeBubble();
+                }
             } else {
                 removeBubble();
             }

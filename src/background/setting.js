@@ -80,6 +80,7 @@ export default {
         sentenceBubbleSK: "",
         disableTTS: false,
         disableTranslator: false,
+        disableAIHelper: false,
         translatorSettings: "",
         isPro: undefined,
         aiResponseLanguage: undefined,

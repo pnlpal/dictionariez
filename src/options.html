@@ -695,7 +695,7 @@
 											ng-model="setting.disableTTS"
 											ng-click="changeKey(!setting.disableTTS, 'disableTTS')"
 										/>
-										Hide Text-to-Speech (TTS) button in the popup bubble
+										Hide the Text-to-Speech (TTS) button in the popup bubble
 										<a  class="what-is-this" href='https://pnl.dev/topic/1036/introducing-tts-pro-ai-powered-text-to-speech-comes-to-dictionariez-v6-3-0' title="What is this?" target="_blank">
 											<i class="fa fa-question-circle" aria-hidden="true"></i>
 										</a>
@@ -709,8 +709,22 @@
 											ng-model="setting.disableTranslator"
 											ng-click="changeKey(!setting.disableTranslator, 'disableTranslator')"
 										/>
-										Hide Translation button in the popup bubble
+										Hide the Translation button in the popup bubble
 										<a class="what-is-this" href='https://pnl.dev/topic/1041/introducing-translation-pro-instant-text-translation-in-dictionariez' title="What is this?" target="_blank">
+											<i class="fa fa-question-circle" aria-hidden="true"></i>
+										</a>
+									</label>
+								</div>
+
+								<div class="checkbox">
+									<label>
+										<input
+											type="checkbox"
+											ng-model="setting.disableAIHelper"
+											ng-click="changeKey(!setting.disableAIHelper, 'disableAIHelper')"
+										/>
+										Hide the Help-Me-Refine button when in editable fields in the popup bubble
+										<a class="what-is-this" href='https://pnl.dev/topic/952/introducing-help-me-refine-now-available-on-dictionariez-v5-4-0-enhance-your-writing-with-ai' title="What is this?" target="_blank">
 											<i class="fa fa-question-circle" aria-hidden="true"></i>
 										</a>
 									</label>
