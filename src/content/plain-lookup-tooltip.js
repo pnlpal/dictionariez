@@ -420,8 +420,7 @@ export default {
 
                 case "options":
                     // Open main Dictionariez app
-                    utils.send("open options page");
-                    self.hide();
+                    utils.send("open options", { to: "pro-setting" });
                     break;
 
                 case "close":
