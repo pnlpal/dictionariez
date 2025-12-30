@@ -51,15 +51,10 @@ export default {
             return;
         }
 
-        // Only allow one hyphen in the middle, no other punctuation
-        // (e.g., "co-operate" is OK, "co--operate" or "co,operate" is not)
-        const hyphenSplit = w.split("-");
-        if (hyphenSplit.length > 2) return; // More than one hyphen
-
-        // Only allow letters (any language) and at most one hyphen
+        // Only allow letters (any language), hyphens, and spaces
         // \p{L}: any kind of letter from any language
         // \p{M}: any kind of combining mark (accents, diacritics, etc.)
-        if (!/^[\p{L}\p{M}]+(-[\p{L}\p{M}]+)?$/u.test(w)) return;
+        if (!/^[\p{L}\p{M}]+([ -][\p{L}\p{M}]+)*$/u.test(w)) return;
 
         const possibleLangs = this.checkLangs(w, detectedLangInContext);
         if (this.checkType(w, possibleLangs)) {

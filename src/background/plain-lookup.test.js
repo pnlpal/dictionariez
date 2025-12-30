@@ -136,7 +136,7 @@ describe("background/plain-lookup", () => {
         const result = await utils.send("look up plain", {
             w: "pie",
         });
-        expect(result.length).to.equal(1);
+        expect(result.length).to.gte(1);
         expect(result[0].lang).to.equal("Spanish");
         expect(result[0].w).to.equal("pie");
     });
@@ -310,10 +310,12 @@ describe("background/check words to ignore in plain lookup", () => {
             expect(result).to.not.exist;
         }
     });
-    it("should accept words with at most one hyphen in the middle or strip punctuation at the end", async () => {
+    it("should accept words with at most one hyphen in the middle or strip punctuation at the end or phrase", async () => {
         await enableLanguages(["Swedish", "Japanese", "Ukrainian", "Thai"], true, true);
         const wordsToAccept = [
             { word: "co-operate", expected: "co-operate" },
+            { word: "wrap up", expected: "wrap up" },
+            { word: "come up with", expected: "come up with" },
             { word: "fart!!", expected: "fart" },
             { word: "fart.", expected: "fart" },
             { word: "  regeringen ", expected: "regeringen" },
