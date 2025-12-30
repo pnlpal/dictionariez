@@ -239,9 +239,9 @@ const genAIResult = (res) => {
     }
 
     // Most common meanings
-    if (res?.mostCommonMeanings && res.mostCommonMeanings.length > 0) {
+    if (res?.otherCommonMeanings && res.otherCommonMeanings.length > 0) {
         bodyHtml += sectionTitleTpl("Other Common Meanings");
-        const meaningsHtml = res.mostCommonMeanings.map((meaning) => defTpl(meaning)).join("<br>");
+        const meaningsHtml = res.otherCommonMeanings.map((meaning) => defTpl(meaning)).join("<br>");
         bodyHtml += meaningsHtml;
     }
 
