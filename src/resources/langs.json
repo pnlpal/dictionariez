@@ -1,6 +1,7 @@
 {
     "English": {
         "regex": "[a-zA-Z- ]",
+        "accentedRegex": "[a-zA-Z- éàèùâêîôûçëïüñöæœÉÀÈÙÂÊÎÔÛÇËÏÜÑÖÆŒ]",
         "symbol": "en",
         "synthesis": "en-US"
     },

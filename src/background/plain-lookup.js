@@ -81,7 +81,15 @@ export default {
                     detectedLangInContext == langConfig.symbol ||
                     langConfig.synthesis?.startsWith(detectedLangInContext)
                 ) {
-                    if (w.match(new RegExp(langConfig.regex, "ug"))?.length === w.length) {
+                    let regex = langConfig.regex;
+                    if (lang === "English") {
+                        // Allow accented characters for borrowed words in English context
+                        regex = langConfig.accentedRegex;
+                    }
+                    if (w.match(new RegExp(regex, "ug"))?.length === w.length) {
+                        if (this.isLangDisabled(lang)) {
+                            return [];
+                        }
                         results.push(lang);
                     }
                 }
@@ -100,29 +108,26 @@ export default {
         return results;
     },
 
-    checkType(w, possibleLangs = null) {
-        const checkPossibleLangs = (lang_) => {
-            if (!possibleLangs) {
-                return true;
-            }
-            return possibleLangs.includes(lang_);
-        };
-
-        if (utils.isEnglish(w) && setting.getValue("enableLookupEnglish") && checkPossibleLangs("English")) {
+    checkType(w, possibleLangs = []) {
+        if (setting.getValue("enableLookupEnglish") && possibleLangs.includes("English")) {
             return setting.getValue("englishLookupSource"); // google, bingCN, wiktionary
         }
 
         for (const name in parserDescs) {
             const dictDesc = parserDescs[name];
             if (dictDesc.supportChinese) {
-                if (utils.isChinese(w) && setting.getValue("enableLookupChinese") && checkPossibleLangs("Chinese")) {
+                if (
+                    utils.isChinese(w) &&
+                    setting.getValue("enableLookupChinese") &&
+                    possibleLangs.includes("Chinese")
+                ) {
                     return name;
                 }
             }
 
             if (dictDesc.languages) {
                 for (const lang of dictDesc.languages) {
-                    if (checkPossibleLangs(lang) && !this.isLangDisabled(lang)) {
+                    if (possibleLangs.includes(lang) && !this.isLangDisabled(lang)) {
                         return name;
                     }
                 }

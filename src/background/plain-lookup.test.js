@@ -371,6 +371,69 @@ describe("background/plain-lookup", () => {
             expect(result.w).to.equal("حر");
         }
     });
+    it("should get accented English word when detected language is en and if English is enabled", async () => {
+        await enableLanguages([], true, false);
+        const result = await utils.send("look up plain", {
+            w: "café",
+        });
+        // console.log(result);
+        expect(result).to.not.exist;
+
+        const result_fr = await utils.send("look up plain", {
+            w: "café",
+            detectedLangInContext: "fr",
+        });
+        // console.log(result_fr);
+        expect(result_fr).to.not.exist;
+
+        const result2 = await utils.send("look up plain", {
+            w: "café",
+            detectedLangInContext: "en",
+        });
+        // console.log(result2);
+        expect(result2.lang).to.equal("English");
+        expect(result2.w).to.equal("cafe");
+        expect(result2._source).to.equal("google");
+
+        const result3 = await utils.send("look up plain", {
+            w: "dejà vu",
+            detectedLangInContext: "en",
+        });
+        // console.log(result3);
+        expect(result3.lang).to.equal("English");
+        expect(result3.w).to.equal("déjà vu");
+        expect(result3._source).to.equal("google");
+
+        const result4 = await utils.send("look up plain", {
+            w: "jalapeño",
+            detectedLangInContext: "en",
+        });
+        // console.log(result4);
+        expect(result4.lang).to.equal("English");
+        expect(result4.w).to.equal("jalapeño");
+        expect(result4._source).to.equal("google");
+    });
+    it("should get accented French word when detected language is fr and if French is enabled", async () => {
+        await enableLanguages(["French"], true, false);
+        const result = await utils.send("look up plain", {
+            w: "café",
+            detectedLangInContext: "fr",
+        });
+        // console.log(result);
+        expect(result[0].lang).to.equal("French");
+        expect(result[0].w).to.equal("café");
+        expect(result[0]._source).to.equal("wiktionary");
+    });
+    it("should get English threeven from wiktionary as it doesn't exist on Google", async () => {
+        await enableLanguages([], true, false);
+        const result = await utils.send("look up plain", {
+            w: "threeven",
+        });
+        // console.log(result);
+        expect(result[0].lang).to.equal("English");
+        expect(result[0].w).to.equal("threeven");
+        expect(result[0]._source).to.equal("wiktionary");
+    });
 });
 describe("background/check words to ignore in plain lookup", () => {
     it("should ignore single letters and words with punctuation", async () => {
