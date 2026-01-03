@@ -130,11 +130,11 @@ export default {
         }
     },
 
-    fallbackDictFromGoogle(w) {
+    fallbackDict(w, current = "google") {
         // fallback to other dict if Google failed
         for (const name in parserDescs) {
             const dictDesc = parserDescs[name];
-            if (name === "google") {
+            if (name === current) {
                 continue;
             }
             if (dictDesc.supportChinese) {
@@ -154,7 +154,6 @@ export default {
                 }
             }
         }
-        return "wiktionary";
     },
 
     init() {
@@ -173,7 +172,12 @@ export default {
                         }
                     }
                 } else {
-                    if (!this.otherSupportedLanguages.includes(language)) {
+                    if (
+                        !this.otherSupportedLanguages.includes(language) &&
+                        language !== "English" &&
+                        language !== "Chinese"
+                    ) {
+                        // Exclude English and Chinese, as they are handled separately
                         this.otherSupportedLanguages.push(language);
                     }
                 }
@@ -187,7 +191,7 @@ export default {
         });
 
         message.on("look up plain", async ({ w, s, sc, sentence, detectedLangInContext }, sender) => {
-            w = w.trim().toLowerCase();
+            w = w.trim();
             if (!w) {
                 return;
             }
@@ -221,7 +225,7 @@ export default {
         });
     }, // ignore phrase
 
-    tryGoogleWithOtherHl({ tabId, w, url, detectedLangInContext }) {
+    tryGoogleWithOtherHl({ tabId, w, url, detectedLangInContext, _requests }) {
         if (url.includes("hl=en")) {
             const possibleLangs = this.checkLangs(w, detectedLangInContext);
             const parserDesc = parserDescs.google;
@@ -237,6 +241,7 @@ export default {
                             prevResult: null,
                             url: newGoogleUrl,
                             detectedLangInContext,
+                            _requests,
                         });
                     }
                 }
@@ -245,12 +250,16 @@ export default {
         return null;
     },
 
-    async parse({ tabId, w, tname, prevResult, url, detectedLangInContext }) {
+    async parse({ tabId, w, tname, prevResult, url, detectedLangInContext, _requests = [] }) {
         const possibleLangs = this.checkLangs(w, detectedLangInContext);
 
         tname ??= this.checkType(w, possibleLangs);
         if (!tname) {
             return;
+        }
+        if (_requests.length > 3) {
+            console.warn("Too many fallback requests:", _requests, "for word:", w);
+            return prevResult;
         }
 
         const dictDesc = parserDescs[tname];
@@ -259,96 +268,97 @@ export default {
 
         if (tname === "google" && possibleLangs.length > 0 && possibleLangs[0] !== "English" && url.includes("hl=en")) {
             // prioritize other languages over English
-            const promise_ = this.tryGoogleWithOtherHl({ tabId, w, url, detectedLangInContext });
+            const promise_ = this.tryGoogleWithOtherHl({ tabId, w, url, detectedLangInContext, _requests });
             if (promise_) {
                 return promise_;
             }
         }
 
+        const fallbackDictName = this.fallbackDict(w, tname);
+
         let html;
         try {
+            _requests.push({ tname, url });
             html = await utils.loadHTML(url, dictDesc.credentials);
         } catch (err) {
-            if (err.message === "timeout" && utils.isEnglish(w) && !prevResult) {
+            console.error("Failed to parse: ", url, err.message, err);
+
+            if (fallbackDictName && !prevResult && _requests.length <= 2) {
+                console.log("Fallback to ", fallbackDictName, " for word:", w);
                 return this.parse({
                     tabId,
                     w,
-                    tname: tname === "wiktionary" ? "google" : "wiktionary",
+                    tname: fallbackDictName,
                     detectedLangInContext,
+                    _requests,
                 });
-            } else if (tname === "google" && !prevResult) {
-                return this.parse({ tabId, w, tname: this.fallbackDictFromGoogle(w), prevResult });
             } else if (err.status === 404 && tname === "wiktionary") {
                 if (url.includes("en.wiktionary.org") && possibleLangs.includes("Swedish")) {
+                    console.log("Fallback to sv.wiktionary for word:", w);
                     return this.parse({
                         tabId,
                         w,
                         tname: "wiktionary",
                         prevResult,
                         url: url.replace(/\w+.wiktionary.org/, "sv.wiktionary.org"),
-                    });
-                } else if (!url.includes("de.wiktionary.org") && possibleLangs.includes("German")) {
-                    return this.parse({
-                        tabId,
-                        w,
-                        tname: "wiktionary",
-                        prevResult,
-                        url: url.replace(/\w+.wiktionary.org/, "de.wiktionary.org"),
+                        _requests,
                     });
                 } else if (!url.includes("uk.wiktionary.org") && possibleLangs.includes("Ukrainian")) {
+                    console.log("Fallback to uk.wiktionary for word:", w);
                     return this.parse({
                         tabId,
                         w,
                         tname: "wiktionary",
                         prevResult,
                         url: url.replace(/\w+.wiktionary.org/, "uk.wiktionary.org"),
+                        _requests,
                     });
                 } else if (possibleLangs.includes("Tajik")) {
-                    return this.parseOtherLang(tabId, w, "Tajik", null, prevResult);
+                    console.log("Fallback to Tajik specific parser for word:", w);
+                    return this.parseOtherLang(tabId, w, "Tajik", null, prevResult, _requests);
                 } else if (possibleLangs.includes("Indonesian")) {
-                    return this.parseOtherLang(tabId, w, "Indonesian", null, prevResult);
+                    console.log("Fallback to Indonesian specific parser for word:", w);
+                    return this.parseOtherLang(tabId, w, "Indonesian", null, prevResult, _requests);
                 } else if (possibleLangs.includes("Ukrainian")) {
-                    return this.parseOtherLang(tabId, w, "Ukrainian", null, prevResult);
+                    console.log("Fallback to Ukrainian specific parser for word:", w);
+                    return this.parseOtherLang(tabId, w, "Ukrainian", null, prevResult, _requests);
                 }
             }
 
-            console.error("Failed to parse: ", url, err.message);
             return prevResult;
         }
 
         const result = await utils.sendToTab(tabId, { type: "parse lookup result", html, parserDesc: dictDesc.result });
+        if (result) {
+            result._source = tname;
+            result._url = url;
+            result._requests = _requests;
+        }
         // console.log "parse:", w, "from:", tname, "result:", result
         // fallback to wiktionary if google failed
-        if (tname === "google" && (!result?.w || !result?.defs?.length) && url.includes("hl=en")) {
+        if (tname === "google" && (!result?.w || !result?.defs?.length)) {
             if (prevResult) {
                 return prevResult;
             }
-            const promise_ = this.tryGoogleWithOtherHl({ tabId, w, url, detectedLangInContext });
+            const promise_ = this.tryGoogleWithOtherHl({ tabId, w, url, detectedLangInContext, _requests });
             if (promise_) {
                 return promise_;
             }
-            return this.parse({ tabId, w, tname: this.fallbackDictFromGoogle(w), prevResult, detectedLangInContext });
+            if (fallbackDictName) {
+                return this.parse({ tabId, w, tname: fallbackDictName, prevResult, detectedLangInContext, _requests });
+            }
         }
 
         // fix prons and lang for google result
-        if (tname === "google") {
+        if (tname === "google" && result?.langSymbol) {
             for (const lang in langs) {
                 const langConfig = langs[lang];
                 if (langConfig.symbol === result.langSymbol || langConfig.aternative === result.langSymbol) {
-                    if (this.isLangDisabled(lang)) {
-                        return this.parse({
-                            tabId,
-                            w,
-                            tname: this.fallbackDictFromGoogle(w),
-                            prevResult,
-                            detectedLangInContext,
-                        });
-                    }
                     result.lang = lang;
                     const detectedPron = result.prons[0];
                     detectedPron.synthesis = langConfig.synthesis;
 
-                    if (!detectedPron.audio && result.langSymbol) {
+                    if (!detectedPron.audio) {
                         detectedPron.type = langConfig.symbol;
                         detectedPron.symbol = langConfig.symbol.toUpperCase();
                     } else if (detectedPron.type === "bre") {
@@ -360,13 +370,15 @@ export default {
         }
 
         // check other possible languages in fallback dict like wiktionary
-        if (tname === "google" && possibleLangs.length > 1) {
+        if (tname === "google" && possibleLangs.length > 1 && fallbackDictName && !prevResult) {
+            console.log("Check other possible languages in fallback dict for word:", w, possibleLangs);
             return this.parse({
                 tabId,
                 w,
-                tname: this.fallbackDictFromGoogle(w),
+                tname: fallbackDictName,
                 prevResult: result,
                 detectedLangInContext,
+                _requests,
             });
         }
 
@@ -382,13 +394,14 @@ export default {
                 result.lang ??= "English";
                 // parse the second language if possible.
                 const otherPossibleLangs = possibleLangs.filter((l) => l !== result?.lang);
-                if (otherPossibleLangs.length && !prevResult) {
+                if (otherPossibleLangs.length && !prevResult && fallbackDictName) {
                     return this.parse({
                         tabId,
                         w,
-                        tname: this.fallbackDictFromGoogle(w),
+                        tname: fallbackDictName,
                         prevResult: result.w ? result : null,
                         detectedLangInContext,
+                        _requests,
                     });
                 }
             }
@@ -417,6 +430,10 @@ export default {
                     if (prevResult?.lang === targetLang.lang) {
                         continue;
                     }
+                    targetLang._source = tname;
+                    targetLang._url = url;
+                    targetLang._requests = _requests;
+
                     if (prevResult?.length) {
                         // parse following words
                         if (targetLang.lang !== prevResult[0].lang) {
@@ -471,11 +488,11 @@ export default {
                         targetLang.w = result.w;
 
                         if (targetLang.lang === "Tajik") {
-                            return this.parseOtherLang(tabId, w, "Tajik", targetLang, prevResult);
+                            return this.parseOtherLang(tabId, w, "Tajik", targetLang, prevResult, _requests);
                         }
 
                         if (targetLang.lang === "Indonesian") {
-                            return this.parseOtherLang(tabId, w, "Indonesian", targetLang, prevResult);
+                            return this.parseOtherLang(tabId, w, "Indonesian", targetLang, prevResult, _requests);
                         }
 
                         multipleResult.push(targetLang);
@@ -484,7 +501,8 @@ export default {
                             w,
                             targetLang,
                             multipleResult,
-                            detectedLangInContext
+                            detectedLangInContext,
+                            _requests
                         );
                     }
                 }
@@ -497,7 +515,7 @@ export default {
             if (multipleResult.length === 0) {
                 // merge Tajik
                 if (possibleLangs.includes("Tajik")) {
-                    return this.parseOtherLang(tabId, w, "Tajik", null, prevResult);
+                    return this.parseOtherLang(tabId, w, "Tajik", null, prevResult, _requests);
                 }
             }
 
@@ -507,13 +525,16 @@ export default {
         return result;
     },
 
-    async parseFollowWordsOnWiktionary(tabId, w, targetLang, multipleResult, detectedLangInContext) {
+    async parseFollowWordsOnWiktionary(tabId, w, targetLang, multipleResult, detectedLangInContext, _requests) {
         // use followWord fist, then try optionalFollowWord
         let followWords = targetLang.defs?.map((n) => n.followWord).filter((n) => n);
         followWords = [...new Set(followWords)]; // remove duplicate
         const optionalFollowWord = targetLang.defs?.[0]?.optionalFollowWord;
         const isUniqueWord = (word) =>
-            word && w !== word && multipleResult.every((n) => n.w?.replaceAll("·", "") !== word);
+            word &&
+            w !== word &&
+            multipleResult.every((n) => n.w?.replaceAll("·", "") !== word) &&
+            word.split(" ").length === 1;
 
         if (followWords?.length && multipleResult.length < 5) {
             if (isUniqueWord(followWords[0]) && followWords[0][0] === w[0]) {
@@ -523,6 +544,7 @@ export default {
                     tname: "wiktionary",
                     prevResult: multipleResult,
                     detectedLangInContext,
+                    _requests,
                 });
             }
             if (isUniqueWord(followWords[1]) && followWords[1][0] === w[0]) {
@@ -532,6 +554,7 @@ export default {
                     tname: "wiktionary",
                     prevResult: multipleResult,
                     detectedLangInContext,
+                    _requests,
                 });
             }
         }
@@ -544,13 +567,14 @@ export default {
                     tname: "wiktionary",
                     prevResult: multipleResult,
                     detectedLangInContext,
+                    _requests,
                 });
             }
         }
     },
 
-    async parseOtherLang(tabId, w, tname, wiktionaryResult, prevResult) {
-        const result = await this.parse({ tabId, w, tname });
+    async parseOtherLang(tabId, w, tname, wiktionaryResult, prevResult, _requests) {
+        const result = await this.parse({ tabId, w, tname, _requests });
 
         // wiktionary result is first.
         if (wiktionaryResult && result?.w !== wiktionaryResult.w) {

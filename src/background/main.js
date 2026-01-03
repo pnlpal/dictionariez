@@ -45,12 +45,11 @@ const initPromises = (async function () {
 })();
 
 chrome.runtime.onInstalled.addListener(async function (details) {
-    if (process.env.UNIT_TEST === "true")
+    if (process.env.UNIT_TEST === "true") {
         chrome.tabs.create({
             url: chrome.runtime.getURL("test.html"),
         });
-
-    if ([chrome.runtime.OnInstalledReason.INSTALL].includes(details.reason)) {
+    } else if ([chrome.runtime.OnInstalledReason.INSTALL].includes(details.reason)) {
         await initPromises;
 
         chrome.tabs.create({

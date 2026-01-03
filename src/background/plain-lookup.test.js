@@ -19,8 +19,24 @@ describe("background/plain-lookup", () => {
         expect(result.length).to.equal(2);
         expect(result[0].lang).to.equal("Swedish");
         expect(result[0].w).to.equal("fart");
+        expect(result[0]._source).to.equal("wiktionary");
         expect(result[1].lang).to.equal("English");
         expect(result[1].w).to.equal("fart");
+        expect(result[1]._source).to.equal("google");
+    });
+    it("should still get definition of fart when detected in sv from both Swedish and English and Swedish comes first", async () => {
+        await enableLanguages(["Swedish"]);
+        const result = await utils.send("look up plain", {
+            w: "fart",
+            detectedLangInContext: "sv",
+        });
+        expect(result.length).to.equal(2);
+        expect(result[0].lang).to.equal("Swedish");
+        expect(result[0].w).to.equal("fart");
+        expect(result[0]._source).to.equal("wiktionary");
+        expect(result[1].lang).to.equal("English");
+        expect(result[1].w).to.equal("fart");
+        expect(result[1]._source).to.equal("wiktionary");
     });
 
     it("should get definition of regeringen from Swedish and its original form", async () => {
@@ -41,7 +57,7 @@ describe("background/plain-lookup", () => {
         const result = await utils.send("look up plain", {
             w: "trots",
         });
-        // console.log(result);
+        console.log(result);
         expect(result.length).to.equal(2);
         expect(result[0].lang).to.equal("Swedish");
         expect(result[0].w).to.equal("trots");
@@ -87,25 +103,75 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of Lehrerin from German", async () => {
+        // this word exists in both google and wiktionary but google comes first
         await enableLanguages(["German"], true);
         const result = await utils.send("look up plain", {
             w: "Lehrerin",
         });
+        console.log(result);
+        expect(result[0].defs.length).to.equal(1);
+        expect(result[0].lang).to.equal("German");
+        expect(result[0].w).to.equal("Leh·re·rin");
+        expect(result[0]._source).to.equal("google");
+    });
+    it("should get definition of German word Vielleicht from wiktionary if detected lang is de", async () => {
+        // this word exists in both google and wiktionary but wiktionary should come first if detected lang is de
+        await enableLanguages(["German"], true);
+        const result = await utils.send("look up plain", {
+            w: "vielleicht",
+            detectedLangInContext: "de",
+        });
         // console.log(result);
-        expect(result.defs.length).to.equal(1);
-        expect(result.lang).to.equal("German");
-        expect(result.w).to.equal("Leh·re·rin");
+        expect(result.length).to.equal(1);
+        expect(result[0].lang).to.equal("German");
+        expect(result[0].w).to.equal("vielleicht");
+        expect(result[0]._source).to.equal("wiktionary");
+    });
+    it("shouldn't get definition of word Arabischlehrerin as it's not in dictionary", async () => {
+        await enableLanguages(["German"], true);
+        const result = await utils.send("look up plain", {
+            w: "Arabischlehrerin",
+        });
+        // console.log(result);
+        expect(result).to.not.exist;
+    });
+    it("should get definition of German Ägyptischlehrerin from wiktionary", async () => {
+        await enableLanguages(["German"], true);
+        const result = await utils.send("look up plain", {
+            w: "Ägyptischlehrerin",
+        });
+        console.log(result);
+        expect(result.length).to.equal(1);
+        expect(result[0].lang).to.equal("German");
+        expect(result[0].w).to.equal("Ägyptischlehrerin");
+        expect(result[0]._source).to.equal("wiktionary");
     });
     it("should get definition of deux from French", async () => {
+        // this word exists in both google and wiktionary but google comes first
         await enableLanguages(["French"], true);
         const result = await utils.send("look up plain", {
             w: "deux",
+        });
+        console.log(result);
+        expect(result.length).to.equal(1);
+        expect(result[0].defs.length).to.gte(1);
+        expect(result[0].lang).to.equal("French");
+        expect(result[0].w).to.equal("deux");
+        expect(result[0]._source).to.equal("google");
+    });
+    it("should get definition of French word deux from wiktionary if detected lang is fr", async () => {
+        // this word exists in both google and wiktionary but wiktionary should come first if detected lang is fr
+        await enableLanguages(["French"], true);
+        const result = await utils.send("look up plain", {
+            w: "deux",
+            detectedLangInContext: "fr",
         });
         // console.log(result);
         expect(result.length).to.equal(1);
         expect(result[0].defs.length).to.gte(1);
         expect(result[0].lang).to.equal("French");
         expect(result[0].w).to.equal("deux");
+        expect(result[0]._source).to.equal("wiktionary");
     });
     it("should get definition of terzogenito from Italian", async () => {
         await enableLanguages(["Italian"], true);
@@ -124,11 +190,14 @@ describe("background/plain-lookup", () => {
         const result = await utils.send("look up plain", {
             w: "pie",
         });
+        // console.log(result);
         expect(result.length).to.gte(1);
         expect(result[0].lang).to.equal("Spanish");
         expect(result[0].w).to.equal("pie");
+        expect(result[0]._source).to.equal("wiktionary");
         expect(result[1].lang).to.equal("English");
         expect(result[1].w).to.equal("pie");
+        expect(result[1]._source).to.equal("google");
     });
 
     it("should get definition of pie from Spanish if Spanish is enabled but not English", async () => {
@@ -139,6 +208,7 @@ describe("background/plain-lookup", () => {
         expect(result.length).to.gte(1);
         expect(result[0].lang).to.equal("Spanish");
         expect(result[0].w).to.equal("pie");
+        expect(result[0]._source).to.equal("wiktionary");
     });
 
     it("should get definition of 大臣 from Japanese if Japanese is enabled but not Chinese", async () => {
@@ -146,8 +216,20 @@ describe("background/plain-lookup", () => {
         const result = await utils.send("look up plain", {
             w: "大臣",
         });
-        expect(result.lang).to.equal("Japanese");
-        expect(result.w).to.equal("だいじん");
+        // console.log(result);
+        expect(result.defs.length).to.be.greaterThan(0);
+        expect(result.w).to.equal("大臣");
+        expect(result._source).to.equal("japan");
+    });
+    it("should get definition of Jpananese て論 from Google as it doesn't exist in JapanDict", async () => {
+        await enableLanguages(["Japanese"], false, false);
+        const result = await utils.send("look up plain", {
+            w: "て論",
+        });
+        console.log(result);
+        expect(result.defs.length).to.be.greaterThan(0);
+        expect(result.w).to.equal("ろん");
+        expect(result._source).to.equal("google");
     });
 
     it("should get definition of дигар from Tajik if Tajik is enabled but not English", async () => {
@@ -191,8 +273,10 @@ describe("background/plain-lookup", () => {
         const result = await utils.send("look up plain", {
             w: "tissue",
         });
+        // console.log(result);
         expect(result.lang).to.equal("English");
         expect(result.w).to.equal("tissue");
+        expect(result._source).to.equal("bingCN");
 
         await utils.send("save setting", {
             key: "englishLookupSource",

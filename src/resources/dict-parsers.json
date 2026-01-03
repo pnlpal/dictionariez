@@ -1,7 +1,109 @@
 {
+    "wiktionary": {
+        "url": "https://en.wiktionary.org/wiki/<word>",
+        "languages": [
+            "English",
+            "German",
+            "Spanish",
+            "French",
+            "Italian",
+            "Portuguese",
+            "Swedish",
+            "Finnish",
+            "Norwegian",
+            "Danish",
+            "Polish",
+            "Russian",
+            "Tajik",
+            "Vietnamese",
+            "Indonesian",
+            "Korean",
+            "Thai",
+            "Ukrainian",
+            "Turkish",
+            "Arabic"
+        ],
+        "result": {
+            "w": {
+                "selector": "h1#firstHeading"
+            },
+            "langTargets": {
+                "groups": ".mw-parser-output .mw-heading2",
+                "extendNextTo": ".mw-heading2",
+                "result": {
+                    "lang": {
+                        "selector": "h2",
+                        "parents": ".mw-heading"
+                    },
+                    "prons": [
+                        {
+                            "symbol": {
+                                "selector": "li .IPA"
+                            },
+                            "type": "unknow"
+                        }
+                    ],
+                    "defs": {
+                        "groups": "p~ol",
+                        "extendPrev": ".mw-heading3, .mw-heading4",
+                        "result": {
+                            "pos": {
+                                "selector1": ".mw-heading4 h4",
+                                "selector": ".mw-heading3 h3"
+                            },
+                            "def": {
+                                "selector": "ol>li",
+                                "excludeChild": "div,ul,dl,ol",
+                                "toArray": true,
+                                "max": 2
+                            },
+                            "followWord": {
+                                "selector": "ol>li .mention a[href]",
+                                "attrOrText": "title"
+                            },
+                            "optionalFollowWord": {
+                                "selector": "ol>li a[href]"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "japan": {
+        "url": "https://www.japandict.com/<word>",
+        "languages": ["Japanese"],
+        "credentials": "same-origin",
+        "result": {
+            "w": {
+                "selector": "h1.display-1"
+            },
+            "prons": [
+                {
+                    "symbol": {
+                        "selector": ".justify-content-center .xxsmall"
+                    },
+                    "synthesis": "ja-JP"
+                }
+            ],
+            "defs": {
+                "container": ".tab-pane[id^='eng']",
+                "groups": "ul>li.list-group-item",
+                "result": {
+                    "def": {
+                        "selector": "div[lang='en']"
+                    },
+                    "labels": {
+                        "selector": "span.badge",
+                        "toArray": true
+                    }
+                }
+            }
+        }
+    },
     "google": {
         "url": "https://www.google.com/search?hl=en&q=define+<word>",
-        "languages": ["German", "Spanish", "Italian", "Japanese", "French"],
+        "languages": ["English", "German", "Spanish", "Italian", "Japanese", "French"],
         "credentials": "same-origin",
         "result": {
             "w": {
@@ -125,76 +227,6 @@
             }
         }
     },
-    "wiktionary": {
-        "url": "https://en.wiktionary.org/wiki/<word>",
-        "languages": [
-            "German",
-            "Spanish",
-            "French",
-            "Italian",
-            "Portuguese",
-            "Swedish",
-            "Finnish",
-            "Norwegian",
-            "Danish",
-            "Polish",
-            "Russian",
-            "Tajik",
-            "Vietnamese",
-            "Indonesian",
-            "Korean",
-            "Thai",
-            "Ukrainian",
-            "Turkish",
-            "Arabic"
-        ],
-        "result": {
-            "w": {
-                "selector": "h1#firstHeading"
-            },
-            "langTargets": {
-                "groups": ".mw-parser-output .mw-heading2",
-                "extendNextTo": ".mw-heading2",
-                "result": {
-                    "lang": {
-                        "selector": "h2",
-                        "parents": ".mw-heading"
-                    },
-                    "prons": [
-                        {
-                            "symbol": {
-                                "selector": "li .IPA"
-                            },
-                            "type": "unknow"
-                        }
-                    ],
-                    "defs": {
-                        "groups": "p~ol",
-                        "extendPrev": ".mw-heading3, .mw-heading4",
-                        "result": {
-                            "pos": {
-                                "selector1": ".mw-heading4 h4",
-                                "selector": ".mw-heading3 h3"
-                            },
-                            "def": {
-                                "selector": "ol>li",
-                                "excludeChild": "div,ul,dl,ol",
-                                "toArray": true,
-                                "max": 2
-                            },
-                            "followWord": {
-                                "selector": "ol>li .mention a[href]",
-                                "attrOrText": "title"
-                            },
-                            "optionalFollowWord": {
-                                "selector": "ol>li a[href]"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
     "ldoce": {
         "url": "https://www.ldoceonline.com/dictionary/<word>",
         "result": {
@@ -214,37 +246,6 @@
                     "type": "bre"
                 }
             ]
-        }
-    },
-    "japan": {
-        "url": "https://www.japandict.com/<word>",
-        "languages": ["Japanese"],
-        "credentials": "same-origin",
-        "result": {
-            "w": {
-                "selector": "h1.display-1"
-            },
-            "prons": [
-                {
-                    "symbol": {
-                        "selector": ".justify-content-center .xxsmall"
-                    },
-                    "synthesis": "ja-JP"
-                }
-            ],
-            "defs": {
-                "container": ".tab-pane[id^='eng']",
-                "groups": "ul>li.list-group-item",
-                "result": {
-                    "def": {
-                        "selector": "div[lang='en']"
-                    },
-                    "labels": {
-                        "selector": "span.badge",
-                        "toArray": true
-                    }
-                }
-            }
         }
     },
     "Tajik": {
