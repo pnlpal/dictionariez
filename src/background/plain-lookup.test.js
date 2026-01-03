@@ -371,6 +371,53 @@ describe("background/plain-lookup", () => {
             expect(result.w).to.equal("حر");
         }
     });
+
+    it("should get definition of Dutch word fiets if Dutch is enabled", async () => {
+        await enableLanguages(["Dutch"], false, false);
+        const result = await utils.send("look up plain", {
+            w: "fiets",
+            detectedLangInContext: "nl",
+        });
+        console.log(result);
+        expect(result[0].lang).to.equal("Dutch");
+        expect(result[0].w).to.equal("fiets");
+        expect(result[0]._source).to.equal("wiktionary");
+    });
+
+    it("should get definition of Greek word κόσμος if Greek is enabled", async () => {
+        await enableLanguages(["Greek"], false, false);
+        const result = await utils.send("look up plain", {
+            w: "κόσμος",
+            detectedLangInContext: "el",
+        });
+        console.log(result);
+        expect(result[0].lang).to.equal("Greek");
+        expect(result[0].w).to.equal("κόσμος");
+        expect(result[0]._source).to.equal("wiktionary");
+    });
+
+    it("should get definition of Hindi word नमस्ते if Hindi is enabled", async () => {
+        await enableLanguages(["Hindi"], false, false);
+        const result = await utils.send("look up plain", {
+            w: "नमस्ते",
+        });
+        console.log(result);
+        expect(result[0].lang).to.equal("Hindi");
+        expect(result[0].w).to.equal("नमस्ते");
+        expect(result[0]._source).to.equal("wiktionary");
+    });
+
+    it("should get definition of Persian word سلام if Persian is enabled", async () => {
+        await enableLanguages(["Persian"], false, false);
+        const result = await utils.send("look up plain", {
+            w: "سلام",
+            detectedLangInContext: "fa",
+        });
+        console.log(result);
+        expect(result[0].lang).to.equal("Persian");
+        expect(result[0].w).to.equal("سلام");
+        expect(result[0]._source).to.equal("wiktionary");
+    });
     it("should get accented English word when detected language is en and if English is enabled", async () => {
         await enableLanguages([], true, false);
         const result = await utils.send("look up plain", {

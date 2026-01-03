@@ -29,6 +29,16 @@
         "regex": "[a-zA-Z]|[áâãàçéêíóôõú ]",
         "symbol": "pt"
     },
+    "Dutch": {
+        "regex": "[a-zA-Z]|[áéíóúàèëïöüÁÉÍÓÚÀÈËÏÖÜ ]",
+        "symbol": "nl",
+        "synthesis": "nl-NL"
+    },
+    "Greek": {
+        "regex": "[\\u0370-\\u03ff\\u1f00-\\u1fff]",
+        "symbol": "el",
+        "synthesis": "el-GR"
+    },
     "Swedish": {
         "regex": "[a-zA-ZäöåÄÖÅ ]",
         "symbol": "se",
@@ -97,6 +107,11 @@
         "symbol": "uk",
         "synthesis": "uk-UA"
     },
+    "Hindi": {
+        "regex": "[\\u0900-\\u097f]",
+        "symbol": "hi",
+        "synthesis": "hi-IN"
+    },
     "Turkish": {
         "regex": "[a-zA-ZçğıöşüÇĞİÖŞÜ ]",
         "symbol": "tr",
@@ -106,5 +121,10 @@
         "regex": "[\\u0600-\\u06FF\\u0750-\\u077F\\u08A0-\\u08FF\\uFB50-\\uFDFF\\uFE70-\\uFEFF]",
         "symbol": "ar",
         "synthesis": "ar-SA"
+    },
+    "Persian": {
+        "regex": "[\\u0600-\\u06FF\\u0750-\\u077F\\u08A0-\\u08FF\\uFB50-\\uFDFF\\uFE70-\\uFEFF\\u200C]",
+        "symbol": "fa",
+        "synthesis": "fa-IR"
     }
 }

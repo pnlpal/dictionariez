@@ -8,6 +8,8 @@
             "French",
             "Italian",
             "Portuguese",
+            "Dutch",
+            "Greek",
             "Swedish",
             "Finnish",
             "Norwegian",
@@ -20,8 +22,10 @@
             "Korean",
             "Thai",
             "Ukrainian",
+            "Hindi",
             "Turkish",
-            "Arabic"
+            "Arabic",
+            "Persian"
         ],
         "result": {
             "w": {
