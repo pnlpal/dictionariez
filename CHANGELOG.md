@@ -1,3 +1,9 @@
+# v7.1.0 Jan 03, 2026 
+- Added support for Dutch, Greek, Hindi, and Persian languages
+- Fixed lookup of accented English words (e.g., détente)
+- Enhanced English definitions to prioritize Wiktionary for German, Spanish, Italian, Japanese, and French, with Google as fallback
+- Improved robustness with additional unit tests
+
 # v7.0.0 Dec 30, 2025
 - **AI Lookup**: Get contextual definitions, synonyms, examples, and pronunciations powered by AI.
 - Added a setting to customize the response language for AI lookups.
