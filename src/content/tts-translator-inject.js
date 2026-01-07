@@ -70,7 +70,7 @@ export default (setting) => {
 
         const ttsSpeakerHtml = setting.disableTTS
             ? ""
-            : `<div class="pnl-tts-speaker" title="Read this sentence aloud by ${process.env.PRODUCT}">🔊</div>`;
+            : `<div class="pnl-tts-speaker" title="Read this text aloud by ${process.env.PRODUCT}">🔊</div>`;
         const translatorIconHtml = setting.disableTranslator
             ? ""
             : `<div class="pnl-translator-icon" title="Translate this text by ${process.env.PRODUCT}">🌐</div>`;
@@ -82,6 +82,8 @@ export default (setting) => {
             ? `<div class="pnl-ai-helper-icon" title="Help ME Refine my writing by ${process.env.PRODUCT}">📚</div>`
             : "";
 
+        const optionsIconHtml = `<div class="pnl-options-icon" title="Config how this bubble behaves by ${process.env.PRODUCT}">⚙️</div>`;
+
         if (!ttsSpeakerHtml && !translatorIconHtml && !dictIconHtml) {
             return;
         }
@@ -92,6 +94,7 @@ export default (setting) => {
         ${ttsSpeakerHtml}
         ${translatorIconHtml}
         ${dictIconHtml}
+        ${optionsIconHtml}
         </div>
         `;
 
@@ -144,7 +147,7 @@ export default (setting) => {
     border-bottom-color: #333 !important;
     transition: all 0.2s ease;
 }
-.pnl-tts-speaker, .pnl-translator-icon, .pnl-ai-helper-icon {
+.pnl-tts-speaker, .pnl-translator-icon, .pnl-ai-helper-icon, .pnl-options-icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -152,10 +155,14 @@ export default (setting) => {
     cursor: pointer;
     padding: 2px;
     border-radius: 4px;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
 }
-.pnl-tts-speaker:hover, .pnl-translator-icon:hover, .pnl-ai-helper-icon:hover {
+.pnl-options-icon {
+    opacity: 0.5;
+}
+.pnl-tts-speaker:hover, .pnl-translator-icon:hover, .pnl-ai-helper-icon:hover, .pnl-options-icon:hover {
     background-color: rgba(255, 255, 255, 0.1);
+    opacity: 1;
 }
 `;
             document.head.appendChild(style);
@@ -164,6 +171,7 @@ export default (setting) => {
         const ttsIcon = bubble.querySelector(".pnl-tts-speaker");
         const translatorIcon = bubble.querySelector(".pnl-translator-icon");
         const dictIcon = bubble.querySelector(".pnl-ai-helper-icon");
+        const optionsIcon = bubble.querySelector(".pnl-options-icon");
 
         ttsIcon?.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -194,6 +202,12 @@ export default (setting) => {
                 sc: document.title,
                 isInEditable,
             });
+            removeBubble();
+        });
+
+        optionsIcon?.addEventListener("click", (e) => {
+            e.stopPropagation();
+            utils.send("open options", { to: "pro-setting" });
             removeBubble();
         });
 
