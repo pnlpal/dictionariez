@@ -499,6 +499,7 @@ export default {
         }
     },
     show(htmlContent = "", e = null) {
+        const clickInside = e && $(e.target).closest(".dictionaries-tooltip").length > 0;
         $(".dictionaries-tooltip").fadeIn("slow");
         if (htmlContent) {
             $(".dictionaries-tooltip").removeClass("loading");
@@ -511,11 +512,8 @@ export default {
             $(".dictionaries-tooltip .dictionaries-tooltip-content").empty();
             $(".dictionaries-tooltip .fairydict-toolbar").removeClass("showing");
 
-            if (e) {
-                const clickInside = $(".dictionaries-tooltip").has(e.target).length;
-                if (!clickInside) {
-                    this.setupPlainContentPosition(e);
-                }
+            if (e && !clickInside) {
+                this.setupPlainContentPosition(e);
             }
         }
     },
