@@ -24,6 +24,7 @@ import initUserProfile from "./user-profile.js";
 import initHistoryAndDicts from "./tables.js";
 import initAILanguageSelect from "./ai-language-select.js";
 import bootoast from "bootoast/dist/bootoast.min.js";
+import askForFeedback from "./ask-for-feedback.js";
 
 document.title = `Options - ${process.env.PRODUCT}`;
 
@@ -122,6 +123,7 @@ dictApp.controller("optionCtrl", [
                 initHistoryAndDicts($scope);
                 initUserProfile($scope);
                 initAILanguageSelect($scope);
+                askForFeedback($scope);
                 $scope.$apply();
             }
         );
