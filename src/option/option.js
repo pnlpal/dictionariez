@@ -23,6 +23,7 @@ import initWelcome from "./init-welcome.js";
 import initUserProfile from "./user-profile.js";
 import initHistoryAndDicts from "./tables.js";
 import initAILanguageSelect from "./ai-language-select.js";
+import bootoast from "bootoast/dist/bootoast.min.js";
 
 document.title = `Options - ${process.env.PRODUCT}`;
 
@@ -80,6 +81,13 @@ dictApp.controller("optionCtrl", [
                 key,
                 value,
             });
+            bootoast.toast({
+                message: `Setting saved. <br><br>
+                You may need to reload open web pages for the new setting to take effect.`,
+                position: "top",
+                type: "success",
+                timeout: 2,
+            });
             $scope.$apply();
         }, 100);
 
@@ -94,6 +102,12 @@ dictApp.controller("optionCtrl", [
                 type: "save setting",
                 key: "otherDisabledLanguages",
                 value: $scope.setting.otherDisabledLanguages,
+            });
+            bootoast.toast({
+                message: `Language "${lang}" has been ${idx >= 0 ? "enabled" : "disabled"}.`,
+                position: "top",
+                type: "success",
+                timeout: 2,
             });
         };
 

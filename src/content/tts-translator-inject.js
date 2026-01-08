@@ -82,7 +82,7 @@ export default (setting) => {
             ? `<div class="pnl-ai-helper-icon" title="Help ME Refine my writing by ${process.env.PRODUCT}">📚</div>`
             : "";
 
-        const optionsIconHtml = `<div class="pnl-options-icon" title="Config how this bubble behaves by ${process.env.PRODUCT}">⚙️</div>`;
+        const optionsIconHtml = `<div class="pnl-options-icon" title="Config how this bubble behaves">⚙️</div>`;
 
         if (!ttsSpeakerHtml && !translatorIconHtml && !dictIconHtml) {
             return;
