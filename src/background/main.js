@@ -55,7 +55,10 @@ chrome.runtime.onInstalled.addListener(async function (details) {
         chrome.tabs.create({
             url: chrome.runtime.getURL(process.env.PRODUCT === "Ordböcker" ? "share.html" : "options.html"),
         });
-    } else if ([chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason)) {
+    } else if (
+        [chrome.runtime.OnInstalledReason.UPDATE].includes(details.reason) &&
+        process.env.PRODUCT === "Ordböcker"
+    ) {
         await initPromises;
         chrome.tabs.create({
             url: chrome.runtime.getURL("share.html"),

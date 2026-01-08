@@ -1,3 +1,11 @@
+# v7.1.1 Jan 08, 2026 
+- Added toast messages when settings are changed in the options page
+- Added a go-to-settings icon in the selection bubble for easier configuration
+- Added feedback request in the options page
+- Fixed lookup result styles on some sites like lbr.co.uk
+- Fixed repositioning the lookup bubble when clicking words inside the bubble itself
+- Fixed handling of multiple selections, especially on Firefox
+ 
 # v7.1.0 Jan 03, 2026 
 - Added support for Dutch, Greek, Hindi, and Persian languages
 - Fixed lookup of accented English words (e.g., détente)
