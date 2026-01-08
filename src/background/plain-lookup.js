@@ -172,7 +172,7 @@ export default {
                             this.otherSupportedLanguages.push(language);
                         }
                     } else {
-                        if (!setting.configCache.otherDisabledLanguages.includes(language)) {
+                        if (!setting.configCache.otherDisabledLanguages.includes(language) && language !== "English") {
                             setting.configCache.otherDisabledLanguages.push(language);
                         }
                     }
