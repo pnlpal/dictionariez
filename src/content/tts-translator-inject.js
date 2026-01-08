@@ -16,7 +16,7 @@ export default (setting) => {
         removeBubble();
 
         const selection = window.getSelection();
-        if (!selection.rangeCount) return;
+        if (!selection.rangeCount || selection.rangeCount > 1) return;
 
         const range = selection.getRangeAt(0);
 
