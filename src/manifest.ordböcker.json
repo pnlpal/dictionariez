@@ -39,7 +39,7 @@
     },
     "icons": {
         "32": "images/ordbocker-32.png",
-        "64": "images/ordbocker-64.png",
+        "48": "images/ordbocker-48.png",
         "128": "images/ordbocker-128.png",
         "256": "images/ordbocker-256.png"
     }

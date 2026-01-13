@@ -13,9 +13,9 @@ app.use("/", express.static(path.join(__dirname, "../readme_images")));
 app.get("/github-badge.js", (req, res) => {
     res.sendFile(path.join(__dirname, "../src/vendor/github-badge.js"));
 });
-// Serve favicon at /library-64.png
-app.get("/library-64.png", (req, res) => {
-    res.sendFile(path.join(__dirname, "../src/images/library-64.png"));
+// Serve favicon at /library-48.png
+app.get("/library-48.png", (req, res) => {
+    res.sendFile(path.join(__dirname, "../src/images/library-48.png"));
 });
 
 app.listen(PORT, "0.0.0.0", () => {

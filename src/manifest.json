@@ -41,7 +41,7 @@
     "icons": {
         "16": "images/library-16.png",
         "32": "images/library-32.png",
-        "64": "images/library-64.png",
+        "48": "images/library-48.png",
         "128": "images/library-128.png"
     }
 }
