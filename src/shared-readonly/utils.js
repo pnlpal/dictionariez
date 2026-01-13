@@ -7,7 +7,7 @@ class ErrorWithMoreInfo extends Error {
   }
 }
 
-export default {
+const utils = {
   getRandomInt(min, max) {
     min ??= 1;
     max ??= 10;
@@ -416,3 +416,9 @@ export default {
     });
   },
 };
+
+if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
+  module.exports = utils;
+} else {
+  globalThis.utils = utils;
+}
