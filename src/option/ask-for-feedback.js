@@ -13,7 +13,7 @@ async function getFeedbackLink() {
         return `https://addons.mozilla.org/firefox/addon/${appId}/reviews`;
     } else if (navigator.userAgent.includes("Edg/")) {
         const extId = chrome.runtime.id;
-        return `https://microsoftedge.microsoft.com/addons/detail/${extId}/reviews`;
+        return `https://microsoftedge.microsoft.com/addons/detail/${extId}`;
     } else {
         const extId = chrome.runtime.id;
         return `https://chrome.google.com/webstore/detail/${extId}/reviews`;
