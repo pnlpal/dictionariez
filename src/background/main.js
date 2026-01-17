@@ -26,12 +26,6 @@ const initPromises = (async function () {
     await lookup.init();
     await speak.init();
 
-    if (process.env.PRODUCT !== "SidePal") {
-        const pnlpal = require("./pnlpal.js").default;
-        await pnlpal.init();
-
-        global.ankiWindow = ankiWindow;
-    }
     if (process.env.PRODUCT === "SidePal") {
         const setupSidePanel = require("./setupSidePanel.js").default;
         setupSidePanel();
@@ -126,7 +120,7 @@ function openSidePanel(tab) {
                         w: res?.w || (await readClipboard(tab)),
                         ...res,
                     });
-            }
+            },
         );
     } else {
         dw.lookup({

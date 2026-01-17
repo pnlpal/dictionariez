@@ -5,8 +5,6 @@ import highlight from "./editable-highlight";
 
 import "./card-iframe.js";
 import "./pnlpal-inject.js";
-import { initCaptionzInjection } from "./captionz-inject.js";
-import { initYtbInjection } from "./ytb-inject.js";
 import { initOnLoadDynamicDict } from "./dynamic-dict-inject.js";
 import { initAnkiInjection } from "./anki-inject.js";
 import initLookupParser from "./lookup-parser.js";
@@ -32,10 +30,6 @@ const setupStyles = () => {
 };
 
 const run = () => {
-    if (process.env.PRODUCT !== "SidePal") {
-        initYtbInjection();
-        initCaptionzInjection();
-    }
     setupStyles();
     initLookupParser();
     initAnkiInjection();
@@ -85,7 +79,7 @@ const run = () => {
                 const comparedLoc = decodeURI(location.href).toLowerCase();
                 if (res.word.split(/\s/).every((s) => comparedLoc.includes(s.toLowerCase()))) {
                     $(
-                        `<iframe class='dictionaries-card dictionaries-card-wiki' src='${res.cardUrl}?sys=wiki' style='display: none;'> </iframe>`
+                        `<iframe class='dictionaries-card dictionaries-card-wiki' src='${res.cardUrl}?sys=wiki' style='display: none;'> </iframe>`,
                     ).appendTo("body");
                 }
             }
@@ -98,7 +92,7 @@ const run = () => {
                     }
                 });
             }
-        }
+        },
     );
 
     chrome.runtime.sendMessage(
@@ -144,7 +138,7 @@ const run = () => {
                             sc: document.title,
                         });
                     },
-                    true
+                    true,
                 );
             }
 
@@ -171,7 +165,7 @@ const run = () => {
                             handleSelectionWord(e);
                         }
                     }
-                }, 200)
+                }, 200),
             );
 
             // 对 mouseup 事件做一个延时处理，
@@ -179,16 +173,16 @@ const run = () => {
             if (setting.needDblclick) {
                 $(document).on(
                     "dblclick",
-                    debounce((e) => handleMouseUp(e), 100)
+                    debounce((e) => handleMouseUp(e), 100),
                 );
                 $(document).on(
                     "mouseup",
-                    debounce((e) => handleMouseUp(e, false), 100)
+                    debounce((e) => handleMouseUp(e, false), 100),
                 );
             } else {
                 $(document).on(
                     "mouseup",
-                    debounce((e) => handleMouseUp(e), 100)
+                    debounce((e) => handleMouseUp(e), 100),
                 );
             }
 
@@ -201,7 +195,7 @@ const run = () => {
                     } catch (error) {
                         console.error(error);
                     }
-                }, 800)
+                }, 800),
             );
 
             $(document).bind("keydown", (event) => {
@@ -300,7 +294,7 @@ const run = () => {
                             plainLookupTooltip.renderPlainResult(res, text, sentence, detectedLangInContext);
                             plainQuerying = null;
                             return res;
-                        }
+                        },
                     );
                 } else {
                     return await utils
@@ -320,7 +314,7 @@ const run = () => {
                                 plainLookupTooltip.renderAIResult(res, text, sentence, detectedLangInContext);
                                 plainQuerying = null;
                                 return res;
-                            }
+                            },
                         )
                         .catch((err) => {
                             if (plainQuerying !== text) {
@@ -364,7 +358,7 @@ const run = () => {
                                     sc: document.title,
                                     isInEditable: utils.isSentence(text) && checkEditable(event.target),
                                 },
-                                markWordAfterward
+                                markWordAfterward,
                             );
                         }
                     }
@@ -385,7 +379,7 @@ const run = () => {
                     }
                 },
                 500,
-                { leading: true, trailing: false }
+                { leading: true, trailing: false },
             );
 
             function handleSelectionWord(e) {
@@ -479,7 +473,7 @@ const run = () => {
                     },
                 });
             });
-        }
+        },
     );
 };
 
