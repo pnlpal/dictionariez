@@ -1,3 +1,8 @@
+# v7.2.0 Jan 17, 2026 
+- Removed Captionz from Dictionariez/Ordböcker; now available as the standalone Captionz-ext.
+- Fixed the Microsoft Edge extension link.
+- Fixed lookup tooltip width on sites like ESPN.
+
 # v7.1.1 Jan 08, 2026 
 - Added toast messages when settings are changed in the options page
 - Added a go-to-settings icon in the selection bubble for easier configuration
