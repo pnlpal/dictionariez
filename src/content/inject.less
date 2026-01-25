@@ -4,7 +4,14 @@
     position: absolute;
     border: 1px solid #333;
     width: auto;
-
+    height: auto;
+    min-height: auto;
+    &.loading {
+        background: none;
+        &:after {
+            background: none;
+        }
+    }
     // responsive width on large screen, macbook air, etc.
     // Note: the left position is set in JS code according to mouse position, so here only need to set width.
     &:not(.loading) {
