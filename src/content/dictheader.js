@@ -154,20 +154,6 @@ dictApp.controller("dictCtrl", [
             }
 
             window.top.postMessage({ type: "toggleDropdown", open: false }, "*");
-            if (!$scope.word) {
-                if (nextDict) {
-                    $scope.previousDictName = $scope.currentDictName;
-                    $scope.currentDictName = $scope.nextDictName;
-                    const currentIndex = $scope.allDicts.findIndex((d) => d.dictName === $scope.currentDictName);
-                    $scope.nextDictName = $scope.allDicts[currentIndex + 1]?.dictName || $scope.allDicts[0].dictName;
-                } else if (previousDict) {
-                    $scope.nextDictName = $scope.currentDictName;
-                    $scope.currentDictName = $scope.previousDictName;
-                    const currentIndex = $scope.allDicts.findIndex((d) => d.dictName === $scope.currentDictName);
-                    $scope.previousDictName = currentIndex > 0 ? $scope.allDicts[currentIndex - 1]?.dictName : $scope.allDicts[$scope.allDicts.length - 1].dictName;
-                }
-                return;
-            }
 
             return chrome.runtime.sendMessage(
                 {
