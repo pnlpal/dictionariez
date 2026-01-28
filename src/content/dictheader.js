@@ -295,6 +295,10 @@ dictApp.controller("dictCtrl", [
                 initDict();
                 sendMessageToDictPage({ ...request, type: "look up in dynamic dict" });
             }
+            if (request.type === 'load new dict') {
+                $scope.currentDictName = request.dictName;
+                initDict();
+            }
 
             $scope.$apply();
         });

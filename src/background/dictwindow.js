@@ -194,6 +194,9 @@ class DictWindow {
                 this.sendMessage({ type: "querying", text, sentence, languagePrompt });
             }
         } else {
+            if (this.dictName !== dictName && dictName) {
+                this.sendMessage({ type: "load new dict", dictName });
+            }
             this.dictName = dictName;
         }
 
