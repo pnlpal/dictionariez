@@ -54,7 +54,8 @@
 
         .fairydict-toolbar-btn {
             width: 28px;
-            min-width: auto; // override on some sites such as https://www.lrb.co.uk
+            min-width: auto !important; // override on some sites such as https://www.lrb.co.uk
+            min-height: auto !important; // override on some sites such as https://jysk.se
             height: 28px;
             border: 1px solid #444;
             background: #2a2a2a;
@@ -67,7 +68,7 @@
             justify-content: center;
             transition: all 0.2s ease;
             padding: 0;
-            margin: 0; // override on some sites such as https://www.iflscience.com
+            margin: 0 !important; // override on some sites such as https://www.iflscience.com
 
             &:hover {
                 background: #3a3a3a;
