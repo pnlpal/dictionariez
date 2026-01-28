@@ -463,7 +463,7 @@ export default {
             const domH = window.innerHeight - rect.top;
 
             // Corresponding to the width set in inject.less
-            const isOnSmallScreen = domW <= 550;
+            const isOnSmallScreen = domW <= 700;
             const isOnMacbookAir = domW <= 1280;
             if (domH - top < 300) {
                 top = top - 10;
