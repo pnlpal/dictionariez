@@ -1,3 +1,8 @@
+# v7.2.1 Jan 28, 2026
+- Fixed floating definition tooltip styles (width, height, toolbar icon margins) on some sites such as jysk.se.
+- Fixed navigation to next/previous dictionary or word when the popup dict window is not in lookup mode.
+- Fixed adding new dictionary when the popup dict window is not in lookup mode. 
+
 # v7.2.0 Jan 17, 2026 
 - Removed Captionz from Dictionariez/Ordböcker; now available as the standalone Captionz-ext.
 - Fixed the Microsoft Edge extension link.
