@@ -61,9 +61,9 @@ export default {
         openOptionSK2: "Shift",
         openOptionKey: "H",
 
-        prevDictSK1: "Ctrl",
+        prevDictSK1: utils.isMac() ? "Meta" : "Ctrl",
         prevDictKey: "ArrowLeft",
-        nextDictSK1: "Ctrl",
+        nextDictSK1: utils.isMac() ? "Meta" : "Ctrl",
         nextDictKey: "ArrowRight",
         prevHistorySK1: "Alt",
         prevHistoryKey: "ArrowLeft",
