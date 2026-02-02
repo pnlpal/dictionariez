@@ -2,11 +2,45 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <link rel="stylesheet" href="./vendor/needsharebutton.css" />
 
         <style>
             :root {
                 color-scheme: light dark;
+                --text-color: #111;
+                --bg-gradient: linear-gradient(135deg, #fefefe, #eef3ff 40%, #f4f4ff 70%);
+                --highlight-bg: rgba(93, 95, 238, 0.08);
+                --highlight-border: #5d5fee;
+                --card-bg: rgba(255, 255, 255, 0.94);
+                --card-border: rgba(0, 0, 0, 0.05);
+                --card-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+                --btn-ghost-border: rgba(0, 0, 0, 0.15);
+                --btn-primary-bg: #5d5fee;
+                --btn-primary-text: #fff;
+                --divider-color: rgba(0, 0, 0, 0.08);
+            }
+
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --text-color: #e7e7e7;
+                    --bg-gradient: linear-gradient(135deg, #151515, #1f2431 50%, #141a24 90%);
+                    --highlight-bg: rgba(93, 95, 238, 0.15);
+                    --card-bg: rgba(30, 35, 45, 0.94);
+                    --card-border: rgba(255, 255, 255, 0.1);
+                    --card-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+                    --btn-ghost-border: rgba(255, 255, 255, 0.2);
+                    --divider-color: rgba(255, 255, 255, 0.1);
+                }
+            }
+
+            body.dark-theme {
+                --text-color: #e7e7e7;
+                --bg-gradient: linear-gradient(135deg, #151515, #1f2431 50%, #141a24 90%);
+                --highlight-bg: rgba(93, 95, 238, 0.15);
+                --card-bg: rgba(30, 35, 45, 0.94);
+                --card-border: rgba(255, 255, 255, 0.1);
+                --card-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+                --btn-ghost-border: rgba(255, 255, 255, 0.2);
+                --divider-color: rgba(255, 255, 255, 0.1);
             }
 
             body {
@@ -17,13 +51,8 @@
                     system-ui,
                     -apple-system,
                     sans-serif;
-                color: #111;
-                background: linear-gradient(135deg, #fefefe, #eef3ff 40%, #f4f4ff 70%);
-            }
-
-            body.dark-theme {
-                color: #e7e7e7;
-                background: linear-gradient(135deg, #151515, #1f2431 50%, #141a24 90%);
+                color: var(--text-color);
+                background: var(--bg-gradient);
             }
 
             main {
@@ -53,8 +82,8 @@
 
             .hero-highlight {
                 padding: 12px 16px;
-                border-left: 4px solid #5d5fee;
-                background: rgba(93, 95, 238, 0.08);
+                border-left: 4px solid var(--highlight-border);
+                background: var(--highlight-bg);
                 border-radius: 6px;
                 font-size: 1.25rem;
             }
@@ -67,11 +96,11 @@
             }
 
             .support-card {
-                background: rgba(255, 255, 255, 0.94);
-                border: 1px solid rgba(0, 0, 0, 0.05);
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
                 border-radius: 18px;
                 padding: 28px;
-                box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+                box-shadow: var(--card-shadow);
                 display: flex;
                 flex-direction: column;
                 gap: 16px;
@@ -105,13 +134,13 @@
             }
 
             .btn-primary {
-                background: #5d5fee;
-                color: #fff;
+                background: var(--btn-primary-bg);
+                color: var(--btn-primary-text);
                 border: none;
             }
 
             .btn-ghost {
-                border: 1px solid rgba(0, 0, 0, 0.15);
+                border: 1px solid var(--btn-ghost-border);
                 color: inherit;
             }
 
@@ -125,7 +154,7 @@
             }
 
             .community {
-                border-top: 1px solid rgba(0, 0, 0, 0.08);
+                border-top: 1px solid var(--divider-color);
                 padding-top: 32px;
                 display: grid;
                 gap: 12px;
