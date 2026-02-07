@@ -381,9 +381,19 @@ export default {
         // special handle of bing when look up Chinese
         if (tname === "bingCN") {
             if (utils.isChinese(w)) {
-                result.prons?.push({ synthesis: "zh-CN" });
                 if (setting.getValue("enableConvertCn2T")) {
                     convertCn2T(result);
+                    result.prons?.push({
+                        symbol: "粤",
+                        type: "zh-hk",
+                        synthesis: "zh-HK",
+                    });
+                } else {
+                    result.prons?.push({
+                        symbol: "普",
+                        type: "zh-cn",
+                        synthesis: "zh-CN",
+                    });
                 }
             } else {
                 result.prons = result.prons?.filter((n) => n.type !== "pinyin");
