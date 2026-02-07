@@ -19,19 +19,17 @@ const convertCn2T = (result) => {
     result.w = cnConverter(result.w);
 };
 
-const setEnglishProns = (result) =>
-    (result.prons = result.prons.concat([
-        {
-            symbol: "UK",
-            type: "bre",
-            synthesis: "en-GB",
-        },
-        {
-            symbol: "US",
-            type: "ame",
-            synthesis: "en-US",
-        },
-    ]));
+const setEnglishProns = (result) => {
+    if (!result.prons) {
+        result.prons = [];
+    }
+    if (!result.prons.find((n) => n.type === "ame")) {
+        result.prons.push({ type: "ame", symbol: "US", synthesis: "en-US" });
+    }
+    if (!result.prons.find((n) => n.type === "bre")) {
+        result.prons.push({ type: "bre", symbol: "UK", synthesis: "en-GB" });
+    }
+};
 
 export default {
     checkTypeOfSupport(w, detectedLangInContext = "") {
@@ -361,6 +359,7 @@ export default {
                     } else if (detectedPron.type === "bre") {
                         detectedPron.symbol = `${detectedPron.symbol || ""} UK`;
                         detectedPron.synthesis = "en-GB";
+                        setEnglishProns(result);
                     }
                 }
             }
