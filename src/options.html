@@ -132,9 +132,9 @@
 								<i class="fa fa-cloud fa-stack-2x"></i>
 								<i class="fa fa-check fa-stack-1x" style="color:#43c59e;"></i>
 							</span>
-							<a href="{{user.subscriptionLink}}" target="_blank" class="fa-stack fa text-danger cloud-sync-status" ng-if="!setting.isPro || !user.loggedIn" title="Your history is not synced to the cloud, please upgrade to Pro to enable cloud sync">
+							<a href="{{user.subscriptionLink}}" target="_blank" class="fa-stack fa text-light cloud-sync-status" ng-if="!setting.isPro || !user.loggedIn" title="Your history is not synced to the cloud, please upgrade to Pro to enable cloud sync">
 								<i class="fa fa-cloud fa-stack-2x"></i>
-								<i class="fa fa-times fa-stack-1x" style="color:#e74c3c;"></i>
+								<i class="fa fa-times fa-stack-1x" style="color:grey;"></i>
 							</a>
 						</h1>
 						<div class="storage-almost-full-alert" ng-if="!setting.isPro && historyAlmostFull">
@@ -173,9 +173,9 @@
 								<i class="fa fa-cloud fa-stack-2x"></i>
 								<i class="fa fa-times fa-stack-1x" style="color:#e74c3c;"></i>
 							</span>
-							<a href="{{user.subscriptionLink}}" target="_blank" class="fa-stack fa text-danger cloud-sync-status" ng-if="!setting.isPro || !user.loggedIn" title="Your dictionaries are not synced to the cloud, please upgrade to Pro to enable cloud sync">
+							<a href="{{user.subscriptionLink}}" target="_blank" class="fa-stack fa text-light cloud-sync-status" ng-if="!setting.isPro || !user.loggedIn" title="Your dictionaries are not synced to the cloud, please upgrade to Pro to enable cloud sync">
 								<i class="fa fa-cloud fa-stack-2x"></i>
-								<i class="fa fa-times fa-stack-1x" style="color:#e74c3c;"></i>
+								<i class="fa fa-times fa-stack-1x" style="color:grey;"></i>
 							</a>
 						</h1>
 						<div ng-if="setting.isPro && user.loggedIn === false" class="session-expired-alert">
