@@ -229,6 +229,7 @@ const run = () => {
 
                 if (setting.markWords) {
                     if (
+                        !checkEditable(event.target) &&
                         setting.enableMarkWordsSK1 &&
                         utils.checkEventKey(event, setting.markWordsSK1, null, setting.markWordsKey)
                     ) {
