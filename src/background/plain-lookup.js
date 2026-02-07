@@ -352,7 +352,7 @@ export default {
         if (tname === "google" && result?.langSymbol) {
             for (const lang in langs) {
                 const langConfig = langs[lang];
-                if (langConfig.symbol === result.langSymbol || langConfig.aternative === result.langSymbol) {
+                if (langConfig.symbol === result.langSymbol || langConfig.alternative === result.langSymbol) {
                     result.lang = lang;
                     const detectedPron = result.prons[0];
                     detectedPron.synthesis = langConfig.synthesis;

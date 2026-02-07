@@ -67,6 +67,18 @@
         "symbol": "fi",
         "synthesis": "fi-FI"
     },
+    "Romanian": {
+        "regex": "[a-zA-Z]|[ĂăÂâÎîȘșȚț ]",
+        "symbol": "ro",
+        "synthesis": "ro-RO",
+        "otherNames": ["Română"]
+    },
+    "Hungarian": {
+        "regex": "[a-zA-Z]|[ÁáÉéÍíÓóÖöŐőÚúÜüŰű ]",
+        "symbol": "hu",
+        "synthesis": "hu-HU",
+        "otherNames": ["Magyar"]
+    },
     "Korean": {
         "regex": "[\uac00-\ud7af]|[\u1100-\u11ff]|[\u3130-\u318f]|[\ua960-\ua97f]|[\ud7b0-\ud7ff]",
         "symbol": "ko"
@@ -74,7 +86,7 @@
     "Japanese": {
         "regex": "[\u3000-\u303f]|[\u3040-\u309f]|[\u30a0-\u30ff]|[\uff00-\uff9f]|[\u4e00-\u9faf]|[\u3400-\u4dbf]",
         "symbol": "jp",
-        "aternative": "ja",
+        "alternative": "ja",
         "synthesis": "ja-JP"
     },
     "Chinese": {
