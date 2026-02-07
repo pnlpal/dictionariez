@@ -8,7 +8,8 @@
     "German": {
         "regex": "[a-zA-Z]|[ÄÖÜẞäöüß ]",
         "symbol": "de",
-        "synthesis": "de-DE"
+        "synthesis": "de-DE",
+        "otherNames": ["Deutsch"]
     },
     "Spanish": {
         "regex": "[a-zA-Z]|[ÑñÁÉÍÓÚÜáéíóúü ]",
@@ -42,12 +43,14 @@
     "Swedish": {
         "regex": "[a-zA-ZäöåÄÖÅ ]",
         "symbol": "se",
-        "synthesis": "sv-SE"
+        "synthesis": "sv-SE",
+        "otherNames": ["Svenska"]
     },
     "Norwegian": {
         "regex": "[a-zA-ZæøåÆØÅ ]",
         "symbol": "no",
-        "synthesis": "nb-NO"
+        "synthesis": "nb-NO",
+        "otherNames": ["Bokmål", "Nynorsk"]
     },
     "Danish": {
         "regex": "[a-zA-ZæøåÆØÅ ]",
@@ -77,7 +80,8 @@
     "Chinese": {
         "regex": "[\u4e00-\u9fff]|[\u3400-\u4dbf]|[\\u{20000}-\\u{2a6df}]|[\\u{2a700}-\\u{2b73f}]|[\\u{2b740}-\\u{2b81f}]|[\\u{2b820}-\\u{2ceaf}]|[\uf900-\ufaff]|[\u3300-\u33ff]|[\ufe30-\ufe4f]|[\uf900-\ufaff]|[\\u{2f800}-\\u{2fa1f}]",
         "symbol": "zh",
-        "synthesis": "zh-CN"
+        "synthesis": "zh-CN",
+        "otherNames": ["Mandarin", "Cantonese"]
     },
     "Tajik": {
         "regex": "[\\u{0400}-\\u{04ff}]",
@@ -85,7 +89,8 @@
     },
     "Russian": {
         "symbol": "ru",
-        "regex": "[\u0410-\u0475]"
+        "regex": "[\u0410-\u0475]",
+        "synthesis": "ru-RU"
     },
     "Thai": {
         "regex": "[\\u{0e00}-\\u{0e7f}]",
@@ -101,6 +106,24 @@
         "regex": "[a-zA-Z ]",
         "symbol": "id",
         "synthesis": "id-ID"
+    },
+    "Filipino": {
+        "regex": "[a-zA-Z]|[ÑñÁÉÍÓÚÜáéíóúü ]",
+        "symbol": "fil",
+        "synthesis": "fil-PH",
+        "otherNames": ["Tagalog"]
+    },
+    "Cebuano": {
+        "regex": "[a-zA-Z]|[ÑñÁÉÍÓÚÜáéíóúü ]",
+        "symbol": "ceb",
+        "synthesis": "ceb-PH",
+        "otherNames": ["Bisaya", "Binisaya"]
+    },
+    "Malay": {
+        "regex": "[a-zA-Z ]",
+        "symbol": "ms",
+        "synthesis": "ms-MY",
+        "otherNames": ["Bahasa"]
     },
     "Ukrainian": {
         "regex": "[а-щьюяґєіїА-ЩЬЮЯҐЄІЇʼ’' \u0301]",
@@ -126,10 +149,5 @@
         "regex": "[\\u0600-\\u06FF\\u0750-\\u077F\\u08A0-\\u08FF\\uFB50-\\uFDFF\\uFE70-\\uFEFF\\u200C]",
         "symbol": "fa",
         "synthesis": "fa-IR"
-    },
-    "Tagalog": {
-        "regex": "[a-zA-Z]|[ÑñÁÉÍÓÚÜáéíóúü ]",
-        "symbol": "tl",
-        "synthesis": "tl-PH"
     }
 }

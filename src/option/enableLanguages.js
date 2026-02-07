@@ -17,6 +17,7 @@ export default async function enableLanguages(enabledLanguages = ["Swedish"], wi
         key: "otherDisabledLanguages",
         value: otherDisabledLanguages,
     });
+    await utils.send("clear plain lookup cache"); // Clear cache to apply language changes immediately
     return {
         enableLookupEnglish: withEnglish,
         enableLookupChinese: withChinese,

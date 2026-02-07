@@ -125,8 +125,8 @@ dictApp.controller("optionCtrl", [
             // Populate options
             Object.keys(allLangs).forEach((lang) => {
                 const option = new Option(lang, lang);
-                if (lang === "Chinese") {
-                    option.setAttribute("data-keys", "Mandarin Cantonese");
+                if (allLangs[lang].otherNames) {
+                    option.setAttribute("data-keys", allLangs[lang].otherNames.join(" "));
                 }
                 $select.append(option);
             });

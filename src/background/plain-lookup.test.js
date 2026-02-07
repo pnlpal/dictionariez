@@ -186,7 +186,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of pie from both Spanish and English and Spanish comes first", async () => {
-        await enableLanguages(["Spanish"]);
+        await enableLanguages(["Spanish"], true, false);
         const result = await utils.send("look up plain", {
             w: "pie",
         });
@@ -201,7 +201,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of pie from Spanish if Spanish is enabled but not English", async () => {
-        await enableLanguages(["Spanish"], false);
+        await enableLanguages(["Spanish"], false, false);
         const result = await utils.send("look up plain", {
             w: "pie",
         });
@@ -300,6 +300,16 @@ describe("background/plain-lookup", () => {
             key: "englishLookupSource",
             value: "google",
         });
+    });
+    it("should get definition of blåkval from Norwegian if Norwegian is enabled", async () => {
+        await enableLanguages(["Norwegian"], false, false);
+        const result = await utils.send("look up plain", {
+            w: "blåkval",
+        });
+        // console.log(result);
+        expect(result[0].w).to.equal("blåkval");
+        expect(result[0].defs.length).to.be.greaterThan(0);
+        expect(result[0]._source).to.equal("wiktionary");
     });
 
     it("should get definition of їжа from Ukrainian if Ukrainian is enabled", async () => {
@@ -479,6 +489,24 @@ describe("background/plain-lookup", () => {
         // console.log(result);
         expect(result[0].lang).to.equal("English");
         expect(result[0].w).to.equal("threeven");
+        expect(result[0]._source).to.equal("wiktionary");
+    });
+    it("should get definition of Filipino tunog from wiktionary if Filipino is enabled", async () => {
+        await enableLanguages(["Filipino"], false, false);
+        const result = await utils.send("look up plain", {
+            w: "tunog",
+        });
+        expect(result[0].lang).to.equal("Filipino");
+        expect(result[0].w).to.equal("tunog");
+        expect(result[0]._source).to.equal("wiktionary");
+    });
+    it("should get definition of Malay milik from wiktionary if Malay is enabled", async () => {
+        await enableLanguages(["Malay"], false, false);
+        const result = await utils.send("look up plain", {
+            w: "milik",
+        });
+        expect(result[0].lang).to.equal("Malay");
+        expect(result[0].w).to.equal("milik");
         expect(result[0]._source).to.equal("wiktionary");
     });
 });

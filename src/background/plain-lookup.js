@@ -8,7 +8,7 @@ import stringSimilarity from "string-similarity";
 import * as OpenCC from "opencc-js/cn2t";
 
 import localStorageCacheFactory from "./localStorageCache.js";
-const { findInCache, addToCache } = localStorageCacheFactory("plain-lookup-cache", 5);
+const { findInCache, addToCache, clearCache } = localStorageCacheFactory("plain-lookup-cache", 5);
 
 let cnConverter = null;
 const convertCn2T = (result) => {
@@ -191,6 +191,10 @@ export default {
 
         message.on("check text supported", ({ w, detectedLangInContext }) => {
             return this.checkTypeOfSupport(w, detectedLangInContext);
+        });
+
+        message.on("clear plain lookup cache", async () => {
+            clearCache();
         });
 
         message.on("look up plain", async ({ w, s, sc, sentence, detectedLangInContext }, sender) => {
@@ -432,6 +436,18 @@ export default {
             }
 
             for (let targetLang of result?.langTargets || []) {
+                function transformLangInOtherName(name_) {
+                    for (const lang in langs) {
+                        if (!result.langTargets.find((l) => l.lang === lang)) {
+                            const langConfig = langs[lang];
+                            if (langConfig.otherNames?.includes(name_)) {
+                                return lang;
+                            }
+                        }
+                    }
+                    return name_;
+                }
+
                 if (targetLang.lang) {
                     if (prevResult?.lang === targetLang.lang) {
                         continue;
@@ -461,9 +477,7 @@ export default {
                         }
                     }
 
-                    if (targetLang.lang === "Svenska") {
-                        targetLang.lang = "Swedish";
-                    }
+                    targetLang.lang = transformLangInOtherName(targetLang.lang);
 
                     // Map Ukrainian heading on uk.wiktionary to English name
                     if (targetLang.lang === "Українська" || targetLang.lang === "українська") {
