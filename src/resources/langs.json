@@ -14,31 +14,38 @@
     "Spanish": {
         "regex": "[a-zA-Z]|[ÑñÁÉÍÓÚÜáéíóúü ]",
         "symbol": "es",
-        "synthesis": "es-ES"
+        "synthesis": "es-ES",
+        "otherNames": ["Español"]
     },
     "French": {
         "regex": "[a-zA-Z]|[ÀàÂâÆæÇçÉéÈèÊêËëÎîÏïÔôŒœÙùÛûÜüŸÿ ]",
         "symbol": "fr",
-        "synthesis": "fr-FR"
+        "synthesis": "fr-FR",
+        "otherNames": ["Français"]
     },
     "Italian": {
         "regex": "[a-zA-Z]|[àèéìíîòóùúÀÈÉÌÍÎÒÓÙÚ ]",
         "symbol": "it",
-        "synthesis": "it-IT"
+        "synthesis": "it-IT",
+        "otherNames": ["Italiano"]
     },
     "Portuguese": {
         "regex": "[a-zA-Z]|[áâãàçéêíóôõú ]",
-        "symbol": "pt"
+        "symbol": "pt",
+        "synthesis": "pt-PT",
+        "otherNames": ["Português"]
     },
     "Dutch": {
         "regex": "[a-zA-Z]|[áéíóúàèëïöüÁÉÍÓÚÀÈËÏÖÜ ]",
         "symbol": "nl",
-        "synthesis": "nl-NL"
+        "synthesis": "nl-NL",
+        "otherNames": ["Nederlands"]
     },
     "Greek": {
         "regex": "[\\u0370-\\u03ff\\u1f00-\\u1fff]",
         "symbol": "el",
-        "synthesis": "el-GR"
+        "synthesis": "el-GR",
+        "otherNames": ["Ελληνικά"]
     },
     "Swedish": {
         "regex": "[a-zA-ZäöåÄÖÅ ]",
@@ -55,17 +62,20 @@
     "Danish": {
         "regex": "[a-zA-ZæøåÆØÅ ]",
         "symbol": "dk",
-        "synthesis": "da-DK"
+        "synthesis": "da-DK",
+        "otherNames": ["Dansk"]
     },
     "Polish": {
         "regex": "[a-zA-ZżźćńółęąśŻŹĆĄŚĘŁÓŃ ]",
         "symbol": "pl",
-        "synthesis": "pl-PL"
+        "synthesis": "pl-PL",
+        "otherNames": ["Polski"]
     },
     "Finnish": {
         "regex": "[a-zA-ZäöåÄÖÅ ]",
         "symbol": "fi",
-        "synthesis": "fi-FI"
+        "synthesis": "fi-FI",
+        "otherNames": ["Suomi"]
     },
     "Romanian": {
         "regex": "[a-zA-Z]|[ĂăÂâÎîȘșȚț ]",
