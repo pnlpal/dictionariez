@@ -9,16 +9,13 @@ import allLangs from "../resources/langs.json";
 import enableLanguages from "./enableLanguages.js";
 
 const welcomeSetup = ({ setting, applySetting }) => {
-    if (setting.otherDisabledLanguages?.length) {
-        return;
-    }
     const setLanguageSettings = async (langs = ["Swedish"]) => {
         const withEnglish = langs.includes("English");
         const withChinese = langs.includes("Chinese");
         const { enableLookupEnglish, enableLookupChinese, otherDisabledLanguages } = await enableLanguages(
             langs,
             withEnglish,
-            withChinese
+            withChinese,
         );
         setting.enableLookupEnglish = enableLookupEnglish;
         setting.enableLookupChinese = enableLookupChinese;
@@ -126,7 +123,7 @@ const welcomeSetup = ({ setting, applySetting }) => {
                 $("<option>", {
                     value: lang,
                     text: lang,
-                })
+                }),
             );
         });
 
@@ -197,4 +194,4 @@ const welcomeSetup = ({ setting, applySetting }) => {
 };
 
 export default welcomeSetup;
-window.welcomeSetup = () => welcomeSetup({ setting: {}, applySetting: () => {} });
+window.welcomeSetup = () => welcomeSetup({ setting: window.setting, applySetting: () => {} });

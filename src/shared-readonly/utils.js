@@ -7,7 +7,7 @@ class ErrorWithMoreInfo extends Error {
   }
 }
 
-export default {
+const utils = {
   getRandomInt(min, max) {
     min ??= 1;
     max ??= 10;
@@ -74,7 +74,7 @@ export default {
     const isAlphanumeric =
       ev.key.length === 1 ||
       ["Enter", "Space", "Tab", "Escape", "Backspace", "Delete"].includes(
-        ev.key
+        ev.key,
       ) ||
       ev.key.startsWith("F") || // Function keys
       ["Home", "End", "PageUp", "PageDown", "Insert"].includes(ev.key);
@@ -139,7 +139,7 @@ export default {
           reject(
             typeof ret.error === "string"
               ? new ErrorWithMoreInfo(ret.error, ret)
-              : ret.error
+              : ret.error,
           );
         } else {
           resolve(ret);
@@ -175,12 +175,12 @@ export default {
       chrome.tabs.sendMessage(tabId, data, (ret) => {
         if (ret?.error) {
           reject(
-            typeof ret.error === "string" ? new Error(ret.error) : ret.error
+            typeof ret.error === "string" ? new Error(ret.error) : ret.error,
           );
         } else {
           resolve(ret);
         }
-      })
+      }),
     );
     if (callback) {
       return p.then(callback);
@@ -198,8 +198,8 @@ export default {
           window.dictionariezBackgroundListeners[request.type]?.(
             request,
             sender,
-            sendResponse
-          )
+            sendResponse,
+          ),
         );
       } else {
         window.dictionariezBackgroundListeners[type] = callback;
@@ -294,7 +294,7 @@ export default {
         str
           .split(/\s/)
           .filter(
-            (w) => w.length > 1 && !simpleStopWords.includes(w.toLowerCase())
+            (w) => w.length > 1 && !simpleStopWords.includes(w.toLowerCase()),
           ).length >= minLength
       );
     }
@@ -386,7 +386,7 @@ export default {
         method: "GET",
         credentials,
       }),
-      5000
+      5000,
     ).then((resp) => {
       if (!resp.ok) {
         const err = new Error(resp.statusText);
@@ -404,7 +404,7 @@ export default {
         method: "GET",
         credentials,
       }),
-      5000
+      5000,
     ).then((resp) => {
       if (!resp.ok) {
         const err = new Error(resp.statusText);
@@ -415,4 +415,31 @@ export default {
       return resp.json();
     });
   },
+  checkEditable(element) {
+    let curNode = element;
+    while (curNode) {
+      if (
+        curNode.isContentEditable ||
+        ["input", "textarea"].includes(curNode.nodeName.toLowerCase())
+      ) {
+        return true;
+      }
+      curNode = curNode.parentElement;
+    }
+    // check the direct children of the node, sometimes the editor could be wrapped by a div.
+    for (const node of element?.children || []) {
+      if (
+        node.isContentEditable ||
+        ["input", "textarea"].includes(node.nodeName.toLowerCase())
+      ) {
+        return true;
+      }
+    }
+  },
 };
+
+if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
+  module.exports = utils;
+} else {
+  globalThis.utils = utils;
+}

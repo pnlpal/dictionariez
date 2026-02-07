@@ -331,164 +331,151 @@
 								Show a floating definition bubble when you select a word (supports multiple languages).
 							</label>
 						</div>
-						<div class="checkbox indent">
-							<label>
-								<input
-									type="checkbox"
-									ng-model="setting.needDblclick"
-									ng-click="changeKey(!setting.needDblclick, 'needDblclick')"
-								/>
-								Only trigger lookup when double-clicking a word.
-								<span class="text-muted">(If unchecked, selecting any word will show the definition bubble)</span>
-							</label>
-						</div>	
-
-						<div class="checkbox indent" ng-if="!isSidePal">
-							<label>
-								<input
-									type="checkbox"
-									ng-model="setting.enablePlainSK1"
-									ng-click="changeKey(!setting.enablePlainSK1, 'enablePlainSK1')"
-								/>
-								Need to hold the key
-							</label>
-
-							<div class="btn-group" uib-dropdown uib-keyboard-nav>
-								<button
-									uib-dropdown-toggle
-									class="form-control btn dropdown-toggle btn-default"
-									type="button"
-									id="btn-plainSK1"
-								>
-									{{ setting.plainSK1 }}
-									<span class="caret"></span>
-								</button>
-
-								<ul
-									uib-dropdown-menu
-									class="dropdown-menu"
-									role="menu"
-									aria-labelledby="btn-plainSK1"
-								>
-									<li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
-										<a ng-click="changeKey(item, 'plainSK1')">{{ item }}</a>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<div class="indent text-muted" ng-if="!isSidePal">
-							Some words might be used in multiple languages, for example English and Spanish have many 
-							common words, cancel one if you prefer the other.
-							
-							There is 
-							<a href="examples.html" target="_blank">an example page</a>
-							to look up different words in different languages you might be interested.
-						</div>
-						<div class="checkbox indent" ng-if="!isSidePal">
-							<div class="checkbox" ng-repeat="lang in setting.otherSupportedLanguages">
+						
+						<div class="indent" ng-if="!isSidePal && setting.enablePlainLookup" style="margin-bottom: 20px;">
+							<div class="checkbox">
 								<label>
 									<input
 										type="checkbox"
-										ng-checked="!setting.otherDisabledLanguages.includes(lang)"
-										ng-click="toggleOtherDisabledLanguages(lang)"
+										ng-model="setting.needDblclick"
+										ng-click="changeKey(!setting.needDblclick, 'needDblclick')"
 									/>
-									Look up <strong>{{ lang }}</strong> words
+									Only trigger lookup when double-clicking a word.
+									<span class="text-muted">(If unchecked, selecting any word will show the definition bubble)</span>
 								</label>
-							</div>
-
-							<div class="checkbox" ng-if="isDictionariez">
-								<label>
-									<input
-										type="checkbox"
-										ng-model="setting.enableLookupChinese"
-										ng-click="changeKey(!setting.enableLookupChinese, 'enableLookupChinese')"
-									/>
-									Look up <strong>Chinese</strong> words <span class="text-muted">(Japanese Kanji conflicts with Chinese, cancel Chinese if you prefer Japanese.)</span>
-								</label>
-							</div>
-							<div class="checkbox indent" ng-if="isDictionariez">
-								<label>
-									<input
-										type="checkbox"
-										ng-model="setting.enableConvertCn2T"
-										ng-click="changeKey(!setting.enableConvertCn2T, 'enableConvertCn2T')"
-									/>
-									  Show definitions in Traditional Chinese instead of Simplified Chinese.
-								</label>
-							</div>
+							</div>	
 
 							<div class="checkbox">
 								<label>
 									<input
 										type="checkbox"
-										ng-model="setting.enableLookupEnglish"
-										ng-click="changeKey(!setting.enableLookupEnglish, 'enableLookupEnglish')"
+										ng-model="setting.enablePlainSK1"
+										ng-click="changeKey(!setting.enablePlainSK1, 'enablePlainSK1')"
 									/>
-									Look up <strong>English</strong> words
+									Need to hold the key to look up:
 								</label>
-							</div>
 
-							<div class="indent">
-								<label>
-									Lookup source from:
-								</label>
-	
 								<div class="btn-group" uib-dropdown uib-keyboard-nav>
 									<button
 										uib-dropdown-toggle
-										class="form-control btn dropdown-toggle btn-default"
+										class="form-control btn dropdown-toggle btn-default btn-xs"
 										type="button"
-										id="btn-englishLookupSource"
+										id="btn-plainSK1"
 									>
-										{{ englishLookupSources[setting.englishLookupSource] }}
+										{{ setting.plainSK1 }}
 										<span class="caret"></span>
 									</button>
-	
+
 									<ul
 										uib-dropdown-menu
 										class="dropdown-menu"
 										role="menu"
-										aria-labelledby="btn-englishLookupSource"
+										aria-labelledby="btn-plainSK1"
 									>
-										<li role="menuitem" ng-repeat="(k, v) in englishLookupSources">
-											<a ng-click="changeKey(k, 'englishLookupSource')">{{ v }}</a>
+										<li role="menuitem" ng-repeat="item in allSK" ng-hide="!item">
+											<a ng-click="changeKey(item, 'plainSK1')">{{ item }}</a>
 										</li>
 									</ul>
 								</div>
 							</div>
+						</div>
 
-							<div class="checkbox indent">
-								<label>
-									<input
-										type="checkbox"
-										ng-model="setting.enableRealPron"
-										ng-click="changeKey(!setting.enableRealPron, 'enableRealPron')"
-									/>
-									Get the US and UK real person pronunciations
-								</label>
-
-								<div class="checkbox indent">
-									<label>
-										<input
-											type="checkbox"
-											ng-model="setting.enableAmeAudio"
-											ng-click="changeKey(!setting.enableAmeAudio, 'enableAmeAudio')"
-										/>
-										Automatically play U.S. pronunciation.
-									</label>
-									<br />
-									<label>
-										<input
-											type="checkbox"
-											ng-model="setting.enableBreAudio"
-											ng-click="changeKey(!setting.enableBreAudio, 'enableBreAudio')"
-										/>
-										Automatically play U.K. pronunciation.
-									</label>
+						<div class="form-group indent" ng-if="!isSidePal && setting.enablePlainLookup">
+							<label for="lookup-languages-options">Target languages to look up:</label>
+							<select id="lookup-languages-options" multiple class="form-control"></select>
+							<p class="help-block text-muted">
+								<small>
+									Some words (like "gift") exist in multiple languages (English/German/Swedish). 
+									Select the languages you want to capture. 
+									See <a href="examples.html" target="_blank">how it works</a>.
+								</small>
+							</p>
+							
+							<!-- Chinese Settings -->
+							<div class="panel-default" ng-if="setting.enableLookupChinese" style="margin-top: 15px; border-left: 3px solid #d9534f;">
+								<div class="panel-body" style="padding: 10px;">
+									<strong>Chinese Options</strong>
+									<div class="checkbox">
+										<label>
+											<input
+												type="checkbox"
+												ng-model="setting.enableConvertCn2T"
+												ng-click="changeKey(!setting.enableConvertCn2T, 'enableConvertCn2T')"
+											/>
+											Show definitions in Traditional Chinese instead of Simplified Chinese.
+										</label>
+									</div>
+									<div class="text-muted small">
+										<i class="fa fa-info-circle"></i> Japanese Kanji often conflicts with Chinese. Deselect Chinese above if you are learning Japanese.
+									</div>
 								</div>
 							</div>
-						<br />
+
+							<!-- English Settings -->
+							<div class="panel-default" ng-if="setting.enableLookupEnglish" style="margin-top: 15px; border-left: 3px solid #337ab7;">
+								<div class="panel-body" style="padding: 10px;">
+									<strong>English Options</strong>
+									
+									<div style="margin-top: 10px; margin-bottom: 10px;">
+										<label style="font-weight: normal;">Lookup source:</label>
+										<div class="btn-group" uib-dropdown uib-keyboard-nav>
+											<button
+												uib-dropdown-toggle
+												class="form-control btn dropdown-toggle btn-default btn-xs"
+												type="button"
+												id="btn-englishLookupSource"
+											>
+												{{ englishLookupSources[setting.englishLookupSource] }}
+												<span class="caret"></span>
+											</button>
+			
+											<ul
+												uib-dropdown-menu
+												class="dropdown-menu"
+												role="menu"
+												aria-labelledby="btn-englishLookupSource"
+											>
+												<li role="menuitem" ng-repeat="(k, v) in englishLookupSources">
+													<a ng-click="changeKey(k, 'englishLookupSource')">{{ v }}</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+
+									<div class="checkbox">
+										<label>
+											<input
+												type="checkbox"
+												ng-model="setting.enableRealPron"
+												ng-click="changeKey(!setting.enableRealPron, 'enableRealPron')"
+											/>
+											Enable real person pronunciation
+										</label>
+									</div>
+
+									<div class="checkbox indent" ng-if="setting.enableRealPron">
+										<label style="margin-right: 15px;">
+											<input
+												type="checkbox"
+												ng-model="setting.enableAmeAudio"
+												ng-click="changeKey(!setting.enableAmeAudio, 'enableAmeAudio')"
+											/>
+											Auto-play US
+										</label>
+										<label>
+											<input
+												type="checkbox"
+												ng-model="setting.enableBreAudio"
+												ng-click="changeKey(!setting.enableBreAudio, 'enableBreAudio')"
+											/>
+											Auto-play UK
+										</label>
+									</div>
+								</div>
+							</div>
 						</div>
+						<br />
+
 						
 						<div class="checkbox" ng-if="!isSidePal">
 							<label>

@@ -1,6 +1,9 @@
 import angular from "angular";
 import utils from "utils";
 import debounce from "lodash/debounce";
+import $ from "jquery";
+import "select2";
+import "select2/dist/css/select2.min.css";
 
 import "angular-ui-bootstrap";
 
@@ -25,6 +28,8 @@ import initHistoryAndDicts from "./tables.js";
 import initAILanguageSelect from "./ai-language-select.js";
 import bootoast from "bootoast/dist/bootoast.min.js";
 import askForFeedback from "./ask-for-feedback.js";
+import allLangs from "../resources/langs.json";
+import enableLanguages from "./enableLanguages.js";
 
 document.title = `Options - ${process.env.PRODUCT}`;
 
@@ -112,6 +117,65 @@ dictApp.controller("optionCtrl", [
             });
         };
 
+        const initLanguageSelector = async () => {
+            await utils.promisifiedTimeout(1); // Wait for the DOM to be ready
+            const $select = $("#lookup-languages-options");
+            if (!$select.length) return;
+
+            // Populate options
+            Object.keys(allLangs).forEach((lang) => {
+                $select.append(new Option(lang, lang));
+            });
+
+            // Calculate currently enabled languages
+            const enabledLangs = [];
+            if ($scope.setting.enableLookupEnglish) enabledLangs.push("English");
+            if ($scope.setting.enableLookupChinese) enabledLangs.push("Chinese");
+
+            Object.keys(allLangs).forEach((lang) => {
+                if (lang === "English" || lang === "Chinese") return;
+                if (!$scope.setting.otherDisabledLanguages.includes(lang)) {
+                    enabledLangs.push(lang);
+                }
+            });
+
+            $select.val(enabledLangs);
+            $select.select2({
+                placeholder: "Select languages to look up",
+                width: "100%",
+                tags: false,
+            });
+
+            $select.on("change", async () => {
+                const selected = $select.val() || [];
+                const withEnglish = selected.includes("English");
+                const withChinese = selected.includes("Chinese");
+
+                await enableLanguages(selected, withEnglish, withChinese);
+
+                // Update local scope settings to reflect changes immediately in UI
+                $scope.setting.enableLookupEnglish = withEnglish;
+                $scope.setting.enableLookupChinese = withChinese;
+
+                // Update otherDisabledLanguages for the scope
+                const allKeys = Object.keys(allLangs);
+                const otherDisabled = allKeys
+                    .filter((l) => l !== "English" && l !== "Chinese")
+                    .filter((l) => !selected.includes(l));
+
+                $scope.setting.otherDisabledLanguages = otherDisabled;
+
+                $scope.$apply();
+
+                bootoast.toast({
+                    message: "Language settings saved.",
+                    type: "success",
+                    position: "top",
+                    timeout: 2,
+                });
+            });
+        };
+
         chrome.runtime.sendMessage(
             {
                 type: "setting",
@@ -119,13 +183,17 @@ dictApp.controller("optionCtrl", [
             (config) => {
                 // window.setting = config
                 $scope.setting = config;
-                initWelcome({ setting: $scope.setting, applySetting: $scope.$apply.bind($scope) });
+                window.setting = config; // For debugging
+                if (!config.otherDisabledLanguages?.length) {
+                    initWelcome({ setting: $scope.setting, applySetting: $scope.$apply.bind($scope) });
+                }
                 initHistoryAndDicts($scope);
                 initUserProfile($scope);
                 initAILanguageSelect($scope);
                 askForFeedback($scope);
+                initLanguageSelector(); // Initialize the selector
                 $scope.$apply();
-            }
+            },
         );
 
         $scope.markColorEvent = {
