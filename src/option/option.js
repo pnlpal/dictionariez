@@ -124,7 +124,11 @@ dictApp.controller("optionCtrl", [
 
             // Populate options
             Object.keys(allLangs).forEach((lang) => {
-                $select.append(new Option(lang, lang));
+                const option = new Option(lang, lang);
+                if (lang === "Chinese") {
+                    option.setAttribute("data-keys", "Mandarin Cantonese");
+                }
+                $select.append(option);
             });
 
             // Calculate currently enabled languages
@@ -139,11 +143,38 @@ dictApp.controller("optionCtrl", [
                 }
             });
 
+            const matchCustom = (params, data) => {
+                // If there are no search terms, return all of the data
+                if ($.trim(params.term) === "") {
+                    return data;
+                }
+
+                // Do not display the item if there is no 'text' label
+                if (typeof data.text === "undefined") {
+                    return null;
+                }
+
+                // Check if the text contains the term
+                if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
+                    return data;
+                }
+
+                // Check if data-keys contains the term
+                const keys = $(data.element).data("keys");
+                if (keys && keys.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
+                    return data;
+                }
+
+                // Return `null` if the term should not be displayed
+                return null;
+            };
+
             $select.val(enabledLangs);
             $select.select2({
                 placeholder: "Select languages to look up",
                 width: "100%",
                 tags: false,
+                matcher: matchCustom,
             });
 
             $select.on("change", async () => {
