@@ -22,7 +22,7 @@ import "angularjs-color-picker/dist/themes/angularjs-color-picker-bootstrap.min.
 import "angularjs-color-picker";
 
 import "./pnl-craft-topics.js";
-import initWelcome from "./init-welcome.js";
+import { welcomeSetup, setupSelect2 } from "./init-welcome.js";
 import initUserProfile from "./user-profile.js";
 import initHistoryAndDicts from "./tables.js";
 import initAILanguageSelect from "./ai-language-select.js";
@@ -120,62 +120,7 @@ dictApp.controller("optionCtrl", [
         const initLanguageSelector = async () => {
             await utils.promisifiedTimeout(1); // Wait for the DOM to be ready
             const $select = $("#lookup-languages-options");
-            if (!$select.length) return;
-
-            // Populate options
-            Object.keys(allLangs).forEach((lang) => {
-                const option = new Option(lang, lang);
-                if (allLangs[lang].otherNames) {
-                    option.setAttribute("data-keys", allLangs[lang].otherNames.join(" "));
-                }
-                $select.append(option);
-            });
-
-            // Calculate currently enabled languages
-            const enabledLangs = [];
-            if ($scope.setting.enableLookupEnglish) enabledLangs.push("English");
-            if ($scope.setting.enableLookupChinese) enabledLangs.push("Chinese");
-
-            Object.keys(allLangs).forEach((lang) => {
-                if (lang === "English" || lang === "Chinese") return;
-                if (!$scope.setting.otherDisabledLanguages.includes(lang)) {
-                    enabledLangs.push(lang);
-                }
-            });
-
-            const matchCustom = (params, data) => {
-                // If there are no search terms, return all of the data
-                if ($.trim(params.term) === "") {
-                    return data;
-                }
-
-                // Do not display the item if there is no 'text' label
-                if (typeof data.text === "undefined") {
-                    return null;
-                }
-
-                // Check if the text contains the term
-                if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
-                    return data;
-                }
-
-                // Check if data-keys contains the term
-                const keys = $(data.element).data("keys");
-                if (keys && keys.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
-                    return data;
-                }
-
-                // Return `null` if the term should not be displayed
-                return null;
-            };
-
-            $select.val(enabledLangs);
-            $select.select2({
-                placeholder: "Select languages to look up",
-                width: "100%",
-                tags: false,
-                matcher: matchCustom,
-            });
+            setupSelect2($select, null, $scope.setting);
 
             $select.on("change", async () => {
                 const selected = $select.val() || [];
@@ -216,13 +161,20 @@ dictApp.controller("optionCtrl", [
                 $scope.setting = config;
                 window.setting = config; // For debugging
                 if (!config.otherDisabledLanguages?.length) {
-                    initWelcome({ setting: $scope.setting, applySetting: $scope.$apply.bind($scope) });
+                    welcomeSetup({
+                        setting: $scope.setting,
+                        applySetting: $scope.$apply.bind($scope),
+                        initialSetup: true,
+                        onSuccess: initLanguageSelector,
+                        onEscape: initLanguageSelector,
+                    });
+                } else {
+                    initLanguageSelector();
                 }
                 initHistoryAndDicts($scope);
                 initUserProfile($scope);
                 initAILanguageSelect($scope);
                 askForFeedback($scope);
-                initLanguageSelector(); // Initialize the selector
                 $scope.$apply();
             },
         );
