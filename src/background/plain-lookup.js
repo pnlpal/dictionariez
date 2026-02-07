@@ -220,14 +220,6 @@ export default {
             }
             return result;
         });
-
-        message.on("get real person voice", ({ w }, sender) => {
-            if (w && setting.getValue("enableRealPron")) {
-                if (w.split(" ").length === 1) {
-                    return this.parse({ tabId: sender.tab.id, w: w.replaceAll("·", ""), tname: "ldoce" });
-                }
-            }
-        });
     }, // ignore phrase
 
     tryGoogleWithOtherHl({ tabId, w, url, detectedLangInContext, _requests }) {
@@ -507,7 +499,7 @@ export default {
                             targetLang,
                             multipleResult,
                             detectedLangInContext,
-                            _requests
+                            _requests,
                         );
                     }
                 }

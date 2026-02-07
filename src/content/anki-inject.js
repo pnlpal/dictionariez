@@ -67,14 +67,14 @@ const getAnkiInfo = (ankiSavedWord, ankiSkippedWord) =>
                             triggerInput($(".field:eq(0)")[0]);
                             triggerInput($(".field:eq(1)")[0]);
                         }),
-                    1000
-                )
+                    1000,
+                ),
             );
 
             $(".field").on("click", ".dictionariez-anki-image-close", function (e) {
                 this.parentElement.remove();
             });
-        }
+        },
     );
 
 const addSkipButton = async () => {
@@ -307,27 +307,10 @@ function renderLookupWords(wordItem, res) {
             }
             return prev;
         }, "");
-
-        if (res.prons.every((v) => ["bre", "ame"].includes(v.type))) {
-            getEnglishPronAudio(res.w);
-        }
     }
 
     if (pronHtml || wHtml) {
         return pronsTpl(wHtml, pronHtml);
-    }
-}
-
-async function getEnglishPronAudio(w) {
-    const { prons } = await utils.send("get real person voice", { w });
-
-    for (const item of prons) {
-        if (item.type === "ame" && item.audio) {
-            $(".field .fairydict-pron-audio-ame").attr("data-mp3", item.audio);
-        }
-        if (item.type === "bre" && item.audio) {
-            $(".field .fairydict-pron-audio-bre").attr("data-mp3", item.audio);
-        }
     }
 }
 
@@ -343,7 +326,7 @@ export const initAnkiInjection = () => {
                 top: window.screenY,
                 width: window.outerWidth,
                 height: window.outerHeight,
-            })
+            }),
         );
     }
 };

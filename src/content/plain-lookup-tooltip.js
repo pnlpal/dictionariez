@@ -26,8 +26,8 @@ const setupAudioListener = () => {
                             (e.currentTarget.classList.contains("fairydict-pron-audio-bre")
                                 ? "en-GB"
                                 : e.currentTarget.classList.contains("fairydict-pron-audio-ame")
-                                ? "en-US"
-                                : ""),
+                                  ? "en-US"
+                                  : ""),
                     });
                 } else if ($(e.currentTarget).data("synthesis")) {
                     synthesisObj = {
@@ -47,8 +47,8 @@ const setupAudioListener = () => {
                 return false;
             },
             1000,
-            { leading: true, trailing: false }
-        )
+            { leading: true, trailing: false },
+        ),
     );
 };
 
@@ -275,33 +275,6 @@ const genAIResult = (res) => {
     return html;
 };
 
-const getEnglishPronAudio = async (w) => {
-    const res = await utils.send("get real person voice", { w });
-    if (res?.prons) {
-        let ameSrc = "";
-        let breSrc = "";
-        function addPronAudio(item) {
-            if ($(`.fairydict-pron-audio-${item.type}`).length) {
-                $(`.fairydict-pron-audio-${item.type}`).attr("data-mp3", item.audio);
-            } else {
-                const audioEl = pronAudioTpl(w.replaceAll("·", ""), item.audio, item.type, item.synthesis, "English");
-                const label_ = item.type === "ame" ? "US" : item.type === "bre" ? "UK" : item.type;
-                const elWithLabel = `<em>${label_}</em>${audioEl}`;
-                $(".fairydict-prons").append(elWithLabel);
-            }
-        }
-        for (const item of res.prons) {
-            addPronAudio(item);
-            if (item.type === "ame") {
-                ameSrc = item.audio;
-            } else if (item.type === "bre") {
-                breSrc = item.audio;
-            }
-        }
-        utils.send("play audios", { ameSrc, breSrc, checkSetting: true });
-    }
-};
-
 export default {
     $dictionariezTooltipContainer: null,
     init() {
@@ -349,9 +322,9 @@ export default {
                                     res,
                                     currentLookupData.word,
                                     currentLookupData.sentence,
-                                    currentLookupData.detectedLangInContext
+                                    currentLookupData.detectedLangInContext,
                                 );
-                            }
+                            },
                         );
                         window.defaultClickLookup = "plain";
                         utils.send("save setting", { key: "defaultClickLookup", value: "plain" });
@@ -373,7 +346,7 @@ export default {
                                     res,
                                     currentLookupData.word,
                                     currentLookupData.sentence,
-                                    currentLookupData.detectedLangInContext
+                                    currentLookupData.detectedLangInContext,
                                 );
                             })
                             .catch((err) => {
@@ -381,7 +354,7 @@ export default {
                                     err,
                                     currentLookupData.word,
                                     currentLookupData.sentence,
-                                    currentLookupData.detectedLangInContext
+                                    currentLookupData.detectedLangInContext,
                                 );
                             });
                         window.defaultClickLookup = "ai";
@@ -534,12 +507,6 @@ export default {
 
         for (const item of res) {
             html += genPlainResult(item);
-
-            if (item?.prons?.length && item.w) {
-                if (item.prons.some((v) => ["bre", "ame"].includes(v.type))) {
-                    getEnglishPronAudio(item.w);
-                }
-            }
         }
 
         $(".fairydict-btn-plain").addClass("active");
@@ -587,7 +554,7 @@ export default {
                 new Error("No AI result, please try again later."),
                 word,
                 sentence,
-                detectedLangInContext
+                detectedLangInContext,
             );
         }
     },

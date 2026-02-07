@@ -61,16 +61,6 @@ export default {
                 await setupOffscreenDocument();
             }
 
-            // Apply audio settings if requested
-            if (checkSetting) {
-                if (!setting.getValue("enableAmeAudio")) {
-                    ameSrc = null;
-                }
-                if (!setting.getValue("enableBreAudio")) {
-                    breSrc = null;
-                }
-            }
-
             // Play main audio sources (American and British English)
             if (ameSrc || breSrc) {
                 await sendAudioMessage({ w, ameSrc, breSrc, synthesis });

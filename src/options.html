@@ -441,41 +441,10 @@
 											</ul>
 										</div>
 									</div>
-
-									<div class="checkbox">
-										<label>
-											<input
-												type="checkbox"
-												ng-model="setting.enableRealPron"
-												ng-click="changeKey(!setting.enableRealPron, 'enableRealPron')"
-											/>
-											Enable real person pronunciation
-										</label>
-									</div>
-
-									<div class="checkbox indent" ng-if="setting.enableRealPron">
-										<label style="margin-right: 15px;">
-											<input
-												type="checkbox"
-												ng-model="setting.enableAmeAudio"
-												ng-click="changeKey(!setting.enableAmeAudio, 'enableAmeAudio')"
-											/>
-											Auto-play US
-										</label>
-										<label>
-											<input
-												type="checkbox"
-												ng-model="setting.enableBreAudio"
-												ng-click="changeKey(!setting.enableBreAudio, 'enableBreAudio')"
-											/>
-											Auto-play UK
-										</label>
-									</div>
 								</div>
 							</div>
 						</div>
 						<br />
-
 						
 						<div class="checkbox" ng-if="!isSidePal">
 							<label>

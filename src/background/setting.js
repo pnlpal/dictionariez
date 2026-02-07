@@ -37,9 +37,6 @@ export default {
 
         enablePlainLookup: process.env.PRODUCT === "SidePal" ? false : true,
         englishLookupSource: "google", // google, bingCN, wiktionary
-        enableAmeAudio: false,
-        enableBreAudio: false,
-        enableRealPron: false,
 
         needDblclick: false,
         enablePlainSK1: false,
