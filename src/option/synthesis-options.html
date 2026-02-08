@@ -1,0 +1,29 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Text-to-Speech Voice Settings</h3>
+    </div>
+    <div class="panel-body">
+        <p class="text-muted">Customize the voice used for each language.</p>
+        <div class="form-horizontal">
+            <div class="form-group" ng-repeat="(langName, langConfig) in params.synthesisLangs">
+                <label class="col-sm-3 control-label">{{langName}}</label>
+                <div class="col-sm-9">
+                    <select
+                        class="form-control"
+                        ng-model="setting.synthesisVoices[langConfig.synthesis]"
+                        ng-change="changeVoiceKey(langConfig.synthesis)"
+                    >
+                        <option value="">Recommended ({{recommendedVoices[langConfig.synthesis] || 'Auto'}})</option>
+                        <option value="__SYSTEM_DEFAULT__">System Default</option>
+                        <option
+                            ng-repeat="voice in params.getVoicesForLang(langConfig.synthesis)"
+                            value="{{voice.name}}"
+                        >
+                            {{voice.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

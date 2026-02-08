@@ -26,6 +26,7 @@ import { welcomeSetup, setupSelect2 } from "./init-welcome.js";
 import initUserProfile from "./user-profile.js";
 import initHistoryAndDicts from "./tables.js";
 import initAILanguageSelect from "./ai-language-select.js";
+import initSynthesisOptions from "./synthesis-options.js";
 import bootoast from "bootoast/dist/bootoast.min.js";
 import askForFeedback from "./ask-for-feedback.js";
 import allLangs from "../resources/langs.json";
@@ -174,6 +175,7 @@ dictApp.controller("optionCtrl", [
                 initHistoryAndDicts($scope);
                 initUserProfile($scope);
                 initAILanguageSelect($scope);
+                initSynthesisOptions($scope);
                 askForFeedback($scope);
                 $scope.$apply();
             },

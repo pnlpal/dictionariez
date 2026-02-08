@@ -73,6 +73,14 @@ export default {
 
             // Play synthesized speech
             if (synthesisObj) {
+                // Inject user preferred voice
+                // Config is not global here, but setting module has cache
+                const userVoices = setting.getValue("synthesisVoices") || {};
+                const lang = synthesisObj.lang;
+                if (lang && userVoices[lang]) {
+                    synthesisObj.voice = userVoices[lang];
+                }
+
                 await sendAudioMessage({ synthesisObj });
             }
         });

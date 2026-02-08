@@ -80,6 +80,8 @@ export default {
         translatorSettings: "",
         isPro: undefined,
         aiResponseLanguage: undefined,
+
+        synthesisVoices: null,
     },
 
     init() {
