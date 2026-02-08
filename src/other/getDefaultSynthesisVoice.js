@@ -28,6 +28,13 @@ function getVoices() {
     });
 }
 
+function checkSameLang(lang1, lang2) {
+    if (!lang1 || !lang2) return false;
+    const base1 = lang1.split("-")[0];
+    const base2 = lang2.split("-")[0];
+    return base1 === base2;
+}
+
 export default async (lang, voiceName = "", languageName = "") => {
     if (voiceName === "__SYSTEM_DEFAULT__") {
         return null;
@@ -37,36 +44,36 @@ export default async (lang, voiceName = "", languageName = "") => {
         if (utils.isWindows()) {
             return (
                 voices.find((x) => voiceName && x.name === voiceName) || // Check if voice object was passed or name matches
-                voices.find((x) => x.name.startsWith("Google") && x.lang?.startsWith(lang)) || // Google first
-                voices.find((x) => x.name.includes("Natural") && x.lang?.startsWith(lang)) || // Windows Neural voices
-                voices.find((x) => x.name.startsWith("Microsoft Zira") && x.lang?.startsWith(lang)) || // Windows 10+ female
-                voices.find((x) => x.name.startsWith("Microsoft David") && x.lang?.startsWith(lang)) || // Windows male
-                voices.find((x) => x.name.startsWith("Microsoft Hazel") && x.lang?.startsWith(lang)) || // Windows UK
-                voices.find((x) => x.lang?.startsWith(lang))
+                voices.find((x) => x.name.startsWith("Google") && checkSameLang(x.lang, lang)) || // Google first
+                voices.find((x) => x.name.includes("Natural") && checkSameLang(x.lang, lang)) || // Windows Neural voices
+                voices.find((x) => x.name.startsWith("Microsoft Zira") && checkSameLang(x.lang, lang)) || // Windows 10+ female
+                voices.find((x) => x.name.startsWith("Microsoft David") && checkSameLang(x.lang, lang)) || // Windows male
+                voices.find((x) => x.name.startsWith("Microsoft Hazel") && checkSameLang(x.lang, lang)) || // Windows UK
+                voices.find((x) => checkSameLang(x.lang, lang))
             );
         } else if (utils.isMac()) {
             return (
                 voices.find((x) => voiceName && x.name === voiceName) ||
-                voices.find((x) => x.name.startsWith("Google") && x.lang?.startsWith(lang)) || // Google first
-                voices.find((x) => x.name.includes("Premium") && x.lang?.startsWith(lang)) || // Premium
-                voices.find((x) => x.name.includes("Enhanced") && x.lang?.startsWith(lang)) || // Enhanced
-                voices.find((x) => x.name.startsWith("Alex") && x.lang?.startsWith(lang)) || // Alex is great for English
-                voices.find((x) => x.name.startsWith("Ava") && x.lang?.startsWith(lang)) || // Ava is also high quality
-                voices.find((x) => x.name.startsWith("Allison") && x.lang?.startsWith(lang)) || // Good US English
-                voices.find((x) => x.name.startsWith("Tom") && x.lang?.startsWith(lang)) || // Good US English male
-                voices.find((x) => x.name.startsWith("Alva") && x.lang?.startsWith(lang)) || // Good Swedish
-                voices.find((x) => x.name.startsWith("Oskar") && x.lang?.startsWith(lang)) || // Good Swedish
-                voices.find((x) => x.name.startsWith("Daniel") && x.lang?.startsWith(lang)) || // Decent UK English
-                voices.find((x) => x.name.startsWith("Samantha") && x.lang?.startsWith(lang)) || // macOS default
-                voices.find((x) => x.lang?.startsWith(lang))
+                voices.find((x) => x.name.startsWith("Google") && checkSameLang(x.lang, lang)) || // Google first
+                voices.find((x) => x.name.includes("Premium") && checkSameLang(x.lang, lang)) || // Premium
+                voices.find((x) => x.name.includes("Enhanced") && checkSameLang(x.lang, lang)) || // Enhanced
+                voices.find((x) => x.name.startsWith("Alex") && checkSameLang(x.lang, lang)) || // Alex is great for English
+                voices.find((x) => x.name.startsWith("Ava") && checkSameLang(x.lang, lang)) || // Ava is also high quality
+                voices.find((x) => x.name.startsWith("Allison") && checkSameLang(x.lang, lang)) || // Good US English
+                voices.find((x) => x.name.startsWith("Tom") && checkSameLang(x.lang, lang)) || // Good US English male
+                voices.find((x) => x.name.startsWith("Alva") && checkSameLang(x.lang, lang)) || // Good Swedish
+                voices.find((x) => x.name.startsWith("Oskar") && checkSameLang(x.lang, lang)) || // Good Swedish
+                voices.find((x) => x.name.startsWith("Daniel") && checkSameLang(x.lang, lang)) || // Decent UK English
+                voices.find((x) => x.name.startsWith("Samantha") && checkSameLang(x.lang, lang)) || // macOS default
+                voices.find((x) => checkSameLang(x.lang, lang))
             );
         } else {
             return (
                 voices.find((x) => voiceName && x.name === voiceName) ||
-                voices.find((x) => x.name.startsWith("Google") && x.lang?.startsWith(lang)) ||
-                voices.find((x) => x.name.includes("Enhanced") && x.lang?.startsWith(lang)) || // Enhanced voices
-                voices.find((x) => x.name.includes("Natural") && x.lang?.startsWith(lang)) || // Neural/Natural voices
-                voices.find((x) => x.lang?.startsWith(lang))
+                voices.find((x) => x.name.startsWith("Google") && checkSameLang(x.lang, lang)) ||
+                voices.find((x) => x.name.includes("Enhanced") && checkSameLang(x.lang, lang)) || // Enhanced voices
+                voices.find((x) => x.name.includes("Natural") && checkSameLang(x.lang, lang)) || // Neural/Natural voices
+                voices.find((x) => checkSameLang(x.lang, lang))
             );
         }
     } else if (languageName) {

@@ -73,12 +73,16 @@ export default {
     checkLangs(w, detectedLangInContext = "") {
         const results = [];
         if (detectedLangInContext) {
+            const checkSynthesisMatch = (langConfig) => {
+                if (langConfig.synthesis) {
+                    const synthesisLang = langConfig.synthesis.split("-")[0];
+                    const detectedSynthesisLang = detectedLangInContext.split("-")[0];
+                    return synthesisLang === detectedSynthesisLang;
+                }
+            };
             for (const lang in langs) {
                 const langConfig = langs[lang];
-                if (
-                    detectedLangInContext == langConfig.symbol ||
-                    langConfig.synthesis?.startsWith(detectedLangInContext)
-                ) {
+                if (detectedLangInContext == langConfig.symbol || checkSynthesisMatch(langConfig)) {
                     let regex = langConfig.regex;
                     if (lang === "English") {
                         // Allow accented characters for borrowed words in English context
