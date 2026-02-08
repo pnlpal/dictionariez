@@ -2,7 +2,11 @@
     <div class="panel-body">
         <p class="text-muted">Customize the voice used for each language.</p>
         <div class="form-horizontal">
-            <div class="form-group" ng-repeat="(langName, langConfig) in params.synthesisLangs">
+            <div
+                class="form-group"
+                ng-repeat="(langName, langConfig) in params.synthesisLangs"
+                ng-show="isLangVisible(langName)"
+            >
                 <label class="col-sm-3 control-label">{{langName}}</label>
                 <div class="col-sm-9">
                     <select
@@ -21,6 +25,12 @@
                     </select>
                 </div>
             </div>
+        </div>
+
+        <div class="text-center" style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px">
+            <button class="btn btn-default btn-sm" ng-click="toggleShowAllLangs()">
+                {{ showAllLangs ? 'Hide Disabled Languages' : 'Show All Languages' }}
+            </button>
         </div>
     </div>
 </div>

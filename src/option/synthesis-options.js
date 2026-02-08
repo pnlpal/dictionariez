@@ -55,6 +55,22 @@ export default function initSynthesisOptions($scope) {
         return allVoices.filter((v) => v.lang && v.lang.replace("_", "-").startsWith(langCode.split("-")[0]));
     };
 
+    $scope.showAllLangs = false;
+    $scope.isLangEnabled = (langName) => {
+        if (langName === "English") return $scope.setting.enableLookupEnglish;
+        if (langName === "Chinese") return $scope.setting.enableLookupChinese;
+        const disabled = $scope.setting.otherDisabledLanguages || [];
+        return !disabled.includes(langName);
+    };
+
+    $scope.isLangVisible = (langName) => {
+        return $scope.showAllLangs || $scope.isLangEnabled(langName);
+    };
+
+    $scope.toggleShowAllLangs = () => {
+        $scope.showAllLangs = !$scope.showAllLangs;
+    };
+
     // 4. Save handler
     $scope.changeVoiceKey = (langKey) => {
         chrome.runtime.sendMessage({
