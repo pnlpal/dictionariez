@@ -1,5 +1,6 @@
 import allLangs from "../resources/langs.json";
 import bootoast from "bootoast/dist/bootoast.min.js";
+import bootbox from "bootbox";
 import getDefaultSynthesisVoice from "../other/getDefaultSynthesisVoice";
 
 const template = require("./synthesis-options.html").default;
@@ -79,16 +80,18 @@ export default function initSynthesisOptions($scope) {
     // Let's insert it after the "Pronunciation / TTS" related settings or at the bottom of settings.
     // In options.html, there isn't a clear TTS section, but there is "Auto-pronounce".
     // I'll append it to the end of #function-setting div
-    const $target = $("#function-setting");
-    if ($target.length) {
-        // Compile the template with Angular
-        const $injector = angular.element(document).injector();
-        $injector.invoke([
-            "$compile",
-            ($compile) => {
-                const $el = $compile(template)($scope);
-                $target.append($el);
-            },
-        ]);
-    }
+    // const $target = $("#function-setting");
+    // Compile the template with Angular
+    const $injector = angular.element(document).injector();
+    $injector.invoke([
+        "$compile",
+        ($compile) => {
+            const $el = $compile(template)($scope);
+            bootbox.dialog({
+                size: "large",
+                title: "Synthesis Voice Options",
+                message: $el,
+            });
+        },
+    ]);
 }

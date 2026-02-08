@@ -175,7 +175,9 @@ dictApp.controller("optionCtrl", [
                 initHistoryAndDicts($scope);
                 initUserProfile($scope);
                 initAILanguageSelect($scope);
-                initSynthesisOptions($scope);
+                if (location.search.includes("synthesis") || location.search.includes("voice")) {
+                    initSynthesisOptions($scope);
+                }
                 askForFeedback($scope);
                 $scope.$apply();
             },
