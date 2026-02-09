@@ -169,6 +169,10 @@ var options = {
                             }
                         }
 
+                        if (env.PRODUCT === "Dictionariez" && env.BROWSER === "Edge") {
+                            json.name = "Dictionariez - Dictionary Lookup & AI Translation for Language Learning";
+                        }
+
                         return Buffer.from(JSON.stringify(json));
                     },
                 },
