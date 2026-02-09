@@ -113,6 +113,9 @@ export default {
         this.syncDictsError = null;
         if (this.isProUser()) {
             try {
+                if (actionable.action) {
+                    setting.setValue("lastTimeSyncDicts", Date.now());
+                }
                 const lastTimeSyncDicts = setting.getValue("lastTimeSyncDicts");
                 const res = await cloudStorage.syncAllDicts(this.allDicts, actionable, lastTimeSyncDicts);
                 if (res && res.allDicts) {
@@ -226,7 +229,7 @@ export default {
         this.allDicts.sort((a, b) => a.sequence - b.sequence);
 
         await storage.setAllByK("dict-", "dictName", changed);
-        await this.syncAllDictsWithCloud();
+        await this.syncAllDictsWithCloud({ action: "reorder" });
     },
 
     getDict(dictName) {
