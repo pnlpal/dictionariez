@@ -39,7 +39,6 @@ function fixChatgptDict(dict) {
 
 export default {
     allDicts: [],
-    syncPromise: null,
 
     isProUser() {
         return setting.getValue("isPro");
@@ -48,7 +47,7 @@ export default {
         await this.initLocalDicts();
 
         if (!setting.getValue("lastTimeSyncDicts")) {
-            this.syncPromise = this.syncAllDictsWithCloud(); // no await, let it run in background.
+            await this.syncAllDictsWithCloud();
         }
 
         message.on("set-dictionary-reorder", async ({ dictMap }) => {
@@ -164,10 +163,10 @@ export default {
         }
 
         await storage.setAllByK("dict-", "dictName", [dict]);
-        this.syncPromise = this.syncAllDictsWithCloud({
+        await this.syncAllDictsWithCloud({
             action: "add",
             dicts: [dict],
-        }); // no await, let it run in background.
+        });
 
         return dict;
     },
@@ -178,10 +177,10 @@ export default {
         }
 
         await storage.remove(`dict-${dictName}`);
-        this.syncPromise = this.syncAllDictsWithCloud({
+        await this.syncAllDictsWithCloud({
             action: "remove",
             dictName,
-        }); // no await, let it run in background.
+        });
     },
     async restoreDefaultDicts() {
         const added = [];
@@ -204,10 +203,10 @@ export default {
             this.allDicts.sort((a, b) => a.sequence - b.sequence);
             await storage.setAllByK("dict-", "dictName", added);
 
-            this.syncPromise = this.syncAllDictsWithCloud({
+            await this.syncAllDictsWithCloud({
                 action: "add",
                 dicts: added,
-            }); // no await, let it run in background.
+            });
         }
         return added;
     },
@@ -225,7 +224,7 @@ export default {
         this.allDicts.sort((a, b) => a.sequence - b.sequence);
 
         await storage.setAllByK("dict-", "dictName", changed);
-        this.syncPromise = this.syncAllDictsWithCloud(); // no await, let it run in background.
+        await this.syncAllDictsWithCloud();
     },
 
     getDict(dictName) {
