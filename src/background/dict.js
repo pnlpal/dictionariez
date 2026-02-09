@@ -118,6 +118,7 @@ export default {
                 if (res && res.allDicts) {
                     this.allDicts = res.allDicts;
                     if (res.shouldUpdateClientSide) {
+                        await storage.removeAllByK("dict-");
                         await storage.setAllByK("dict-", "dictName", this.allDicts);
                     }
                     await setting.setValue("lastTimeSyncDicts", res.lastTimeSyncDicts);

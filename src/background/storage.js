@@ -49,7 +49,7 @@ class Item {
                     Object.keys(data || {})
                         .filter((item) => item.startsWith("w-"))
                         .map((k) => new Item(data[k]))
-                        .sort((x, y) => x.t - y.t)
+                        .sort((x, y) => x.t - y.t),
                 );
             });
         });
@@ -87,7 +87,7 @@ export default {
                 const itemsToRemove = this.localHistory.splice(0, excess);
                 const wordsToRemove = itemsToRemove.map((item) => item.w);
                 console.warn(
-                    `Storage quota exceeded. Removing ${wordsToRemove.length} oldest items from local history.`
+                    `Storage quota exceeded. Removing ${wordsToRemove.length} oldest items from local history.`,
                 );
                 return Item.remove(wordsToRemove).then(console.log, console.error);
             }
@@ -136,7 +136,7 @@ export default {
                         timestamp: item.t,
                         sentence: item.sentence,
                         ankiSaved: item.ankiSaved,
-                    }))
+                    })),
                 );
                 await Item.remove(this.localHistory.map((item) => item.w));
                 this.localHistory = [];
@@ -170,8 +170,8 @@ export default {
                 idx > 0
                     ? this.localHistory[idx - 1]
                     : idx === -1
-                    ? this.localHistory[this.localHistory.length - 1]
-                    : undefined;
+                      ? this.localHistory[this.localHistory.length - 1]
+                      : undefined;
             if (previous) delete previous.previous;
             return previous;
         }
@@ -319,7 +319,7 @@ export default {
                 resolve(
                     Object.keys(data || {})
                         .filter((item) => item.startsWith(k))
-                        .map((n) => data[n])
+                        .map((n) => data[n]),
                 );
             });
         });
@@ -334,8 +334,17 @@ export default {
                     res[k + v] = n;
                     return this.set(res);
                 }
-            })
+            }),
         );
+    },
+
+    removeAllByK(k) {
+        return new Promise((resolve) => {
+            chrome.storage.sync.get(null, (data) => {
+                const keysToRemove = Object.keys(data || {}).filter((item) => item.startsWith(k));
+                chrome.storage.sync.remove(keysToRemove, resolve);
+            });
+        });
     },
 
     deleteAllDictsOnCloud() {
