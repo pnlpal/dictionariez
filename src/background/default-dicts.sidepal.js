@@ -2,9 +2,7 @@ export default [
     {
         dictName: "vocabulary.com",
         windowUrl: "https://www.vocabulary.com/dictionary/<word>",
-        resources: {
-            styles: ["vocabulary.less"],
-        },
+        css: "header, .fixed-tray, #dictionaryNav, .top-notes { display: none; } body { margin-top: 30px; }",
     },
     {
         dictName: "chatgpt definition",
@@ -17,17 +15,13 @@ export default [
         dictName: "Urban Dictionary",
         windowUrl: "https://www.urbandictionary.com/define.php?term=<word>",
         ttsHelperSelector: ".definition .example.italic",
-        resources: {
-            styles: ["urban.less"],
-        },
+        css: "body { margin-top: -30px !important; } body #urban-top-bar { display: none !important; }",
     },
     {
         dictName: "Collins English Dictionary",
         windowUrl: "https://www.collinsdictionary.com/dictionary/english/<word>",
         fixSpaceInWords: "+",
-        resources: {
-            styles: ["collins.less"],
-        },
+        css: "body > header { display: none !important; } body > main { padding-top: 45px !important; } body .topslot_container { display: none; } body .padding-pub { display: none !important; }",
     },
     {
         dictName: "Cambridge English",
@@ -43,9 +37,7 @@ export default [
     {
         dictName: "Wiktionary",
         windowUrl: "https://en.m.wiktionary.org/wiki/<word>",
-        resources: {
-            styles: ["wiktionary.less"],
-        },
+        css: "header { display: none; } main { margin-top: 25px; }",
     },
     {
         dictName: "Merriam-webster Dictionary",
@@ -55,9 +47,7 @@ export default [
     {
         dictName: "thefreedictionary.com",
         windowUrl: "https://www.thefreedictionary.com/<word>",
-        resources: {
-            styles: ["thefreedictionary.less"],
-        },
+        css: ".header-top { display: none; } .adsbygoogle { height: 0 !important; } body { margin-top: -35px !important; } @media only screen and (max-width: 775px) { #header { display: none; } }",
     },
     {
         dictName: "TextPixie (AI translator)",

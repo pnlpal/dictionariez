@@ -4,9 +4,7 @@ export default [
         entry: "LongmanEnglish",
         windowUrl: "https://www.ldoceonline.com/dictionary/<word>",
         fixSpaceInWords: "-",
-        resources: {
-            styles: ["longmanenglish.less"],
-        },
+        css: "body .header, body .topslot-container, body #ad_topslot { display: none !important; } body .content { margin-top: 50px; }",
     },
     {
         dictName: "chatgpt definition",
@@ -18,25 +16,19 @@ export default [
     {
         dictName: "vocabulary.com",
         windowUrl: "https://www.vocabulary.com/dictionary/<word>",
-        resources: {
-            styles: ["vocabulary.less"],
-        },
+        css: "header, .fixed-tray, #dictionaryNav, .top-notes { display: none; } body { margin-top: 30px; }",
     },
     {
         dictName: "Urban Dictionary",
         windowUrl: "https://www.urbandictionary.com/define.php?term=<word>",
         ttsHelperSelector: ".definition .example.italic",
-        resources: {
-            styles: ["urban.less"],
-        },
+        css: "body { margin-top: -30px !important; } body #urban-top-bar { display: none !important; }",
     },
     {
         dictName: "Collins English Dictionary",
         windowUrl: "https://www.collinsdictionary.com/dictionary/english/<word>",
         fixSpaceInWords: "+",
-        resources: {
-            styles: ["collins.less"],
-        },
+        css: "body > header { display: none !important; } body > main { padding-top: 45px !important; } body .topslot_container { display: none; } body .padding-pub { display: none !important; }",
     },
     {
         dictName: "Bing Dict (必应词典)",
@@ -49,22 +41,18 @@ export default [
         fixSpaceInWords: "-",
         windowUrl: "https://www.oxfordlearnersdictionaries.com/search/english/?q=<word>",
         ttsHelperSelector: "ul.examples>li",
-        resources: {
-            styles: ["oxfordlearner.less"],
-        },
+        css: "body .mainsearch { display: none; }",
     },
     {
         dictName: "Cambridge English",
         windowUrl: "https://dictionary.cambridge.org/dictionary/english/<word>",
-        css: "#header, #ad_topslot_a {display: none;}",
+        css: "#header, #ad_topslot_a {display: none;} div.cc { margin-top: -75px !important; }",
         ttsHelperSelector: ".def-body .examp",
     },
     {
         dictName: "thefreedictionary.com",
         windowUrl: "https://www.thefreedictionary.com/<word>",
-        resources: {
-            styles: ["thefreedictionary.less"],
-        },
+        css: ".header-top { display: none; } .adsbygoogle { height: 0 !important; } body { margin-top: -35px !important; } @media only screen and (max-width: 775px) { #header { display: none; } }",
     },
     {
         dictName: "TextPixie (AI translator)",

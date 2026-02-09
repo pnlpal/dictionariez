@@ -94,6 +94,17 @@ export default {
         allDicts.forEach((dict, originalIndex) => {
             dict.sequence = originalIndex;
             fixChatgptDict(dict);
+
+            // migrate old dict resources to css field
+            if (!dict.css && dict.resources?.styles) {
+                const newDict = defaultDicts.find((d) => d.dictName === dict.dictName);
+                if (newDict && newDict.css) {
+                    console.log(`Migrating dict "${dict.dictName}" resources to css field`);
+                    dict.css = newDict.css;
+                    delete dict.resources;
+                    storage.setAllByK("dict-", "dictName", [dict]);
+                }
+            }
         });
 
         this.allDicts = allDicts;
