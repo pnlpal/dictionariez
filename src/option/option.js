@@ -166,13 +166,19 @@ dictApp.controller("optionCtrl", [
                         setting: $scope.setting,
                         applySetting: $scope.$apply.bind($scope),
                         initialSetup: true,
-                        onSuccess: initLanguageSelector,
-                        onEscape: initLanguageSelector,
+                        onSuccess: () => {
+                            initLanguageSelector();
+                            initHistoryAndDicts($scope);
+                        },
+                        onEscape: () => {
+                            initLanguageSelector();
+                            initHistoryAndDicts($scope);
+                        },
                     });
                 } else {
                     initLanguageSelector();
+                    initHistoryAndDicts($scope);
                 }
-                initHistoryAndDicts($scope);
                 initUserProfile($scope);
                 initAILanguageSelect($scope);
                 if (location.search.includes("synthesis") || location.search.includes("voice")) {
@@ -219,6 +225,9 @@ Read more here: https://pnl.dev/topic/52/help-more-dictionaries-needed
         };
 
         setupDevFunctions();
+
+        // in order to display the page after css loaded.
+        $("body").show();
     },
 ]);
 

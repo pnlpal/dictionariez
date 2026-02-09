@@ -23,9 +23,6 @@ function fixChatgptDict(dict) {
     if (dict.windowUrl === "https://chatgpt.com" && dict.inputSelector === "main form textarea") {
         Object.assign(dict, chatgptDefault);
     }
-    if (dict.chatgptPrompt && (!dict.windowUrl || !dict.inputSelector || !dict.submitButtonSelector)) {
-        Object.assign(dict, chatgptDefault);
-    }
     // migrate chatgptPrompt setting
     if (!dict.prompt && dict.chatgptPrompt) {
         dict.prompt = dict.chatgptPrompt;
@@ -34,6 +31,10 @@ function fixChatgptDict(dict) {
     if (!dict.promptWithContext && dict.chatgptPromptWithContext) {
         dict.promptWithContext = dict.chatgptPromptWithContext;
         delete dict.chatgptPromptWithContext;
+    }
+
+    if (dict.prompt && (!dict.windowUrl || !dict.inputSelector || !dict.submitButtonSelector)) {
+        Object.assign(dict, chatgptDefault);
     }
 }
 
