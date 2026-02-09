@@ -124,7 +124,9 @@ export default {
                         await storage.removeAllByK("dict-");
                         await storage.setAllByK("dict-", "dictName", this.allDicts);
                     }
+                    this._shouldUpdateClientSide = res.shouldUpdateClientSide; // only for unit test;
                     await setting.setValue("lastTimeSyncDicts", res.lastTimeSyncDicts);
+                    this._lastTimeSyncDicts = res.lastTimeSyncDicts; // only for unit test;
                 }
                 return res;
             } catch (error) {

@@ -35,33 +35,31 @@ describe("dicts management for pro user", () => {
     it("init and restore all default dicts for new user and sync to cloud", async () => {
         await Dict.init();
         expect(Dict.allDicts.length).to.be.greaterThan(1);
-        expect(Dict.syncPromise).to.not.be.null;
-        const { allDicts, lastTimeSyncDicts, shouldUpdateClientSide } = await Dict.syncPromise;
-        expect(allDicts.length).to.be.greaterThan(1);
-        expect(lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
-        expect(shouldUpdateClientSide).to.be.true;
+        expect(Dict._lastTimeSyncDicts).to.not.be.null;
+        expect(Dict._shouldUpdateClientSide).to.be.true;
     });
     it("add a new dict then remove it", async () => {
         await Dict.init();
-        await Dict.syncPromise;
+        expect(Dict._lastTimeSyncDicts).to.not.be.null;
+        expect(Dict._shouldUpdateClientSide).to.be.true;
+
+        const initSyncDate = Dict._lastTimeSyncDicts;
         const newDict = await Dict.addToDictionariez(testDict("test-dict"));
         expect(newDict).to.include(testDict("test-dict"));
-        const lastDict = Dict.allDicts[Dict.allDicts.length - 1];
-        expect(lastDict).to.deep.equal(newDict);
-        expect(Dict.syncPromise).to.not.be.null;
-        const { allDicts, lastTimeSyncDicts, shouldUpdateClientSide } = await Dict.syncPromise;
-        expect(lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
-        expect(allDicts[allDicts.length - 1].dictName).to.equal("test-dict");
-        expect(allDicts[allDicts.length - 1].windowUrl).to.equal("http://test-dict.com");
-        expect(shouldUpdateClientSide).to.be.false;
+        expect(Dict._lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
+        const secondSyncDate = Dict._lastTimeSyncDicts;
+        expect(secondSyncDate).to.not.equal(initSyncDate);
+        expect(Dict.allDicts[Dict.allDicts.length - 1].dictName).to.equal("test-dict");
+        expect(Dict.allDicts[Dict.allDicts.length - 1].windowUrl).to.equal("http://test-dict.com");
+        expect(Dict._shouldUpdateClientSide).to.be.false;
 
         await Dict.removeDict("test-dict");
         expect(Dict.allDicts.find((d) => d.dictName === "test-dict")).to.be.undefined;
-        expect(Dict.syncPromise).to.not.be.null;
-        const res = await Dict.syncPromise;
-        expect(res.lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
-        expect(res.allDicts.find((d) => d.dictName === "test-dict")).to.be.undefined;
-        expect(res.shouldUpdateClientSide).to.be.false;
+        expect(Dict._lastTimeSyncDicts).to.not.be.null;
+        expect(Dict.allDicts.find((d) => d.dictName === "test-dict")).to.be.undefined;
+        expect(Dict._shouldUpdateClientSide).to.be.false;
+        const removeSyncDate = Dict._lastTimeSyncDicts;
+        expect(removeSyncDate).to.not.equal(secondSyncDate);
     });
     it("auto fix chatgpt dict when init and add a new one", async () => {
         await Dict.init();
@@ -73,7 +71,6 @@ describe("dicts management for pro user", () => {
         expect(defaultChatgptDict.prompt).to.not.be.empty;
         expect(defaultChatgptDict.chatgptPrompt).to.be.undefined;
 
-        await Dict.syncPromise;
         await Dict.addToDictionariez({
             dictName: "ChatGPT Test",
             chatgptPrompt: "Explain <word> in simple terms.",
@@ -85,30 +82,25 @@ describe("dicts management for pro user", () => {
         expect(chatgptDict.prompt).to.not.be.empty;
         expect(chatgptDict.chatgptPrompt).to.be.undefined;
 
-        const { allDicts, lastTimeSyncDicts, shouldUpdateClientSide } = await Dict.syncPromise;
-        expect(lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
-        const cloudChatgptDict = allDicts[allDicts.length - 1];
+        expect(Dict._lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
+        const cloudChatgptDict = Dict.allDicts[Dict.allDicts.length - 1];
         expect(cloudChatgptDict).to.not.be.undefined;
         expect(cloudChatgptDict.windowUrl).to.equal("https://chatgpt.com");
         expect(cloudChatgptDict.inputSelector).to.not.be.empty;
         expect(cloudChatgptDict.submitButtonSelector).to.not.be.empty;
         expect(cloudChatgptDict.prompt).to.not.be.empty;
         expect(cloudChatgptDict.chatgptPrompt).to.be.undefined;
-        expect(shouldUpdateClientSide).to.be.false;
+        expect(Dict._shouldUpdateClientSide).to.be.false;
 
         await Dict.removeDict("ChatGPT Test");
         expect(Dict.allDicts.find((d) => d.dictName === "ChatGPT Test")).to.be.undefined;
-        expect(Dict.syncPromise).to.not.be.null;
-        const res = await Dict.syncPromise;
-        expect(res.lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
-        expect(res.allDicts.find((d) => d.dictName === "ChatGPT Test")).to.be.undefined;
-        expect(res.shouldUpdateClientSide).to.be.false;
+        expect(Dict._lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
+        expect(Dict.allDicts.find((d) => d.dictName === "ChatGPT Test")).to.be.undefined;
+        expect(Dict._shouldUpdateClientSide).to.be.false;
     });
 
     it("override all client dicts when cloud has newer version", async () => {
         await Dict.init();
-        const initSync = await Dict.syncPromise; // now all synced
-        expect(initSync.lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
 
         // simulate cloud has newer version
         const oneMinuteAgo = new Date(Date.now() - 60000).toISOString();
@@ -123,24 +115,21 @@ describe("dicts management for pro user", () => {
 
         // now add a new dict and sync
         await Dict.addToDictionariez(testDict("test-dict2"));
-        expect(Dict.syncPromise).to.not.be.null;
-        const res = await Dict.syncPromise;
-        expect(res.lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
-        expect(res.lastTimeSyncDicts).to.not.equal(initSync.lastTimeSyncDicts);
-        expect(res.allDicts.length).to.be.greaterThan(1);
+        expect(Dict._lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
+        expect(Dict.allDicts.length).to.be.greaterThan(1);
 
         // the removed dict is back
-        expect(res.allDicts.find((d) => d.dictName === removedDictName)).to.not.be.undefined;
-        const cloudChatgptDict = res.allDicts.find((d) => d.dictName === defaultChatgptDict.dictName);
+        expect(Dict.allDicts.find((d) => d.dictName === removedDictName)).to.not.be.undefined;
+        const cloudChatgptDict = Dict.allDicts.find((d) => d.dictName === defaultChatgptDict.dictName);
         expect(cloudChatgptDict).to.not.be.undefined;
         expect(cloudChatgptDict.windowUrl).to.equal("https://chatgpt.com");
         expect(cloudChatgptDict.windowUrl).to.not.equal("https://modified-chatgpt.com");
-        expect(res.shouldUpdateClientSide).to.be.true;
+        expect(Dict._shouldUpdateClientSide).to.be.true;
 
         const lastDict = Dict.allDicts[Dict.allDicts.length - 1];
         expect(lastDict.dictName).to.equal("test-dict2");
         expect(lastDict.windowUrl).to.equal("http://test-dict2.com");
-        expect(Dict.allDicts).to.have.lengthOf(res.allDicts.length);
+        expect(Dict.allDicts).to.have.lengthOf(Dict.allDicts.length);
         await Dict.removeDict("test-dict2");
     });
 
@@ -156,19 +145,15 @@ describe("dicts management for pro user", () => {
         expect(newDict).to.include(testDict("test-dict3"));
         const lastDict = Dict.allDicts[Dict.allDicts.length - 1];
         expect(lastDict).to.deep.equal(newDict);
-        expect(Dict.syncPromise).to.not.be.null;
+        expect(Dict._lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
 
-        const addSync = await Dict.syncPromise;
-        expect(addSync).to.be.undefined;
         expect(Dict.allDicts.length).to.equal(initDictsCount + 1);
         expect(Dict.syncDictsError).to.be.a("string").that.includes("network-error");
 
         // remove the dict
         await Dict.removeDict("test-dict3");
         expect(Dict.allDicts.find((d) => d.dictName === "test-dict3")).to.be.undefined;
-        expect(Dict.syncPromise).to.not.be.null;
-        const removeSync = await Dict.syncPromise;
-        expect(removeSync).to.be.undefined;
+        expect(Dict._lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
         expect(Dict.allDicts.length).to.equal(initDictsCount);
         expect(Dict.syncDictsError).to.be.a("string").that.includes("network-error");
     });
