@@ -135,6 +135,10 @@ var options = {
                             delete json.minimum_chrome_version;
                             delete json.host_permissions;
 
+                            if (env.PRODUCT === "Ordböcker") {
+                                json.name = "Ordböcker - Learn Swedish, Norwegian & Danish";
+                            }
+
                             if (["Dictionariez", "SidePal"].includes(env.PRODUCT)) {
                                 json["browser_specific_settings"] = {
                                     gecko: {
