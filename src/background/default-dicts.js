@@ -7,12 +7,6 @@ export default [
         css: "body .header, body .topslot-container, body #ad_topslot { display: none !important; } body .content { margin-top: 50px; }",
     },
     {
-        dictName: "chatgpt definition",
-        prompt: 'Give me the full definitions of "<word>"<language>, if possible try to include IPA, definitions each with at least two examples, etymology, conjugations, related words with explanations etc. And make a pretty output with formatting like bold, italics etc.',
-        promptWithContext:
-            'Give me the full definitions of "<word>"<language>, which is used in the context "<sentence>", if possible try to include IPA, definitions each with at least two examples, etymology, conjugations, related words with explanations etc. And make a pretty output with formatting like bold, italics etc.',
-    },
-    {
         dictName: "vocabulary.com",
         windowUrl: "https://www.vocabulary.com/dictionary/<word>",
         css: "header, .fixed-tray, #dictionaryNav, .top-notes { display: none; } body { margin-top: 30px; }",
@@ -52,6 +46,12 @@ export default [
         dictName: "thefreedictionary.com",
         windowUrl: "https://www.thefreedictionary.com/<word>",
         css: ".header-top { display: none; } .adsbygoogle { height: 0 !important; } body { margin-top: -35px !important; } @media only screen and (max-width: 775px) { #header { display: none; } }",
+    },
+    {
+        dictName: "chatgpt definition",
+        prompt: 'Give me the full definitions of "<word>"<language>, if possible try to include IPA, definitions each with at least two examples, etymology, conjugations, related words with explanations etc. And make a pretty output with formatting like bold, italics etc.',
+        promptWithContext:
+            'Give me the full definitions of "<word>"<language>, which is used in the context "<sentence>", if possible try to include IPA, definitions each with at least two examples, etymology, conjugations, related words with explanations etc. And make a pretty output with formatting like bold, italics etc.',
     },
     {
         dictName: "TextPixie (AI translator)",
