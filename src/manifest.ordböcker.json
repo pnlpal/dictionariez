@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "minimum_chrome_version": "105",
-    "name": "Ordböcker: Learn Swedish, Norwegian & Danish",
-    "description": "A customizable dictionary extension that supports double-click lookups, multiple dictionaries, and anki integration.",
+    "name": "Ordböcker - Dictionary & AI Translation for Swedish, Norwegian & Danish",
+    "description": "A customizable dictionary extension that supports double-click lookups, AI translations, text-to-speech reading, multiple dictionaries, and anki integration.",
     "permissions": ["activeTab", "tabs", "storage", "contextMenus", "offscreen"],
     "background": {
         "service_worker": "background.bundle.js"
