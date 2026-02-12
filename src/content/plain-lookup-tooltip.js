@@ -393,7 +393,8 @@ export default {
 
                 case "options":
                     // Open main Dictionariez app
-                    utils.send("open options", { to: "pro-setting" });
+                    const optionsTarget = currentLookupData.type === "ai" ? "pro-setting" : "function-setting";
+                    utils.send("open options", { to: optionsTarget });
                     break;
 
                 case "close":
