@@ -1,3 +1,9 @@
+# v7.3.1 Feb 13, 2026
+
+- Fixed pronunciations in different accent, such HK Cantonese vs Mandarin.
+- Changed to open lookup settings when clicking in the plain lookup result.
+- Put ChatGPT Definition dict at the end of the list.
+
 # v7.3.0 Feb 09, 2026
 
 - Added support for Filipino, Cebuano, Malay, Romanian, Hungarian, and Swahili languages in floating definitions.
