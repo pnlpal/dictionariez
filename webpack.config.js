@@ -175,6 +175,8 @@ var options = {
 
                         if (env.PRODUCT === "Dictionariez" && env.BROWSER === "Edge") {
                             json.name = "Dictionariez - Dictionary Lookup & AI Translation for Language Learning";
+                        } else if (env.PRODUCT === "Ordböcker" && env.BROWSER === "Edge") {
+                            json.name = "Ordböcker - Learn Swedish, Norwegian & Danish";
                         }
 
                         return Buffer.from(JSON.stringify(json));
