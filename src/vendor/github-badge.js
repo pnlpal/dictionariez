@@ -21,7 +21,7 @@
         }
         const user = matches[1] || "stars";
         const repo = matches[2] || "badges";
-        const shield = `https://img.shields.io/github/stars/${user}/${repo}.svg`;
+        const shield = `https://img.shields.io/github/stars/${user}/${repo}.svg?`;
 
         const img = document.createElement("img");
         img.style.margin = "0 0 0 5px";
