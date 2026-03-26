@@ -8,8 +8,8 @@ async function getFeedbackLink() {
             process.env.PRODUCT === "Ordböcker"
                 ? "ordböcker"
                 : process.env.PRODUCT === "SidePal"
-                ? "sidepal"
-                : "dictionaries";
+                  ? "sidepal"
+                  : "dictionaries";
         return `https://addons.mozilla.org/firefox/addon/${appId}/reviews`;
     } else if (navigator.userAgent.includes("Edg/")) {
         const extId = chrome.runtime.id;
@@ -20,12 +20,21 @@ async function getFeedbackLink() {
     }
 }
 
-function askForFeedback($scope) {
-    localStorage.visitOptionsCounter = parseInt(localStorage.visitOptionsCounter || "0") + 1;
-    if (localStorage.visitOptionsCounter < 3) {
-        return;
-    }
+function directAskForComment() {
+    bootoast.toast({
+        message: `Hi, as an indie tool, would you mind rating ${process.env.PRODUCT}? 
+                                <br><small>It really helps a lot, thank you!</small>
+                                <div class="clearfix" style="margin-top: 10px;">
+                                    <button class="btn btn-xs btn-default feedback-action" data-answer="skip">Later</button>
+                                    <button class="btn btn-xs btn-primary pull-right feedback-action" data-action="rate">Rate Now</button>
+                                </div>`,
+        type: "success",
+        position: "top-center",
+        timeout: 5,
+    });
+}
 
+function twoStepsFeedback($scope) {
     if ($scope.setting.feedbackStatus !== "rated" && $scope.setting.feedbackStatus !== "feedbacked") {
         setTimeout(() => {
             bootoast.toast({
@@ -72,6 +81,19 @@ function askForFeedback($scope) {
                 });
             }
         });
+}
+
+function askForFeedback($scope) {
+    localStorage.visitOptionsCounter = parseInt(localStorage.visitOptionsCounter || "0") + 1;
+    if (localStorage.visitOptionsCounter < 5) {
+        return;
+    }
+
+    if (localStorage.visitOptionsCounter > 20 && $scope.setting.feedbackStatus !== "rated") {
+        directAskForComment();
+    } else {
+        twoStepsFeedback($scope);
+    }
 
     $(document)
         .off("click", ".feedback-action")
