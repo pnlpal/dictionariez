@@ -1,5 +1,11 @@
 export default [
     {
+        dictName: "Wiktionary",
+        windowUrl: "https://en.m.wiktionary.org/wiki/<word>",
+        windowUrlMatch: "wiki/([^&]+)",
+        css: "header {display: none !important;} main { margin-top: 25px; }",
+    },
+    {
         dictName: "Longman English",
         entry: "LongmanEnglish",
         windowUrl: "https://www.ldoceonline.com/dictionary/<word>",

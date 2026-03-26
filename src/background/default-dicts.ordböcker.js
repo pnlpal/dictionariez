@@ -11,6 +11,16 @@ export default [
         css: "header {display: none !important;} body {margin-top: 50px !important;}",
     },
     {
+        dictName: "Dict.com (Da-En)",
+        windowUrl: "https://www.dict.com/danish-english/<word>",
+        css: ".navbar, .menu { display: none; } body { margin-top: 50px !important; }",
+    },
+    {
+        dictName: "Dict.com (No-En)",
+        windowUrl: "https://www.dict.com/norwegian-english/<word>",
+        css: ".navbar, .menu { display: none; } body { margin-top: 50px !important; }",
+    },
+    {
         dictName: "Folkets Lexikon",
         windowUrl: "https://folkets-lexikon.csc.kth.se/folkets/#lookup&<word>",
     },
