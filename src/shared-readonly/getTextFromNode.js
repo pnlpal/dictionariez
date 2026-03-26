@@ -3,6 +3,9 @@
 function removeEmojisAndSymbols(text) {
   return (
     text
+      // Replace decorative section dividers (~~~, ***, ---, ===, etc.) with pause
+      .replace(/[~*\-=_]{3,}/g, ". ")
+      .replace(/[~*]{2,}/g, ". ")
       // Remove specific symbols first
       .replace(/[⚡⭐✨💫🎨👩‍💻★☆🌐🔇🔈🔉🔊]/g, "")
       // Remove more arrow and geometric symbols
@@ -31,13 +34,13 @@ export default (node) => {
         !child.classList.contains("tts-speaker-icon") &&
         !child.classList.contains("pnl-reader-translate-icon") &&
         !child.classList.contains("paragraph-translator-container") &&
-        child.offsetParent !== null) // Only visible elements
+        child.offsetParent !== null), // Only visible elements
   );
 
   return removeEmojisAndSymbols(
     textNodes
       .map((n) => n.textContent.trim())
       .filter((t) => t.length > 2)
-      .join(" ")
+      .join(" "),
   );
 };

@@ -15,7 +15,8 @@ async function processNext() {
     return;
   }
   isBusy = true;
-  const { key, text, lang, voice, resolve, reject } = pending.shift();
+  const { key, text, lang, voice, synthesisVoices, resolve, reject } =
+    pending.shift();
   try {
     // Check cache
     if (key === lastKey && lastResult) {
@@ -23,7 +24,7 @@ async function processNext() {
       processNext();
       return;
     }
-    const result = await cloud.ttsSpeak({ text, lang, voice });
+    const result = await cloud.ttsSpeak({ text, lang, voice, synthesisVoices });
     lastKey = key;
     lastResult = result;
     resolve(result);
@@ -34,7 +35,7 @@ async function processNext() {
   }
 }
 
-message.on("speak text", async ({ text, lang, voice }) => {
+message.on("speak text", async ({ text, lang, voice, synthesisVoices }) => {
   const key = `${text}||${lang}||${voice}`;
 
   // If the last result matches, return it
@@ -45,14 +46,22 @@ message.on("speak text", async ({ text, lang, voice }) => {
   // If a task is running, queue this request and wait
   if (isBusy) {
     return new Promise((resolve, reject) => {
-      pending.push({ key, text, lang, voice, resolve, reject });
+      pending.push({
+        key,
+        text,
+        lang,
+        voice,
+        synthesisVoices,
+        resolve,
+        reject,
+      });
     });
   }
 
   // Otherwise, process this request immediately
   isBusy = true;
   try {
-    const result = await cloud.ttsSpeak({ text, lang, voice });
+    const result = await cloud.ttsSpeak({ text, lang, voice, synthesisVoices });
     lastKey = key;
     lastResult = result;
 

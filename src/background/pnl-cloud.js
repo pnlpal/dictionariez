@@ -52,18 +52,18 @@ export default {
       {
         method: "GET",
         credentials: "include",
-      }
+      },
     );
     return this.handleResponse(response);
   },
 
-  async ttsSpeak({ text, lang, voice }) {
+  async ttsSpeak({ text, lang, voice, synthesisVoices }) {
     const response = await fetch(pnlBase + "/api/tts/speak", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ text, lang, voice }),
+      body: JSON.stringify({ text, lang, voice, synthesisVoices }),
       credentials: "include",
     });
     if (!response.ok) {
@@ -77,6 +77,10 @@ export default {
       data.statusCode = response.status;
       throw new ErrorResponse(errorMessage, data);
     }
+    if (response.headers.get("Content-Type")?.includes("application/json")) {
+      return this.handleResponse(response);
+    }
+
     const blob = await response.blob();
     const arrayBuffer = await blob.arrayBuffer();
 
