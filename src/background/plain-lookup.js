@@ -296,7 +296,18 @@ export default {
                     _requests,
                 });
             } else if (err.status === 404 && tname === "wiktionary") {
-                if (url.includes("en.wiktionary.org") && possibleLangs.includes("Swedish")) {
+                // if the first letter is uppercase, try lowercase
+                if (w[0] && w[0] === w[0].toUpperCase()) {
+                    console.log("Try lowercase for wiktionary for word:", w);
+                    return this.parse({
+                        tabId,
+                        w: w.toLowerCase(),
+                        tname,
+                        prevResult,
+                        detectedLangInContext,
+                        _requests,
+                    });
+                } else if (url.includes("en.wiktionary.org") && possibleLangs.includes("Swedish")) {
                     console.log("Fallback to sv.wiktionary for word:", w);
                     return this.parse({
                         tabId,
@@ -304,6 +315,7 @@ export default {
                         tname: "wiktionary",
                         prevResult,
                         url: url.replace(/\w+.wiktionary.org/, "sv.wiktionary.org"),
+                        detectedLangInContext,
                         _requests,
                     });
                 } else if (!url.includes("uk.wiktionary.org") && possibleLangs.includes("Ukrainian")) {
@@ -314,6 +326,7 @@ export default {
                         tname: "wiktionary",
                         prevResult,
                         url: url.replace(/\w+.wiktionary.org/, "uk.wiktionary.org"),
+                        detectedLangInContext,
                         _requests,
                     });
                 } else if (possibleLangs.includes("Tajik")) {
