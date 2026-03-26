@@ -8,6 +8,9 @@ import "./pnl-craft-topics.less";
     if (!topicElement) {
         return;
     }
+
+    let currentIndex = parseInt(localStorage.getItem("next-crafting-topic-index")) || 0;
+
     function decodeHtmlEntities(str) {
         const txt = document.createElement("textarea");
         txt.innerHTML = str;
@@ -16,8 +19,11 @@ import "./pnl-craft-topics.less";
 
     function showNextTopic(topics) {
         const titleSpan = topicElement.querySelector(".crafting-topic-title");
-        const nextIndex = parseInt(localStorage.getItem("next-crafting-topic-index")) || 0;
-        const topic = topics[nextIndex] || topics[0];
+        if (!titleSpan) return;
+
+        // Ensure index is within bounds
+        if (currentIndex >= topics.length) currentIndex = 0;
+        const topic = topics[currentIndex];
 
         // Start slide out
         titleSpan.classList.remove("slide-in");
@@ -29,7 +35,14 @@ import "./pnl-craft-topics.less";
             titleSpan.classList.add("slide-in");
         }, 400);
 
-        localStorage.setItem("next-crafting-topic-index", (nextIndex + 1) % topics.length);
+        // Advance index in memory (always works)
+        currentIndex = (currentIndex + 1) % topics.length;
+        // Persist for next page load (may fail silently in some environments)
+        try {
+            localStorage.setItem("next-crafting-topic-index", currentIndex);
+        } catch {
+            // localStorage may be disabled or full
+        }
     }
 
     fetch("https://pnl.dev/api/category/6/crafting")
@@ -41,9 +54,10 @@ import "./pnl-craft-topics.less";
                 return;
             }
 
-            let showInterval;
-            clearInterval(showInterval);
-            showInterval = setInterval(() => showNextTopic(topics), 5000);
+            // Ensure starting index is valid for current topics
+            if (currentIndex >= topics.length) currentIndex = 0;
+
+            setInterval(() => showNextTopic(topics), 5000);
             showNextTopic(topics);
         });
 })();
