@@ -384,6 +384,32 @@ export default {
                     }
                 }
             }
+
+            // Filter Google result by detected language context
+            // Accept if result.lang is in possibleLangs, or if it's English and English lookup is enabled
+            if (detectedLangInContext && result.lang) {
+                const isLangAllowed =
+                    possibleLangs.includes(result.lang) ||
+                    (result.lang === "English" && setting.getValue("enableLookupEnglish"));
+                if (!isLangAllowed && fallbackDictName) {
+                    console.log(
+                        "Google result lang",
+                        result.lang,
+                        "not in possibleLangs",
+                        possibleLangs,
+                        ", fallback to",
+                        fallbackDictName,
+                    );
+                    return this.parse({
+                        tabId,
+                        w,
+                        tname: fallbackDictName,
+                        prevResult,
+                        detectedLangInContext,
+                        _requests,
+                    });
+                }
+            }
         }
 
         // check other possible languages in fallback dict like wiktionary
@@ -504,6 +530,17 @@ export default {
                     if (this.isLangDisabled(targetLang.lang) || !langs[targetLang.lang]) {
                         targetLang = null;
                     } else if (targetLang.lang === "English" && !setting.getValue("enableLookupEnglish")) {
+                        targetLang = null;
+                    } else if (targetLang.lang !== "English" && !possibleLangs.includes(targetLang.lang)) {
+                        // If detectedLangInContext is set, only include targetLang if it's in possibleLangs
+                        console.log(
+                            "[Wiktionary result] Target lang from",
+                            targetLang.lang,
+                            "not in possibleLangs",
+                            possibleLangs,
+                            "for word:",
+                            w,
+                        );
                         targetLang = null;
                     } else {
                         if (targetLang.lang === "English") {

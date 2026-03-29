@@ -562,3 +562,71 @@ describe("background/check words to ignore in plain lookup", () => {
         }
     });
 });
+describe("background/plain-lookup language filtering with detectedLangInContext", () => {
+    it("should get both French and English definition when detected lang is fr and English is enabled", async () => {
+        await enableLanguages(["French"], true, false);
+        const result = await utils.send("look up plain", {
+            w: "date",
+            detectedLangInContext: "fr",
+        });
+        // "date" exists in both French and English on wiktionary
+        // When detected lang is fr, should only return French (+ English if enabled)
+        console.log("date with fr context:", result);
+        expect(result.length).to.be.greaterThan(1);
+        // All results should be French or English only
+        for (const r of result) {
+            expect(["French", "English"]).to.include(r.lang);
+        }
+        // French should come first
+        expect(result[0].lang).to.equal("French");
+        expect(result[result.length - 1].lang).to.equal("English");
+    });
+
+    it("should get only Spanish definition when detected lang is es and English is disabled", async () => {
+        await enableLanguages(["Spanish"], false, false);
+        const result = await utils.send("look up plain", {
+            w: "pie",
+            detectedLangInContext: "es",
+        });
+        // "pie" exists in both Spanish and English
+        // When detected lang is es and English is disabled, should only return Spanish
+        console.log("pie with es context, no English:", result);
+        expect(result.length).to.be.greaterThan(0);
+        // All results should be Spanish only
+        for (const r of result) {
+            expect(r.lang).to.equal("Spanish");
+        }
+    });
+
+    it("should get Swedish and English definitions when detected lang is sv and English is enabled", async () => {
+        await enableLanguages(["Swedish"], true, false);
+        const result = await utils.send("look up plain", {
+            w: "fart",
+            detectedLangInContext: "sv",
+        });
+        // "fart" exists in both Swedish and English
+        // When detected lang is sv and English is enabled, should return Swedish + English
+        console.log("fart with sv context, with English:", result);
+        expect(result.length).to.be.greaterThan(0);
+        // Should have Swedish result
+        expect(result.some((r) => r.lang === "Swedish")).to.be.true;
+        // Swedish should come first
+        expect(result[0].lang).to.equal("Swedish");
+        // English should come last
+        expect(result[result.length - 1].lang).to.equal("English");
+    });
+
+    it("should get multiple language definitions when no detectedLangInContext is provided", async () => {
+        await enableLanguages(["Spanish"], true, false);
+        const result = await utils.send("look up plain", {
+            w: "pie",
+        });
+        // Without detected lang context, should return all matching languages
+        console.log("pie without context:", result);
+        expect(result.length).to.be.greaterThan(0);
+        // Should have both Spanish (from wiktionary) and English (from google or wiktionary)
+        const langs = result.map((r) => r.lang);
+        expect(langs).to.include("Spanish");
+        expect(langs).to.include("English");
+    });
+});
