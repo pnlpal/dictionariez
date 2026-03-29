@@ -3,7 +3,7 @@ import setting from "./setting.js";
 import cloudStorage from "./storage-on-cloud.js";
 
 class Item {
-    constructor({ w, s, sc, r, t = Date.now(), sentence, ankiSaved } = {}) {
+    constructor({ w, s, sc, r, t = Date.now(), sentence, ankiSaved, lang } = {}) {
         this.w = w;
         this.s = s;
         this.sc = sc;
@@ -11,6 +11,7 @@ class Item {
         this.t = t;
         this.sentence = sentence;
         this.ankiSaved = ankiSaved;
+        this.lang = lang;
     }
 
     save() {
@@ -23,11 +24,12 @@ class Item {
                 t: this.t,
                 sentence: this.sentence,
                 ankiSaved: this.ankiSaved,
+                lang: this.lang,
             },
         });
     }
 
-    update({ w, s, sc, r, t, sentence, ankiSaved }) {
+    update({ w, s, sc, r, t, sentence, ankiSaved, lang }) {
         if (w) this.w = w;
         if (s) this.s = s;
         if (sc) this.sc = sc;
@@ -35,6 +37,7 @@ class Item {
         if (t) this.t = t;
         if (sentence) this.sentence = sentence;
         if (ankiSaved) this.ankiSaved = ankiSaved;
+        if (lang) this.lang = lang;
         return this.save();
     }
 
@@ -71,6 +74,7 @@ function convertProItem(item) {
         t: item.timestamp,
         sentence: item.sentence,
         ankiSaved: item.ankiSaved,
+        lang: item.lang,
     };
 }
 
@@ -136,6 +140,7 @@ export default {
                         timestamp: item.t,
                         sentence: item.sentence,
                         ankiSaved: item.ankiSaved,
+                        lang: item.lang,
                     })),
                 );
                 await Item.remove(this.localHistory.map((item) => item.w));
@@ -246,14 +251,14 @@ export default {
         return this.invokeWrapper(getFromLocal, cloudStorage.getPreviousAnkiUnsaved, w, convertProItem);
     },
 
-    async addHistory({ w, s, sc, r, sentence }) {
+    async addHistory({ w, s, sc, r, sentence, lang }) {
         if (setting.getValue("disableWordHistory")) return;
 
         async function addToLocal() {
             const item = this.localHistory.find((item) => item.w === w);
             if (item) {
                 // Update the existing item
-                await item.update({ s, sc, r, t: Date.now(), sentence });
+                await item.update({ s, sc, r, t: Date.now(), sentence, lang });
             } else {
                 if (this.localHistory.length >= this.maxLength) {
                     const oldestItem = this.localHistory.shift();
@@ -261,13 +266,13 @@ export default {
                         await Item.remove(oldestItem.w);
                     }
                 }
-                const newItem = new Item({ w, s, sc, r, sentence });
+                const newItem = new Item({ w, s, sc, r, sentence, lang });
                 this.localHistory.push(newItem);
                 await newItem.save();
             }
         }
 
-        return this.invokeWrapper(addToLocal, cloudStorage.addHistory, { w, s, sc, r, sentence });
+        return this.invokeWrapper(addToLocal, cloudStorage.addHistory, { w, s, sc, r, sentence, lang });
     },
 
     async removeHistory(words) {

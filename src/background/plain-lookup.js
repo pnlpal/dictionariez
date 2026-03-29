@@ -213,6 +213,7 @@ export default {
                     s,
                     sc,
                     sentence,
+                    lang: detectedLangInContext,
                 });
             } // ignore lookup from options page
 

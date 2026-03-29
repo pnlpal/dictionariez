@@ -9,6 +9,7 @@ const wordDetail = {
     sentence: "this is a test sentence.",
     s: "http://test.com",
     sc: "test source title",
+    lang: "en",
 };
 
 describe("storage for pro user", () => {
@@ -31,6 +32,7 @@ describe("storage for pro user", () => {
         expect(createdWord.sentence).to.equal(wordDetail.sentence);
         expect(createdWord.s).to.equal(wordDetail.s);
         expect(createdWord.sc).to.equal(wordDetail.sc);
+        expect(createdWord.lang).to.equal(wordDetail.lang);
         expect(createdWord.t).to.is.a("number");
         await storage.removeHistory(wordDetail.w);
     });

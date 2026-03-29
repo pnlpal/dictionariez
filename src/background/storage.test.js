@@ -10,6 +10,7 @@ const wordDetail = {
     s: "http://test.com",
     sc: "test source content",
     r: 0,
+    lang: "en",
 };
 
 describe("background/storage", () => {
@@ -46,6 +47,7 @@ describe("background/storage", () => {
         expect(storage.localHistory[0].s).to.equal(wordDetail.s);
         expect(storage.localHistory[0].sc).to.equal(wordDetail.sc);
         expect(storage.localHistory[0].r).to.equal(wordDetail.r);
+        expect(storage.localHistory[0].lang).to.equal(wordDetail.lang);
         expect(storage.localHistory[0].t).to.is.a("number");
     });
 

@@ -45,13 +45,14 @@ export default {
         const res = await this.get("/api/words", limit ? { limit: limit } : {});
         return res.data.map((item) => convertProItem(item));
     },
-    async addHistory({ w, s, sc, r, sentence }) {
+    async addHistory({ w, s, sc, r, sentence, lang }) {
         return await this.post("/api/words", {
             word: w,
             sentence: sentence,
             rate: r,
             source: s,
             sourceTitle: sc,
+            lang: lang,
         });
     },
     async batchAddHistory(words) {
