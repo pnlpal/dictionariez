@@ -59,6 +59,7 @@ const run = () => {
                 initOnLoadDynamicDict({
                     word: res.word,
                     sentence: res.sentence,
+                    languagePrompt: res.languagePrompt,
                     dict: res.dict,
                     isHelpMeRefine: res.isHelpMeRefine,
                 });
@@ -69,6 +70,7 @@ const run = () => {
                 initOnLoadDynamicDict({
                     word: res.word,
                     sentence: res.sentence,
+                    languagePrompt: res.languagePrompt,
                     dict: res.dict,
                     isHelpMeRefine: res.isHelpMeRefine,
                 });
@@ -130,10 +132,12 @@ const run = () => {
             if (setting.enableReadClipboard) {
                 document.addEventListener(
                     "copy",
-                    () => {
+                    async () => {
                         const sentence = getSentenceOfSelection();
+                        const detectedLangInContext = await detectLanguage(sentence, window.getSelection().focusNode);
                         utils.send("copy event triggered", {
                             sentence,
+                            detectedLangInContext,
                             s: location.href,
                             sc: document.title,
                         });
@@ -198,11 +202,13 @@ const run = () => {
                 }, 800),
             );
 
-            $(document).bind("keydown", (event) => {
+            $(document).bind("keydown", async (event) => {
                 if (utils.checkEventKey(event, setting.openSK1, setting.openSK2, setting.openKey)) {
                     const w = getWordFromSelection();
                     const isInEditable = utils.isSentence(w) && checkEditable(event.target);
                     const sentence = getSentenceOfSelection();
+                    const detectedLangInContext = await detectLanguage(sentence, window.getSelection().focusNode);
+
                     chrome.runtime.sendMessage({
                         type: "look up",
                         means: "keyboard",
@@ -210,6 +216,7 @@ const run = () => {
                         s: location.href,
                         sc: document.title,
                         sentence,
+                        detectedLangInContext,
                         isInEditable,
                     });
                 }
@@ -354,6 +361,7 @@ const run = () => {
                                     type: "look up",
                                     means: "mouse",
                                     sentence,
+                                    detectedLangInContext,
                                     w: text,
                                     s: location.href,
                                     sc: document.title,
@@ -455,16 +463,18 @@ const run = () => {
                 }
             }
 
-            utils.listenToBackground("get info before open dict", (request, sender, sendResponse) => {
+            utils.listenToBackground("get info before open dict", async (request, sender, sendResponse) => {
                 const word = getWordFromSelection(true);
                 const isInEditable = utils.isSentence(word) && checkEditable(window.getSelection().focusNode);
                 const sentence = getSentenceFromAllFrames();
+                const detectedLangInContext = await detectLanguage(sentence, window.getSelection().focusNode);
 
                 sendResponse({
                     w: word,
                     s: location.href,
                     sc: document.title,
                     sentence,
+                    detectedLangInContext,
                     isInEditable,
                     screen: {
                         width: screen.width,

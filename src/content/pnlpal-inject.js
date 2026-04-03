@@ -62,7 +62,7 @@ if (allowedHosts.includes(location.host)) {
             addDictByTopic($this.data("tid")).then(handleSuccess, (err) => handleError(err, "json format"));
         } else {
             addDictByParseContent($this.closest(".content, .preview")).then(handleSuccess, (err) =>
-                handleError(err, "content")
+                handleError(err, "content"),
             );
         }
 

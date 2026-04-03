@@ -23,15 +23,15 @@ async function doQuery(w, sentence, languagePrompt, dict, isHelpMeRefine) {
     const prompt = isHelpMeRefine
         ? helpMeRefinePrompt.replaceAll("<word>", w)
         : utils.isSentence(w)
-        ? translationPrompt.replaceAll("<word>", w)
-        : sentence && (dict.chatgptPromptWithContext || dict.promptWithContext)
-        ? (dict.chatgptPromptWithContext || dict.promptWithContext)
-              .replaceAll("<word>", w)
-              .replaceAll("<sentence>", sentence)
-              .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "")
-        : (dict.chatgptPrompt || dict.prompt || "<word>")
-              .replaceAll("<word>", w)
-              .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "");
+          ? translationPrompt.replaceAll("<word>", w)
+          : sentence && (dict.chatgptPromptWithContext || dict.promptWithContext)
+            ? (dict.chatgptPromptWithContext || dict.promptWithContext)
+                  .replaceAll("<word>", w)
+                  .replaceAll("<sentence>", sentence)
+                  .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "")
+            : (dict.chatgptPrompt || dict.prompt || "<word>")
+                  .replaceAll("<word>", w)
+                  .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "");
 
     const textarea = document.querySelector(dict.inputSelector);
     const isRichEditor = dict.isRichEditor || textarea.contentEditable === "true";
@@ -94,28 +94,35 @@ async function fixQueryingOnEnterForChatGPT(dict) {
     }
 }
 
-export async function initOnLoadDynamicDict({ word, sentence, dict, isHelpMeRefine }) {
+export async function initOnLoadDynamicDict({ word, sentence, languagePrompt, dict, isHelpMeRefine }) {
     if (dict.windowUrl.includes(location.origin)) {
         if (dict && word) {
-            doQuery(word, sentence, "", dict, isHelpMeRefine);
+            console.log(
+                `[Init Dynamic Dict] word: ${word}, sentence: ${sentence}, language: ${languagePrompt}, isHelpMeRefine: ${isHelpMeRefine}`,
+            );
+            doQuery(word, sentence, languagePrompt, dict, isHelpMeRefine);
         }
 
         fixQueryingOnEnterForChatGPT(dict);
 
         utils.listenToBackground("querying", (request) => {
-            // console.log("querying", request);
+            console.log(
+                `[Querying] word: ${request.text}, sentence: ${request.sentence}, language: ${request.languagePrompt}`,
+            );
             doQuery(request.text, request.sentence, request.languagePrompt, dict, request.isHelpMeRefine);
         });
 
         window.addEventListener("message", (event) => {
             if (event.data.type === "look up in dynamic dict") {
-                // console.log("on message", event.data);
+                console.log(
+                    `[Look up in dynamic dict] word: ${event.data.word}, sentence: ${event.data.sentence}, language: ${event.data.languagePrompt}`,
+                );
                 doQuery(
                     event.data.word,
                     event.data.sentence,
                     event.data.languagePrompt,
                     dict,
-                    event.data.isHelpMeRefine
+                    event.data.isHelpMeRefine,
                 );
             }
         });

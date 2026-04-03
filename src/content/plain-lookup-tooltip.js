@@ -378,10 +378,7 @@ export default {
                     if (currentLookupData.word) {
                         utils.send("open anki", {
                             w: currentLookupData.word,
-                            sentence: currentLookupData.sentence,
                             detectedLangInContext: currentLookupData.detectedLangInContext,
-                            s: location.href,
-                            sc: document.title,
                         });
                         // Show feedback
                         $(this).css("background", "#4a4");

@@ -13,5 +13,5 @@ require("../background/plain-lookup.test.js");
 require("../background/storage.test.js");
 require("../background/storage-pro.test.js");
 require("../background/dict-pro.test.js");
-
+require("../background/dictwindow.test.js");
 mocha.run();

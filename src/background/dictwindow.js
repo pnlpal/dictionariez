@@ -5,6 +5,7 @@ import message from "./message.js";
 import readClipboard from "./clipboard.js";
 import utils from "utils";
 import contextMenu from "./contextMenu.js";
+import getLanguageName from "./getLanguageName.js";
 
 let screenWidth = 1080;
 let screenHeight = 1000;
@@ -17,17 +18,19 @@ class DictWindow {
     url = null;
     word = null;
     sentence = null;
+    detectedLangInContext = null;
     dictName = null;
     windex = 0;
     isHelpMeRefine = false;
     defaultUrl = chrome.runtime.getURL("dict.html");
 
-    constructor({ wid, tid, url, word, sentence, dictName, windex } = {}) {
+    constructor({ wid, tid, url, word, sentence, detectedLangInContext, dictName, windex } = {}) {
         this.wid = wid;
         this.tid = tid;
         this.url = url;
         this.word = word;
         this.sentence = sentence;
+        this.detectedLangInContext = detectedLangInContext;
         this.dictName = dictName || setting.getValue("dictionary") || dict.allDicts[0].dictName;
         this.windex = windex || 0;
     }
@@ -38,6 +41,7 @@ class DictWindow {
         this.url = null;
         this.word = null;
         this.sentence = null;
+        this.detectedLangInContext = null;
         this.dictName = null;
         this.isHelpMeRefine = false;
     }
@@ -168,18 +172,21 @@ class DictWindow {
         }
     }
 
-    lookup(text, sentence, languagePrompt, dictName) {
+    lookup(text, sentence, detectedLangInContext, languagePrompt, dictName) {
         let result;
         let { url } = this;
 
         if (!sentence && !text) {
-            ({ sentence } = this);
+            ({ sentence, detectedLangInContext } = this);
         }
         if (!text) {
             text = this.word;
         }
         if (!dictName) {
             ({ dictName } = this);
+        }
+        if (detectedLangInContext && !languagePrompt) {
+            languagePrompt = getLanguageName(detectedLangInContext);
         }
 
         this.isHelpMeRefine = false;
@@ -188,6 +195,7 @@ class DictWindow {
             if (this.word !== text || this.sentence !== sentence || this.dictName !== dictName) {
                 this.word = text.trim();
                 this.sentence = sentence;
+                this.detectedLangInContext = detectedLangInContext;
                 this.dictName = dictName;
                 result = dict.query(text, this.dictName || setting.getValue("dictionary"));
                 url = result?.windowUrl;
@@ -280,16 +288,16 @@ export default {
         return result;
     },
 
-    async lookup({ w, s, sc, sentence, languagePrompt, screen } = {}) {
+    async lookup({ w, s, sc, sentence, detectedLangInContext, languagePrompt, screen, dictName } = {}) {
         let result;
         if (w && s && !utils.isSentence(w)) {
-            storage.addHistory({ w, s, sc, sentence });
+            storage.addHistory({ w, s, sc, sentence, lang: detectedLangInContext });
         } // ignore lookup from options page
 
         if (this.dictWindows.length > 0) {
             result = null;
             for (const win of this.dictWindows) {
-                result = await win.lookup(w, sentence, languagePrompt);
+                result = await win.lookup(w, sentence, detectedLangInContext, languagePrompt, dictName);
             }
 
             this.saveInStorage();
@@ -302,7 +310,7 @@ export default {
                 screenAvailTop = screen.availTop;
             }
 
-            result = await this.create().lookup(w, sentence, languagePrompt);
+            result = await this.create().lookup(w, sentence, detectedLangInContext, languagePrompt, dictName);
             this.saveInStorage();
             return result;
         }
@@ -337,10 +345,10 @@ export default {
         return this.saveInStorage();
     },
 
-    closeAllWindows() {
+    async closeAllWindows() {
         for (const win of this.dictWindows) {
             try {
-                chrome.windows.remove(win.wid);
+                await chrome.windows.remove(win.wid);
             } catch (err) {
                 console.error("[dictWindow] closeAllWindows error: ", err);
             }
@@ -358,6 +366,7 @@ export default {
                 word: win.word,
                 dictName: win.dictName,
                 sentence: win.sentence,
+                detectedLangInContext: win.detectedLangInContext,
                 isHelpMeRefine: win.isHelpMeRefine,
             })),
         });
@@ -402,6 +411,9 @@ export default {
     },
 
     getByTab(tid) {
+        if (!tid) {
+            return;
+        }
         return this.dictWindows.find((win) => win.tid === tid);
     },
 
@@ -413,60 +425,86 @@ export default {
             contextMenu.createLookupItem();
         }
 
-        message.on("copy event triggered", async ({ s, sc, sentence }, sender) => {
+        message.on("copy event triggered", async ({ s, sc, sentence, detectedLangInContext }, sender) => {
             const w = await readClipboard(sender.tab);
             if (w) {
-                return this.lookup({ w, s, sc, sentence });
+                return this.lookup({ w, s, sc, sentence, detectedLangInContext });
             }
         });
 
-        message.on("look up", async ({ dictName, w, s, sc, sentence, means, newDictWindow, isInEditable }, sender) => {
-            // 'look up' can be triggered by the context menu or the hotkey or any webpages
-            let result;
-            const fromSidePanel = sender.id && !sender.tab;
-            // console.log("[dictWindow] look up: ", { dictName, w, s, sc, sentence, means, isInEditable })
-            if (means === "mouse" && process.env.PRODUCT !== "SidePal") {
-                if (!setting.getValue("enableMinidict")) {
+        message.on(
+            "look up",
+            async (
+                { dictName, w, s, sc, sentence, detectedLangInContext, means, newDictWindow, isInEditable },
+                sender,
+            ) => {
+                // 'look up' can be triggered by the context menu or the hotkey or any webpages
+                let result;
+                const fromSidePanel = sender.id && !sender.tab;
+                console.log("[dictWindow] look up: ", {
+                    w,
+                    detectedLangInContext,
+                    sentence,
+                    dictName,
+                    isInEditable,
+                });
+                if (means === "mouse" && process.env.PRODUCT !== "SidePal") {
+                    if (!setting.getValue("enableMinidict")) {
+                        return;
+                    }
+                }
+
+                if (!w) {
+                    w = await readClipboard(sender.tab);
+                }
+
+                if (fromSidePanel && utils.isSentence(w)) {
                     return;
                 }
-            }
 
-            if (!w) {
-                w = await readClipboard(sender.tab);
-            }
+                if (isInEditable) {
+                    result = await this.refineTextWithAI(w);
+                } else {
+                    // first look up the word in all dict windows.
+                    result = await this.lookup({ w: w?.trim(), s, sc, sentence, detectedLangInContext });
 
-            if (fromSidePanel && utils.isSentence(w)) {
-                return;
-            }
-
-            if (isInEditable) {
-                result = await this.refineTextWithAI(w);
-            } else {
-                result = await this.lookup({ w: w?.trim(), s, sc, sentence });
-
-                if (newDictWindow && process.env.PRODUCT !== "SidePal") {
-                    const targetWin = this.create({ dictName });
-                    result = await targetWin.lookup(w || this.dictWindows[0].word, sentence);
-                } else if (dictName) {
-                    // only change the main window or in new window.
-                    result = await this.mainDictWindow().lookup(w?.trim(), sentence, null, dictName);
+                    if (newDictWindow && process.env.PRODUCT !== "SidePal") {
+                        const targetWin = this.create({ dictName });
+                        result = await targetWin.lookup(w || this.dictWindows[0].word, sentence, detectedLangInContext);
+                    } else if (dictName) {
+                        // if a new dictName is specified, only change the main window or in new window.
+                        result = await this.mainDictWindow().lookup(
+                            w?.trim(),
+                            sentence,
+                            detectedLangInContext,
+                            null,
+                            dictName,
+                        );
+                    }
                 }
-            }
 
-            this.saveInStorage();
-            return result;
-        });
+                this.saveInStorage();
+                return result;
+            },
+        );
 
         message.on("query", async (request, sender) => {
             // query message only comes from the dict window.
             let result, targetWin;
-            const senderWin = sender.tab ? this.getByTab(sender.tab.id) : this.mainDictWindow();
+            const senderWin = this.getByTab(sender.tab?.id) || this.mainDictWindow();
+            console.log("[dictWindow] query: ", JSON.stringify(request, null, 2));
 
             let dictName = request.dictName || senderWin.dictName;
-            let w = request.w || senderWin.word;
-            const languagePrompt = w?.split(" /")[1];
+            let { w, sentence, detectedLangInContext } = request;
+            if (!w) {
+                w = senderWin.word;
+                sentence = senderWin.sentence;
+                detectedLangInContext = senderWin.detectedLangInContext;
+            }
+            const languageUserInput = w?.split(" /")[1];
+            const languagePrompt =
+                getLanguageName(languageUserInput) || getLanguageName(detectedLangInContext) || languageUserInput;
             w = w?.split(" /")[0];
-            let { sentence } = request;
 
             if (request.nextDict) {
                 ({ dictName } = dict.getNextDict(dictName));
@@ -484,12 +522,14 @@ export default {
                 const prev = await storage.getPrevious(w);
                 w = prev?.w;
                 sentence = prev?.sentence;
+                detectedLangInContext = prev?.lang;
             } else if (request.nextWord) {
                 const next = await storage.getNext(w, true);
                 w = next?.w;
                 sentence = next?.sentence;
+                detectedLangInContext = next?.lang;
             } else if (w && !utils.isSentence(w)) {
-                storage.addHistory({ w, sentence });
+                storage.addHistory({ w, sentence, lang: detectedLangInContext });
             }
 
             if (senderWin.isHelpMeRefine && utils.isSentence(w) && senderWin.dictName !== dictName) {
@@ -502,12 +542,12 @@ export default {
             } else {
                 if (request.newDictWindow && process.env.PRODUCT !== "SidePal") {
                     targetWin = this.create({ dictName });
-                    result = await targetWin.lookup(w, sentence, languagePrompt);
+                    result = await targetWin.lookup(w, sentence, detectedLangInContext, languagePrompt);
                 } else {
                     if (senderWin.dictName !== dictName) {
-                        result = await senderWin.lookup(w, sentence, languagePrompt, dictName);
+                        result = await senderWin.lookup(w, sentence, detectedLangInContext, languagePrompt, dictName);
                     } else {
-                        result = await this.lookup({ w, sentence, languagePrompt });
+                        result = await this.lookup({ w, sentence, detectedLangInContext, languagePrompt });
                     }
                 }
             }
@@ -517,7 +557,7 @@ export default {
         });
 
         message.on("dictionary", async (request, sender) => {
-            let previous, r, sentence, w, windowUrl, ankiSaved;
+            let previous, r, sentence, w, windowUrl, ankiSaved, detectedLangInContext;
             let win = sender.tab
                 ? this.getByTab(sender.tab.id)
                 : // SidePal
@@ -528,12 +568,13 @@ export default {
 
             if (win) {
                 w = win.word;
-                ({ sentence } = win);
                 if (w) {
                     const wordDetail = await storage.getWordDetail(w);
                     r = wordDetail?.r;
+                    sentence = wordDetail?.sentence;
                     previous = wordDetail?.previous;
                     ankiSaved = wordDetail?.ankiSaved;
+                    detectedLangInContext = wordDetail?.lang;
                 } else {
                     previous = await storage.getPrevious();
                 }
@@ -564,6 +605,7 @@ export default {
                 ankiSaved,
                 sentence,
                 windowUrl,
+                detectedLangInContext,
             };
         });
 
@@ -580,6 +622,8 @@ export default {
                     dict: dict.getDict(this.mainDictWindow().dictName),
                     word: this.mainDictWindow().word,
                     sentence: this.mainDictWindow().sentence,
+                    detectedLangInContext: this.mainDictWindow().detectedLangInContext,
+                    languagePrompt: getLanguageName(this.mainDictWindow().detectedLangInContext),
                     isHelpMeRefine: this.mainDictWindow().isHelpMeRefine,
                 };
             }
@@ -596,6 +640,8 @@ export default {
                     dict: dict.getDict(win.dictName),
                     word: win.word,
                     sentence: win.sentence,
+                    detectedLangInContext: win.detectedLangInContext,
+                    languagePrompt: getLanguageName(win.detectedLangInContext),
                     isHelpMeRefine: win.isHelpMeRefine,
                 };
             } else if (utils.isMobile()) {
@@ -669,6 +715,24 @@ export default {
             const minimal = s.includes(sys);
 
             return { disabled, minimal };
+        });
+
+        message.on("close all dict windows", async () => {
+            await this.closeAllWindows();
+        });
+
+        message.on("get all dict windows info", () => {
+            return this.dictWindows.map((win) => ({
+                wid: win.wid,
+                tid: win.tid,
+                windex: win.windex,
+                url: win.url,
+                word: win.word,
+                sentence: win.sentence,
+                detectedLangInContext: win.detectedLangInContext,
+                dictName: win.dictName,
+                isHelpMeRefine: win.isHelpMeRefine,
+            }));
         });
 
         return message.on("card minimal", ({ sys, minimal }) => {

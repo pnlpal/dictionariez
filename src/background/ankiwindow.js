@@ -104,7 +104,7 @@ export default {
             return;
         }
         w = w.replaceAll("·", "");
-        return dw.lookup({ w });
+        return dw.lookup({ w, sentence: wordItem.sentence, detectedLangInContext: wordItem.detectedLangInContext });
     },
 
     async init() {
@@ -142,7 +142,7 @@ export default {
                             images.map(async (image) => {
                                 const dataUrl = await utils.imageToDataUrl(image.src);
                                 return { ...image, dataUrl };
-                            })
+                            }),
                         );
 
                     // Process images from lookup results

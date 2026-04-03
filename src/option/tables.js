@@ -260,7 +260,7 @@ export default ($scope) => {
                     case "export to Anki":
                         await utils.send("open anki", {
                             ...rowData,
-                            detectedLangInContext: await detectLanguage(rowData.sentence),
+                            detectedLangInContext: rowData.lang || rowData.detectedLangInContext,
                         });
                         break;
                 }
@@ -276,6 +276,7 @@ export default ($scope) => {
                 utils.send("look up", {
                     w: $(e.target).data("w").trim(),
                     sentence: rowData.sentence,
+                    detectedLangInContext: rowData.lang || rowData.detectedLangInContext,
                 });
             }
         });

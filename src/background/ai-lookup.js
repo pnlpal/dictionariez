@@ -69,6 +69,7 @@ message.on("look up in AI", async ({ word, sentence, s, sc, detectedLangInContex
             s,
             sc,
             sentence,
+            lang: detectedLangInContext,
         });
     } // ignore lookup from options page
 

@@ -62,6 +62,7 @@ dictApp.controller("dictCtrl", [
                     r,
                     ankiSaved,
                     sentence,
+                    detectedLangInContext,
                     windowUrl,
                 }) => {
                     $scope.allDicts = allDicts;
@@ -71,6 +72,7 @@ dictApp.controller("dictCtrl", [
                     $scope.previous = previous;
                     $scope.word = w;
                     $scope.sentence = sentence;
+                    $scope.detectedLangInContext = detectedLangInContext;
                     $scope.ankiSaved = ankiSaved;
                     $scope._lastQueryWord = $scope.word;
                     $scope.history = history;
@@ -96,7 +98,7 @@ dictApp.controller("dictCtrl", [
                     if ($scope.querying) {
                         return $scope.checkIfFrameIsLoaded();
                     }
-                }
+                },
             );
 
         initDict();
@@ -108,7 +110,7 @@ dictApp.controller("dictCtrl", [
                 $scope.setting = setting;
                 getCurrentCoupon($scope);
                 $scope.$apply();
-            }
+            },
         );
 
         $scope.openOptions = (to) => utils.send("open options", { to });
@@ -139,10 +141,19 @@ dictApp.controller("dictCtrl", [
 
             $scope.initial = false;
 
-            if (w) {
+            if (w || $scope._lastQueryWord !== $scope.word) {
                 $scope.querying = true;
-                $scope.word = w;
-                $scope.sentence = null;
+                $scope.word = w || $scope.word;
+
+                const existingHistoryItem = $scope.history?.find((item) => item.w === $scope.word);
+                if (existingHistoryItem) {
+                    $scope.sentence = existingHistoryItem.sentence;
+                    $scope.detectedLangInContext =
+                        existingHistoryItem.lang || existingHistoryItem.detectedLangInContext;
+                } else {
+                    $scope.sentence = null;
+                    $scope.detectedLangInContext = null;
+                }
             }
 
             if (dictName && !newDictWindow) {
@@ -160,6 +171,7 @@ dictApp.controller("dictCtrl", [
                     type: "query",
                     w: $scope.word,
                     sentence: $scope.sentence,
+                    detectedLangInContext: $scope.detectedLangInContext,
                     dictName: dictName || $scope.currentDictName,
                     nextDict,
                     previousDict,
@@ -175,7 +187,7 @@ dictApp.controller("dictCtrl", [
                         // current dict might be changed
                         return initDict();
                     }
-                }
+                },
             );
         };
 
@@ -295,7 +307,7 @@ dictApp.controller("dictCtrl", [
                 initDict();
                 sendMessageToDictPage({ ...request, type: "look up in dynamic dict" });
             }
-            if (request.type === 'load new dict') {
+            if (request.type === "load new dict") {
                 $scope.currentDictName = request.dictName;
                 initDict();
             }
@@ -330,7 +342,7 @@ dictApp.controller("dictCtrl", [
             utils.send("open anki", {
                 w: $scope.word,
                 sentence: $scope.sentence,
-                detectedLangInContext: await detectLanguage($scope.sentence),
+                detectedLangInContext: $scope.detectedLangInContext,
             });
         };
 
@@ -376,7 +388,7 @@ dictApp.controller("dictCtrl", [
             }
         });
 
-        $(document).on('keydown', (evt) => {
+        $(document).on("keydown", (evt) => {
             const prevSK = $scope.setting.prevDictSK1;
             const nextSK = $scope.setting.nextDictSK1;
             const prevKey = $scope.setting.prevDictKey;
@@ -422,7 +434,7 @@ dictApp.controller("dictCtrl", [
                 width: window.outerWidth,
                 height: window.outerHeight,
                 dictName: $scope.currentDictName,
-            })
+            }),
         );
     },
 ]);
