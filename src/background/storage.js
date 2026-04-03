@@ -67,6 +67,7 @@ class Item {
 function convertProItem(item) {
     if (!item?.word) return null;
     return {
+        wordId: item.wordId,
         w: item.word,
         s: item.source,
         sc: item.sourceTitle,
@@ -103,8 +104,9 @@ export default {
             return { data: await this.syncThenGetHistory(), maxLength: !this.isProUser() ? this.maxLength : undefined };
         });
 
-        message.on("remove history", ({ w }) => {
-            return this.removeHistory(w);
+        message.on("remove history", ({ w, wordId, words }) => {
+            words = words || [{ w, wordId }];
+            return this.removeHistory(words);
         });
 
         message.on("rating", ({ text, value }) => {
@@ -281,11 +283,11 @@ export default {
         }
         async function removeFromLocal() {
             const valids = [];
-            words.forEach((w) => {
-                const idx = this.localHistory.findIndex((item) => item.w === w);
+            words.forEach((word) => {
+                const idx = this.localHistory.findIndex((item) => item.w === (word.w || word));
                 if (idx >= 0) {
                     this.localHistory.splice(idx, 1);
-                    valids.push(w);
+                    valids.push(word.w || word);
                 }
             });
 

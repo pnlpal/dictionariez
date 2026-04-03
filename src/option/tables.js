@@ -81,6 +81,7 @@ export default ($scope) => {
         if (maxLength && data.length > maxLength - 30) {
             $scope.historyAlmostFull = true;
         }
+        window.historyData = data;
         $scope.$apply();
 
         const table = $("#table-history").DataTable({
@@ -113,7 +114,11 @@ export default ($scope) => {
                         }
 
                         confirmDelete(`Are you sure to delete all ${rowsData.length} records?`, twice).then(() => {
-                            utils.send("remove history", { w: rowsData.map((item) => item.w) });
+                            utils.send("remove history", {
+                                words: rowsData.map((row) => {
+                                    return { w: row.w, wordId: row.wordId };
+                                }),
+                            });
                             rows.remove().draw();
 
                             $scope.historyAlmostFull = false;
