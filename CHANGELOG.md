@@ -1,3 +1,12 @@
+# v7.3.2 Apr 3, 2026
+- Try local sythesis voices when reading sentences.
+- Put Wiktionary as the first dict. 
+- Try lowercase when fetching definitions from Wiktionary.
+- Fix rotating new crafting articles. 
+- Filter plain look up result with detected language.
+- Save detected language in storage history.
+
+
 # v7.3.1 Feb 13, 2026
 
 - Fixed pronunciations in different accent, such HK Cantonese vs Mandarin.
