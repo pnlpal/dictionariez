@@ -14,7 +14,7 @@
 
     gitLinks.forEach((a) => {
         const link = a.href;
-        const re = /github.com\/([^/]+)\/([^/]+)\/?/;
+        const re = /github.com\/([^/]+)\/([^/]+)\/?$/;
         const matches = link.match(re);
         if (!matches || matches.length < 3) {
             return;

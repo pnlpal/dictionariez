@@ -180,15 +180,21 @@ const welcomeSetup = ({ setting, applySetting, initialSetup = true, onSuccess, o
         title: `👋 Welcome to ${process.env.PRODUCT}!`,
         message: `
         <div class="dictionariez-welcome-message">
-            We're delighted to have you here! 
+            Thank you for installing ${process.env.PRODUCT}, your new language companion!
             <br>
             <span>
-                Your all-in-one tool for looking up words and exploring languages with ease.<br>
-                ${process.env.PRODUCT} is open-source, see our progress on
+                ${process.env.PRODUCT} is open-source, see its progress on
                 <a href="https://github.com/pnlpal/dictionariez" target="_blank" class="link-github">
                     <i class="fa fa-github fa-2x"
                         title="Bla Bla, it's Open Source."
                     ></i>
+                </a>.
+            </span>
+            <br>
+            <span>
+                Worried about <strong>privacy</strong>? By default, ${process.env.PRODUCT} doesn't collect any of your data.
+                <a href="https://github.com/pnlpal/dictionariez/blob/master/privacy.md" target="_blank" class="link-github">
+                    Read more about the privacy policy here
                 </a>.
             </span>
             <br><br>
