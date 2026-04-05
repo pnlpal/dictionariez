@@ -39,13 +39,15 @@ async function detectLanguageFromNode(node, depth) {
   }
 
   const text = getTextFromNode(node);
-  if (!text || (text.length < 20 && depth > 1)) {
+  if (!text || (text.length < 40 && depth > 1)) {
     // Require more text from nodes for reliability
     // console.log(
     //   "Not enough text for reliable detection. Going up one level...",
     //   node.parentNode
     // );
-    return detectLanguageFromNode(node.parentNode, depth - 1);
+    const parentText = node.parentNode && getTextFromNode(node.parentNode);
+    const newDepth = text === parentText ? depth : depth - 1;
+    return detectLanguageFromNode(node.parentNode, newDepth);
   }
 
   const result = await callDetectLanguageAPI(text);
@@ -58,7 +60,9 @@ async function detectLanguageFromNode(node, depth) {
     //   "Detection still not reliable. Going up one level...",
     //   node.parentNode
     // );
-    return detectLanguageFromNode(node.parentNode, depth - 1);
+    const parentText = node.parentNode && getTextFromNode(node.parentNode);
+    const newDepth = text === parentText ? depth : depth - 1;
+    return detectLanguageFromNode(node.parentNode, newDepth);
   }
 }
 
