@@ -184,6 +184,7 @@ const genAIResult = (res) => {
 
 // Import styles from external CSS file (loaded as raw string for Shadow DOM injection)
 import TOOLTIP_STYLES from "./plain-lookup-tooltip.css?raw";
+import FONTELLO_STYLES from "./inject-fontello.css?raw";
 
 class DictionariezTooltip extends HTMLElement {
     constructor() {
@@ -201,9 +202,11 @@ class DictionariezTooltip extends HTMLElement {
     }
 
     connectedCallback() {
-        console.log("[Dictionariez] connectedCallback - setting up shadow DOM");
-
         // Inject styles
+        const fontelloStyleEl = document.createElement("style");
+        fontelloStyleEl.textContent = FONTELLO_STYLES;
+        this.shadow.appendChild(fontelloStyleEl);
+
         const styleEl = document.createElement("style");
         styleEl.textContent = TOOLTIP_STYLES;
         this.shadow.appendChild(styleEl);
@@ -222,12 +225,6 @@ class DictionariezTooltip extends HTMLElement {
             </div>
         `;
         this.shadow.appendChild(wrapper.firstElementChild);
-
-        console.log("[Dictionariez] shadow DOM structure created", {
-            styleLength: TOOLTIP_STYLES.length,
-            tooltip: this.shadow.querySelector(".dictionaries-tooltip"),
-        });
-
         this.setupEventListeners();
     }
 
@@ -657,12 +654,6 @@ export default {
         const container = document.getElementById("dictionariez-tooltip-container") || document.documentElement;
         this._containerElement = container;
         this._tooltip = createTooltip(container);
-
-        console.log("[Dictionariez] init() called", {
-            container,
-            tooltip: this._tooltip,
-            shadowRoot: this._tooltip?.shadowRoot,
-        });
 
         // Handle offsets from container data attributes
         if (container.dataset) {
