@@ -230,17 +230,8 @@ class DictionariezTooltip extends HTMLElement {
 
     setupEventListeners() {
         // Audio click/mouseover handler with event delegation
-        const audioHandler = debounce(
-            (e) => {
-                const audioBtn = e.target.closest(".fairydict-pron-audio");
-                if (!audioBtn) return;
-
-                e.stopPropagation();
-
-                if (utils.isMobile() && e.type === "mouseover") {
-                    return;
-                }
-
+        const debouncedAudioPlay = debounce(
+            (audioBtn) => {
                 let synthesisObj = null;
 
                 if (audioBtn.dataset.mp3) {
@@ -269,12 +260,24 @@ class DictionariezTooltip extends HTMLElement {
                     };
                     utils.send("play audios", { synthesisObj });
                 }
-
-                return false;
             },
-            1000,
+            500,
             { leading: true, trailing: false },
         );
+
+        const audioHandler = (e) => {
+            const audioBtn = e.target.closest(".fairydict-pron-audio");
+            if (!audioBtn) return;
+
+            e.stopPropagation();
+
+            if (utils.isMobile() && e.type === "mouseover") {
+                return;
+            }
+
+            debouncedAudioPlay(audioBtn);
+            return false;
+        };
 
         this.shadow.addEventListener("click", audioHandler);
         this.shadow.addEventListener("mouseover", audioHandler);
