@@ -422,7 +422,10 @@ const run = () => {
                 }
                 if (!text) {
                     // click inside the dict
-                    if ($(".dictionaries-tooltip").has(event.target).length) {
+                    if (
+                        event.target.tagName === "DICTIONARIEZ-TOOLTIP" ||
+                        $("dictionariez-tooltip").has(event.target).length
+                    ) {
                         return;
                     }
                     if (plainQuerying) {
