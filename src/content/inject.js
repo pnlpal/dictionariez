@@ -9,7 +9,7 @@ import { initOnLoadDynamicDict } from "./dynamic-dict-inject.js";
 import { initAnkiInjection } from "./anki-inject.js";
 import initLookupParser from "./lookup-parser.js";
 import { initClipboardReader } from "./read-clipboard.js";
-import plainLookupTooltip from "./plain-lookup-tooltip.js";
+import plainLookupTooltip from "./plain-lookup-tooltip-webcomponent.js";
 import initTTSAndTranslator from "./tts-translator-inject.js";
 import detectLanguage from "./detect-language.js";
 

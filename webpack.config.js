@@ -53,8 +53,15 @@ var options = {
     },
     module: {
         rules: [
+            // Rule for raw CSS imports (for site customization styles)
             {
                 test: /\.css$/,
+                resourceQuery: /raw/,
+                type: "asset/source",
+            },
+            {
+                test: /\.css$/,
+                resourceQuery: { not: [/raw/] },
                 use: ["style-loader", "css-loader"],
             },
             {

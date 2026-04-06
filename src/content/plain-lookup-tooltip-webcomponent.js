@@ -3,55 +3,7 @@ import debounce from "lodash/debounce";
 
 const pnlBase = process.env.NODE_ENV === "development" ? "http://localhost:4567" : "https://pnl.dev";
 
-const setupAudioListener = () => {
-    $(document).on(
-        "click mouseover",
-        ".fairydict-pron-audio",
-        debounce(
-            (e) => {
-                e.stopPropagation();
-
-                if (utils.isMobile() && e.type === "mouseover") {
-                    return; // on mobile mouseover will be triggered when click.
-                }
-
-                let synthesisObj = null;
-
-                if ($(e.currentTarget).data("mp3")) {
-                    utils.send("play audios", {
-                        w: $(e.currentTarget).data("w"),
-                        otherSrc: $(e.currentTarget).data("mp3"),
-                        synthesis:
-                            $(e.currentTarget).data("synthesis") ||
-                            (e.currentTarget.classList.contains("fairydict-pron-audio-bre")
-                                ? "en-GB"
-                                : e.currentTarget.classList.contains("fairydict-pron-audio-ame")
-                                  ? "en-US"
-                                  : ""),
-                    });
-                } else if ($(e.currentTarget).data("synthesis")) {
-                    synthesisObj = {
-                        text: $(e.currentTarget).data("w"),
-                        name: $(e.currentTarget).data("lang"),
-                        lang: $(e.currentTarget).data("synthesis"),
-                    };
-                    utils.send("play audios", { synthesisObj });
-                } else if ($(e.currentTarget).hasClass("for-chatgpt-audio")) {
-                    synthesisObj = {
-                        text: $(e.currentTarget).parent().text(),
-                        lang: "en-US",
-                    };
-                    utils.send("play audios", { synthesisObj });
-                }
-
-                return false;
-            },
-            1000,
-            { leading: true, trailing: false },
-        ),
-    );
-};
-
+// Template functions (unchanged)
 const wTpl = (w) => `<strong class='fairydict-w' dir='auto'> ${w} </strong>`;
 const defTpl = (def) => `<span class='fairydict-def'> ${def} </span>`;
 const defsTpl = (defs) => `<span class='fairydict-defs'> ${defs} </span>`;
@@ -70,9 +22,7 @@ const exampleTpl = (example, translation, lang) =>
     <span class='fairydict-example-text pnl-tts-empowered' data-tts-lang='${lang}'>
         <span class="pnl-tts-icon">🔊</span>
         ${example}
-    </span>${
-        translation ? `<span class='fairydict-example-translation' dir='auto'> — ${translation}</span>` : ""
-    }</div>`;
+    </span>${translation ? `<span class='fairydict-example-translation' dir='auto'> — ${translation}</span>` : ""}</div>`;
 const synonymsTpl = (synonyms) =>
     `<div class='fairydict-synonyms'><strong>Synonyms:</strong> <span dir='auto'>${synonyms}</span></div>`;
 const otherFormsTpl = (forms) => `<em class='fairydict-other-forms' dir='auto'>${forms}</em>`;
@@ -86,14 +36,6 @@ const toolbarTpl = () => `
     <button class='fairydict-toolbar-btn fairydict-btn-options hidden-xss' title='Open Options' data-action='options'>⚙️</button>
     <button class='fairydict-toolbar-btn fairydict-btn-close' title='Close' data-action='close'>✕</button>
 </div>`;
-
-// Track current lookup state
-let currentLookupData = {
-    type: null, // 'plain' or 'ai'
-    word: null,
-    sentence: null,
-    detectedLangInContext: null,
-};
 
 const genPlainResult = (res) => {
     let html = "";
@@ -158,55 +100,25 @@ const genAIResult = (res) => {
         if (res?.language) {
             if (res.language === "en") {
                 [
-                    {
-                        symbol: "UK",
-                        type: "bre",
-                        synthesis: "en-GB",
-                    },
-                    {
-                        symbol: "US",
-                        type: "ame",
-                        synthesis: "en-US",
-                    },
+                    { symbol: "UK", type: "bre", synthesis: "en-GB" },
+                    { symbol: "US", type: "ame", synthesis: "en-US" },
                 ].forEach((item) => {
                     pronHtml += pronSymbolTpl(item.symbol, item.type, "English");
                     pronHtml += pronAudioTpl(res.word, "", item.type, item.synthesis, "English");
                 });
             } else if (res.language === "es") {
-                // for Spanish Spanish and US Spanish
                 [
-                    {
-                        symbol: "ES",
-                        type: "es-es",
-                        synthesis: "es-ES",
-                    },
-                    {
-                        symbol: "US",
-                        type: "es-us",
-                        synthesis: "es-US",
-                    },
+                    { symbol: "ES", type: "es-es", synthesis: "es-ES" },
+                    { symbol: "US", type: "es-us", synthesis: "es-US" },
                 ].forEach((item) => {
                     pronHtml += pronSymbolTpl(item.symbol, item.type, "Spanish");
                     pronHtml += pronAudioTpl(res.word, "", item.type, item.synthesis, "Spanish");
                 });
             } else if (res.language === "zh") {
-                // for Mandarin and Cantonese
                 [
-                    {
-                        symbol: "普",
-                        type: "zh-cn",
-                        synthesis: "zh-CN",
-                    },
-                    {
-                        symbol: "粤",
-                        type: "yue-hk",
-                        synthesis: "zh-HK",
-                    },
-                    {
-                        symbol: "台",
-                        type: "zh-tw",
-                        synthesis: "zh-TW",
-                    },
+                    { symbol: "普", type: "zh-cn", synthesis: "zh-CN" },
+                    { symbol: "粤", type: "yue-hk", synthesis: "zh-HK" },
+                    { symbol: "台", type: "zh-tw", synthesis: "zh-TW" },
                 ].forEach((item) => {
                     pronHtml += pronSymbolTpl(item.symbol, item.type, "Chinese");
                     pronHtml += pronAudioTpl(res.word, "", item.type, item.synthesis, "Chinese");
@@ -231,17 +143,14 @@ const genAIResult = (res) => {
     // === BODY SECTION ===
     let bodyHtml = "";
 
-    // Definition with part of speech at the beginning - clean and focused
     if (res?.definition) {
         let defContent = res.definition;
-        // Add part of speech in brackets at the beginning of definition
         if (res?.partOfSpeech) {
             defContent = `${posTpl("(" + res.partOfSpeech + ")")} ${defContent}`;
         }
         bodyHtml += definitionTpl(defTpl(defContent));
     }
 
-    // Most common meanings
     if (res?.otherCommonMeanings && res.otherCommonMeanings.length > 0) {
         bodyHtml += sectionTitleTpl("Other Common Meanings");
         const meaningsHtml = res.otherCommonMeanings.map((meaning) => defTpl(meaning)).join("<br>");
@@ -255,13 +164,11 @@ const genAIResult = (res) => {
     // === FOOTER SECTION ===
     let footerHtml = "";
 
-    // Synonyms
     if (res?.synonyms && res.synonyms.length > 0) {
         const synonymsText = res.synonyms.join(", ");
         footerHtml += synonymsTpl(synonymsText);
     }
 
-    // Examples
     if (res?.examples && res.examples.length > 0) {
         footerHtml += sectionTitleTpl("Examples");
         const examplesHtml = res.examples.map((ex) => exampleTpl(ex.example, ex.translation, res.language)).join("");
@@ -275,54 +182,131 @@ const genAIResult = (res) => {
     return html;
 };
 
-export default {
-    $dictionariezTooltipContainer: null,
-    init() {
-        this.$dictionariezTooltipContainer = $("#dictionariez-tooltip-container").length
-            ? $("#dictionariez-tooltip-container")
-            : $("html");
+// Import styles from external CSS file (loaded as raw string for Shadow DOM injection)
+import TOOLTIP_STYLES from "./plain-lookup-tooltip.css?raw";
 
-        $(`
-<div class="dictionaries-tooltip" dir="auto">
-    ${toolbarTpl()}
-    <div class="fairydict-spinner">
-    <div class="fairydict-bounce1"></div>
-    <div class="fairydict-bounce2"></div>
-    <div class="fairydict-bounce3"></div>
-    </div>
-    <div class="dictionaries-tooltip-content" dir="auto">
-    </div>
-</div>
-`).appendTo(this.$dictionariezTooltipContainer);
+class DictionariezTooltip extends HTMLElement {
+    constructor() {
+        super();
+        this.shadow = this.attachShadow({ mode: "open" });
+        this.currentLookupData = {
+            type: null,
+            word: null,
+            sentence: null,
+            detectedLangInContext: null,
+        };
+        this.containerElement = null;
+        this.tooltipOffsetLeft = 0;
+        this.tooltipOffsetTop = 0;
+    }
 
-        setupAudioListener();
-        this.setupToolbarListeners();
-    },
-    setupToolbarListeners() {
-        const self = this;
+    connectedCallback() {
+        console.log("[Dictionariez] connectedCallback - setting up shadow DOM");
 
-        $(document).on("click", ".fairydict-toolbar-btn, .fairydict-switch-to-ai-btn", function (e) {
+        // Inject styles
+        const styleEl = document.createElement("style");
+        styleEl.textContent = TOOLTIP_STYLES;
+        this.shadow.appendChild(styleEl);
+
+        // Create tooltip structure
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = `
+            <div class="dictionaries-tooltip" dir="auto">
+                ${toolbarTpl()}
+                <div class="fairydict-spinner">
+                    <div class="fairydict-bounce1"></div>
+                    <div class="fairydict-bounce2"></div>
+                    <div class="fairydict-bounce3"></div>
+                </div>
+                <div class="dictionaries-tooltip-content" dir="auto"></div>
+            </div>
+        `;
+        this.shadow.appendChild(wrapper.firstElementChild);
+
+        console.log("[Dictionariez] shadow DOM structure created", {
+            styleLength: TOOLTIP_STYLES.length,
+            tooltip: this.shadow.querySelector(".dictionaries-tooltip"),
+        });
+
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        // Audio click/mouseover handler with event delegation
+        const audioHandler = debounce(
+            (e) => {
+                const audioBtn = e.target.closest(".fairydict-pron-audio");
+                if (!audioBtn) return;
+
+                e.stopPropagation();
+
+                if (utils.isMobile() && e.type === "mouseover") {
+                    return;
+                }
+
+                let synthesisObj = null;
+
+                if (audioBtn.dataset.mp3) {
+                    utils.send("play audios", {
+                        w: audioBtn.dataset.w,
+                        otherSrc: audioBtn.dataset.mp3,
+                        synthesis:
+                            audioBtn.dataset.synthesis ||
+                            (audioBtn.classList.contains("fairydict-pron-audio-bre")
+                                ? "en-GB"
+                                : audioBtn.classList.contains("fairydict-pron-audio-ame")
+                                  ? "en-US"
+                                  : ""),
+                    });
+                } else if (audioBtn.dataset.synthesis) {
+                    synthesisObj = {
+                        text: audioBtn.dataset.w,
+                        name: audioBtn.dataset.lang,
+                        lang: audioBtn.dataset.synthesis,
+                    };
+                    utils.send("play audios", { synthesisObj });
+                } else if (audioBtn.classList.contains("for-chatgpt-audio")) {
+                    synthesisObj = {
+                        text: audioBtn.parentElement.textContent,
+                        lang: "en-US",
+                    };
+                    utils.send("play audios", { synthesisObj });
+                }
+
+                return false;
+            },
+            1000,
+            { leading: true, trailing: false },
+        );
+
+        this.shadow.addEventListener("click", audioHandler);
+        this.shadow.addEventListener("mouseover", audioHandler);
+
+        // Toolbar button handler
+        this.shadow.addEventListener("click", (e) => {
+            const btn = e.target.closest(".fairydict-toolbar-btn, .fairydict-switch-to-ai-btn");
+            if (!btn) return;
+
             e.stopPropagation();
-            const action = $(this).data("action");
+            const action = btn.dataset.action;
 
             switch (action) {
                 case "plain":
-                    if (currentLookupData.type === "ai") {
-                        // Switch from AI to plain lookup
-                        self.show("", null);
+                    if (this.currentLookupData.type === "ai") {
+                        this.show("", null);
                         utils.send(
                             "look up plain",
                             {
-                                w: currentLookupData.word,
-                                sentence: currentLookupData.sentence || "",
-                                detectedLangInContext: currentLookupData.detectedLangInContext || "",
+                                w: this.currentLookupData.word,
+                                sentence: this.currentLookupData.sentence || "",
+                                detectedLangInContext: this.currentLookupData.detectedLangInContext || "",
                             },
                             (res) => {
-                                self.renderPlainResult(
+                                this.renderPlainResult(
                                     res,
-                                    currentLookupData.word,
-                                    currentLookupData.sentence,
-                                    currentLookupData.detectedLangInContext,
+                                    this.currentLookupData.word,
+                                    this.currentLookupData.sentence,
+                                    this.currentLookupData.detectedLangInContext,
                                 );
                             },
                         );
@@ -332,29 +316,28 @@ export default {
                     break;
 
                 case "ai":
-                    if (currentLookupData.type === "plain") {
-                        // Switch from plain to AI lookup
-                        self.show("", null);
+                    if (this.currentLookupData.type === "plain") {
+                        this.show("", null);
                         utils
                             .send("look up in AI", {
-                                word: currentLookupData.word,
-                                sentence: currentLookupData.sentence || "",
-                                detectedLangInContext: currentLookupData.detectedLangInContext || "",
+                                word: this.currentLookupData.word,
+                                sentence: this.currentLookupData.sentence || "",
+                                detectedLangInContext: this.currentLookupData.detectedLangInContext || "",
                             })
                             .then((res) => {
-                                self.renderAIResult(
+                                this.renderAIResult(
                                     res,
-                                    currentLookupData.word,
-                                    currentLookupData.sentence,
-                                    currentLookupData.detectedLangInContext,
+                                    this.currentLookupData.word,
+                                    this.currentLookupData.sentence,
+                                    this.currentLookupData.detectedLangInContext,
                                 );
                             })
                             .catch((err) => {
-                                self.renderAIError(
+                                this.renderAIError(
                                     err,
-                                    currentLookupData.word,
-                                    currentLookupData.sentence,
-                                    currentLookupData.detectedLangInContext,
+                                    this.currentLookupData.word,
+                                    this.currentLookupData.sentence,
+                                    this.currentLookupData.detectedLangInContext,
                                 );
                             });
                         window.defaultClickLookup = "ai";
@@ -363,45 +346,52 @@ export default {
                     break;
 
                 case "app-lookup":
-                    // Look up the word in the main app
-                    if (currentLookupData.word) {
+                    if (this.currentLookupData.word) {
                         utils.send("look up", {
-                            w: currentLookupData.word,
-                            sentence: currentLookupData.sentence,
-                            detectedLangInContext: currentLookupData.detectedLangInContext,
+                            w: this.currentLookupData.word,
+                            sentence: this.currentLookupData.sentence,
+                            detectedLangInContext: this.currentLookupData.detectedLangInContext,
                         });
                     }
                     break;
 
                 case "anki":
-                    // Export to Anki
-                    if (currentLookupData.word) {
+                    if (this.currentLookupData.word) {
                         utils.send("open anki", {
-                            w: currentLookupData.word,
-                            detectedLangInContext: currentLookupData.detectedLangInContext,
+                            w: this.currentLookupData.word,
+                            detectedLangInContext: this.currentLookupData.detectedLangInContext,
                         });
-                        // Show feedback
-                        $(this).css("background", "#4a4");
+                        btn.style.background = "#4a4";
                         setTimeout(() => {
-                            $(this).css("background", "");
+                            btn.style.background = "";
                         }, 500);
                     }
                     break;
 
-                case "options":
-                    // Open main Dictionariez app
-                    const optionsTarget = currentLookupData.type === "ai" ? "pro-setting" : "function-setting";
+                case "options": {
+                    const optionsTarget = this.currentLookupData.type === "ai" ? "pro-setting" : "function-setting";
                     utils.send("open options", { to: optionsTarget });
                     break;
+                }
 
                 case "close":
-                    self.hide();
+                    this.hide();
                     break;
             }
         });
-    },
+    }
+
+    setContainerElement(element) {
+        this.containerElement = element;
+    }
+
+    setOffsets(left, top) {
+        this.tooltipOffsetLeft = left || 0;
+        this.tooltipOffsetTop = top || 0;
+    }
+
     setupPlainContentPosition(e) {
-        const $el = $(".dictionaries-tooltip");
+        const tooltip = this.shadow.querySelector(".dictionaries-tooltip");
         let pageX, pageY;
 
         if (e.pageX && e.pageY) {
@@ -412,30 +402,28 @@ export default {
             pageY = e.changedTouches ? e.changedTouches[0].pageY : 0;
         }
 
-        const containerOffset = this.$dictionariezTooltipContainer.offset();
-        if ($el.length && pageY) {
-            let mousex =
-                pageX -
-                containerOffset.left +
-                25 +
-                (this.$dictionariezTooltipContainer.data("dictionariezTooltipOffsetLeft") || 0);
-            let mousey =
-                pageY -
-                containerOffset.top +
-                25 +
-                (this.$dictionariezTooltipContainer.data("dictionariezTooltipOffsetTop") || 0);
+        const containerEl = this.containerElement || document.documentElement;
+        const containerRect = containerEl.getBoundingClientRect();
+        const containerOffset = {
+            left: containerRect.left + window.scrollX,
+            top: containerRect.top + window.scrollY,
+        };
+
+        if (tooltip && pageY) {
+            let mousex = pageX - containerOffset.left + 25 + this.tooltipOffsetLeft;
+            let mousey = pageY - containerOffset.top + 25 + this.tooltipOffsetTop;
             let top = mousey;
             let left = mousex;
 
-            const rect = $("#dictionariez-tooltip-container").length
-                ? $("#dictionariez-tooltip-container")[0].getBoundingClientRect()
-                : window.document.scrollingElement.getBoundingClientRect();
+            const rect = this.containerElement
+                ? this.containerElement.getBoundingClientRect()
+                : document.scrollingElement.getBoundingClientRect();
             const domW = window.innerWidth - rect.left;
             const domH = window.innerHeight - rect.top;
 
-            // Corresponding to the width set in inject.less
             const isOnSmallScreen = domW <= 700;
             const isOnMacbookAir = domW <= 1280;
+
             if (domH - top < 300) {
                 top = top - 10;
             }
@@ -443,60 +431,69 @@ export default {
                 top = top - 100;
             }
 
+            // Position the host element
             if (isOnSmallScreen) {
-                $el.css({
-                    top,
-                    left: "10px",
-                    right: "10px",
-                    width: "auto", // override fixed width for small screens in inject.less
-                });
+                this.style.top = `${top}px`;
+                this.style.left = "10px";
+                this.style.right = "10px";
+                tooltip.style.width = "auto";
             } else {
                 if (isOnMacbookAir) {
                     if (domW - left < 590) {
                         left = domW - 590;
                     }
                 } else {
-                    // regular screen
                     if (domW - left < 690) {
                         left = domW - 690;
                     }
                 }
 
-                $el.css({
-                    top,
-                    left,
-                });
+                this.style.top = `${top}px`;
+                this.style.left = `${left}px`;
+                this.style.right = "";
             }
         }
-    },
+    }
+
     show(htmlContent = "", e = null) {
-        const clickInside = e && $(e.target).closest(".dictionaries-tooltip").length > 0;
-        $(".dictionaries-tooltip").fadeIn("slow");
+        const tooltip = this.shadow.querySelector(".dictionaries-tooltip");
+        const spinner = this.shadow.querySelector(".fairydict-spinner");
+        const content = this.shadow.querySelector(".dictionaries-tooltip-content");
+        const toolbar = this.shadow.querySelector(".fairydict-toolbar");
+
+        console.log("[Dictionariez] show() called", { htmlContent: !!htmlContent, event: !!e, tooltip: !!tooltip });
+
+        const clickInside = e && e.target && this.shadow.contains(e.target);
+
+        tooltip.classList.add("visible");
+
         if (htmlContent) {
-            $(".dictionaries-tooltip").removeClass("loading");
-            $(".dictionaries-tooltip .fairydict-spinner").hide();
-            $(".dictionaries-tooltip .dictionaries-tooltip-content").append(htmlContent);
-            $(".dictionaries-tooltip .fairydict-toolbar").addClass("showing");
+            tooltip.classList.remove("loading");
+            spinner.style.display = "none";
+            content.innerHTML = htmlContent;
+            toolbar.classList.add("showing");
         } else {
-            $(".dictionaries-tooltip").addClass("loading");
-            $(".dictionaries-tooltip .fairydict-spinner").show();
-            $(".dictionaries-tooltip .dictionaries-tooltip-content").empty();
-            $(".dictionaries-tooltip .fairydict-toolbar").removeClass("showing");
+            tooltip.classList.add("loading");
+            spinner.style.display = "";
+            content.innerHTML = "";
+            toolbar.classList.remove("showing");
 
             if (e && !clickInside) {
                 this.setupPlainContentPosition(e);
             }
         }
-    },
+    }
+
     hide() {
-        $(".dictionaries-tooltip").fadeOut().hide();
-    },
+        const tooltip = this.shadow.querySelector(".dictionaries-tooltip");
+        tooltip.classList.remove("visible");
+    }
+
     renderPlainResult(res, word, sentence, detectedLangInContext) {
         let html = "";
         res = Array.isArray(res) ? res : [res];
 
-        // Update current lookup data
-        currentLookupData = {
+        this.currentLookupData = {
             type: "plain",
             word: word,
             sentence: sentence,
@@ -507,13 +504,14 @@ export default {
             html += genPlainResult(item);
         }
 
-        $(".fairydict-btn-plain").addClass("active");
-        $(".fairydict-btn-ai").removeClass("active");
+        const plainBtn = this.shadow.querySelector(".fairydict-btn-plain");
+        const aiBtn = this.shadow.querySelector(".fairydict-btn-ai");
+        if (plainBtn) plainBtn.classList.add("active");
+        if (aiBtn) aiBtn.classList.remove("active");
 
         if (html) {
             this.show(html);
         } else {
-            // show no result message, recommend switching to AI lookup
             html = `<div class='fairydict-no-result'>
                 <p>😕 No dictionary result found for "${word}"</p>
                 <p>Try <button class='fairydict-switch-to-ai-btn' data-action="ai">🤖 AI Lookup</button> for a better explanation</p>
@@ -521,11 +519,12 @@ export default {
             this.show(html);
         }
         return html;
-    },
+    }
+
     renderAIResult(res, word, sentence, detectedLangInContext) {
         const { lookup, trialsUsed, trialsMaxAllowed, isProUser } = res;
-        // Update current lookup data
-        currentLookupData = {
+
+        this.currentLookupData = {
             type: "ai",
             word,
             sentence,
@@ -537,14 +536,15 @@ export default {
         if (html) {
             let finalHtml = html;
             if (!isProUser && trialsUsed !== undefined && trialsMaxAllowed !== undefined) {
-                // Show trial usage info
                 const upgradeUrl = `${pnlBase}/pro`;
                 finalHtml += `<div class='fairydict-trial-info'>Trial usage: ${trialsUsed}/${trialsMaxAllowed} — <a href='${upgradeUrl}' target='_blank'>Upgrade to Pro</a></div>`;
             }
             this.show(finalHtml);
-            // Update toolbar button states
-            $(".fairydict-btn-ai").addClass("active");
-            $(".fairydict-btn-plain").removeClass("active");
+
+            const plainBtn = this.shadow.querySelector(".fairydict-btn-plain");
+            const aiBtn = this.shadow.querySelector(".fairydict-btn-ai");
+            if (aiBtn) aiBtn.classList.add("active");
+            if (plainBtn) plainBtn.classList.remove("active");
 
             return finalHtml;
         } else {
@@ -555,10 +555,10 @@ export default {
                 detectedLangInContext,
             );
         }
-    },
+    }
+
     renderAIError(error, word, sentence, detectedLangInContext) {
-        // Update current lookup data
-        currentLookupData = {
+        this.currentLookupData = {
             type: "ai",
             word,
             sentence,
@@ -568,7 +568,6 @@ export default {
 
         const getPrettyMessage = (msg) => {
             if (!msg) return "";
-
             const lowermsg = msg.toLowerCase();
 
             if (
@@ -585,13 +584,12 @@ export default {
             if (lowermsg.includes("forbidden")) {
                 return "You do not have permission to access this resource.";
             }
-
             if (lowermsg.includes("internal server error")) {
                 return "Server encountered an error. Please try again later.";
             }
-
             return msg;
         };
+
         const errorMsg = getPrettyMessage(error.message || error.status?.message || String(error));
 
         let html = "";
@@ -624,9 +622,85 @@ export default {
         }
 
         this.show(html);
-        $(".fairydict-btn-ai").addClass("active");
-        $(".fairydict-btn-plain").removeClass("active");
+
+        const plainBtn = this.shadow.querySelector(".fairydict-btn-plain");
+        const aiBtn = this.shadow.querySelector(".fairydict-btn-ai");
+        if (aiBtn) aiBtn.classList.add("active");
+        if (plainBtn) plainBtn.classList.remove("active");
 
         return html;
+    }
+}
+
+// Register the custom element
+if (!customElements.get("dictionariez-tooltip")) {
+    customElements.define("dictionariez-tooltip", DictionariezTooltip);
+}
+
+// Factory function for creating/getting the tooltip instance
+export function createTooltip(containerElement = null) {
+    let tooltip = document.querySelector("dictionariez-tooltip");
+    if (!tooltip) {
+        tooltip = document.createElement("dictionariez-tooltip");
+        const parent = containerElement || document.documentElement;
+        parent.appendChild(tooltip);
+    }
+    return tooltip;
+}
+
+// Export a compatibility layer that matches the old API
+export default {
+    _tooltip: null,
+    _containerElement: null,
+
+    init() {
+        const container = document.getElementById("dictionariez-tooltip-container") || document.documentElement;
+        this._containerElement = container;
+        this._tooltip = createTooltip(container);
+
+        console.log("[Dictionariez] init() called", {
+            container,
+            tooltip: this._tooltip,
+            shadowRoot: this._tooltip?.shadowRoot,
+        });
+
+        // Handle offsets from container data attributes
+        if (container.dataset) {
+            this._tooltip.setOffsets(
+                parseInt(container.dataset.dictionariezTooltipOffsetLeft) || 0,
+                parseInt(container.dataset.dictionariezTooltipOffsetTop) || 0,
+            );
+        }
+        this._tooltip.setContainerElement(container);
+    },
+
+    show(htmlContent = "", e = null) {
+        if (this._tooltip) {
+            this._tooltip.show(htmlContent, e);
+        }
+    },
+
+    hide() {
+        if (this._tooltip) {
+            this._tooltip.hide();
+        }
+    },
+
+    renderPlainResult(res, word, sentence, detectedLangInContext) {
+        if (this._tooltip) {
+            return this._tooltip.renderPlainResult(res, word, sentence, detectedLangInContext);
+        }
+    },
+
+    renderAIResult(res, word, sentence, detectedLangInContext) {
+        if (this._tooltip) {
+            return this._tooltip.renderAIResult(res, word, sentence, detectedLangInContext);
+        }
+    },
+
+    renderAIError(error, word, sentence, detectedLangInContext) {
+        if (this._tooltip) {
+            return this._tooltip.renderAIError(error, word, sentence, detectedLangInContext);
+        }
     },
 };

@@ -1,0 +1,445 @@
+@font-face {
+    font-family: "fairydict-font";
+    src:
+        url("data:application/octet-stream;base64,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")
+            format("woff"),
+        url("data:application/octet-stream;base64,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")
+            format("truetype");
+}
+
+i[class^="icon-fairydict"]:before,
+i[class*=" icon-fairydict"]:before {
+    font-family: "fairydict-font" !important;
+    font-style: normal;
+    font-weight: normal;
+    speak: none;
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    margin-right: 0.2em;
+    text-align: center;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1em;
+    margin-left: 0.2em;
+}
+
+.icon-fairydict-volume:before {
+    content: "\e800";
+}
+
+:host {
+    all: initial;
+    display: block;
+    position: absolute;
+    z-index: 9999999999;
+}
+
+.dictionaries-tooltip {
+    opacity: 1;
+    display: none;
+    position: relative;
+    border: 1px solid #333;
+    width: auto;
+    height: auto;
+    min-height: auto;
+    background-color: #161616;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: left;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+.dictionaries-tooltip.loading {
+    max-width: 135px;
+    background: none;
+}
+
+.dictionaries-tooltip:not(.loading) {
+    width: 650px;
+}
+
+@media (max-width: 1280px) {
+    .dictionaries-tooltip:not(.loading) {
+        width: 550px;
+    }
+}
+
+@media (max-width: 550px) {
+    .hidden-xss {
+        display: none !important;
+    }
+}
+
+.dictionaries-tooltip.visible {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+[dir="auto"] {
+    text-align: start;
+}
+
+.fairydict-toolbar {
+    display: none;
+    gap: 4px;
+    z-index: 10;
+    float: right;
+}
+
+.fairydict-toolbar.showing {
+    display: flex;
+}
+
+.fairydict-toolbar-btn {
+    width: 28px;
+    min-width: auto;
+    min-height: auto;
+    height: 28px;
+    border: 1px solid #444;
+    background: #2a2a2a;
+    color: #aaa;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+    margin: 0;
+}
+
+.fairydict-toolbar-btn:hover {
+    background: #3a3a3a;
+    color: #fff;
+    border-color: #555;
+    transform: translateY(-1px);
+}
+
+.fairydict-toolbar-btn.active {
+    color: #fff;
+    border-color: #5d5fee;
+}
+
+.fairydict-btn-close:hover {
+    background: #c44;
+    border-color: #c44;
+}
+
+.fairydict-btn-anki:hover {
+    background: #3a8;
+    border-color: #3a8;
+}
+
+.fairydict-btn-app-lookup:hover {
+    background: #58a;
+    border-color: #58a;
+}
+
+.dictionaries-tooltip-content {
+    color: #fff;
+    font-size: 16px;
+    line-height: normal;
+}
+
+.dictionaries-tooltip-content strong {
+    font-weight: 700;
+}
+
+.fairydict-no-result {
+    padding: 40px 20px 20px 20px;
+    text-align: center;
+}
+
+.fairydict-no-result p {
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+.fairydict-no-result p:first-child {
+    font-size: 16px;
+    color: #ccc;
+}
+
+.fairydict-switch-to-ai-btn {
+    background: transparent;
+    color: #8b9dc3;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.fairydict-switch-to-ai-btn:hover {
+    color: #a8b8d8;
+}
+
+.fairydict-ai-error {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.fairydict-ai-error .error-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.fairydict-ai-error .error-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #f5f5f5;
+    margin-bottom: 12px;
+}
+
+.fairydict-ai-error .error-message {
+    font-size: 14px;
+    color: #aaa;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.fairydict-error-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.fairydict-error-btn {
+    display: inline-block;
+    background: transparent;
+    color: #8b9dc3;
+    border: 1px solid #444;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.fairydict-error-btn:hover {
+    color: #a8b8d8;
+    border-color: #5d5fee;
+    background: rgba(93, 95, 238, 0.1);
+}
+
+.fairydict-error-btn:active {
+    background: rgba(93, 95, 238, 0.2);
+}
+
+.fairydict-error-link {
+    color: #888;
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.fairydict-error-link:hover {
+    color: #aaa;
+    text-decoration: underline;
+}
+
+.fairydict-prons {
+    margin-bottom: 4px;
+}
+
+.icon-fairydict-volume {
+    color: goldenrod;
+}
+
+.fairydict-w {
+    font-size: 22px;
+    color: #f5f5f5;
+    padding-right: 5px;
+}
+
+.fairydict-labels .fairydict-label {
+    border: 1px solid;
+    border-radius: 3px;
+    padding: 1px 2px;
+    margin-right: 3px;
+    border-color: dimgray;
+}
+
+.fairydict-pron-audio {
+    cursor: pointer;
+    border-bottom: none;
+}
+
+.fairydict-content {
+    margin-top: 3px;
+    margin-bottom: 8px;
+}
+
+.fairydict-content:last-child {
+    margin-bottom: 0;
+}
+
+.fairydict-content .fairydict-pos {
+    display: table-cell;
+    width: 40px;
+    padding-top: 1px;
+}
+
+.fairydict-content .fairydict-defs {
+    display: table-cell;
+    padding-top: 1px;
+}
+
+.fairydict-trial-info {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #333;
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+}
+
+.fairydict-trial-info a {
+    color: #8b9dc3;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.fairydict-trial-info a:hover {
+    color: #a8b8d8;
+    text-decoration: underline;
+}
+
+.fairydict-ai-header {
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #333;
+}
+
+@media (max-width: 550px) {
+    .fairydict-ai-header {
+        padding-bottom: 5px;
+        margin-bottom: 5px;
+    }
+}
+
+.fairydict-ai-header .fairydict-translation,
+.fairydict-ai-header .fairydict-other-forms {
+    font-size: 0.85em;
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
+.fairydict-ai-body .fairydict-definition {
+    font-size: 1.15em;
+    line-height: 1.7;
+    color: #f0f0f0;
+}
+
+.fairydict-ai-body .fairydict-definition .fairydict-pos {
+    font-size: smaller;
+}
+
+.fairydict-ai-body .fairydict-definition strong {
+    font-weight: 700;
+    color: cornflowerblue;
+}
+
+.fairydict-ai-body .fairydict-section-title {
+    font-weight: 600;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    color: #ccc;
+    font-size: 0.9em;
+}
+
+.fairydict-ai-footer {
+    padding-top: 12px;
+    margin-top: 12px;
+    border-top: 1px solid #333;
+}
+
+@media (max-width: 550px) {
+    .fairydict-ai-footer {
+        padding-bottom: 5px;
+        margin-bottom: 5px;
+    }
+}
+
+.fairydict-ai-footer .fairydict-synonyms {
+    margin-bottom: 12px;
+    font-size: 0.95em;
+    color: #ddd;
+}
+
+.fairydict-ai-footer .fairydict-synonyms strong {
+    color: #aaa;
+    margin-right: 4px;
+}
+
+.fairydict-ai-footer .fairydict-example {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.fairydict-ai-footer .fairydict-example .fairydict-example-text {
+    color: #e8e8e8;
+    font-style: italic;
+}
+
+.fairydict-ai-footer .fairydict-example .fairydict-example-translation {
+    color: #999;
+    font-size: 0.9em;
+}
+
+.fairydict-ai-footer .fairydict-section-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #aaa;
+    font-size: 0.9em;
+}
+
+.fairydict-spinner {
+    margin: 10px auto 0;
+    width: 70px;
+    text-align: center;
+}
+
+.fairydict-spinner > div {
+    width: 18px;
+    height: 18px;
+    background-color: #333;
+    border-radius: 100%;
+    display: inline-block;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.fairydict-spinner .fairydict-bounce1 {
+    animation-delay: -0.32s;
+}
+
+.fairydict-spinner .fairydict-bounce2 {
+    animation-delay: -0.16s;
+}
+
+@keyframes sk-bouncedelay {
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
+}
