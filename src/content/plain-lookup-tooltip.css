@@ -23,7 +23,6 @@
 
 .dictionaries-tooltip.loading {
     max-width: 135px;
-    background: none;
 }
 
 .dictionaries-tooltip:not(.loading) {
