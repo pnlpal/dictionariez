@@ -513,7 +513,7 @@ class DictionariezTooltip extends HTMLElement {
             this.show(html);
         } else {
             html = `<div class='fairydict-no-result'>
-                <p>😕 No dictionary result found for "${word}"</p>
+                <p>😕 No quick result found for "${word}"</p>
                 <p>Try <button class='fairydict-switch-to-ai-btn' data-action="ai">🤖 AI Lookup</button> for a better explanation</p>
             </div>`;
             this.show(html);
