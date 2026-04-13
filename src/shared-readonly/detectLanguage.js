@@ -67,13 +67,13 @@ async function detectLanguageFromNode(node, depth) {
 }
 
 export async function detectLanguage(text, node = null) {
-  if (!text || text.trim().length === 0) {
-    return;
-  }
-
   // Check for explicit language attribute on the node, esp for translated text.
   if (getLangAttribute(node)) {
     return getLangAttribute(node);
+  }
+
+  if (!text || text.trim().length === 0) {
+    return;
   }
 
   try {
