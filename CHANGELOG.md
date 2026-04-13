@@ -1,3 +1,8 @@
+# v7.3.3 Apr 13, 2026
+- Fixed looking up words when clicking on the APP icon.
+- Fixed looking up words on the examples page.
+- Made a webcomponent for the lookup result to have better compatibility on any websites.
+
 # v7.3.2 Apr 3, 2026
 - Try local sythesis voices when reading sentences.
 - Put Wiktionary as the first dict. 
