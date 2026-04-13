@@ -194,12 +194,17 @@ const utils = {
         window.dictionariezBackgroundListeners = {};
         window.dictionariezBackgroundListeners[type] = callback;
 
-        chrome.runtime.onMessage.addListener((request, sender, sendResponse) =>
-          window.dictionariezBackgroundListeners[request.type]?.(
-            request,
-            sender,
-            sendResponse,
-          ),
+        chrome.runtime.onMessage.addListener(
+          (request, sender, sendResponse) => {
+            window.dictionariezBackgroundListeners[request.type]?.(
+              request,
+              sender,
+              sendResponse,
+            );
+            // sendResponse becomes invalid when the event listener returns,
+            // unless you return true from the event listener to indicate you wish to send a response asynchronously
+            return true;
+          },
         );
       } else {
         window.dictionariezBackgroundListeners[type] = callback;
