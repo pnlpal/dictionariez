@@ -1,6 +1,10 @@
 import utils from "utils";
 import debounce from "lodash/debounce";
 
+// Import styles from external CSS file (loaded as raw string for Shadow DOM injection)
+import TOOLTIP_STYLES from "./plain-lookup-tooltip.css?raw";
+import FONTELLO_STYLES from "./inject-fontello.css?raw";
+
 const pnlBase = process.env.NODE_ENV === "development" ? "http://localhost:4567" : "https://pnl.dev";
 
 // Template functions (unchanged)
@@ -182,10 +186,6 @@ const genAIResult = (res) => {
     return html;
 };
 
-// Import styles from external CSS file (loaded as raw string for Shadow DOM injection)
-import TOOLTIP_STYLES from "./plain-lookup-tooltip.css?raw";
-import FONTELLO_STYLES from "./inject-fontello.css?raw";
-
 class DictionariezTooltip extends HTMLElement {
     constructor() {
         super();
@@ -228,7 +228,8 @@ class DictionariezTooltip extends HTMLElement {
         this.setupEventListeners();
     }
 
-    setupEventListeners() {
+    // Arrow function property to ensure it's defined during construction (Firefox compatibility)
+    setupEventListeners = () => {
         // Audio click/mouseover handler with event delegation
         const debouncedAudioPlay = debounce(
             (audioBtn) => {
@@ -416,18 +417,18 @@ class DictionariezTooltip extends HTMLElement {
 
         // Listen for dblclick to trigger word lookup
         this.shadow.addEventListener("dblclick", handleWordLookupInTooltip);
-    }
+    };
 
-    setContainerElement(element) {
+    setContainerElement = (element) => {
         this.containerElement = element;
-    }
+    };
 
-    setOffsets(left, top) {
+    setOffsets = (left, top) => {
         this.tooltipOffsetLeft = left || 0;
         this.tooltipOffsetTop = top || 0;
-    }
+    };
 
-    setupPlainContentPosition(e) {
+    setupPlainContentPosition = (e) => {
         const tooltip = this.shadow.querySelector(".dictionaries-tooltip");
         let pageX, pageY;
 
@@ -490,9 +491,9 @@ class DictionariezTooltip extends HTMLElement {
                 this.style.right = "";
             }
         }
-    }
+    };
 
-    show(htmlContent = "", e = null) {
+    show = (htmlContent = "", e = null) => {
         const tooltip = this.shadow.querySelector(".dictionaries-tooltip");
         const spinner = this.shadow.querySelector(".fairydict-spinner");
         const content = this.shadow.querySelector(".dictionaries-tooltip-content");
@@ -517,14 +518,14 @@ class DictionariezTooltip extends HTMLElement {
                 this.setupPlainContentPosition(e);
             }
         }
-    }
+    };
 
-    hide() {
+    hide = () => {
         const tooltip = this.shadow.querySelector(".dictionaries-tooltip");
         tooltip.classList.remove("visible");
-    }
+    };
 
-    renderPlainResult(res, word, sentence, detectedLangInContext) {
+    renderPlainResult = (res, word, sentence, detectedLangInContext) => {
         let html = "";
         res = Array.isArray(res) ? res : [res];
 
@@ -554,9 +555,9 @@ class DictionariezTooltip extends HTMLElement {
             this.show(html);
         }
         return html;
-    }
+    };
 
-    renderAIResult(res, word, sentence, detectedLangInContext) {
+    renderAIResult = (res, word, sentence, detectedLangInContext) => {
         const { lookup, trialsUsed, trialsMaxAllowed, isProUser } = res;
 
         this.currentLookupData = {
@@ -590,9 +591,9 @@ class DictionariezTooltip extends HTMLElement {
                 detectedLangInContext,
             );
         }
-    }
+    };
 
-    renderAIError(error, word, sentence, detectedLangInContext) {
+    renderAIError = (error, word, sentence, detectedLangInContext) => {
         this.currentLookupData = {
             type: "ai",
             word,
@@ -664,7 +665,7 @@ class DictionariezTooltip extends HTMLElement {
         if (plainBtn) plainBtn.classList.remove("active");
 
         return html;
-    }
+    };
 }
 
 // Register the custom element
