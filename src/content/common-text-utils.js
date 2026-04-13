@@ -58,11 +58,9 @@ export const getWordFromSelection = (fromAllFrames = false) => {
     return word;
 };
 
-export const getSentenceOfSelection = (window_ = window) => {
-    const selection = window_.getSelection();
-
+export const getSentenceOfSelection = (window_ = window, selection = window_.getSelection()) => {
     try {
-        if (navigator.userAgent.includes("Gecko")) {
+        if (navigator.userAgent.includes("Gecko/")) {
             return getSentenceFromSelection(selection);
         } else {
             const range = selection.getRangeAt(0);

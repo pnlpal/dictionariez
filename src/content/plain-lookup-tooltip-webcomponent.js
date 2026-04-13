@@ -379,6 +379,43 @@ class DictionariezTooltip extends HTMLElement {
                     break;
             }
         });
+
+        // Handle text selection within the tooltip for nested word lookup
+        const handleWordLookupInTooltip = debounce(
+            (e) => {
+                // Get selection - works for shadow DOM in modern browsers
+                const selection = window.getSelection();
+                if (!selection || selection.rangeCount === 0) return;
+
+                const selectedText = selection.toString().trim();
+                if (!selectedText || selectedText.length > 100) return;
+
+                // Don't trigger on single clicks without selection
+                if (!selectedText) return;
+
+                // Check if selection is within this webcomponent
+                if (this !== e.target) return;
+
+                // Don't re-lookup the same word we're already showing
+                if (selectedText === this.currentLookupData.word) return;
+                // Emit a custom event that the parent page can listen to
+                this.dispatchEvent(
+                    new CustomEvent("dictionariez-plain-lookup", {
+                        bubbles: true,
+                        composed: true, // crosses shadow DOM boundary
+                        detail: {
+                            word: selectedText,
+                            selection: selection,
+                        },
+                    }),
+                );
+            },
+            100,
+            { leading: false, trailing: true },
+        );
+
+        // Listen for dblclick to trigger word lookup
+        this.shadow.addEventListener("dblclick", handleWordLookupInTooltip);
     }
 
     setContainerElement(element) {
@@ -460,8 +497,6 @@ class DictionariezTooltip extends HTMLElement {
         const spinner = this.shadow.querySelector(".fairydict-spinner");
         const content = this.shadow.querySelector(".dictionaries-tooltip-content");
         const toolbar = this.shadow.querySelector(".fairydict-toolbar");
-
-        console.log("[Dictionariez] show() called", { htmlContent: !!htmlContent, event: !!e, tooltip: !!tooltip });
 
         const clickInside = e && e.target && this.shadow.contains(e.target);
 

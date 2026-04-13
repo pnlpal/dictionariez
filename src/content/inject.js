@@ -5,13 +5,13 @@ import highlight from "./editable-highlight";
 
 import "./card-iframe.js";
 import "./pnlpal-inject.js";
-import { initOnLoadDynamicDict } from "./dynamic-dict-inject.js";
 import { initAnkiInjection } from "./anki-inject.js";
 import initLookupParser from "./lookup-parser.js";
 import { initClipboardReader } from "./read-clipboard.js";
 import plainLookupTooltip from "./plain-lookup-tooltip-webcomponent.js";
 import initTTSAndTranslator from "./tts-translator-inject.js";
 import detectLanguage from "./detect-language.js";
+import "./inject-in-dicts.js";
 
 import {
     getWordAtPoint,
@@ -22,7 +22,6 @@ import {
 } from "./common-text-utils.js";
 
 const setupStyles = () => {
-    require("./inject.less");
     // Interesting: font url is embedded, for some websites' security setting font-src,
     // it might be forbidden to load the font url.
     // but after webpack build, it not a problem any more.
@@ -34,68 +33,6 @@ const run = () => {
     initLookupParser();
     initAnkiInjection();
     initClipboardReader();
-
-    let isInDict = false;
-
-    chrome.runtime.sendMessage(
-        {
-            type: "injected",
-            origin: location.origin,
-            url: location.href,
-        },
-        (res) => {
-            if (res?.dictUrl && window.self === window.top) {
-                // append to html rather than body.
-                // some websites such as naver dict, may clear body when reload to another page.
-                // But somehow for ChatGPT, it has to append to body.
-                const iframeHtml = `<iframe id='dictionaries-iframe' class="dictionariez-iframe" src='${res.dictUrl}'> </iframe>`;
-                if (location.href.includes("chatgpt.com")) {
-                    $(iframeHtml).appendTo("body");
-                } else {
-                    $(iframeHtml).appendTo("html");
-                }
-
-                isInDict = true;
-                initOnLoadDynamicDict({
-                    word: res.word,
-                    sentence: res.sentence,
-                    languagePrompt: res.languagePrompt,
-                    dict: res.dict,
-                    isHelpMeRefine: res.isHelpMeRefine,
-                });
-            }
-
-            if (res?.isInSidePanelDict) {
-                isInDict = true;
-                initOnLoadDynamicDict({
-                    word: res.word,
-                    sentence: res.sentence,
-                    languagePrompt: res.languagePrompt,
-                    dict: res.dict,
-                    isHelpMeRefine: res.isHelpMeRefine,
-                });
-                window.top.postMessage({ type: "injectedInDict" }, "*");
-            }
-
-            if (res?.cardUrl && res.word && !location.host.includes("wikipedia.org") && window.self === window.top) {
-                const comparedLoc = decodeURI(location.href).toLowerCase();
-                if (res.word.split(/\s/).every((s) => comparedLoc.includes(s.toLowerCase()))) {
-                    $(
-                        `<iframe class='dictionaries-card dictionaries-card-wiki' src='${res.cardUrl}?sys=wiki' style='display: none;'> </iframe>`,
-                    ).appendTo("body");
-                }
-            }
-
-            if (isInDict && res.dict?.ttsHelperSelector) {
-                document.querySelectorAll(res.dict.ttsHelperSelector).forEach((el) => {
-                    el.classList.add("pnl-tts-helper");
-                    if (el.lang) {
-                        el.setAttribute("data-tts-lang", el.lang);
-                    }
-                });
-            }
-        },
-    );
 
     chrome.runtime.sendMessage(
         {
@@ -224,7 +161,7 @@ const run = () => {
                     plainLookupTooltip.hide();
                     plainQuerying = null;
 
-                    if (isInDict) {
+                    if (window.isInDict) {
                         utils.sendToDict("keypress focus");
                     }
                 }
@@ -244,7 +181,7 @@ const run = () => {
                     }
                 }
 
-                if (isInDict) {
+                if (window.isInDict) {
                     if (utils.checkEventKey(event, setting.prevHistorySK1, null, setting.prevHistoryKey)) {
                         chrome.runtime.sendMessage({
                             type: "query",
@@ -334,6 +271,19 @@ const run = () => {
                 }
             };
 
+            // Listen for word lookup requests from within the tooltip (nested lookups)
+            document.addEventListener("dictionariez-plain-lookup", async (e) => {
+                const { word, selection } = e.detail;
+                if (!word || !utils.isValidWordOrPhrase(word)) return;
+
+                const sentence = getSentenceOfSelection(window, selection);
+                const detectedLangInContext = await detectLanguage(sentence, window.getSelection().focusNode);
+
+                plainLookupTooltip.show(null, e);
+                plainQuerying = word;
+                plainOrAILookup(word, sentence, detectedLangInContext);
+            });
+
             const handleLookupByMouse = debounce(
                 async (event, text) => {
                     if (!text || !utils.isValidWordOrPhrase(text)) {
@@ -412,7 +362,7 @@ const run = () => {
 
             function handleMouseUp(event, shouldLookUp = true) {
                 let text;
-                if (isInDict) {
+                if (window.isInDict) {
                     window.top.postMessage({ type: "toggleDropdown", open: false }, "*");
                 }
 
