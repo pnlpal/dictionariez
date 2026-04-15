@@ -1,3 +1,6 @@
+# v7.3.4 Apr 15, 2026
+- Fixed breaking on cloudflare's verification page.
+
 # v7.3.3 Apr 13, 2026
 - Fixed looking up words when clicking on the APP icon.
 - Fixed looking up words on the examples page.
