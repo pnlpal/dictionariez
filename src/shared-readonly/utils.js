@@ -441,6 +441,18 @@ const utils = {
       }
     }
   },
+  documentReady() {
+    return new Promise((resolve) => {
+      if (
+        document.readyState === "complete" ||
+        document.readyState === "interactive"
+      ) {
+        resolve();
+      } else {
+        document.addEventListener("DOMContentLoaded", resolve);
+      }
+    });
+  },
 };
 
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {

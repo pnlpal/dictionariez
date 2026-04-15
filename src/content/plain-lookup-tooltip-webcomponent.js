@@ -705,9 +705,10 @@ export default {
     },
 
     show(htmlContent = "", e = null) {
-        if (this._tooltip) {
-            this._tooltip.show(htmlContent, e);
+        if (!this._tooltip) {
+            this.init();
         }
+        this._tooltip.show(htmlContent, e);
     },
 
     hide() {
@@ -717,20 +718,24 @@ export default {
     },
 
     renderPlainResult(res, word, sentence, detectedLangInContext) {
-        if (this._tooltip) {
-            return this._tooltip.renderPlainResult(res, word, sentence, detectedLangInContext);
+        if (!this._tooltip) {
+            this.init();
         }
+        return this._tooltip.renderPlainResult(res, word, sentence, detectedLangInContext);
     },
 
     renderAIResult(res, word, sentence, detectedLangInContext) {
-        if (this._tooltip) {
-            return this._tooltip.renderAIResult(res, word, sentence, detectedLangInContext);
+        if (!this._tooltip) {
+            this.init();
         }
+        return this._tooltip.renderAIResult(res, word, sentence, detectedLangInContext);
     },
 
     renderAIError(error, word, sentence, detectedLangInContext) {
-        if (this._tooltip) {
-            return this._tooltip.renderAIError(error, word, sentence, detectedLangInContext);
+        if (!this._tooltip) {
+            this.init();
         }
+
+        return this._tooltip.renderAIError(error, word, sentence, detectedLangInContext);
     },
 };

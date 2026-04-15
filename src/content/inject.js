@@ -62,7 +62,6 @@ const run = () => {
                 return;
             }
 
-            plainLookupTooltip.init();
             initTTSAndTranslator(setting);
             window.plainLookupTooltip = plainLookupTooltip;
 
@@ -442,6 +441,6 @@ const run = () => {
 };
 
 if (!window.dictionariezInjected) {
-    run();
     window.dictionariezInjected = true;
+    utils.documentReady().then(run);
 }
