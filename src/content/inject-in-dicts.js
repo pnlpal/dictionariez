@@ -1,6 +1,5 @@
 import { initOnLoadDynamicDict } from "./dynamic-dict-inject.js";
 import "./inject-in-dicts.less";
-import "./card-iframe.js";
 
 window.isInDict = false;
 
@@ -69,6 +68,8 @@ export default function injectInDicts(res) {
     }
 
     if (res?.cardUrl && res.word && !location.host.includes("wikipedia.org") && window.self === window.top) {
+        require("./card-iframe.js");
+
         const comparedLoc = decodeURI(location.href).toLowerCase();
         if (res.word.split(/\s/).every((s) => comparedLoc.includes(s.toLowerCase()))) {
             const cardIframe = document.createElement("iframe");
