@@ -1,7 +1,34 @@
 import { initOnLoadDynamicDict } from "./dynamic-dict-inject.js";
 import "./inject-in-dicts.less";
+import "./card-iframe.js";
 
 window.isInDict = false;
+
+async function waitForElement(selector, timeout = 10000) {
+    const startTime = Date.now();
+    return new Promise((resolve, reject) => {
+        const checkExist = setInterval(() => {
+            const element = document.querySelector(selector);
+            if (element) {
+                clearInterval(checkExist);
+                resolve(element);
+            }
+            if (Date.now() - startTime > timeout) {
+                clearInterval(checkExist);
+                reject(new Error(`Element ${selector} not found within ${timeout}ms`));
+            }
+        }, 10);
+    });
+}
+
+async function appendElementTo(selector, element) {
+    try {
+        const parent = await waitForElement(selector);
+        parent.appendChild(element);
+    } catch (error) {
+        console.error(`Failed to append element to ${selector}:`, error);
+    }
+}
 
 export default function injectInDicts(res) {
     if (res?.dictUrl && window.self === window.top) {
@@ -14,9 +41,9 @@ export default function injectInDicts(res) {
         iframe.src = res.dictUrl;
 
         if (location.href.includes("chatgpt.com")) {
-            document.body.appendChild(iframe);
+            appendElementTo("body", iframe);
         } else {
-            document.documentElement.appendChild(iframe);
+            appendElementTo("html", iframe);
         }
 
         window.isInDict = true;
@@ -48,7 +75,7 @@ export default function injectInDicts(res) {
             cardIframe.className = "dictionaries-card dictionaries-card-wiki";
             cardIframe.src = `${res.cardUrl}?sys=wiki`;
             cardIframe.style.display = "none";
-            document.body.appendChild(cardIframe);
+            appendElementTo("body", cardIframe);
         }
     }
 

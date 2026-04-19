@@ -55,5 +55,5 @@ window.addEventListener(
             }
         }
     },
-    false
+    false,
 );

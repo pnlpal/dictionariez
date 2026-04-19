@@ -10,10 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../vendor/font-awesome.css";
 import "./dictheader.less";
 
-import "./card-iframe.js";
 import { getCurrentCoupon } from "../option/user-profile.js";
-
-import detectLanguage from "./detect-language.js";
 
 const inFrame = window.self !== window.top;
 // some ui need bootstrap, like dropdown.
