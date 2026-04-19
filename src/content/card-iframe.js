@@ -1,16 +1,17 @@
-import $ from "jquery";
-
 import "./card-iframe.less";
 
 const setupCardsPosition = () => {
-    const hasMax =
-        $("iframe.dictionaries-card:visible").length !== $("iframe.dictionaries-card-minimal:visible").length;
+    const visibleCards = Array.from(document.querySelectorAll("iframe.dictionaries-card")).filter(
+        (el) => el.style.display !== "none" && getComputedStyle(el).display !== "none",
+    );
+    const visibleMinimalCards = visibleCards.filter((el) => el.classList.contains("dictionaries-card-minimal"));
+    const hasMax = visibleCards.length !== visibleMinimalCards.length;
 
     let maxiCount = 0;
     let miniCount = 0;
-    $("iframe.dictionaries-card:visible").each((i, el) => {
+    visibleCards.forEach((el) => {
         let bottom;
-        if ($(el).hasClass("dictionaries-card-minimal")) {
+        if (el.classList.contains("dictionaries-card-minimal")) {
             miniCount += 1;
             el.style.right = "10px";
 
@@ -36,20 +37,25 @@ window.addEventListener(
         // chrome-extension or moz-extension
         if (event?.data?.type) {
             if (event.data.type === "toggleDropdown") {
+                const iframes = document.querySelectorAll("#dictionaries-iframe, .dictionariez-iframe");
                 if (event.data.open) {
-                    $("#dictionaries-iframe, .dictionariez-iframe").addClass("dropdown-open");
+                    iframes.forEach((el) => el.classList.add("dropdown-open"));
                 } else {
-                    $("#dictionaries-iframe, .dictionariez-iframe").removeClass("dropdown-open");
+                    iframes.forEach((el) => el.classList.remove("dropdown-open"));
                 }
             } else if (event.data.type === "close-card") {
-                $(".dictionaries-card-" + event.data.sys).hide();
+                const cards = document.querySelectorAll(".dictionaries-card-" + event.data.sys);
+                cards.forEach((el) => (el.style.display = "none"));
             } else if (event.data.type === "show-card") {
-                $(".dictionaries-card-" + event.data.sys).show();
-                if (event.data.minimal) {
-                    $(".dictionaries-card-" + event.data.sys).addClass("dictionaries-card-minimal");
-                } else {
-                    $(".dictionaries-card-" + event.data.sys).removeClass("dictionaries-card-minimal");
-                }
+                const cards = document.querySelectorAll(".dictionaries-card-" + event.data.sys);
+                cards.forEach((el) => {
+                    el.style.display = "";
+                    if (event.data.minimal) {
+                        el.classList.add("dictionaries-card-minimal");
+                    } else {
+                        el.classList.remove("dictionaries-card-minimal");
+                    }
+                });
 
                 setupCardsPosition();
             }
