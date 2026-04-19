@@ -11,6 +11,7 @@ import "../vendor/font-awesome.css";
 import "./dictheader.less";
 
 import { getCurrentCoupon } from "../option/user-profile.js";
+import headerDom from "../header.html";
 
 const inFrame = window.self !== window.top;
 // some ui need bootstrap, like dropdown.
@@ -436,22 +437,21 @@ dictApp.controller("dictCtrl", [
     },
 ]);
 
-import("../header.html").then(({ default: headerDom }) => {
-    $(document.body).append(headerDom);
-    angular.bootstrap(document.getElementById("fairy-dict"), ["fairyDictApp"]);
+// Initialize the app
+$(document.body).append(headerDom);
+angular.bootstrap(document.getElementById("fairy-dict"), ["fairyDictApp"]);
 
-    const setupAppDescription = () => {
-        const appDescription =
-            process.env.PRODUCT === "Dictionariez"
-                ? require("../description-and-badge.html").default
-                : require(`../description-and-badge.${process.env.PRODUCT.toLowerCase()}.html`).default;
+const setupAppDescription = () => {
+    const appDescription =
+        process.env.PRODUCT === "Dictionariez"
+            ? require("../description-and-badge.html").default
+            : require(`../description-and-badge.${process.env.PRODUCT.toLowerCase()}.html`).default;
 
-        document.querySelector("#app-description").innerHTML = appDescription;
+    document.querySelector("#app-description").innerHTML = appDescription;
 
-        const { version } = chrome.runtime.getManifest();
-        document.querySelector("#app-description .badge").innerText = `V${version}`;
+    const { version } = chrome.runtime.getManifest();
+    document.querySelector("#app-description .badge").innerText = `V${version}`;
 
-        import("../option/pnl-craft-topics.js");
-    };
-    setupAppDescription();
-});
+    import("../option/pnl-craft-topics.js").catch(console.error);
+};
+setupAppDescription();

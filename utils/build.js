@@ -1,6 +1,6 @@
 /* eslint-env node */
 
-process.env.NODE_ENV = "production";
+process.env.NODE_ENV = process.env.NODE_ENV || "production";
 
 var webpack = require("webpack"),
     config = require("../webpack.config");
@@ -31,6 +31,6 @@ webpack(config, function (err, stats) {
         stats.toString({
             chunks: false, // Makes the build much quieter
             colors: true, // Shows colors in the console
-        })
+        }),
     );
 });

@@ -3,7 +3,6 @@ import utils from "utils";
 import debounce from "lodash/debounce";
 import highlight from "./editable-highlight";
 
-import "./card-iframe.js";
 import "./pnlpal-inject.js";
 import { initAnkiInjection } from "./anki-inject.js";
 import initLookupParser from "./lookup-parser.js";
