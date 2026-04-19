@@ -10,8 +10,7 @@
     "content_scripts": [
         {
             "js": ["preinject.bundle.js"],
-            "matches": ["<all_urls>"],
-            "run_at": "document_start"
+            "matches": ["<all_urls>"]
         },
         {
             "js": ["inject.bundle.js"],

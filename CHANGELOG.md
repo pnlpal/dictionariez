@@ -1,3 +1,9 @@
+# v7.3.5 Apr 19, 2026
+- Fixed word pronunciations on Anki pages.
+- Fixed dict header loading on race conditions.
+- Fixed quick lookup result on Reddit.
+- Fixed showing wiki result card on some dicts.
+
 # v7.3.4 Apr 15, 2026
 - Fixed breaking on cloudflare's verification page.
 
