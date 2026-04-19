@@ -11,7 +11,6 @@ import { initClipboardReader } from "./read-clipboard.js";
 import plainLookupTooltip from "./plain-lookup-tooltip-webcomponent.js";
 import initTTSAndTranslator from "./tts-translator-inject.js";
 import detectLanguage from "./detect-language.js";
-import "./inject-in-dicts.js";
 
 import {
     getWordAtPoint,

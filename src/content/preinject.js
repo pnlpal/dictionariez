@@ -1,7 +1,6 @@
 chrome.runtime.sendMessage(
     {
         type: "injected",
-        preinject: true,
         origin: location.origin,
         url: location.href,
     },
@@ -12,8 +11,8 @@ chrome.runtime.sendMessage(
                 styleElement.innerHTML = res.dict.css;
                 document.head.appendChild(styleElement);
             }
-
-            require("./scrollbar.less");
         }
+
+        require("./inject-in-dicts.js").default(res);
     },
 );
