@@ -1,6 +1,7 @@
 import utils from "utils";
 import debounce from "lodash/debounce";
 
+import audioListener from "./audio-listener";
 // Import styles from external CSS file (loaded as raw string for Shadow DOM injection)
 import TOOLTIP_STYLES from "./plain-lookup-tooltip.css?raw";
 import FONTELLO_STYLES from "./inject-fontello.css?raw";
@@ -230,58 +231,7 @@ class DictionariezTooltip extends HTMLElement {
 
     // Arrow function property to ensure it's defined during construction (Firefox compatibility)
     setupEventListeners = () => {
-        // Audio click/mouseover handler with event delegation
-        const debouncedAudioPlay = debounce(
-            (audioBtn) => {
-                let synthesisObj = null;
-
-                if (audioBtn.dataset.mp3) {
-                    utils.send("play audios", {
-                        w: audioBtn.dataset.w,
-                        otherSrc: audioBtn.dataset.mp3,
-                        synthesis:
-                            audioBtn.dataset.synthesis ||
-                            (audioBtn.classList.contains("fairydict-pron-audio-bre")
-                                ? "en-GB"
-                                : audioBtn.classList.contains("fairydict-pron-audio-ame")
-                                  ? "en-US"
-                                  : ""),
-                    });
-                } else if (audioBtn.dataset.synthesis) {
-                    synthesisObj = {
-                        text: audioBtn.dataset.w,
-                        name: audioBtn.dataset.lang,
-                        lang: audioBtn.dataset.synthesis,
-                    };
-                    utils.send("play audios", { synthesisObj });
-                } else if (audioBtn.classList.contains("for-chatgpt-audio")) {
-                    synthesisObj = {
-                        text: audioBtn.parentElement.textContent,
-                        lang: "en-US",
-                    };
-                    utils.send("play audios", { synthesisObj });
-                }
-            },
-            500,
-            { leading: true, trailing: false },
-        );
-
-        const audioHandler = (e) => {
-            const audioBtn = e.target.closest(".fairydict-pron-audio");
-            if (!audioBtn) return;
-
-            e.stopPropagation();
-
-            if (utils.isMobile() && e.type === "mouseover") {
-                return;
-            }
-
-            debouncedAudioPlay(audioBtn);
-            return false;
-        };
-
-        this.shadow.addEventListener("click", audioHandler);
-        this.shadow.addEventListener("mouseover", audioHandler);
+        audioListener(this.shadow);
 
         // Toolbar button handler
         this.shadow.addEventListener("click", (e) => {

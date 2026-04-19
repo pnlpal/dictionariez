@@ -1,6 +1,7 @@
 import $ from "jquery";
 import debounce from "lodash/debounce";
 import utils from "utils";
+import audioListener from "./audio-listener";
 import "./anki-inject.less";
 
 let currentWordItem = null;
@@ -315,18 +316,21 @@ function renderLookupWords(wordItem, res) {
 }
 
 export const initAnkiInjection = () => {
-    if (["https://ankiweb.net", "https://ankiuser.net"].includes(location.origin) && location.pathname === "/add") {
-        getAnkiInfo();
-        addSkipButton();
-        $("body")[0].addEventListener("click", wordSavedCallback, true);
+    if (["https://ankiweb.net", "https://ankiuser.net"].includes(location.origin)) {
+        if (location.pathname === "/add") {
+            getAnkiInfo();
+            addSkipButton();
+            $("body")[0].addEventListener("click", wordSavedCallback, true);
 
-        window.addEventListener("beforeunload", () =>
-            utils.send("beforeunload anki window", {
-                left: window.screenX,
-                top: window.screenY,
-                width: window.outerWidth,
-                height: window.outerHeight,
-            }),
-        );
+            window.addEventListener("beforeunload", () =>
+                utils.send("beforeunload anki window", {
+                    left: window.screenX,
+                    top: window.screenY,
+                    width: window.outerWidth,
+                    height: window.outerHeight,
+                }),
+            );
+        }
+        audioListener(document);
     }
 };
