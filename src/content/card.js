@@ -1,8 +1,4 @@
-import $ from "jquery";
-// import angular from 'angular'
 import utils from "utils";
-import debounce from "lodash/debounce";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../vendor/font-awesome.css";
 
@@ -16,10 +12,14 @@ const initWiki = () => {
         const res = await utils.send("get wikipedia", { w });
 
         if (res?.extract_html) {
+            const wikiImage = document.querySelector(".dictionaries-wikipedia .dictionaries-wiki-image");
+            const wikiExtract = document.querySelector(".dictionaries-wikipedia .dictionaries-wiki-extract");
+            const cardLink = document.querySelector(".dictionaries-wikipedia .dictionaries-card-link");
+
             if (res?.thumbnail) {
-                $(".dictionaries-wikipedia .dictionaries-wiki-image").html(`<img src='${res.thumbnail.source}'></img>`);
+                wikiImage.innerHTML = `<img src='${res.thumbnail.source}'></img>`;
             } else {
-                $(".dictionaries-wikipedia .dictionaries-wiki-extract").addClass("dictionaries-wiki-margin-top");
+                wikiExtract.classList.add("dictionaries-wiki-margin-top");
 
                 // wiki's bug?
                 if (res.extract?.endsWith("may refer to:")) {
@@ -27,14 +27,14 @@ const initWiki = () => {
                 }
             }
 
-            $(".dictionaries-wikipedia .dictionaries-wiki-extract").html(res.extract_html);
-            $(".dictionaries-wikipedia .dictionaries-card-link").attr("href", res.content_urls.mobile.page);
+            wikiExtract.innerHTML = res.extract_html;
+            cardLink.setAttribute("href", res.content_urls.mobile.page);
 
             window.showCard(window.cardSetting.minimal);
         }
     };
 
-    $(`
+    const wikiHtml = `
 <a class="dictionaries-card-minimal-icon" href="" title="Open wikipedia" style="display: none;">
     <img src="https://en.m.wikipedia.org/static/favicon/wikipedia.ico" alt="Wiki"></img>
 </a>
@@ -57,7 +57,12 @@ const initWiki = () => {
     <div class="dictionaries-wiki-extract">
     </div>
 </div>
-`).appendTo("body");
+`;
+    const container = document.createElement("div");
+    container.innerHTML = wikiHtml;
+    while (container.firstChild) {
+        document.body.appendChild(container.firstChild);
+    }
 
     getWikipedia();
 };
@@ -75,37 +80,48 @@ const initWiki = () => {
     }
 })();
 
-$(document).on("click", "a.dictionaries-card-link", (ev) => {
-    window.top.location.href = ev.currentTarget.href;
-    return false;
+document.addEventListener("click", (ev) => {
+    const cardLink = ev.target.closest("a.dictionaries-card-link");
+    if (cardLink) {
+        window.top.location.href = cardLink.href;
+        ev.preventDefault();
+        return;
+    }
+
+    const closeBtn = ev.target.closest("a.dictionaries-card-close");
+    if (closeBtn) {
+        window.showCard(true);
+        utils.send("card minimal", { sys, minimal: true });
+        ev.preventDefault();
+        return;
+    }
+
+    const minimalIcon = ev.target.closest("a.dictionaries-card-minimal-icon");
+    if (minimalIcon) {
+        window.showCard();
+        utils.send("card minimal", { sys, minimal: false });
+        ev.preventDefault();
+        return;
+    }
+
+    const settingBtn = ev.target.closest("a.dictionaries-setting");
+    if (settingBtn) {
+        utils.send("open options", { to: "function-setting", sys });
+        ev.preventDefault();
+        return;
+    }
 });
 
 window.showCard = (minimal) => {
     window.top.postMessage({ type: "show-card", sys, minimal }, "*");
+    const minimalIcon = document.querySelector(".dictionaries-card-minimal-icon");
+    const cardMax = document.querySelector(".dictionaries-card-max");
+
     if (minimal) {
-        $(".dictionaries-card-minimal-icon").show();
-        $(".dictionaries-card-max").hide();
+        if (minimalIcon) minimalIcon.style.display = "";
+        if (cardMax) cardMax.style.display = "none";
     } else {
-        $(".dictionaries-card-minimal-icon").hide();
-        $(".dictionaries-card-max").show();
+        if (minimalIcon) minimalIcon.style.display = "none";
+        if (cardMax) cardMax.style.display = "";
     }
 };
-
-$(document).on("click", "a.dictionaries-card-close", (ev) => {
-    showCard(true);
-
-    utils.send("card minimal", { sys, minimal: true });
-    return false;
-});
-
-$(document).on("click", "a.dictionaries-card-minimal-icon", (ev) => {
-    showCard();
-
-    utils.send("card minimal", { sys, minimal: false });
-    return false;
-});
-
-$(document).on("click", "a.dictionaries-setting", (ev) => {
-    utils.send("open options", { to: "function-setting", sys });
-    return false;
-});
