@@ -1,4 +1,3 @@
-import $ from "jquery";
 import { initOnLoadDynamicDict } from "./dynamic-dict-inject.js";
 
 window.isInDict = false;
@@ -17,11 +16,15 @@ if (!window.isInDict) {
                 // append to html rather than body.
                 // some websites such as naver dict, may clear body when reload to another page.
                 // But somehow for ChatGPT, it has to append to body.
-                const iframeHtml = `<iframe id='dictionaries-iframe' class="dictionariez-iframe" src='${res.dictUrl}'> </iframe>`;
+                const iframe = document.createElement("iframe");
+                iframe.id = "dictionaries-iframe";
+                iframe.className = "dictionariez-iframe";
+                iframe.src = res.dictUrl;
+
                 if (location.href.includes("chatgpt.com")) {
-                    $(iframeHtml).appendTo("body");
+                    document.body.appendChild(iframe);
                 } else {
-                    $(iframeHtml).appendTo("html");
+                    document.documentElement.appendChild(iframe);
                 }
 
                 window.isInDict = true;
@@ -49,9 +52,11 @@ if (!window.isInDict) {
             if (res?.cardUrl && res.word && !location.host.includes("wikipedia.org") && window.self === window.top) {
                 const comparedLoc = decodeURI(location.href).toLowerCase();
                 if (res.word.split(/\s/).every((s) => comparedLoc.includes(s.toLowerCase()))) {
-                    $(
-                        `<iframe class='dictionaries-card dictionaries-card-wiki' src='${res.cardUrl}?sys=wiki' style='display: none;'> </iframe>`,
-                    ).appendTo("body");
+                    const cardIframe = document.createElement("iframe");
+                    cardIframe.className = "dictionaries-card dictionaries-card-wiki";
+                    cardIframe.src = `${res.cardUrl}?sys=wiki`;
+                    cardIframe.style.display = "none";
+                    document.body.appendChild(cardIframe);
                 }
             }
 
