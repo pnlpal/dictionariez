@@ -67,9 +67,10 @@ We look forward to hearing from you and helping you achieve your language learni
 1. use `yarn` or `npm install` to install requirements.
 2. `npm start` to start a webpack dev-server, add the `build/` directory in your browser's extension page to load the extension.
 3. To build for Firefox, please use the environment variable `BROWSER=Firefox`. So `BROWSER=Firefox npm start` will build a development version of this add-on for Firefox.
-4. To build for `Ordböcker`, use the environment variable `PRODUCT=Ordböcker`. So `PRODUCT=Ordböcker npm start` will build a development version Ordböcker for Chrome.
-5. `npm run build` to build the release version. The dest path is `build/`. And `BROWSER=Firefox npm run build` to build the Firefox release version.  `PRODUCT=Ordböcker BROWSER=Firefox npm run build` to build `Ordböcker` for Firefox.
-6. `./pack.sh` to pack the extension to zip file. For Firefox, use `BROWSER=Firefox ./pack.sh`.
+4. To build for Edge, please use the environment variable `BROWSER=Edge`. So `BROWSER=Edge npm start` will build a development version of this add-on for Edge.
+5. To build for `Ordböcker`, use the environment variable `PRODUCT=Ordböcker`. So `PRODUCT=Ordböcker npm start` will build a development version Ordböcker for Chrome.
+6. `npm run build` to build the release version. The dest path is `build/`. And `BROWSER=Firefox npm run build` to build the Firefox release version.  `PRODUCT=Ordböcker BROWSER=Firefox npm run build` to build `Ordböcker` for Firefox.
+7. `./pack.sh` to pack the extension to zip file. For Firefox, use `BROWSER=Firefox ./pack.sh`. For Edge, use `BROWSER=Edge ./pack.sh`.
 
 # Privacy Policy
 
