@@ -1,6 +1,7 @@
 :host {
     all: initial;
     display: block;
+    visibility: visible !important; /* Fix on reddit.com */
     position: absolute;
     z-index: 9999999999;
 }
