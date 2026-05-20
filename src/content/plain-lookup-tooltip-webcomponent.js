@@ -1,10 +1,11 @@
 import utils from "utils";
 import debounce from "lodash/debounce";
-
+import getTextFromNode from "../shared-readonly/getTextFromNode.js";
 import audioListener from "./audio-listener";
 // Import styles from external CSS file (loaded as raw string for Shadow DOM injection)
 import TOOLTIP_STYLES from "./plain-lookup-tooltip.css?raw";
 import FONTELLO_STYLES from "./inject-fontello.css?raw";
+import TTS_STYLES from "./tts.css?raw";
 
 const pnlBase = process.env.NODE_ENV === "development" ? "http://localhost:4567" : "https://pnl.dev";
 
@@ -212,6 +213,10 @@ class DictionariezTooltip extends HTMLElement {
         styleEl.textContent = TOOLTIP_STYLES;
         this.shadow.appendChild(styleEl);
 
+        const ttsStyleEl = document.createElement("style");
+        ttsStyleEl.textContent = TTS_STYLES;
+        this.shadow.appendChild(ttsStyleEl);
+
         // Create tooltip structure
         const wrapper = document.createElement("div");
         wrapper.innerHTML = `
@@ -367,6 +372,25 @@ class DictionariezTooltip extends HTMLElement {
 
         // Listen for dblclick to trigger word lookup
         this.shadow.addEventListener("dblclick", handleWordLookupInTooltip);
+
+        // Handle TTS icon clicks within shadow DOM (global listener can't reach inside shadow DOM)
+        this.shadow.addEventListener("click", (e) => {
+            if (!e.target.classList.contains("pnl-tts-icon")) {
+                return;
+            }
+            e.stopPropagation();
+            e.preventDefault();
+
+            const parent = e.target.parentElement;
+            if (!parent) return;
+
+            // Get text content excluding the icon itself
+            const text = getTextFromNode(parent);
+            if (!text) return;
+
+            const lang = parent.dataset.ttsLang || "";
+            window.postMessage({ command: "pnl-tts-play", text, lang }, window.location.origin);
+        });
     };
 
     setContainerElement = (element) => {

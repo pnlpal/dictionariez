@@ -3,6 +3,7 @@ import debounce from "lodash/debounce";
 import detectLanguage from "./detect-language.js";
 import getTextFromNode from "../shared-readonly/getTextFromNode.js";
 import { checkEditable } from "./common-text-utils.js";
+import TTS_STYLES from "./tts.css?raw";
 
 export default (setting) => {
     if (setting.disableTTS && setting.disableTranslator && setting.disableAIHelper) {
@@ -79,8 +80,8 @@ export default (setting) => {
         const dictIconHtml = setting.disableAIHelper
             ? ""
             : isInEditable
-            ? `<div class="pnl-ai-helper-icon" title="Help ME Refine my writing by ${process.env.PRODUCT}">📚</div>`
-            : "";
+              ? `<div class="pnl-ai-helper-icon" title="Help ME Refine my writing by ${process.env.PRODUCT}">📚</div>`
+              : "";
 
         const optionsIconHtml = `<div class="pnl-options-icon" title="Config how this bubble behaves">⚙️</div>`;
 
@@ -189,7 +190,7 @@ export default (setting) => {
                     selectionRect,
                     translatorSettings: setting.translatorSettings ? JSON.parse(setting.translatorSettings) : {},
                 },
-                window.location.origin
+                window.location.origin,
             );
             removeBubble();
         });
@@ -266,27 +267,7 @@ export default (setting) => {
         if (!document.querySelector("#pnl-tts-icon-styles")) {
             const style = document.createElement("style");
             style.id = "pnl-tts-icon-styles";
-            style.textContent = `
-            .pnl-tts-icon {
-                opacity: 0.7;
-                margin-right: 1px;
-                cursor: pointer;
-                user-select: none;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 0.9em;
-                transition: opacity 0.2s ease;
-                vertical-align: middle;
-            }
-            .pnl-tts-empowered:hover .pnl-tts-icon {
-                opacity: 1;
-            }
-            .pnl-tts-icon:hover {
-                transform: scale(1.1);
-                opacity: 1 !important;
-            }
-        `;
+            style.textContent = TTS_STYLES;
             document.head.appendChild(style);
         }
 
