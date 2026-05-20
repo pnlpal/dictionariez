@@ -1,3 +1,10 @@
+# v7.4.0 May 20, 2026
+- Removed Google as lookup source; Wiktionary is now the default for English.
+- Added native speaker audio from Wiktionary for Swedish and other languages.
+- Show both native and synthesis pronunciation when audio exists for comparison.
+- Visual distinction for native speaker audio (blue highlight).
+- Fixed TTS icon click handling in shadow DOM tooltip.
+
 # v7.3.5 Apr 19, 2026
 - Fixed word pronunciations on Anki pages.
 - Fixed dict header loading on race conditions.
