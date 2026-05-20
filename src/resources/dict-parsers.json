@@ -51,7 +51,7 @@
                                 "selector": "li .IPA"
                             },
                             "audio": {
-                                "selector": "audio source[type='audio/mpeg']",
+                                "selector": ".audiotable audio source[type='audio/mpeg']",
                                 "attr": "src"
                             }
                         }
