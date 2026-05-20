@@ -70,9 +70,8 @@ dictApp.controller("optionCtrl", [
             "bottomRight",
         ];
         $scope.englishLookupSources = {
-            google: "Google",
-            bingCN: "Bing Dict CN",
             wiktionary: "Wiktionary",
+            bingCN: "Bing Dict CN",
         };
 
         $scope.changeKey = debounce((value, key) => {

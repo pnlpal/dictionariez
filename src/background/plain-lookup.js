@@ -112,7 +112,7 @@ export default {
 
     checkType(w, possibleLangs = []) {
         if (setting.getValue("enableLookupEnglish") && possibleLangs.includes("English")) {
-            return setting.getValue("englishLookupSource"); // google, bingCN, wiktionary
+            return setting.getValue("englishLookupSource"); // wiktionary, bingCN
         }
 
         for (const name in parserDescs) {
@@ -137,8 +137,8 @@ export default {
         }
     },
 
-    fallbackDict(w, current = "google") {
-        // fallback to other dict if Google failed
+    fallbackDict(w, current = "wiktionary") {
+        // fallback to other dict if current dict failed
         for (const name in parserDescs) {
             const dictDesc = parserDescs[name];
             if (name === current) {
@@ -229,31 +229,6 @@ export default {
         });
     }, // ignore phrase
 
-    tryGoogleWithOtherHl({ tabId, w, url, detectedLangInContext, _requests }) {
-        if (url.includes("hl=en")) {
-            const possibleLangs = this.checkLangs(w, detectedLangInContext);
-            const parserDesc = parserDescs.google;
-            for (const lang of possibleLangs) {
-                if (lang !== "English" && parserDesc.languages.includes(lang)) {
-                    const langDesc = langs[lang];
-                    if (langDesc.synthesis) {
-                        const newGoogleUrl = url.replace("hl=en", `hl=${langDesc.synthesis}`);
-                        return this.parse({
-                            tabId,
-                            w,
-                            tname: "google",
-                            prevResult: null,
-                            url: newGoogleUrl,
-                            detectedLangInContext,
-                            _requests,
-                        });
-                    }
-                }
-            }
-        }
-        return null;
-    },
-
     async parse({ tabId, w, tname, prevResult, url, detectedLangInContext, _requests = [] }) {
         const possibleLangs = this.checkLangs(w, detectedLangInContext);
 
@@ -269,14 +244,6 @@ export default {
         const dictDesc = parserDescs[tname];
         const requestWord = possibleLangs.includes("Ukrainian") ? w.replace(/\u0301/g, "") : w;
         url = (url || dictDesc.url).replace("<word>", requestWord);
-
-        if (tname === "google" && possibleLangs.length > 0 && possibleLangs[0] !== "English" && url.includes("hl=en")) {
-            // prioritize other languages over English
-            const promise_ = this.tryGoogleWithOtherHl({ tabId, w, url, detectedLangInContext, _requests });
-            if (promise_) {
-                return promise_;
-            }
-        }
 
         const fallbackDictName = this.fallbackDict(w, tname);
 
@@ -352,79 +319,6 @@ export default {
             result._requests = _requests;
         }
         // console.log "parse:", w, "from:", tname, "result:", result
-        // fallback to wiktionary if google failed
-        if (tname === "google" && (!result?.w || !result?.defs?.length)) {
-            if (prevResult) {
-                return prevResult;
-            }
-            const promise_ = this.tryGoogleWithOtherHl({ tabId, w, url, detectedLangInContext, _requests });
-            if (promise_) {
-                return promise_;
-            }
-            if (fallbackDictName) {
-                return this.parse({ tabId, w, tname: fallbackDictName, prevResult, detectedLangInContext, _requests });
-            }
-        }
-
-        // fix prons and lang for google result
-        if (tname === "google" && result?.langSymbol) {
-            for (const lang in langs) {
-                const langConfig = langs[lang];
-                if (langConfig.symbol === result.langSymbol || langConfig.alternative === result.langSymbol) {
-                    result.lang = lang;
-                    const detectedPron = result.prons[0];
-                    detectedPron.synthesis = langConfig.synthesis;
-
-                    if (!detectedPron.audio) {
-                        detectedPron.type = langConfig.symbol;
-                        detectedPron.symbol = langConfig.symbol.toUpperCase();
-                    } else if (detectedPron.type === "bre") {
-                        detectedPron.symbol = `${detectedPron.symbol || ""} UK`;
-                        detectedPron.synthesis = "en-GB";
-                        setEnglishProns(result);
-                    }
-                }
-            }
-
-            // Filter Google result by detected language context
-            // Accept if result.lang is in possibleLangs, or if it's English and English lookup is enabled
-            if (detectedLangInContext && result.lang) {
-                const isLangAllowed =
-                    possibleLangs.includes(result.lang) ||
-                    (result.lang === "English" && setting.getValue("enableLookupEnglish"));
-                if (!isLangAllowed && fallbackDictName) {
-                    console.log(
-                        "Google result lang",
-                        result.lang,
-                        "not in possibleLangs",
-                        possibleLangs,
-                        ", fallback to",
-                        fallbackDictName,
-                    );
-                    return this.parse({
-                        tabId,
-                        w,
-                        tname: fallbackDictName,
-                        prevResult,
-                        detectedLangInContext,
-                        _requests,
-                    });
-                }
-            }
-        }
-
-        // check other possible languages in fallback dict like wiktionary
-        if (tname === "google" && possibleLangs.length > 1 && fallbackDictName && !prevResult) {
-            console.log("Check other possible languages in fallback dict for word:", w, possibleLangs);
-            return this.parse({
-                tabId,
-                w,
-                tname: fallbackDictName,
-                prevResult: result,
-                detectedLangInContext,
-                _requests,
-            });
-        }
 
         // special handle of bing when look up Chinese
         if (tname === "bingCN") {

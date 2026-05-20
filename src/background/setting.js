@@ -36,7 +36,7 @@ export default {
         otherDisabledLanguages: [],
 
         enablePlainLookup: process.env.PRODUCT === "SidePal" ? false : true,
-        englishLookupSource: "google", // google, bingCN, wiktionary
+        englishLookupSource: "wiktionary", // bingCN, wiktionary
 
         needDblclick: false,
         enablePlainSK1: false,
@@ -107,8 +107,8 @@ export default {
                     Object.assign(this.configCache, obj.config);
                 }
                 //migration:
-                if (this.configCache.englishLookupSource === "bing") {
-                    this.configCache.englishLookupSource = "google";
+                if (this.configCache.englishLookupSource === "bing" || this.configCache.englishLookupSource === "google") {
+                    this.configCache.englishLookupSource = "wiktionary";
                 }
                 // migration done.
                 resolve(this.configCache);

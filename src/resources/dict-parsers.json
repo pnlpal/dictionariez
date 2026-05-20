@@ -111,69 +111,7 @@
             }
         }
     },
-    "google": {
-        "url": "https://www.google.com/search?hl=en&q=define+<word>",
-        "languages": ["English", "German", "Spanish", "Italian", "Japanese", "French"],
-        "credentials": "same-origin",
-        "result": {
-            "w": {
-                "selector": "[data-dobid='hdw']"
-            },
-            "langSymbol": {
-                "selector": "[data-language]",
-                "attr": "data-language"
-            },
-            "prons": [
-                {
-                    "symbol": {
-                        "selector": ".vmod[data-topic][data-hveid] [data-attrid='EntryHeader']",
-                        "textRegex": "/[^/]+/",
-                        "regexIndex": 0
-                    },
-                    "audio": {
-                        "selector": "[data-tts-client-name][data-ved] audio source",
-                        "attr": "src"
-                    },
-                    "type": "bre"
-                }
-            ],
-            "defs": {
-                "groups": ".vmod>.vmod[data-topic]",
-                "result": {
-                    "pos": {
-                        "selector": "i"
-                    },
-                    "def": {
-                        "selector": "[data-dobid='dfn']",
-                        "toArray": true
-                    }
-                }
-            },
 
-            "defs2": {
-                "groups": "[data-tae]>[data-mh='-1']",
-                "result": {
-                    "pos": {
-                        "selector": "div"
-                    },
-                    "def": {
-                        "selector": "ol>li span[lang]",
-                        "max": 2,
-                        "toArray": true
-                    }
-                }
-            },
-            "images": {
-                "groups": ".vmod [data-topic] g-img",
-                "result": {
-                    "src": {
-                        "selector": "img",
-                        "attr": "title"
-                    }
-                }
-            }
-        }
-    },
     "bingCN": {
         "url": "https://cn.bing.com/dict/search?mkt=zh-cn&q=<word>",
         "supportChinese": true,
