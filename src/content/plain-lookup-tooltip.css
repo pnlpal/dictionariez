@@ -251,6 +251,11 @@
     border-bottom: none;
 }
 
+/* Native speaker audio - highlighted with blue background */
+.fairydict-pron-audio-native .icon-fairydict-volume {
+    color: #81d4fa;
+}
+
 .fairydict-content {
     margin-top: 3px;
     margin-bottom: 8px;

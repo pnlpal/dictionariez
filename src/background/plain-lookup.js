@@ -23,6 +23,12 @@ const setEnglishProns = (result) => {
     if (!result.prons) {
         result.prons = [];
     }
+    result.prons.forEach((n) => {
+        if (n.audio && !n.type) {
+            n.type = "native";
+        }
+    });
+
     if (!result.prons.find((n) => n.type === "ame")) {
         result.prons.push({ type: "ame", symbol: "US", synthesis: "en-US" });
     }
@@ -446,11 +452,27 @@ export default {
                                 langConfig.synthesis != null
                                     ? langConfig.synthesis
                                     : `${langConfig.symbol}-${langConfig.symbol.toUpperCase()}`;
-                            targetLang.prons[0].synthesis = synthesis;
-                            if (langConfig.symbol) {
-                                targetLang.prons[0].symbol = `${langConfig.symbol.toUpperCase()} ${
-                                    targetLang.prons[0].symbol || ""
-                                }`;
+
+                            // If audio exists (native speaker), keep it and add synthesis as second option for comparison
+                            if (targetLang.prons[0]?.audio) {
+                                targetLang.prons[0].type = "native";
+                                if (langConfig.symbol) {
+                                    targetLang.prons[0].symbol = `${langConfig.symbol.toUpperCase()} ${
+                                        targetLang.prons[0].symbol || ""
+                                    }`.trim();
+                                }
+                                // Add synthesis pronunciation for comparison
+                                targetLang.prons.push({
+                                    type: "synthesis",
+                                    synthesis: synthesis,
+                                });
+                            } else {
+                                targetLang.prons[0].synthesis = synthesis;
+                                if (langConfig.symbol) {
+                                    targetLang.prons[0].symbol = `${langConfig.symbol.toUpperCase()} ${
+                                        targetLang.prons[0].symbol || ""
+                                    }`;
+                                }
                             }
                         }
 
