@@ -7,8 +7,14 @@ document.title = `Share - ${process.env.PRODUCT}`;
 const { version } = chrome.runtime.getManifest();
 
 const setupAppDescription = () => {
-    document.querySelector("#app-version").innerText = `v${version}`;
-    document.querySelectorAll(".productName").forEach((el) => (el.innerText = process.env.PRODUCT));
+    const $name = document.querySelectorAll(".productName");
+    if ($name) {
+        $name.forEach((el) => (el.innerText = process.env.PRODUCT));
+    }
+    const $version = document.querySelector("#app-version");
+    if ($version) {
+        $version.innerText = `v${version}`;
+    }
 };
 setupAppDescription();
 
