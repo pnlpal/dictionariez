@@ -119,7 +119,7 @@ class DictWindow {
 
         if (!this.wid) {
             try {
-                const createFn = (await utils.isFirefox()) ? browser.windows.create : chrome.windows.create;
+                const createFn = process.env.BROWSER === "Firefox" ? browser.windows.create : chrome.windows.create;
                 const win = await createFn({
                     url: url || this.defaultUrl,
                     type: "popup",

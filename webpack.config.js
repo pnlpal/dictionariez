@@ -118,7 +118,7 @@ var options = {
         new CleanWebpackPlugin({ verbose: false }),
         new webpack.ProgressPlugin(),
         // expose and write the allowed env vars on the compiled bundle
-        new webpack.EnvironmentPlugin(["NODE_ENV", "UNIT_TEST", "PRODUCT"]),
+        new webpack.EnvironmentPlugin(["NODE_ENV", "UNIT_TEST", "PRODUCT", "BROWSER"]),
         new CopyWebpackPlugin({
             patterns: [
                 {

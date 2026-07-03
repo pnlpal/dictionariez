@@ -1,9 +1,8 @@
 import $ from "jquery";
 import bootoast from "bootoast/dist/bootoast.min.js";
-import utils from "utils";
 
 async function getFeedbackLink() {
-    if (await utils.isFirefox()) {
+    if (process.env.BROWSER === "Firefox") {
         const appId =
             process.env.PRODUCT === "Ordböcker"
                 ? "ordböcker"

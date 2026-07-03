@@ -31,7 +31,7 @@ const setupOffscreenDocument = async () => {
 };
 
 const sendAudioMessage = async (messageData) => {
-    const isFirefox = await utils.isFirefox();
+    const isFirefox = process.env.BROWSER === "Firefox";
 
     if (!isFirefox) {
         chrome.runtime.sendMessage({
@@ -54,8 +54,8 @@ const sendAudioMessage = async (messageData) => {
 
 export default {
     init() {
-        message.on("play audios", async ({ w, ameSrc, breSrc, otherSrc, synthesis, checkSetting, synthesisObj }) => {
-            const isFirefox = await utils.isFirefox();
+        message.on("play audios", async ({ w, ameSrc, breSrc, otherSrc, synthesis, synthesisObj }) => {
+            const isFirefox = process.env.BROWSER === "Firefox";
 
             if (!isFirefox) {
                 await setupOffscreenDocument();

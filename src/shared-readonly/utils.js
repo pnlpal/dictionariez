@@ -371,19 +371,6 @@ const utils = {
   isMobile() {
     return /Mobi|Android/i.test(navigator.userAgent);
   },
-  async isFirefox() {
-    // Check if browser API exists (Firefox) or use userAgent as fallback
-    if (typeof browser !== "undefined" && browser?.runtime?.getBrowserInfo) {
-      try {
-        const ret = await browser.runtime.getBrowserInfo();
-        return ret?.name === "Firefox";
-      } catch (e) {
-        // Fallback to userAgent if browser API fails
-        return navigator.userAgent.includes("Firefox");
-      }
-    }
-    return false;
-  },
 
   loadHTML(url, credentials = "omit") {
     return this.promiseInTime(
