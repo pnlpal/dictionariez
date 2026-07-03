@@ -46,11 +46,15 @@ async function doQuery(w, sentence, languagePrompt, dict, isHelpMeRefine) {
     const event = new Event("input", { bubbles: true });
     textarea.dispatchEvent(event);
 
-    const triggerClick = () => {
+    const triggerClick = (counter = 0) => {
         if (!dict.submitButtonSelector) return;
         const btn = document.querySelector(dict.submitButtonSelector);
-        btn.removeAttribute("disabled");
-        btn.click();
+        if (btn) {
+            btn.removeAttribute("disabled");
+            btn.click();
+        } else if (counter < 2) {
+            setTimeout(() => triggerClick(counter + 1), 500);
+        }
     };
 
     const triggerMoreClicks = async () => {

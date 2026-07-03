@@ -60,6 +60,17 @@ export default [
             'Give me the full definitions of "<word>"<language>, which is used in the context "<sentence>", if possible try to include IPA, definitions each with at least two examples, etymology, conjugations, related words with explanations etc. And make a pretty output with formatting like bold, italics etc.',
     },
     {
+        dictName: "Gemini Definition",
+        prompt: 'Give me the full definitions of "<word>"<language>, if possible try to include IPA, definitions each with at least two examples, etymology, conjugations, related words with explanations etc. And make a pretty output with formatting like bold, italics etc.',
+        promptWithContext:
+            'Give me the full definitions of "<word>"<language>, which is used in the context "<sentence>", if possible try to include IPA, definitions each with at least two examples, etymology, conjugations, related words with explanations etc. And make a pretty output with formatting like bold, italics etc.',
+        windowUrl: "https://gemini.google.com/app",
+        isRichEditor: true,
+        inputSelector: "chat-window [contenteditable='true'], chat-window [role='textbox']",
+        submitButtonSelector:
+            "chat-window button[aria-label='Send'], chat-window button[aria-label='Send message'], chat-window button.send-button, chat-window button[type='submit'], chat-window button[aria-label='Stop'], chat-window button[aria-label='Stop response']",
+    },
+    {
         dictName: "TextPixie (AI translator)",
         windowUrl: "https://textpixie.com/",
         translationPrompt: "<word>",
