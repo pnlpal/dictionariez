@@ -1,3 +1,7 @@
+# v7.4.1 Jul 3, 2026
+- Fixed on Firefox varient browsers such as Floorp. 
+- Fixed submit button selection on Google Gemini. 
+
 # v7.4.0 May 20, 2026
 - Removed Google as lookup source; Wiktionary is now the default for English.
 - Added native speaker audio from Wiktionary for Swedish and other languages.
