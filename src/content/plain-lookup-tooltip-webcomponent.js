@@ -32,6 +32,65 @@ const exampleTpl = (example, translation, lang) =>
 const synonymsTpl = (synonyms) =>
     `<div class='fairydict-synonyms'><strong>Synonyms:</strong> <span dir='auto'>${synonyms}</span></div>`;
 const otherFormsTpl = (forms) => `<em class='fairydict-other-forms' dir='auto'>${forms}</em>`;
+const escapeHtml = (text) =>
+    String(text || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+const followUpActionBtnTpl = (label) =>
+    `<button class='fairydict-ai-followup-action-btn' data-action-key='${escapeHtml(label)}'>${escapeHtml(label)}</button>`;
+const followUpActionsTpl = (actions) =>
+    `<div class='fairydict-ai-followup-actions'>${actions.map(followUpActionBtnTpl).join("")}</div>`;
+const followUpInputTpl = () =>
+    `<div class='fairydict-ai-followup-input'>
+        <input class='fairydict-ai-followup-question-input' type='text' placeholder='Ask a follow-up question...' autocomplete='off' />
+        <button class='fairydict-ai-followup-send-btn'>Ask</button>
+    </div>`;
+const normalizeFollowUpAnswer = (item) => {
+    if (!item) return { actionKey: "", followUpQuestion: "", answer: "" };
+    if (typeof item === "string") {
+        return { actionKey: "", followUpQuestion: "Follow-up", answer: item };
+    }
+    return {
+        actionKey: item.actionKey || "",
+        followUpQuestion: item.followUpQuestion || item.actionKey || "Follow-up",
+        answer: item.answer || "",
+    };
+};
+const followUpConversationEntryTpl = (item) => {
+    const { actionKey, followUpQuestion, answer } = normalizeFollowUpAnswer(item);
+    const actionText = escapeHtml(actionKey || "");
+    const questionText = escapeHtml(followUpQuestion || "");
+    const userLines = [];
+
+    if (actionText) {
+        userLines.push(`<div class='fairydict-ai-followup-user-action'>Action: ${actionText}</div>`);
+    }
+    if (questionText && questionText !== actionText) {
+        userLines.push(`<div class='fairydict-ai-followup-user-question'>Question: ${questionText}</div>`);
+    }
+    if (userLines.length === 0) {
+        userLines.push(`<div class='fairydict-ai-followup-user-question'>Follow-up</div>`);
+    }
+
+    return `
+        <div class='fairydict-ai-followup-conversation-entry'>
+            <div class='fairydict-ai-followup-user-message' dir='auto'>
+                <span class='fairydict-ai-followup-role'>You:</span>
+                <div class='fairydict-ai-followup-user-text'>${userLines.join("")}</div>
+            </div>
+            <div class='fairydict-ai-followup-assistant-message' dir='auto'>
+                <span class='fairydict-ai-followup-role'>Assistant:</span>
+                <span class='fairydict-ai-followup-assistant-text'>${answer || ""}</span>
+            </div>
+        </div>`;
+};
+const followUpPreviousAnswersTpl = (answers) =>
+    `<div class='fairydict-ai-followup-previous-answers'>
+        ${answers.map(followUpConversationEntryTpl).join("<hr class='fairydict-ai-followup-previous-answer-separator' />")}
+    </div>`;
 const definitionTpl = (def) => `<div class='fairydict-definition' dir='auto'>${def}</div>`;
 const toolbarTpl = () => `
 <div class='fairydict-toolbar'>
@@ -188,6 +247,20 @@ const genAIResult = (res) => {
     return html;
 };
 
+const followUpPanelTpl = (availableActions = [], followUpAnswers = []) => {
+    let html = "";
+    if (availableActions.length > 0) {
+        html += followUpActionsTpl(availableActions);
+    }
+    html += `<div class='fairydict-ai-followup-history'>`;
+    if (Array.isArray(followUpAnswers) && followUpAnswers.length > 0) {
+        html += followUpPreviousAnswersTpl(followUpAnswers);
+    }
+    html += `</div>`;
+    html += `<div class='fairydict-ai-followup'>${followUpInputTpl()}</div>`;
+    return html;
+};
+
 class DictionariezTooltip extends HTMLElement {
     constructor() {
         super();
@@ -197,6 +270,7 @@ class DictionariezTooltip extends HTMLElement {
             word: null,
             sentence: null,
             detectedLangInContext: null,
+            previousAssistantAnswer: null,
         };
         this.containerElement = null;
         this.tooltipOffsetLeft = 0;
@@ -238,8 +312,31 @@ class DictionariezTooltip extends HTMLElement {
     setupEventListeners = () => {
         audioListener(this.shadow);
 
-        // Toolbar button handler
+        // Toolbar button handler and follow-up buttons
         this.shadow.addEventListener("click", (e) => {
+            const followUpActionBtn = e.target.closest(".fairydict-ai-followup-action-btn");
+            if (followUpActionBtn) {
+                e.stopPropagation();
+                const actionKey = followUpActionBtn.dataset.actionKey;
+                const panel = this.shadow.querySelector(".fairydict-ai-followup");
+                const input = panel?.querySelector(".fairydict-ai-followup-question-input");
+                if (input) {
+                    input.value = actionKey;
+                }
+                this.handleFollowUpRequest(actionKey, actionKey);
+                return;
+            }
+
+            const followUpSendBtn = e.target.closest(".fairydict-ai-followup-send-btn");
+            if (followUpSendBtn) {
+                e.stopPropagation();
+                const panel = this.shadow.querySelector(".fairydict-ai-followup");
+                const input = panel?.querySelector(".fairydict-ai-followup-question-input");
+                if (!input) return;
+                this.handleFollowUpRequest(input.value.trim());
+                return;
+            }
+
             const btn = e.target.closest(".fairydict-toolbar-btn, .fairydict-switch-to-ai-btn");
             if (!btn) return;
 
@@ -392,6 +489,88 @@ class DictionariezTooltip extends HTMLElement {
             window.postMessage({ command: "pnl-tts-play", text, lang }, window.location.origin);
         });
     };
+
+    handleFollowUpRequest = async (followUpQuestion, actionKey) => {
+        if (!followUpQuestion || !followUpQuestion.trim()) {
+            return;
+        }
+
+        const submitBtn = this.shadow.querySelector(".fairydict-ai-followup-send-btn");
+        const answerEl = this.shadow.querySelector(".fairydict-ai-followup-answer");
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Asking...";
+        }
+        if (answerEl) {
+            answerEl.innerHTML = "<em>Thinking...</em>";
+        }
+
+        try {
+            const response = await utils.send("ai follow up", {
+                word: this.currentLookupData.word,
+                sentence: this.currentLookupData.sentence,
+                detectedLangInContext: this.currentLookupData.detectedLangInContext,
+                previousAssistantAnswer: this.currentLookupData.previousAssistantAnswer,
+                followUpQuestion,
+                actionKey,
+                pageTitle: document.title,
+                pageUrl: window.location.href,
+            });
+
+            if (response?.answer) {
+                this.currentLookupData.previousAssistantAnswer = response.answer;
+                this.appendFollowUpConversationEntry(
+                    {
+                        actionKey,
+                        followUpQuestion,
+                        answer: response.answer,
+                    },
+                    true,
+                );
+            } else {
+                this.appendFollowUpConversationEntry(
+                    {
+                        actionKey,
+                        followUpQuestion,
+                        answer: "No answer received.",
+                    },
+                    true,
+                );
+            }
+        } catch (error) {
+            const message = error?.message || "Follow-up request failed.";
+            this.appendFollowUpConversationEntry(
+                {
+                    actionKey,
+                    followUpQuestion,
+                    answer: `Error: ${escapeHtml(message)}`,
+                },
+                true,
+            );
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Ask";
+            }
+        }
+    };
+
+    appendFollowUpConversationEntry({ actionKey, followUpQuestion, answer } = {}, clearInput = false) {
+        const historyContainer = this.shadow.querySelector(".fairydict-ai-followup-history");
+        if (!historyContainer) return;
+        const entryHtml = followUpConversationEntryTpl({ actionKey, followUpQuestion, answer });
+        historyContainer.insertAdjacentHTML("beforeend", entryHtml);
+        if (clearInput) {
+            const input = this.shadow.querySelector(".fairydict-ai-followup-question-input");
+            if (input) {
+                input.value = "";
+            }
+        }
+        const newEntry = historyContainer.lastElementChild;
+        if (newEntry) {
+            newEntry.scrollIntoView({ block: "nearest" });
+        }
+    }
 
     setContainerElement = (element) => {
         this.containerElement = element;
@@ -549,6 +728,14 @@ class DictionariezTooltip extends HTMLElement {
                 const upgradeUrl = `${pnlBase}/pro`;
                 finalHtml += `<div class='fairydict-trial-info'>Trial usage: ${trialsUsed}/${trialsMaxAllowed} — <a href='${upgradeUrl}' target='_blank'>Upgrade to Pro</a></div>`;
             }
+            const followUpAnswers = Array.isArray(res.followUpAnswers)
+                ? res.followUpAnswers
+                : Array.isArray(res.anwsers)
+                  ? res.anwsers
+                  : [];
+            finalHtml += followUpPanelTpl(res?.availableActions || [], followUpAnswers);
+            this.currentLookupData.previousAssistantAnswer =
+                followUpAnswers.length > 0 ? followUpAnswers[followUpAnswers.length - 1] : lookup.definition || null;
             this.show(finalHtml);
 
             const plainBtn = this.shadow.querySelector(".fairydict-btn-plain");
@@ -573,6 +760,7 @@ class DictionariezTooltip extends HTMLElement {
             word,
             sentence,
             detectedLangInContext,
+            previousAssistantAnswer: null,
         };
         error = error || new Error("Unknown error");
 

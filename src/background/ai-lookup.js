@@ -122,4 +122,44 @@ message.on("look up in AI", async ({ word, sentence, s, sc, detectedLangInContex
     }
 });
 
+message.on(
+    "ai follow up",
+    async ({
+        word,
+        sentence,
+        detectedLangInContext,
+        previousAssistantAnswer,
+        followUpQuestion,
+        actionKey,
+        pageTitle,
+        pageUrl,
+    }) => {
+        const response = await cloud.aiFollowUp({
+            word,
+            sentence,
+            detectedLangInContext,
+            userLanguage: setting.getValue("aiResponseLanguage"),
+            previousAssistantAnswer,
+            followUpQuestion,
+            actionKey,
+            pageTitle,
+            pageUrl,
+        });
+
+        // Cache follow-up answers in memory for replay on subsequent lookups
+        const key = `${word}||${sentence}||${detectedLangInContext}`;
+        if (key === lastKey && response?.answer) {
+            if (!Array.isArray(lastResult.followUpAnswers)) {
+                lastResult.followUpAnswers = [];
+            }
+            lastResult.followUpAnswers.push({
+                actionKey: actionKey,
+                followUpQuestion: followUpQuestion,
+                answer: response.answer,
+            });
+        }
+        return response;
+    },
+);
+
 export default { clearCache };
