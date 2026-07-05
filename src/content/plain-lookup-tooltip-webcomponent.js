@@ -61,30 +61,13 @@ const normalizeFollowUpAnswer = (item) => {
 };
 const followUpConversationEntryTpl = (item) => {
     const { actionKey, followUpQuestion, answer } = normalizeFollowUpAnswer(item);
-    const actionText = escapeHtml(actionKey || "");
-    const questionText = escapeHtml(followUpQuestion || "");
-    const userLines = [];
-
-    if (actionText) {
-        userLines.push(`<div class='fairydict-ai-followup-user-action'>Action: ${actionText}</div>`);
-    }
-    if (questionText && questionText !== actionText) {
-        userLines.push(`<div class='fairydict-ai-followup-user-question'>Question: ${questionText}</div>`);
-    }
-    if (userLines.length === 0) {
-        userLines.push(`<div class='fairydict-ai-followup-user-question'>Follow-up</div>`);
-    }
+    const userText = escapeHtml(followUpQuestion || actionKey || "Follow-up");
+    const assistantHtml = answer || "";
 
     return `
         <div class='fairydict-ai-followup-conversation-entry'>
-            <div class='fairydict-ai-followup-user-message' dir='auto'>
-                <span class='fairydict-ai-followup-role'>You:</span>
-                <div class='fairydict-ai-followup-user-text'>${userLines.join("")}</div>
-            </div>
-            <div class='fairydict-ai-followup-assistant-message' dir='auto'>
-                <span class='fairydict-ai-followup-role'>Assistant:</span>
-                <span class='fairydict-ai-followup-assistant-text'>${answer || ""}</span>
-            </div>
+            <div class='fairydict-ai-followup-user-bubble' dir='auto'>${userText}</div>
+            <div class='fairydict-ai-followup-assistant-bubble' dir='auto'>${assistantHtml}</div>
         </div>`;
 };
 const followUpPreviousAnswersTpl = (answers) =>
@@ -106,6 +89,7 @@ const genPlainResult = (res) => {
     let html = "";
 
     let wHtml = "";
+    x;
     let pronHtml = "";
     if (res?.w) {
         wHtml = wTpl(res.w);

@@ -326,7 +326,8 @@
     font-size: smaller;
 }
 
-.fairydict-ai-body .fairydict-definition strong {
+.fairydict-ai-body .fairydict-definition strong,
+.fairydict-ai-followup-conversation-entry strong {
     font-weight: 700;
     color: cornflowerblue;
 }
@@ -383,6 +384,138 @@
     margin-bottom: 8px;
     color: #aaa;
     font-size: 0.9em;
+}
+
+.fairydict-ai-followup-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.fairydict-ai-followup-action-btn {
+    padding: 8px 14px;
+    border-radius: 16px;
+    border: 1px solid #444;
+    background: rgba(93, 95, 238, 0.12);
+    color: #eef;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 72px;
+}
+
+.fairydict-ai-followup-action-btn:hover {
+    background: rgba(93, 95, 238, 0.22);
+    border-color: #5d5fee;
+}
+
+.fairydict-ai-followup {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.fairydict-ai-followup-input {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    width: 100%;
+}
+
+.fairydict-ai-followup-question-input {
+    flex: 1 1 260px;
+    min-width: 0;
+    max-width: 420px;
+    padding: 10px 12px;
+    border-radius: 20px;
+    border: 1px solid #444;
+    background: #161616;
+    color: #f5f5f5;
+    font-size: 14px;
+}
+
+.fairydict-ai-followup-send-btn {
+    padding: 10px 16px;
+    border-radius: 20px;
+    border: 1px solid #444;
+    background: #2a2a2a;
+    color: #f5f5f5;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.fairydict-ai-followup-send-btn:hover {
+    background: #3a3a3a;
+    border-color: #5d5fee;
+}
+
+.fairydict-ai-followup-history {
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 4px;
+    margin-top: 8px;
+}
+
+.fairydict-ai-followup-previous-answers,
+.fairydict-ai-followup-history {
+    display: grid;
+    gap: 10px;
+}
+
+.fairydict-ai-followup-conversation-entry {
+    display: grid;
+    gap: 8px;
+}
+
+.fairydict-ai-followup-assistant-bubble,
+.fairydict-ai-followup-user-bubble {
+    max-width: 78%;
+    padding: 11px 14px;
+    border-radius: 18px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.fairydict-ai-followup-assistant-bubble {
+    justify-self: start;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #f5f5f5;
+}
+
+.fairydict-ai-followup-user-bubble {
+    justify-self: end;
+    background: rgba(92, 105, 255, 0.16);
+    border: 1px solid rgba(92, 105, 255, 0.35);
+    color: #e8ebff;
+}
+
+.fairydict-ai-followup-previous-answer-separator {
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin: 8px 0;
+}
+
+@media (max-width: 550px) {
+    .fairydict-ai-followup-input {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .fairydict-ai-followup-question-input,
+    .fairydict-ai-followup-send-btn {
+        width: 100%;
+    }
+
+    .fairydict-ai-followup-history {
+        max-height: 180px;
+    }
 }
 
 .fairydict-spinner {
