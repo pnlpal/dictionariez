@@ -453,6 +453,50 @@
     white-space: nowrap;
 }
 
+.fairydict-ai-followup-input input:disabled,
+.fairydict-ai-followup-input button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.fairydict-ai-followup-loading-entry .fairydict-ai-followup-assistant-bubble.loading {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 10px 12px;
+    line-height: 1.4;
+    opacity: 0.92;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.fairydict-ai-followup-loading-entry .fairydict-ai-followup-loading-dots {
+    margin-left: 6px;
+    font-weight: 500;
+}
+
+.fairydict-ai-followup-loading-entry .fairydict-ai-followup-loading-dots::after {
+    content: ".";
+    animation: fairydict-loading-dots 1s steps(4, end) infinite;
+}
+
+@keyframes fairydict-loading-dots {
+    0%,
+    20% {
+        content: "";
+    }
+    40% {
+        content: ".";
+    }
+    60% {
+        content: "..";
+    }
+    80%,
+    100% {
+        content: "...";
+    }
+}
+
 .fairydict-ai-followup-send-btn:hover {
     background: #3a3a3a;
     border-color: #5d5fee;

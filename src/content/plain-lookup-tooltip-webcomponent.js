@@ -86,23 +86,34 @@ const followUpInputTpl = () =>
 const normalizeFollowUpAnswer = (item) => {
     if (!item) return { actionKey: "", followUpQuestion: "", answer: "" };
     if (typeof item === "string") {
-        return { actionKey: "", followUpQuestion: "Follow-up", answer: item };
+        return { actionKey: "", followUpQuestion: "", answer: item };
     }
     return {
         actionKey: item.actionKey || "",
-        followUpQuestion: item.followUpQuestion || item.actionKey || "Follow-up",
+        followUpQuestion: item.followUpQuestion || "",
         answer: item.answer || "",
     };
 };
 const followUpConversationEntryTpl = (item) => {
     const { actionKey, followUpQuestion, answer } = normalizeFollowUpAnswer(item);
-    const userText = escapeHtml(followUpQuestion || actionKey || "Follow-up");
+    const userText = escapeHtml(followUpQuestion || actionKey || "");
     const assistantHtml = renderSimpleRichText(answer || "");
 
     return `
         <div class='fairydict-ai-followup-conversation-entry'>
             <div class='fairydict-ai-followup-user-bubble' dir='auto'>${userText}</div>
             <div class='fairydict-ai-followup-assistant-bubble' dir='auto'>${assistantHtml}</div>
+        </div>`;
+};
+const followUpLoadingEntryTpl = (item) => {
+    const { actionKey, followUpQuestion } = normalizeFollowUpAnswer(item);
+    const userText = escapeHtml(followUpQuestion || actionKey || "");
+    return `
+        <div class='fairydict-ai-followup-conversation-entry fairydict-ai-followup-loading-entry'>
+            <div class='fairydict-ai-followup-user-bubble' dir='auto'>${userText}</div>
+            <div class='fairydict-ai-followup-assistant-bubble loading' dir='auto'>
+                <span class='fairydict-ai-followup-loading-dots'>Thinking</span>
+            </div>
         </div>`;
 };
 const followUpPreviousAnswersTpl = (answers) =>
@@ -339,12 +350,7 @@ class DictionariezTooltip extends HTMLElement {
             if (followUpActionBtn) {
                 e.stopPropagation();
                 const actionKey = followUpActionBtn.dataset.actionKey;
-                const panel = this.shadow.querySelector(".fairydict-ai-followup");
-                const input = panel?.querySelector(".fairydict-ai-followup-question-input");
-                if (input) {
-                    input.value = actionKey;
-                }
-                this.handleFollowUpRequest(actionKey, actionKey);
+                this.handleFollowUpRequest("", actionKey);
                 return;
             }
 
@@ -526,19 +532,22 @@ class DictionariezTooltip extends HTMLElement {
     };
 
     handleFollowUpRequest = async (followUpQuestion, actionKey) => {
-        if (!followUpQuestion || !followUpQuestion.trim()) {
+        if (!followUpQuestion && !actionKey) {
             return;
         }
 
         const submitBtn = this.shadow.querySelector(".fairydict-ai-followup-send-btn");
-        const answerEl = this.shadow.querySelector(".fairydict-ai-followup-answer");
+        const inputEl = this.shadow.querySelector(".fairydict-ai-followup-question-input");
         if (submitBtn) {
             submitBtn.disabled = true;
             submitBtn.textContent = "Asking...";
         }
-        if (answerEl) {
-            answerEl.innerHTML = "<em>Thinking...</em>";
+        if (inputEl) {
+            inputEl.disabled = true;
+            inputEl.value = "";
         }
+
+        const loadingEntry = this.appendFollowUpLoadingEntry({ actionKey, followUpQuestion });
 
         try {
             const payload = {
@@ -555,38 +564,20 @@ class DictionariezTooltip extends HTMLElement {
 
             if (response?.answer) {
                 this.currentLookupData.previousAssistantAnswer = response.answer;
-                this.appendFollowUpConversationEntry(
-                    {
-                        actionKey,
-                        followUpQuestion,
-                        answer: response.answer,
-                    },
-                    true,
-                );
+                this.updateFollowUpLoadingEntry(loadingEntry, response.answer);
             } else {
-                this.appendFollowUpConversationEntry(
-                    {
-                        actionKey,
-                        followUpQuestion,
-                        answer: "No answer received.",
-                    },
-                    true,
-                );
+                this.updateFollowUpLoadingEntry(loadingEntry, "No answer received.");
             }
         } catch (error) {
             const message = error?.message || "Follow-up request failed.";
-            this.appendFollowUpConversationEntry(
-                {
-                    actionKey,
-                    followUpQuestion,
-                    answer: `Error: ${escapeHtml(message)}`,
-                },
-                true,
-            );
+            this.updateFollowUpLoadingEntry(loadingEntry, `Error: ${escapeHtml(message)}`);
         } finally {
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.textContent = "Ask";
+            }
+            if (inputEl) {
+                inputEl.disabled = false;
             }
         }
     };
@@ -606,6 +597,28 @@ class DictionariezTooltip extends HTMLElement {
         if (newEntry) {
             newEntry.scrollIntoView({ block: "nearest" });
         }
+    }
+
+    appendFollowUpLoadingEntry({ actionKey, followUpQuestion } = {}) {
+        const historyContainer = this.shadow.querySelector(".fairydict-ai-followup-history");
+        if (!historyContainer) return null;
+        const entryHtml = followUpLoadingEntryTpl({ actionKey, followUpQuestion });
+        historyContainer.insertAdjacentHTML("beforeend", entryHtml);
+        const newEntry = historyContainer.lastElementChild;
+        if (newEntry) {
+            newEntry.scrollIntoView({ block: "nearest" });
+        }
+        return newEntry;
+    }
+
+    updateFollowUpLoadingEntry(entry, answer) {
+        if (!entry) return;
+        const assistantBubble = entry.querySelector(".fairydict-ai-followup-assistant-bubble");
+        if (!assistantBubble) return;
+        assistantBubble.classList.remove("loading");
+        assistantBubble.innerHTML = renderSimpleRichText(answer || "No answer received.");
+        //scroll into view
+        entry.scrollIntoView({ block: "nearest" });
     }
 
     setContainerElement = (element) => {
