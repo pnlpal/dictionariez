@@ -135,7 +135,6 @@ const genPlainResult = (res) => {
     let html = "";
 
     let wHtml = "";
-    x;
     let pronHtml = "";
     if (res?.w) {
         wHtml = wTpl(res.w);
