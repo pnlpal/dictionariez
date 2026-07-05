@@ -48,28 +48,31 @@ const renderSimpleRichText = (text) => {
     out = out.replace(/\*\*(.+?)\*\*/g, "<strong class='default-color'>$1</strong>");
     // italics *text*
     out = out.replace(/\*(.+?)\*/g, "<em>$1</em>");
-    // simple unordered lists: lines starting with '- '
+    // simple unordered lists: lines starting with '- ' or '* '
     const lines = out.split(/\r?\n/);
     let resultLines = [];
     let inList = false;
     for (const line of lines) {
-        if (/^\s*-\s+/.test(line)) {
+        if (/^\s*(?:-|\*)\s+/.test(line)) {
             if (!inList) {
                 inList = true;
                 resultLines.push('<ul class="fairydict-mini-list">');
             }
-            const li = line.replace(/^\s*-\s+/, "");
+            const li = line.replace(/^\s*(?:-|\*)\s+/, "");
             resultLines.push(`<li>${li}</li>`);
         } else {
             if (inList) {
                 inList = false;
                 resultLines.push("</ul>");
+                resultLines.push(line);
+            } else {
+                resultLines.push(line);
+                resultLines.push("<br>");
             }
-            resultLines.push(line);
         }
     }
     if (inList) resultLines.push("</ul>");
-    out = resultLines.join("<br>");
+    out = resultLines.join("");
     // Preserve intentional paragraph/newline separation
     out = out.replace(/\n/g, "<br>");
     return out;

@@ -469,6 +469,9 @@
     background: rgba(255, 255, 255, 0.06);
     border-color: rgba(255, 255, 255, 0.1);
 }
+.fairydict-ai-followup-assistant-bubble ul {
+    margin: 0;
+}
 
 .fairydict-ai-followup-loading-entry .fairydict-ai-followup-loading-dots {
     margin-left: 6px;
