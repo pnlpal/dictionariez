@@ -423,8 +423,10 @@
 .fairydict-ai-followup-input {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     gap: 8px;
     width: 100%;
+    min-width: 0;
 }
 
 .fairydict-ai-followup-question-input {
@@ -440,6 +442,8 @@
 }
 
 .fairydict-ai-followup-send-btn {
+    flex: 0 0 auto;
+    min-width: 82px;
     padding: 10px 16px;
     border-radius: 20px;
     border: 1px solid #444;

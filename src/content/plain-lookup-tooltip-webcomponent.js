@@ -454,6 +454,20 @@ class DictionariezTooltip extends HTMLElement {
             }
         });
 
+        // Submit follow-up when Enter is pressed inside the follow-up input
+        this.shadow.addEventListener("keydown", (e) => {
+            const input =
+                e.target && e.target.closest ? e.target.closest(".fairydict-ai-followup-question-input") : null;
+            if (!input) return;
+            if (e.key === "Enter") {
+                e.preventDefault();
+                e.stopPropagation();
+                const val = input.value.trim();
+                if (!val) return;
+                this.handleFollowUpRequest(val);
+            }
+        });
+
         // Handle text selection within the tooltip for nested word lookup
         const handleWordLookupInTooltip = debounce(
             (e) => {
