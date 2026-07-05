@@ -5,11 +5,12 @@
 if (!process.env.NODE_ENV) process.env.NODE_ENV = "development";
 if (!process.env.UNIT_TEST) process.env.UNIT_TEST = "false";
 if (!process.env.PRODUCT) process.env.PRODUCT = "Dictionariez"; // or SidePal
+if (!process.env.BROWSER) process.env.BROWSER = "Chrome"; // or Firefox, Edge
 
 module.exports = {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT || 3355,
     UNIT_TEST: process.env.UNIT_TEST,
-    BROWSER: process.env.BROWSER || "Chrome",
+    BROWSER: process.env.BROWSER,
     PRODUCT: process.env.PRODUCT,
 };
