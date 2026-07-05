@@ -471,6 +471,9 @@
     display: grid;
     gap: 8px;
 }
+.fairydict-ai-followup-conversation-entry strong.default-color {
+    color: unset;
+}
 
 .fairydict-ai-followup-assistant-bubble,
 .fairydict-ai-followup-user-bubble {

@@ -39,6 +39,41 @@ const escapeHtml = (text) =>
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
+
+// Convert a small subset of Markdown to HTML while preserving existing HTML.
+const renderSimpleRichText = (text) => {
+    if (!text && text !== 0) return "";
+    let out = String(text);
+    // bold **text**
+    out = out.replace(/\*\*(.+?)\*\*/g, "<strong class='default-color'>$1</strong>");
+    // italics *text*
+    out = out.replace(/\*(.+?)\*/g, "<em>$1</em>");
+    // simple unordered lists: lines starting with '- '
+    const lines = out.split(/\r?\n/);
+    let resultLines = [];
+    let inList = false;
+    for (const line of lines) {
+        if (/^\s*-\s+/.test(line)) {
+            if (!inList) {
+                inList = true;
+                resultLines.push('<ul class="fairydict-mini-list">');
+            }
+            const li = line.replace(/^\s*-\s+/, "");
+            resultLines.push(`<li>${li}</li>`);
+        } else {
+            if (inList) {
+                inList = false;
+                resultLines.push("</ul>");
+            }
+            resultLines.push(line);
+        }
+    }
+    if (inList) resultLines.push("</ul>");
+    out = resultLines.join("<br>");
+    // Preserve intentional paragraph/newline separation
+    out = out.replace(/\n/g, "<br>");
+    return out;
+};
 const followUpActionBtnTpl = (label) =>
     `<button class='fairydict-ai-followup-action-btn' data-action-key='${escapeHtml(label)}'>${escapeHtml(label)}</button>`;
 const followUpActionsTpl = (actions) =>
@@ -62,7 +97,7 @@ const normalizeFollowUpAnswer = (item) => {
 const followUpConversationEntryTpl = (item) => {
     const { actionKey, followUpQuestion, answer } = normalizeFollowUpAnswer(item);
     const userText = escapeHtml(followUpQuestion || actionKey || "Follow-up");
-    const assistantHtml = answer || "";
+    const assistantHtml = renderSimpleRichText(answer || "");
 
     return `
         <div class='fairydict-ai-followup-conversation-entry'>
@@ -197,12 +232,14 @@ const genAIResult = (res) => {
         if (res?.partOfSpeech) {
             defContent = `${posTpl("(" + res.partOfSpeech + ")")} ${defContent}`;
         }
-        bodyHtml += definitionTpl(defTpl(defContent));
+        bodyHtml += definitionTpl(defTpl(renderSimpleRichText(defContent)));
     }
 
     if (res?.otherCommonMeanings && res.otherCommonMeanings.length > 0) {
         bodyHtml += sectionTitleTpl("Other Common Meanings");
-        const meaningsHtml = res.otherCommonMeanings.map((meaning) => defTpl(meaning)).join("<br>");
+        const meaningsHtml = res.otherCommonMeanings
+            .map((meaning) => defTpl(renderSimpleRichText(meaning)))
+            .join("<br>");
         bodyHtml += `<div dir='auto'>${meaningsHtml}</div>`;
     }
 
@@ -490,7 +527,7 @@ class DictionariezTooltip extends HTMLElement {
         }
 
         try {
-            const response = await utils.send("ai follow up", {
+            const payload = {
                 word: this.currentLookupData.word,
                 sentence: this.currentLookupData.sentence,
                 detectedLangInContext: this.currentLookupData.detectedLangInContext,
@@ -499,7 +536,8 @@ class DictionariezTooltip extends HTMLElement {
                 actionKey,
                 pageTitle: document.title,
                 pageUrl: window.location.href,
-            });
+            };
+            const response = await utils.send("ai follow up", payload);
 
             if (response?.answer) {
                 this.currentLookupData.previousAssistantAnswer = response.answer;
