@@ -1,3 +1,7 @@
+# v7.5.0 Jul 6, 2026
+- Added a chat mode to AI Definition so users can continue the conversation with follow-up questions about the current word.
+- Introduced AI quick actions for faster follow-up prompts and smoother continuation of the lookup flow.
+
 # v7.4.1 Jul 3, 2026
 - Fixed on Firefox varient browsers such as Floorp. 
 - Fixed submit button selection on Google Gemini. 
