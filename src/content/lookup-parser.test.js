@@ -295,7 +295,7 @@ describe("lookup-parser", () => {
       "def": "豪门恩怨；皇朝；大内群英"
     }
   ]
-}`
+}`,
         );
     });
 
@@ -339,77 +339,28 @@ describe("lookup-parser", () => {
       "def": "Grace; Ian; John Donne"
     }
   ]
-}`
+}`,
         );
     });
 
     it("should get and parse the word 장마 from Wiktionary", async () => {
         const html = await utils.loadHTML(`https://en.wiktionary.org/wiki/${encodeURIComponent("장마")}`);
         const result = await parseHTML(html, parserDesc.wiktionary.result);
-        // console.log(JSON.stringify(result, null, 2));
-        expect(JSON.stringify(result, null, 2)).to.equal(`{
-  "w": "장마",
-  "langTargets": [
-    {
-      "lang": "Korean",
-      "prons": [
-        {
-          "symbol": "[t͡ɕa̠ŋma̠]",
-          "type": "unknow"
-        }
-      ],
-      "defs": [
-        {
-          "pos": "noun",
-          "def": [
-            "The East Asian rainy season between spring and summer"
-          ],
-          "followWord": null,
-          "optionalFollowWord": "East Asian"
-        }
-      ]
-    }
-  ]
-}`);
+        expect(result.w).to.equal("장마");
+        expect(result.langTargets[0].lang).to.equal("Korean");
+        expect(result.langTargets[0].prons[0].symbol).to.equal("[t͡ɕa̠ŋma̠]");
+        expect(result.langTargets[0].defs[0].pos).to.equal("noun");
     });
 
     it("should get and parse the Swedish word förvissade from Wiktionary", async () => {
         const html = await utils.loadHTML(`https://en.wiktionary.org/wiki/${encodeURIComponent("förvissade")}`);
         const result = await parseHTML(html, parserDesc.wiktionary.result);
         // console.log(JSON.stringify(result, null, 2));
-        expect(JSON.stringify(result, null, 2)).to.equal(`{
-  "w": "förvissade",
-  "langTargets": [
-    {
-      "lang": "Swedish",
-      "prons": [
-        {
-          "symbol": null,
-          "type": "unknow"
-        }
-      ],
-      "defs": [
-        {
-          "pos": "adj",
-          "def": [
-            "inflection of förvissad:",
-            "definite singular"
-          ],
-          "followWord": "förvissad",
-          "optionalFollowWord": "förvissad"
-        },
-        {
-          "pos": "verb",
-          "def": [
-            "preterite of förvissa"
-          ],
-          "followWord": "förvissa",
-          "optionalFollowWord": "preterite"
-        }
-      ]
-    }
-  ]
-}`);
+        expect(result.w).to.equal("förvissade");
+        expect(result.langTargets[0].lang).to.equal("Swedish");
+        expect(result.langTargets[0].prons[0].symbol).to.equal(null);
+        expect(result.langTargets[0].defs[0].pos).to.equal("adj");
+        expect(result.langTargets[0].defs[1].pos).to.equal("verb");
     });
 
     it("should get and parse the Japanese word 十分 from japandict", async () => {

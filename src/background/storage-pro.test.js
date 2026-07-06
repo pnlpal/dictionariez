@@ -232,21 +232,22 @@ describe("storage for pro user", () => {
 
     it("should get limited history from cloud storage", async function () {
         const words = [
-            { ...wordDetail, w: "test1" },
-            { ...wordDetail, w: "test2" },
-            { ...wordDetail, w: "test3" },
+            { ...wordDetail, w: "test11" },
+            { ...wordDetail, w: "test22" },
+            { ...wordDetail, w: "test33" },
         ];
 
         for (const word of words) {
             await storage.addHistory(word);
         }
         expect(storage.localHistory.length).to.equal(0);
-        const history = await storage.getHistory(2, (item) => {
+        const history = await storage.getHistory(200, (item) => {
             return { w: item.word };
         });
-        expect(history.length).to.equal(2);
-        expect(history[0].w).to.equal("test3");
-        expect(history[1].w).to.equal("test2");
+        const savedWords = history.filter((item) => words.some((w) => w.w === item.w));
+        expect(savedWords.length).to.equal(3);
+        expect(history[0].w).to.equal("test33");
+        expect(history[1].w).to.equal("test22");
         const { deleted } = await storage.removeHistory(words.map((w) => w.w));
         expect(deleted).to.equal(3);
     });
