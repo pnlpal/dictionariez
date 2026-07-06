@@ -1,4 +1,3 @@
-import utils from "utils";
 import message from "./message.js";
 import setting from "./setting.js";
 import { playAudios, playSynthesis } from "../other/speak.js";

@@ -26,6 +26,7 @@ const setEnglishProns = (result) => {
     result.prons.forEach((n) => {
         if (n.audio && !n.type) {
             n.type = "native";
+            n.synthesis = n.synthesis || "en-US";
         }
     });
 
@@ -456,6 +457,7 @@ export default {
                             // If audio exists (native speaker), keep it and add synthesis as second option for comparison
                             if (targetLang.prons[0]?.audio) {
                                 targetLang.prons[0].type = "native";
+                                targetLang.prons[0].synthesis = synthesis;
                                 if (langConfig.symbol) {
                                     targetLang.prons[0].symbol = `${langConfig.symbol.toUpperCase()} ${
                                         targetLang.prons[0].symbol || ""
