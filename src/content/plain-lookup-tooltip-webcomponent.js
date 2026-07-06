@@ -584,7 +584,7 @@ class DictionariezTooltip extends HTMLElement {
         }
     };
 
-    appendFollowUpConversationEntry({ actionKey, followUpQuestion, answer } = {}, clearInput = false) {
+    appendFollowUpConversationEntry = ({ actionKey, followUpQuestion, answer } = {}, clearInput = false) => {
         const historyContainer = this.shadow.querySelector(".fairydict-ai-followup-history");
         if (!historyContainer) return;
         const entryHtml = followUpConversationEntryTpl({ actionKey, followUpQuestion, answer });
@@ -599,9 +599,9 @@ class DictionariezTooltip extends HTMLElement {
         if (newEntry) {
             newEntry.scrollIntoView({ block: "nearest" });
         }
-    }
+    };
 
-    appendFollowUpLoadingEntry({ actionKey, followUpQuestion } = {}) {
+    appendFollowUpLoadingEntry = ({ actionKey, followUpQuestion } = {}) => {
         const historyContainer = this.shadow.querySelector(".fairydict-ai-followup-history");
         if (!historyContainer) return null;
         const entryHtml = followUpLoadingEntryTpl({ actionKey, followUpQuestion });
@@ -611,9 +611,9 @@ class DictionariezTooltip extends HTMLElement {
             newEntry.scrollIntoView({ block: "nearest" });
         }
         return newEntry;
-    }
+    };
 
-    updateFollowUpLoadingEntry(entry, answer) {
+    updateFollowUpLoadingEntry = (entry, answer) => {
         if (!entry) return;
         const assistantBubble = entry.querySelector(".fairydict-ai-followup-assistant-bubble");
         if (!assistantBubble) return;
@@ -621,7 +621,7 @@ class DictionariezTooltip extends HTMLElement {
         assistantBubble.innerHTML = renderSimpleRichText(answer || "No answer received.");
         //scroll into view
         entry.scrollIntoView({ block: "nearest" });
-    }
+    };
 
     setContainerElement = (element) => {
         this.containerElement = element;
