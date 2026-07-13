@@ -32,7 +32,7 @@ export default [
     {
         dictName: "Bing Dict (必应词典)",
         windowUrl: "https://cn.bing.com/dict/search?mkt=zh-cn&q=<word>", // must has mkt
-        css: "body { padding-top: 20px !important; width: auto !important; min-width: auto !important; } header { display: none !important; } .contentPadding {padding-left: 10px !important;}",
+        css: "body { margin-top: 20px !important; width: auto !important; min-width: auto !important; } header { display: none !important; } .contentPadding {padding-left: 10px !important;}",
     },
     {
         dictName: "Oxford Learner",
