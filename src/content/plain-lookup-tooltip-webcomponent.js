@@ -441,6 +441,9 @@ class DictionariezTooltip extends HTMLElement {
                     if (this.currentLookupData.word) {
                         utils.send("open anki", {
                             w: this.currentLookupData.word,
+                            s: location.href,
+                            sc: document.title,
+                            sentence: this.currentLookupData.sentence,
                             detectedLangInContext: this.currentLookupData.detectedLangInContext,
                         });
                         btn.style.background = "#4a4";

@@ -58,6 +58,8 @@ dictApp.controller("dictCtrl", [
                     history,
                     w,
                     r,
+                    s,
+                    sc,
                     ankiSaved,
                     sentence,
                     detectedLangInContext,
@@ -70,6 +72,8 @@ dictApp.controller("dictCtrl", [
                     $scope.previous = previous;
                     $scope.word = w;
                     $scope.sentence = sentence;
+                    $scope.s = s;
+                    $scope.sc = sc;
                     $scope.detectedLangInContext = detectedLangInContext;
                     $scope.ankiSaved = ankiSaved;
                     $scope._lastQueryWord = $scope.word;
@@ -339,6 +343,8 @@ dictApp.controller("dictCtrl", [
             }
             utils.send("open anki", {
                 w: $scope.word,
+                s: $scope.s,
+                sc: $scope.sc,
                 sentence: $scope.sentence,
                 detectedLangInContext: $scope.detectedLangInContext,
             });

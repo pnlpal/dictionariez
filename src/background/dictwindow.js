@@ -557,7 +557,7 @@ export default {
         });
 
         message.on("dictionary", async (request, sender) => {
-            let previous, r, sentence, w, windowUrl, ankiSaved, detectedLangInContext;
+            let previous, r, sentence, w, s, sc, windowUrl, ankiSaved, detectedLangInContext;
             let win = sender.tab
                 ? this.getByTab(sender.tab.id)
                 : // SidePal
@@ -571,6 +571,8 @@ export default {
                 if (w) {
                     const wordDetail = await storage.getWordDetail(w);
                     r = wordDetail?.r;
+                    s = wordDetail?.s;
+                    sc = wordDetail?.sc;
                     sentence = wordDetail?.sentence;
                     previous = wordDetail?.previous;
                     ankiSaved = wordDetail?.ankiSaved;
@@ -602,6 +604,8 @@ export default {
                 previous,
                 w,
                 r,
+                s,
+                sc,
                 ankiSaved,
                 sentence,
                 windowUrl,
