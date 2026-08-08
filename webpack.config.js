@@ -10,7 +10,8 @@ var webpack = require("webpack"),
     HtmlWebpackPlugin = require("html-webpack-plugin"),
     // WriteFilePlugin = require("write-file-webpack-plugin"),
     TerserPlugin = require("terser-webpack-plugin"),
-    CopyPlugin = require("copy-webpack-plugin");
+    CopyPlugin = require("copy-webpack-plugin"),
+    copyOnChange = require("./src/shared-readonly/copy-on-change.js");
 
 // load the secrets
 var alias = {};
@@ -275,5 +276,37 @@ if (env.NODE_ENV === "development") {
         ],
     };
 }
+
+// copy and watch some shared files to dictionariez during development & production build
+(() => {
+    function setupCopyWatches() {
+        copyOnChange({
+            sourceFiles: [
+                path.resolve("../puffins/src/constants/adBlockCss.js"),
+                path.resolve("../puffins/src/constants/adBlockDomains.js"),
+                path.resolve("../puffins/src/constants/darkModeCss.js"),
+                path.resolve("../puffins/src/constants/dictionaries.js"),
+            ],
+            destDir: path.resolve("./src/shared-readonly"),
+            watchMode: env.NODE_ENV === "development",
+        });
+
+        copyOnChange({
+            sourceDir: path.resolve("../puffins/src/constants/dictionaries"),
+            destDir: path.resolve("./src/shared-readonly"),
+            watchMode: env.NODE_ENV === "development",
+        });
+    }
+    if (env.NODE_ENV === "development") {
+        setupCopyWatches();
+    } else {
+        // Add webpack plugin for production copy
+        options.plugins.push({
+            apply(compiler) {
+                compiler.hooks.afterEmit.tap("ProductionCopyPlugin", setupCopyWatches);
+            },
+        });
+    }
+})();
 
 module.exports = options;
