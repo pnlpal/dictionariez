@@ -391,7 +391,7 @@
 							</p>
 							
 							<!-- Chinese Settings -->
-							<div class="panel-default" ng-if="setting.enableLookupChinese" style="margin-top: 15px; border-left: 3px solid #d9534f;">
+							<div class="panel-default" ng-if="setting.enabledLanguages.includes('Chinese')" style="margin-top: 15px; border-left: 3px solid #d9534f;">
 								<div class="panel-body" style="padding: 10px;">
 									<strong>Chinese Options</strong>
 									<div class="checkbox">
@@ -411,7 +411,7 @@
 							</div>
 
 							<!-- English Settings -->
-							<div class="panel-default" ng-if="setting.enableLookupEnglish" style="margin-top: 15px; border-left: 3px solid #337ab7;">
+							<div class="panel-default" ng-if="setting.enabledLanguages.includes('English')" style="margin-top: 15px; border-left: 3px solid #337ab7;">
 								<div class="panel-body" style="padding: 10px;">
 									<strong>English Options</strong>
 									

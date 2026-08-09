@@ -29,7 +29,6 @@ import initAILanguageSelect from "./ai-language-select.js";
 import initSynthesisOptions from "./synthesis-options.js";
 import bootoast from "bootoast/dist/bootoast.min.js";
 import askForFeedback from "./ask-for-feedback.js";
-import allLangs from "../resources/langs.json";
 import enableLanguages from "./enableLanguages.js";
 
 document.title = `Options - ${process.env.PRODUCT}`;
@@ -97,26 +96,6 @@ dictApp.controller("optionCtrl", [
             $scope.$apply();
         }, 100);
 
-        $scope.toggleOtherDisabledLanguages = (lang) => {
-            const idx = $scope.setting.otherDisabledLanguages.indexOf(lang);
-            if (idx >= 0) {
-                $scope.setting.otherDisabledLanguages.splice(idx, 1);
-            } else {
-                $scope.setting.otherDisabledLanguages.push(lang);
-            }
-            chrome.runtime.sendMessage({
-                type: "save setting",
-                key: "otherDisabledLanguages",
-                value: $scope.setting.otherDisabledLanguages,
-            });
-            bootoast.toast({
-                message: `Language "${lang}" has been ${idx >= 0 ? "enabled" : "disabled"}.`,
-                position: "top",
-                type: "success",
-                timeout: 2,
-            });
-        };
-
         const initLanguageSelector = async () => {
             await utils.promisifiedTimeout(1); // Wait for the DOM to be ready
             const $select = $("#lookup-languages-options");
@@ -124,22 +103,11 @@ dictApp.controller("optionCtrl", [
 
             $select.on("change", async () => {
                 const selected = $select.val() || [];
-                const withEnglish = selected.includes("English");
-                const withChinese = selected.includes("Chinese");
 
-                await enableLanguages(selected, withEnglish, withChinese);
+                await enableLanguages(selected);
 
                 // Update local scope settings to reflect changes immediately in UI
-                $scope.setting.enableLookupEnglish = withEnglish;
-                $scope.setting.enableLookupChinese = withChinese;
-
-                // Update otherDisabledLanguages for the scope
-                const allKeys = Object.keys(allLangs);
-                const otherDisabled = allKeys
-                    .filter((l) => l !== "English" && l !== "Chinese")
-                    .filter((l) => !selected.includes(l));
-
-                $scope.setting.otherDisabledLanguages = otherDisabled;
+                $scope.setting.enabledLanguages = selected;
 
                 $scope.$apply();
 
@@ -160,7 +128,7 @@ dictApp.controller("optionCtrl", [
                 // window.setting = config
                 $scope.setting = config;
                 window.setting = config; // For debugging
-                if (!config.otherDisabledLanguages?.length) {
+                if (!config.enabledLanguages?.length) {
                     welcomeSetup({
                         setting: $scope.setting,
                         applySetting: $scope.$apply.bind($scope),

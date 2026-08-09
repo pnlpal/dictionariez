@@ -702,7 +702,7 @@ export default {
 
             if (utils.isEnglish(win.word)) {
                 return utils.loadJson(`https://en.m.wikipedia.org/api/rest_v1/page/summary/${win.word}`);
-            } else if (utils.isChinese(win.word) && setting.getValue("enableLookupChinese")) {
+            } else if (utils.isChinese(win.word) && setting.isLanguageEnabled("Chinese")) {
                 return utils.loadJson(`https://zh.wikipedia.org/api/rest_v1/page/summary/${win.word}`);
             } else if (utils.isJapanese(win.word)) {
                 return utils.loadJson(`https://ja.wikipedia.org/api/rest_v1/page/summary/${win.word}`);

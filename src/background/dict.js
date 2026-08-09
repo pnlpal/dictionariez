@@ -2,11 +2,12 @@ import message from "./message.js";
 import setting from "./setting.js";
 import storage from "./storage.js";
 import cloudStorage from "./storage-on-cloud.js";
+import { getDictionariesForLanguages } from "../shared-readonly/dictionaries.js";
 
-const defaultDicts =
-    process.env.PRODUCT === "Dictionariez"
-        ? require("./default-dicts.js").default
-        : require(`./default-dicts.${process.env.PRODUCT.toLowerCase()}.js`).default;
+function getDefaultDicts() {
+    const languages = setting.getValue("enabledLanguages", []);
+    return getDictionariesForLanguages(languages.length > 0 ? languages : ["English"]);
+}
 
 const chatgptDefault = {
     windowUrl: "https://chatgpt.com",
@@ -67,6 +68,10 @@ export default {
             await this.restoreDefaultDicts();
         });
 
+        message.on("add-dicts-for-languages", async ({ languages }) => {
+            await this.addDictsForLanguages(languages);
+        });
+
         message.on("get-all-dicts", async () => {
             await this.syncAllDictsWithCloud();
             return {
@@ -81,6 +86,8 @@ export default {
         const allDicts = await storage.getAllByK("dict-");
 
         if (!allDicts.length) {
+            // New user: generate dicts based on enabled languages
+            const defaultDicts = getDefaultDicts();
             defaultDicts.forEach((dict, originalIndex) => {
                 dict.sequence = originalIndex;
                 fixChatgptDict(dict);
@@ -94,17 +101,6 @@ export default {
         allDicts.forEach((dict, originalIndex) => {
             dict.sequence = originalIndex;
             fixChatgptDict(dict);
-
-            // migrate old dict resources to css field
-            if (!dict.css && dict.resources?.styles) {
-                const newDict = defaultDicts.find((d) => d.dictName === dict.dictName);
-                if (newDict && newDict.css) {
-                    console.log(`Migrating dict "${dict.dictName}" resources to css field`);
-                    dict.css = newDict.css;
-                    delete dict.resources;
-                    storage.setAllByK("dict-", "dictName", [dict]);
-                }
-            }
         });
 
         this.allDicts = allDicts;
@@ -191,6 +187,7 @@ export default {
     },
     async restoreDefaultDicts() {
         const added = [];
+        const defaultDicts = getDefaultDicts();
 
         defaultDicts.forEach((defaultDict, originalIndex) => {
             const currentDict = this.allDicts.find((dict) => dict.dictName === defaultDict.dictName);
@@ -215,6 +212,35 @@ export default {
                 dicts: added,
             });
         }
+        return added;
+    },
+
+    async addDictsForLanguages(languages) {
+        const suggestedDicts = getDictionariesForLanguages(languages);
+        const added = [];
+
+        suggestedDicts.forEach((dict) => {
+            // Skip if dict already exists
+            const existingDict = this.allDicts.find((d) => d.dictName === dict.dictName);
+            if (existingDict) {
+                return;
+            }
+
+            // Add new dict at the end
+            dict.sequence = this.allDicts.length;
+            fixChatgptDict(dict);
+            this.allDicts.push(dict);
+            added.push(dict);
+        });
+
+        if (added.length > 0) {
+            await storage.setAllByK("dict-", "dictName", added);
+            await this.syncAllDictsWithCloud({
+                action: "add",
+                dicts: added,
+            });
+        }
+
         return added;
     },
     async reorderDicts(dictMap) {

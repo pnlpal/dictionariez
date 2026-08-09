@@ -2,6 +2,7 @@ import contextMenu from "./contextMenu.js";
 import message from "./message.js";
 import utils from "utils";
 import aiLookup from "./ai-lookup.js";
+import allLangs from "../resources/langs.json";
 
 export default {
     configCache: {
@@ -30,10 +31,8 @@ export default {
         enableSelectionSK1: true,
         selectionSK1: "Shift",
 
-        enableLookupEnglish: true,
-        enableLookupChinese: process.env.PRODUCT === "Dictionariez" ? true : false,
         enableConvertCn2T: false,
-        otherDisabledLanguages: [],
+        enabledLanguages: process.env.PRODUCT === "Ordböcker" ? ["English", "Swedish", "Norwegian", "Danish"] : [],
 
         enablePlainLookup: process.env.PRODUCT === "SidePal" ? false : true,
         englishLookupSource: "wiktionary", // bingCN, wiktionary
@@ -89,16 +88,28 @@ export default {
             return this.configCache;
         });
         message.on("save setting", (request) => {
-            if (request.key === "disableContextMenu") {
-                if (request.value) {
-                    contextMenu.removeLookupItem();
-                } else {
-                    contextMenu.createLookupItem();
-                }
-            } else if (request.key === "aiResponseLanguage") {
-                aiLookup.clearCache();
+            if (!request.key && !request.settings) {
+                return;
             }
-            return this.setValue(request.key, request.value);
+            const settings = request.settings || [{ key: request.key, value: request.value }];
+
+            settings.forEach((s) => {
+                if (s.key === "disableContextMenu") {
+                    if (s.value) {
+                        contextMenu.removeLookupItem();
+                    } else {
+                        contextMenu.createLookupItem();
+                    }
+                } else if (s.key === "aiResponseLanguage") {
+                    aiLookup.clearCache();
+                }
+
+                if (this.configCache[s.key] !== s.value) {
+                    this.configCache[s.key] = s.value;
+                }
+            });
+
+            return chrome.storage.sync.set({ config: this.configCache });
         });
 
         return new Promise((resolve) => {
@@ -107,8 +118,14 @@ export default {
                     Object.assign(this.configCache, obj.config);
                 }
                 //migration:
-                if (this.configCache.englishLookupSource === "bing" || this.configCache.englishLookupSource === "google") {
+                if (
+                    this.configCache.englishLookupSource === "bing" ||
+                    this.configCache.englishLookupSource === "google"
+                ) {
                     this.configCache.englishLookupSource = "wiktionary";
+                }
+                if (!this.configCache.enabledLanguages?.length || this.configCache.otherDisabledLanguages) {
+                    this.configCache.enabledLanguages = this.getEnabledLanguagesFromOldSettings();
                 }
                 // migration done.
                 resolve(this.configCache);
@@ -134,5 +151,42 @@ export default {
         return new Promise((resolve) => {
             chrome.storage.sync.remove("config", resolve);
         });
+    },
+    isLanguageEnabled(langName) {
+        return this.configCache.enabledLanguages?.includes(langName);
+    },
+    isLanguageDisabled(langName) {
+        return !this.isLanguageEnabled(langName);
+    },
+
+    getEnabledLanguagesFromOldSettings() {
+        if (!this.configCache.otherDisabledLanguages) {
+            return this.configCache.enabledLanguages || [];
+        }
+
+        const enabledLangs = [];
+
+        if (this.getValue("enableLookupEnglish", true)) {
+            enabledLangs.push("English");
+        }
+        if (this.getValue("enableLookupChinese", false)) {
+            enabledLangs.push("Chinese");
+        }
+
+        const otherDisabledLanguages = this.getValue("otherDisabledLanguages", []);
+        Object.keys(allLangs).forEach((lang) => {
+            if (lang === "English" || lang === "Chinese") return;
+            if (!otherDisabledLanguages.includes(lang)) {
+                enabledLangs.push(lang);
+            }
+        });
+
+        delete this.configCache.otherDisabledLanguages; // Clean up old setting
+        delete this.configCache.otherSupportedLanguages; // Clean up old setting
+        delete this.configCache.enableLookupEnglish; // Clean up old setting
+        delete this.configCache.enableLookupChinese; // Clean up old setting
+
+        console.log("Migrated enabled languages:", enabledLangs);
+        return enabledLangs;
     },
 };

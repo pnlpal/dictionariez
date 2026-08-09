@@ -24,15 +24,7 @@ const setupSelect2 = (selector, dropdownParent, setting, initialSetup) => {
     // Calculate currently enabled languages
     const enabledLangs = [];
     if (!initialSetup) {
-        if (setting.enableLookupEnglish) enabledLangs.push("English");
-        if (setting.enableLookupChinese) enabledLangs.push("Chinese");
-
-        Object.keys(allLangs).forEach((lang) => {
-            if (lang === "English" || lang === "Chinese") return;
-            if (!setting.otherDisabledLanguages.includes(lang)) {
-                enabledLangs.push(lang);
-            }
-        });
+        enabledLangs.push(...(setting.enabledLanguages || ["English"]));
     }
 
     const matchCustom = (params, data) => {
@@ -72,17 +64,9 @@ const setupSelect2 = (selector, dropdownParent, setting, initialSetup) => {
 };
 
 const welcomeSetup = ({ setting, applySetting, initialSetup = true, onSuccess, onEscape }) => {
-    const setLanguageSettings = async (langs = ["Swedish"]) => {
-        const withEnglish = langs.includes("English");
-        const withChinese = langs.includes("Chinese");
-        const { enableLookupEnglish, enableLookupChinese, otherDisabledLanguages } = await enableLanguages(
-            langs,
-            withEnglish,
-            withChinese,
-        );
-        setting.enableLookupEnglish = enableLookupEnglish;
-        setting.enableLookupChinese = enableLookupChinese;
-        setting.otherDisabledLanguages = otherDisabledLanguages;
+    const setLanguageSettings = async (langs = ["English"]) => {
+        const { enabledLanguages } = await enableLanguages(langs);
+        setting.enabledLanguages = enabledLanguages;
     };
 
     const success = () => {

@@ -67,16 +67,6 @@ export default {
         }
     },
 
-    isLangDisabled(lang) {
-        if (lang === "English" && !setting.getValue("enableLookupEnglish")) {
-            return true;
-        }
-        if (lang === "Chinese" && !setting.getValue("enableLookupChinese")) {
-            return true;
-        }
-        return setting.getValue("otherDisabledLanguages", []).includes(lang);
-    },
-
     checkLangs(w, detectedLangInContext = "") {
         const results = [];
         if (detectedLangInContext) {
@@ -96,7 +86,7 @@ export default {
                         regex = langConfig.accentedRegex;
                     }
                     if (w.match(new RegExp(regex, "ug"))?.length === w.length) {
-                        if (this.isLangDisabled(lang)) {
+                        if (setting.isLanguageDisabled(lang)) {
                             return [];
                         }
                         results.push(lang);
@@ -110,7 +100,7 @@ export default {
 
         for (const lang in langs) {
             const langConfig = langs[lang];
-            if (w.match(new RegExp(langConfig.regex, "ug"))?.length === w.length && !this.isLangDisabled(lang)) {
+            if (w.match(new RegExp(langConfig.regex, "ug"))?.length === w.length && setting.isLanguageEnabled(lang)) {
                 results.push(lang);
             }
         }
@@ -118,25 +108,21 @@ export default {
     },
 
     checkType(w, possibleLangs = []) {
-        if (setting.getValue("enableLookupEnglish") && possibleLangs.includes("English")) {
+        if (setting.isLanguageEnabled("English") && possibleLangs.includes("English")) {
             return setting.getValue("englishLookupSource"); // wiktionary, bingCN
         }
 
         for (const name in parserDescs) {
             const dictDesc = parserDescs[name];
             if (dictDesc.supportChinese) {
-                if (
-                    utils.isChinese(w) &&
-                    setting.getValue("enableLookupChinese") &&
-                    possibleLangs.includes("Chinese")
-                ) {
+                if (utils.isChinese(w) && setting.isLanguageEnabled("Chinese") && possibleLangs.includes("Chinese")) {
                     return name;
                 }
             }
 
             if (dictDesc.languages) {
                 for (const lang of dictDesc.languages) {
-                    if (possibleLangs.includes(lang) && !this.isLangDisabled(lang)) {
+                    if (possibleLangs.includes(lang) && setting.isLanguageEnabled(lang)) {
                         return name;
                     }
                 }
@@ -152,7 +138,7 @@ export default {
                 continue;
             }
             if (dictDesc.supportChinese) {
-                if (utils.isChinese(w) && setting.getValue("enableLookupChinese")) {
+                if (utils.isChinese(w) && setting.isLanguageEnabled("Chinese")) {
                     return name;
                 }
             }
@@ -161,7 +147,7 @@ export default {
                 for (const lang of dictDesc.languages) {
                     if (
                         w.match(new RegExp(langs[lang].regex, "ug"))?.length === w.length &&
-                        !this.isLangDisabled(lang)
+                        setting.isLanguageEnabled(lang)
                     ) {
                         return name;
                     }
@@ -172,33 +158,6 @@ export default {
 
     init() {
         this.typeCount = Object.keys(parserDescs).length;
-        this.otherSupportedLanguages = [];
-        for (const dictDesc of Object.values(parserDescs)) {
-            dictDesc.languages?.forEach((language) => {
-                if (process.env.PRODUCT === "Ordböcker") {
-                    if (["Swedish", "Norwegian", "Danish"].includes(language)) {
-                        if (!this.otherSupportedLanguages.includes(language)) {
-                            this.otherSupportedLanguages.push(language);
-                        }
-                    } else {
-                        if (!setting.configCache.otherDisabledLanguages.includes(language) && language !== "English") {
-                            setting.configCache.otherDisabledLanguages.push(language);
-                        }
-                    }
-                } else {
-                    if (
-                        !this.otherSupportedLanguages.includes(language) &&
-                        language !== "English" &&
-                        language !== "Chinese"
-                    ) {
-                        // Exclude English and Chinese, as they are handled separately
-                        this.otherSupportedLanguages.push(language);
-                    }
-                }
-            });
-        }
-
-        setting.configCache.otherSupportedLanguages = this.otherSupportedLanguages;
 
         message.on("check text supported", ({ w, detectedLangInContext }) => {
             return this.checkTypeOfSupport(w, detectedLangInContext);
@@ -429,9 +388,7 @@ export default {
                         targetLang.lang = "Ukrainian";
                     }
 
-                    if (this.isLangDisabled(targetLang.lang) || !langs[targetLang.lang]) {
-                        targetLang = null;
-                    } else if (targetLang.lang === "English" && !setting.getValue("enableLookupEnglish")) {
+                    if (setting.isLanguageDisabled(targetLang.lang) || !langs[targetLang.lang]) {
                         targetLang = null;
                     } else if (targetLang.lang !== "English" && !possibleLangs.includes(targetLang.lang)) {
                         // If detectedLangInContext is set, only include targetLang if it's in possibleLangs

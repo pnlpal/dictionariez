@@ -57,10 +57,8 @@ export default function initSynthesisOptions($scope) {
 
     $scope.showAllLangs = false;
     $scope.isLangEnabled = (langName) => {
-        if (langName === "English") return $scope.setting.enableLookupEnglish;
-        if (langName === "Chinese") return $scope.setting.enableLookupChinese;
-        const disabled = $scope.setting.otherDisabledLanguages || [];
-        return !disabled.includes(langName);
+        const enabledLanguages = $scope.setting.enabledLanguages || ["English"];
+        return enabledLanguages.includes(langName);
     };
 
     $scope.isLangVisible = (langName) => {
