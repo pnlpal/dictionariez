@@ -7,6 +7,7 @@ import "bootstrap/js/modal.js";
 import bootbox from "bootbox";
 import allLangs from "../resources/langs.json";
 import enableLanguages from "./enableLanguages.js";
+import checkServerForDictsConflict from "./checkServerForDictsConflict.js";
 
 const setupSelect2 = (selector, dropdownParent, setting, initialSetup) => {
     const $select = $(selector);
@@ -24,7 +25,7 @@ const setupSelect2 = (selector, dropdownParent, setting, initialSetup) => {
     // Calculate currently enabled languages
     const enabledLangs = [];
     if (!initialSetup) {
-        enabledLangs.push(...(setting.enabledLanguages || ["English"]));
+        enabledLangs.push(...(setting.enabledLanguages || []));
     }
 
     const matchCustom = (params, data) => {
@@ -65,8 +66,14 @@ const setupSelect2 = (selector, dropdownParent, setting, initialSetup) => {
 
 const welcomeSetup = ({ setting, applySetting, initialSetup = true, onSuccess, onEscape }) => {
     const setLanguageSettings = async (langs = ["English"]) => {
-        const { enabledLanguages } = await enableLanguages(langs);
+        const enabledLanguages = await enableLanguages(langs, true);
         setting.enabledLanguages = enabledLanguages;
+
+        if (setting.isPro) {
+            const serverConflict = await checkServerForDictsConflict();
+            return { serverConflict };
+        }
+        return {};
     };
 
     const success = () => {
@@ -207,12 +214,23 @@ const welcomeSetup = ({ setting, applySetting, initialSetup = true, onSuccess, o
                         bootbox.alert("Please select at least one language to look up.");
                         return false;
                     }
-                    setLanguageSettings(lookup).then(() => {
-                        // Save the user's lookup languages here (e.g., via AJAX or local storage)
-                        // $.ajax({ ... });
-                        success(lookup);
-                        if (onSuccess) {
-                            onSuccess();
+                    setLanguageSettings(lookup).then(({ serverConflict }) => {
+                        if (serverConflict && serverConflict.hasServerDicts) {
+                            // Edge Case 6: Pro user has server dicts - ask which to keep
+                            showServerDataConflict({
+                                serverDicts: serverConflict.serverDicts,
+                                onUseServerCopy: () => {
+                                    success(lookup);
+                                    if (onSuccess) onSuccess();
+                                },
+                                onKeepLocal: () => {
+                                    success(lookup);
+                                    if (onSuccess) onSuccess();
+                                },
+                            });
+                        } else {
+                            success(lookup);
+                            if (onSuccess) onSuccess();
                         }
                     });
                 },
@@ -230,5 +248,71 @@ const welcomeSetup = ({ setting, applySetting, initialSetup = true, onSuccess, o
     });
 };
 
-export { welcomeSetup, setupSelect2 };
+// Edge Case 6: Show dialog when Pro user on new device has existing server dicts
+// This is shown AFTER language selection, asking user which dicts to keep
+const showServerDataConflict = ({ serverDicts, onUseServerCopy, onKeepLocal }) => {
+    const dictCount = serverDicts.length;
+
+    bootbox.dialog({
+        size: "large",
+        className: "server-data-conflict modal-dialog-centered",
+        title: `🔄 Found Synced Dictionaries`,
+        message: `
+        <div class="dictionariez-welcome-message">
+            <p>We found <strong>${dictCount} dictionaries</strong> synced from another device.</p>
+            <p>Would you like to use your synced dictionaries or keep the ones we just created for your selected languages?</p>
+            <br>
+            <div style="display: flex; gap: 20px; justify-content: center;">
+                <div style="flex: 1; padding: 15px; border: 2px solid #007bff; border-radius: 8px; text-align: center;">
+                    <strong style="color: #007bff;">Use Synced Dicts</strong>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9em; color: #666;">Replace local dicts with your ${dictCount} synced dictionaries</p>
+                </div>
+                <div style="flex: 1; padding: 15px; border: 2px solid #28a745; border-radius: 8px; text-align: center;">
+                    <strong style="color: #28a745;">Keep Local</strong>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9em; color: #666;">Keep the dictionaries created for your selected languages</p>
+                </div>
+            </div>
+        </div>
+        `,
+        buttons: {
+            useServer: {
+                label: "Use Synced Dicts",
+                className: "btn-primary",
+                callback: async function () {
+                    try {
+                        // Accept server dicts - this replaces local with server
+                        const utils = await import("utils");
+                        await utils.default.send("accept-server-dicts", { serverDicts });
+                        if (onUseServerCopy) onUseServerCopy();
+                    } catch (error) {
+                        console.error("Error accepting server dicts:", error);
+                        bootbox.alert("Failed to sync dictionaries. Please try again.");
+                    }
+                },
+            },
+            keepLocal: {
+                label: "Keep Local",
+                className: "btn-success",
+                callback: async function () {
+                    try {
+                        // Sync local dicts to server (overwrite server)
+                        const utils = await import("utils");
+                        await utils.default.send("sync-local-dicts-to-server");
+                        if (onKeepLocal) onKeepLocal();
+                    } catch (error) {
+                        console.error("Error syncing local dicts:", error);
+                        // Still proceed - local dicts are already saved
+                        if (onKeepLocal) onKeepLocal();
+                    }
+                },
+            },
+        },
+        onEscape: function () {
+            // If user escapes, keep local by default
+            if (onKeepLocal) onKeepLocal();
+        },
+    });
+};
+
+export { welcomeSetup, setupSelect2, showServerDataConflict };
 window.welcomeSetup = () => welcomeSetup({ setting: window.setting, applySetting: () => {}, initialSetup: false });

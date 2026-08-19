@@ -45,10 +45,14 @@ export default {
     isProUser() {
         return setting.getValue("isPro");
     },
+    hasSelectedLanguages() {
+        const languages = setting.getValue("enabledLanguages", []);
+        return languages.length > 0;
+    },
     async init() {
         await this.initLocalDicts();
 
-        if (!setting.getValue("lastTimeSyncDicts")) {
+        if (!setting.getValue("lastTimeSyncDicts") && this.hasSelectedLanguages()) {
             await this.syncAllDictsWithCloud();
         }
 
@@ -68,8 +72,8 @@ export default {
             await this.restoreDefaultDicts();
         });
 
-        message.on("add-dicts-for-languages", async ({ languages }) => {
-            await this.addDictsForLanguages(languages);
+        message.on("sync-dicts-for-languages", async ({ languages, notSyncToCloud = false }) => {
+            await this.syncDictsForLanguages(languages, notSyncToCloud);
         });
 
         message.on("get-all-dicts", async () => {
@@ -79,6 +83,46 @@ export default {
                 lastTimeSyncDicts: setting.getValue("lastTimeSyncDicts"),
                 syncDictsError: this.syncDictsError,
             };
+        });
+
+        // Check if server has existing dicts for Pro user on fresh install
+        // Used for Edge Case 6: New device with existing server data
+        message.on("check-server-for-existing-dicts", async () => {
+            if (!this.isProUser()) {
+                return { hasServerDicts: false, serverDicts: null };
+            }
+            try {
+                // Send timestamp=0 to indicate "check only" mode - server always wins
+                const res = await cloudStorage.syncAllDicts(this.allDicts, 0);
+                if (res && res.shouldUpdateClientSide && res.allDicts && res.allDicts.length > 0) {
+                    console.log("Server has existing dicts for Pro user:", res.allDicts);
+                    return { hasServerDicts: true, serverDicts: res.allDicts };
+                }
+                console.log("No existing dicts found on server for Pro user.");
+                return { hasServerDicts: false, serverDicts: null };
+            } catch (error) {
+                console.error("check-server-for-existing-dicts error", error);
+                return { hasServerDicts: false, serverDicts: null, error: error.message };
+            }
+        });
+
+        // Accept server dicts (user chose "Use server copy" in Edge Case 6)
+        message.on("accept-server-dicts", async ({ serverDicts }) => {
+            this.allDicts = serverDicts;
+            await storage.removeAllByK("dict-");
+            await storage.setAllByK("dict-", "dictName", this.allDicts);
+
+            console.log("User choose to use server dicts: ", this.allDicts.length);
+            // Now sync to update timestamp
+            await this.syncAllDictsWithCloud();
+            return { success: true };
+        });
+
+        // Sync local dicts to server (user chose "Keep local" in Edge Case 6)
+        message.on("sync-local-dicts-to-server", async () => {
+            console.log("User choose to keep local dicts", this.allDicts.length);
+            await this.syncAllDictsWithCloud("keep-local-dicts");
+            return { success: true };
         });
     },
 
@@ -105,15 +149,20 @@ export default {
 
         this.allDicts = allDicts;
     },
-    async syncAllDictsWithCloud(actionable = {}) {
+    async syncAllDictsWithCloud(action = "") {
         this.syncDictsError = null;
         if (this.isProUser()) {
             try {
-                if (actionable.action) {
+                if (action) {
                     setting.setValue("lastTimeSyncDicts", Date.now());
                 }
                 const lastTimeSyncDicts = setting.getValue("lastTimeSyncDicts");
-                const res = await cloudStorage.syncAllDicts(this.allDicts, actionable, lastTimeSyncDicts);
+                console.log(
+                    "Syncing all dicts with cloud:",
+                    lastTimeSyncDicts ? new Date(lastTimeSyncDicts).toISOString() : "[no last time]",
+                    action ? `[${action}]` : "",
+                );
+                const res = await cloudStorage.syncAllDicts(this.allDicts, lastTimeSyncDicts);
                 if (res && res.allDicts) {
                     this.allDicts = res.allDicts;
                     if (res.shouldUpdateClientSide) {
@@ -166,10 +215,7 @@ export default {
         }
 
         await storage.setAllByK("dict-", "dictName", [dict]);
-        await this.syncAllDictsWithCloud({
-            action: "add",
-            dicts: [dict],
-        });
+        await this.syncAllDictsWithCloud("add");
 
         return dict;
     },
@@ -180,10 +226,7 @@ export default {
         }
 
         await storage.remove(`dict-${dictName}`);
-        await this.syncAllDictsWithCloud({
-            action: "remove",
-            dictName,
-        });
+        await this.syncAllDictsWithCloud("remove");
     },
     async restoreDefaultDicts() {
         const added = [];
@@ -206,42 +249,62 @@ export default {
         if (added.length > 0) {
             this.allDicts.sort((a, b) => a.sequence - b.sequence);
             await storage.setAllByK("dict-", "dictName", added);
-
-            await this.syncAllDictsWithCloud({
-                action: "add",
-                dicts: added,
-            });
+            await this.syncAllDictsWithCloud("add");
         }
         return added;
     },
 
-    async addDictsForLanguages(languages) {
+    async syncDictsForLanguages(languages, notSyncToCloud) {
         const suggestedDicts = getDictionariesForLanguages(languages);
+        const suggestedDictNames = new Set(suggestedDicts.map((d) => d.dictName));
         const added = [];
+        const removed = [];
 
+        // Remove dicts that are no longer needed for enabled languages
+        // Only keep if: it's in suggested dicts OR it's a custom dict (has troveUrl)
+        for (let i = this.allDicts.length - 1; i >= 0; i--) {
+            const dict = this.allDicts[i];
+            if (!suggestedDictNames.has(dict.dictName) && !dict.troveUrl) {
+                removed.push(dict.dictName);
+                this.allDicts.splice(i, 1);
+            }
+        }
+
+        // Add new dicts for enabled languages
         suggestedDicts.forEach((dict) => {
-            // Skip if dict already exists
             const existingDict = this.allDicts.find((d) => d.dictName === dict.dictName);
             if (existingDict) {
                 return;
             }
 
-            // Add new dict at the end
             dict.sequence = this.allDicts.length;
             fixChatgptDict(dict);
             this.allDicts.push(dict);
             added.push(dict);
         });
 
-        if (added.length > 0) {
-            await storage.setAllByK("dict-", "dictName", added);
-            await this.syncAllDictsWithCloud({
-                action: "add",
-                dicts: added,
+        if (added.length > 0 || removed.length > 0) {
+            // Re-sequence all dicts after changes
+            this.allDicts.forEach((d, i) => {
+                d.sequence = i;
             });
+            console.log(
+                "Syncing dicts for languages. Added:",
+                added.map((d) => d.dictName),
+                "Removed:",
+                removed,
+            );
+
+            // Batch persist: remove all and re-save entire list
+            await storage.removeAllByK("dict-");
+            await storage.setAllByK("dict-", "dictName", this.allDicts);
+
+            if (!notSyncToCloud) {
+                await this.syncAllDictsWithCloud("language-changed");
+            }
         }
 
-        return added;
+        return { added, removed };
     },
     async reorderDicts(dictMap) {
         const changed = [];
@@ -257,7 +320,7 @@ export default {
         this.allDicts.sort((a, b) => a.sequence - b.sequence);
 
         await storage.setAllByK("dict-", "dictName", changed);
-        await this.syncAllDictsWithCloud({ action: "reorder" });
+        await this.syncAllDictsWithCloud("reorder");
     },
 
     getDict(dictName) {

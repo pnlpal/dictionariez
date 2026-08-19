@@ -128,19 +128,21 @@ dictApp.controller("optionCtrl", [
                 // window.setting = config
                 $scope.setting = config;
                 window.setting = config; // For debugging
+
+                const handleWelcomeComplete = () => {
+                    initLanguageSelector();
+                    initHistoryAndDicts($scope);
+                };
+
                 if (!config.enabledLanguages?.length) {
+                    // Fresh install - show language selection first
+                    // Server conflict check happens AFTER language selection completes
                     welcomeSetup({
                         setting: $scope.setting,
                         applySetting: $scope.$apply.bind($scope),
                         initialSetup: true,
-                        onSuccess: () => {
-                            initLanguageSelector();
-                            initHistoryAndDicts($scope);
-                        },
-                        onEscape: () => {
-                            initLanguageSelector();
-                            initHistoryAndDicts($scope);
-                        },
+                        onSuccess: handleWelcomeComplete,
+                        onEscape: handleWelcomeComplete,
                     });
                 } else {
                     initLanguageSelector();
@@ -157,7 +159,7 @@ dictApp.controller("optionCtrl", [
         );
 
         $scope.markColorEvent = {
-            onChange(api, color, $event) {
+            onChange(api, color) {
                 $scope.changeKey(color, "markColor");
             },
         };

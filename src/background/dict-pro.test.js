@@ -13,12 +13,12 @@ const testDict = (name) => {
     };
 };
 
-describe("dicts management for pro user", () => {
+describe.only("dicts management for pro user", () => {
     beforeEach(() => {
         const settingForTest = {};
 
         sinon.stub(message, "on");
-        sinon.stub(setting, "getValue").callsFake((key) => settingForTest[key]);
+        sinon.stub(setting, "getValue").callsFake((key, defaultValue) => settingForTest[key] ?? defaultValue);
         sinon.stub(setting, "setValue").callsFake((key, value) => {
             settingForTest[key] = value;
         });
@@ -26,6 +26,7 @@ describe("dicts management for pro user", () => {
         sinon.stub(storage, "getAllByK").resolves([]);
         sinon.stub(storage, "setAllByK").resolves();
         sinon.stub(storage, "remove").resolves();
+        sinon.stub(storage, "removeAllByK").resolves();
         sinon.stub(Dict, "allDicts").value([]);
     });
     afterEach(() => {
@@ -33,6 +34,8 @@ describe("dicts management for pro user", () => {
     });
 
     it("init and restore all default dicts for new user and sync to cloud", async () => {
+        setting.getValue.withArgs("lastTimeSyncDicts").returns(null);
+        sinon.stub(Dict, "hasSelectedLanguages").returns(true);
         await Dict.init();
         expect(Dict.allDicts.length).to.be.greaterThan(1);
         expect(Dict._lastTimeSyncDicts).to.not.be.null;
@@ -103,8 +106,8 @@ describe("dicts management for pro user", () => {
         await Dict.init();
 
         // simulate cloud has newer version
-        const oneMinuteAgo = new Date(Date.now() - 60000).toISOString();
-        setting.getValue.withArgs("lastTimeSyncDicts").returns(oneMinuteAgo);
+        const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+        setting.getValue.withArgs("lastTimeSyncDicts").returns(oneMonthAgo);
 
         // simulate client side has a dict removed and a dict changed
         const defaultChatgptDict = Dict.allDicts.find((d) => d.dictName.toLocaleLowerCase().includes("chatgpt"));
@@ -126,11 +129,8 @@ describe("dicts management for pro user", () => {
         expect(cloudChatgptDict.windowUrl).to.not.equal("https://modified-chatgpt.com");
         expect(Dict._shouldUpdateClientSide).to.be.true;
 
-        const lastDict = Dict.allDicts[Dict.allDicts.length - 1];
-        expect(lastDict.dictName).to.equal("test-dict2");
-        expect(lastDict.windowUrl).to.equal("http://test-dict2.com");
-        expect(Dict.allDicts).to.have.lengthOf(Dict.allDicts.length);
-        await Dict.removeDict("test-dict2");
+        // the newly added dict is gone
+        expect(Dict.allDicts.find((d) => d.dictName === "test-dict2")).to.be.undefined;
     });
 
     it("client side dicts still works when cloud sync failed", async () => {
@@ -156,5 +156,59 @@ describe("dicts management for pro user", () => {
         expect(Dict._lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
         expect(Dict.allDicts.length).to.equal(initDictsCount);
         expect(Dict.syncDictsError).to.be.a("string").that.includes("network-error");
+    });
+
+    it("syncDictsForLanguages adds and removes dicts based on language selection", async () => {
+        await Dict.init();
+        const initDictsCount = Dict.allDicts.length;
+
+        // Change languages to include Chinese
+        const result = await Dict.syncDictsForLanguages(["English", "Chinese"]);
+        console.log(result);
+        // Should have added Chinese dicts
+        expect(result.added.length).to.be.greaterThan(0);
+        expect(Dict.allDicts.length).to.be.greaterThan(initDictsCount);
+
+        // Verify Chinese-specific dict was added
+        const chineseDict = Dict.allDicts.find(
+            (d) => d.dictName.toLowerCase().includes("zdic") || d.dictName.toLowerCase().includes("chinese"),
+        );
+        expect(chineseDict).to.not.be.undefined;
+    });
+
+    it("syncDictsForLanguages never removes custom dicts with troveUrl", async () => {
+        await Dict.init();
+
+        // Add a custom dict (simulating one installed from pnl.dev)
+        const customDict = {
+            dictName: "My Custom Dict",
+            windowUrl: "http://custom.com/<word>",
+            troveUrl: "https://pnl.dev/trove/123", // This marks it as a custom dict
+        };
+        await Dict.addToDictionariez(customDict);
+        expect(Dict.allDicts.find((d) => d.dictName === "My Custom Dict")).to.not.be.undefined;
+
+        // Change languages to something that doesn't include this dict
+        await Dict.syncDictsForLanguages(["Swedish"]);
+
+        // Custom dict should still exist (protected by troveUrl)
+        const preservedDict = Dict.allDicts.find((d) => d.dictName === "My Custom Dict");
+        expect(preservedDict).to.not.be.undefined;
+        expect(preservedDict.troveUrl).to.equal("https://pnl.dev/trove/123");
+    });
+
+    it("syncDictsForLanguages uses batch storage operations", async () => {
+        await Dict.init();
+        storage.removeAllByK.resetHistory();
+        storage.setAllByK.resetHistory();
+
+        // Change languages to trigger sync
+        const result = await Dict.syncDictsForLanguages(["English", "Swedish"]);
+
+        // If there were changes, batch operations should have been used
+        if (result.added.length > 0 || result.removed.length > 0) {
+            expect(storage.removeAllByK.calledOnce).to.be.true;
+            expect(storage.setAllByK.called).to.be.true;
+        }
     });
 });

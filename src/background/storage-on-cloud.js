@@ -104,7 +104,7 @@ export default {
         return convertProItem(res);
     },
 
-    async syncAllDicts(allDicts, actionable = {}, lastTimeSyncDicts = null) {
-        return await this.post(`/api/dicts/syncAllDicts`, { allDicts, actionable, lastTimeSyncDicts });
+    async syncAllDicts(allDicts, lastTimeSyncDicts = null) {
+        return await this.post(`/api/dicts/syncAllDicts`, { allDicts, lastTimeSyncDicts });
     },
 };
