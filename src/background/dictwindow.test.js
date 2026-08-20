@@ -133,7 +133,7 @@ describe("background/dictwindow - look up", () => {
         const dictInfo = dictsInfo[0];
         expect(dictInfo.word).to.equal("I went to the zoo yesterday.");
 
-        const hasOneOfAIDict = ["chatgpt", "gemini", "claude"].some((aiDictName) =>
+        const hasOneOfAIDict = ["chatgpt", "gemini", "claude", "mistral"].some((aiDictName) =>
             dictInfo.dictName.toLowerCase().includes(aiDictName),
         );
         expect(hasOneOfAIDict).to.be.true;

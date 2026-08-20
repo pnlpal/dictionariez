@@ -1,18 +1,25 @@
 import lookupParser from "../content/lookup-parser.js";
 import utils from "utils";
 import { expect } from "chai";
-import enableLanguages from "../option/enableLanguages.js";
+
+async function simpleEnableLanguages(enabledLanguages = []) {
+    await utils.send("save setting", {
+        key: "enabledLanguages",
+        value: enabledLanguages,
+    });
+    await utils.send("clear plain lookup cache"); // Clear cache to apply language changes immediately
+}
 
 before(() => {
     lookupParser();
 });
-after(() => {
-    enableLanguages(["Swedish"], true, true);
+after(async () => {
+    await simpleEnableLanguages(["Swedish", "English", "Chinese"]);
 });
 
 describe("background/plain-lookup", () => {
     it("should get definition of fart from both Swedish and English and Swedish comes first", async () => {
-        await enableLanguages(["Swedish"]);
+        await simpleEnableLanguages(["Swedish", "English", "Chinese"]);
         const result = await utils.send("look up plain", {
             w: "fart",
         });
@@ -25,7 +32,7 @@ describe("background/plain-lookup", () => {
         expect(result[1]._source).to.equal("wiktionary");
     });
     it("should still get definition of fart when detected in sv from both Swedish and English and Swedish comes first", async () => {
-        await enableLanguages(["Swedish"]);
+        await simpleEnableLanguages(["Swedish", "English", "Chinese"]);
         const result = await utils.send("look up plain", {
             w: "fart",
             detectedLangInContext: "sv",
@@ -40,7 +47,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of regeringen from Swedish and its original form", async () => {
-        await enableLanguages(["Swedish"]);
+        await simpleEnableLanguages(["Swedish", "English", "Chinese"]);
         const result = await utils.send("look up plain", {
             w: "regeringen",
         });
@@ -53,7 +60,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of trots from Swedish and English (trot)", async () => {
-        await enableLanguages(["Swedish"]);
+        await simpleEnableLanguages(["Swedish", "English", "Chinese"]);
         const result = await utils.send("look up plain", {
             w: "trots",
         });
@@ -66,7 +73,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of födda from Swedish and its original form", async () => {
-        await enableLanguages(["Swedish"]);
+        await simpleEnableLanguages(["Swedish", "English", "Chinese"]);
         const result = await utils.send("look up plain", {
             w: "födda",
         });
@@ -81,7 +88,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should sort wiktionary result and put English at the end", async () => {
-        await enableLanguages(["Swedish"], true, true);
+        await simpleEnableLanguages(["Swedish", "English", "Chinese"]);
         await utils.send("save setting", {
             key: "englishLookupSource",
             value: "wiktionary",
@@ -98,7 +105,7 @@ describe("background/plain-lookup", () => {
 
     it("should get definition of Lehrerin from German", async () => {
         // this word exists in wiktionary
-        await enableLanguages(["German"], true);
+        await simpleEnableLanguages(["German", "English"]);
         const result = await utils.send("look up plain", {
             w: "Lehrerin",
         });
@@ -110,7 +117,7 @@ describe("background/plain-lookup", () => {
     });
     it("should get definition of German word Vielleicht from wiktionary if detected lang is de", async () => {
         // this word exists in wiktionary but wiktionary should come first if detected lang is de
-        await enableLanguages(["German"], true);
+        await simpleEnableLanguages(["German", "English"]);
         const result = await utils.send("look up plain", {
             w: "vielleicht",
             detectedLangInContext: "de",
@@ -122,7 +129,7 @@ describe("background/plain-lookup", () => {
         expect(result[0]._source).to.equal("wiktionary");
     });
     it("shouldn't get definition of word Arabischlehrerin as it's not in dictionary", async () => {
-        await enableLanguages(["German"], true);
+        await simpleEnableLanguages(["German", "English"]);
         const result = await utils.send("look up plain", {
             w: "Arabischlehrerin",
         });
@@ -130,7 +137,7 @@ describe("background/plain-lookup", () => {
         expect(result).to.not.exist;
     });
     it("should get definition of German Ägyptischlehrerin from wiktionary", async () => {
-        await enableLanguages(["German"], true);
+        await simpleEnableLanguages(["German", "English"]);
         const result = await utils.send("look up plain", {
             w: "Ägyptischlehrerin",
         });
@@ -142,7 +149,7 @@ describe("background/plain-lookup", () => {
     });
     it("should get definition of deux from French", async () => {
         // this word exists in wiktionary
-        await enableLanguages(["French"], true);
+        await simpleEnableLanguages(["French", "English"]);
         const result = await utils.send("look up plain", {
             w: "deux",
         });
@@ -155,7 +162,7 @@ describe("background/plain-lookup", () => {
     });
     it("should get definition of French word deux from wiktionary if detected lang is fr", async () => {
         // this word exists in wiktionary and wiktionary should come first if detected lang is fr
-        await enableLanguages(["French"], true);
+        await simpleEnableLanguages(["French", "English"]);
         const result = await utils.send("look up plain", {
             w: "deux",
             detectedLangInContext: "fr",
@@ -168,7 +175,7 @@ describe("background/plain-lookup", () => {
         expect(result[0]._source).to.equal("wiktionary");
     });
     it("should get definition of terzogenito from Italian", async () => {
-        await enableLanguages(["Italian"], true);
+        await simpleEnableLanguages(["Italian", "English"]);
         const result = await utils.send("look up plain", {
             w: "terzogenito",
         });
@@ -180,7 +187,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of pie from both Spanish and English and Spanish comes first", async () => {
-        await enableLanguages(["Spanish"], true, false);
+        await simpleEnableLanguages(["Spanish", "English"]);
         const result = await utils.send("look up plain", {
             w: "pie",
         });
@@ -195,7 +202,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of pie from Spanish if Spanish is enabled but not English", async () => {
-        await enableLanguages(["Spanish"], false, false);
+        await simpleEnableLanguages(["Spanish"]);
         const result = await utils.send("look up plain", {
             w: "pie",
         });
@@ -206,7 +213,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of 大臣 from Japanese if Japanese is enabled but not Chinese", async () => {
-        await enableLanguages(["Japanese"], false, false);
+        await simpleEnableLanguages(["Japanese"]);
         const result = await utils.send("look up plain", {
             w: "大臣",
         });
@@ -216,7 +223,7 @@ describe("background/plain-lookup", () => {
         expect(result._source).to.equal("japan");
     });
     it("should get definition of Jpananese て論 from wiktionary as it doesn't exist in JapanDict", async () => {
-        await enableLanguages(["Japanese"], false, false);
+        await simpleEnableLanguages(["Japanese"]);
         const result = await utils.send("look up plain", {
             w: "て論",
         });
@@ -228,7 +235,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of дигар from Tajik if Tajik is enabled but not English", async () => {
-        await enableLanguages(["Tajik"], false);
+        await simpleEnableLanguages(["Tajik"]);
         const result = await utils.send("look up plain", {
             w: "дигар",
         });
@@ -238,7 +245,7 @@ describe("background/plain-lookup", () => {
 
     // chinese 霸王
     it("should get definition of 霸王 from Chinese if Chinese is enabled", async () => {
-        await enableLanguages([], true, true);
+        await simpleEnableLanguages(["Chinese"]);
         const result = await utils.send("look up plain", {
             w: "霸王",
         });
@@ -247,7 +254,7 @@ describe("background/plain-lookup", () => {
 
     // convert chinese cn to tw
     it("should get definition of 博 from Taiwan Chinese if Chinese is enabled and convertCn2T", async () => {
-        await enableLanguages([], true, true);
+        await simpleEnableLanguages(["Chinese"]);
         await utils.send("save setting", {
             key: "enableConvertCn2T",
             value: true,
@@ -260,7 +267,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of tissue from bingCN if source is from bingCN", async () => {
-        await enableLanguages([], true, true);
+        await simpleEnableLanguages(["Chinese", "English"]);
         await utils.send("save setting", {
             key: "englishLookupSource",
             value: "bingCN",
@@ -275,7 +282,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should shorten the definition of få to only 2 definitions", async () => {
-        await enableLanguages(["Swedish"]);
+        await simpleEnableLanguages(["Swedish", "English", "Chinese"]);
         await utils.send("save setting", {
             key: "englishLookupSource",
             value: "wiktionary",
@@ -288,7 +295,7 @@ describe("background/plain-lookup", () => {
         expect(result[0].defs[1].def.length).to.equal(2);
     });
     it("should get definition of blåkval from Norwegian if Norwegian is enabled", async () => {
-        await enableLanguages(["Norwegian"], false, false);
+        await simpleEnableLanguages(["Norwegian"]);
         const result = await utils.send("look up plain", {
             w: "blåkval",
         });
@@ -299,7 +306,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of їжа from Ukrainian if Ukrainian is enabled", async () => {
-        await enableLanguages(["Ukrainian"], false, false);
+        await simpleEnableLanguages(["Ukrainian"]);
         const result = await utils.send("look up plain", {
             w: "їжа",
         });
@@ -314,7 +321,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of харчі from Ukrainian from slovnyk.ua if Ukrainian is enabled", async () => {
-        await enableLanguages(["Ukrainian"], false, false);
+        await simpleEnableLanguages(["Ukrainian"]);
         const result = await utils.send("look up plain", {
             w: "харчі",
         });
@@ -325,7 +332,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of Turkish word yemek if Turkish is enabled", async () => {
-        await enableLanguages(["Turkish"], false, false);
+        await simpleEnableLanguages(["Turkish"]);
         const result = await utils.send("look up plain", {
             w: "yemek",
         });
@@ -339,7 +346,7 @@ describe("background/plain-lookup", () => {
         }
     });
     it("should get definition of Turkish word özgür if Turkish is enabled", async () => {
-        await enableLanguages(["Turkish"], false, false);
+        await simpleEnableLanguages(["Turkish"]);
         const result = await utils.send("look up plain", {
             w: "özgür",
         });
@@ -354,7 +361,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of Arabic word حر if Arabic is enabled", async () => {
-        await enableLanguages(["Arabic"], false, false);
+        await simpleEnableLanguages(["Arabic"]);
         const result = await utils.send("look up plain", {
             w: "حر",
         });
@@ -369,7 +376,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of Dutch word fiets if Dutch is enabled", async () => {
-        await enableLanguages(["Dutch"], false, false);
+        await simpleEnableLanguages(["Dutch"]);
         const result = await utils.send("look up plain", {
             w: "fiets",
             detectedLangInContext: "nl",
@@ -381,7 +388,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of Greek word κόσμος if Greek is enabled", async () => {
-        await enableLanguages(["Greek"], false, false);
+        await simpleEnableLanguages(["Greek"]);
         const result = await utils.send("look up plain", {
             w: "κόσμος",
             detectedLangInContext: "el",
@@ -393,7 +400,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of Hindi word नमस्ते if Hindi is enabled", async () => {
-        await enableLanguages(["Hindi"], false, false);
+        await simpleEnableLanguages(["Hindi"]);
         const result = await utils.send("look up plain", {
             w: "नमस्ते",
         });
@@ -404,7 +411,7 @@ describe("background/plain-lookup", () => {
     });
 
     it("should get definition of Persian word سلام if Persian is enabled", async () => {
-        await enableLanguages(["Persian"], false, false);
+        await simpleEnableLanguages(["Persian"]);
         const result = await utils.send("look up plain", {
             w: "سلام",
             detectedLangInContext: "fa",
@@ -415,7 +422,7 @@ describe("background/plain-lookup", () => {
         expect(result[0]._source).to.equal("wiktionary");
     });
     it("should get accented English word when detected language is en and if English is enabled", async () => {
-        await enableLanguages([], true, false);
+        await simpleEnableLanguages(["English"]);
         const result = await utils.send("look up plain", {
             w: "café",
         });
@@ -457,7 +464,7 @@ describe("background/plain-lookup", () => {
         expect(result4._source).to.equal("wiktionary");
     });
     it("should get accented French word when detected language is fr and if French is enabled", async () => {
-        await enableLanguages(["French"], true, false);
+        await simpleEnableLanguages(["French"], true, false);
         const result = await utils.send("look up plain", {
             w: "café",
             detectedLangInContext: "fr",
@@ -468,7 +475,7 @@ describe("background/plain-lookup", () => {
         expect(result[0]._source).to.equal("wiktionary");
     });
     it("should get English threeven from wiktionary", async () => {
-        await enableLanguages([], true, false);
+        await simpleEnableLanguages(["English"]);
         const result = await utils.send("look up plain", {
             w: "threeven",
         });
@@ -478,7 +485,7 @@ describe("background/plain-lookup", () => {
         expect(result[0]._source).to.equal("wiktionary");
     });
     it("should get definition of Filipino tunog from wiktionary if Filipino is enabled", async () => {
-        await enableLanguages(["Filipino"], false, false);
+        await simpleEnableLanguages(["Filipino"]);
         const result = await utils.send("look up plain", {
             w: "tunog",
         });
@@ -487,7 +494,7 @@ describe("background/plain-lookup", () => {
         expect(result[0]._source).to.equal("wiktionary");
     });
     it("should get definition of Malay milik from wiktionary if Malay is enabled", async () => {
-        await enableLanguages(["Malay"], false, false);
+        await simpleEnableLanguages(["Malay"]);
         const result = await utils.send("look up plain", {
             w: "milik",
         });
@@ -498,7 +505,7 @@ describe("background/plain-lookup", () => {
 });
 describe("background/check words to ignore in plain lookup", () => {
     it("should ignore single letters and words with punctuation", async () => {
-        await enableLanguages(["Swedish"], true, true);
+        await simpleEnableLanguages(["Swedish", "English", "Chinese"]);
         const wordsToIgnore = [
             "I",
             "co--operate",
@@ -519,7 +526,7 @@ describe("background/check words to ignore in plain lookup", () => {
         }
     });
     it("should accept words with at most one hyphen in the middle or strip punctuation at the end or phrase", async () => {
-        await enableLanguages(["Swedish", "Japanese", "Ukrainian", "Thai"], true, true);
+        await simpleEnableLanguages(["Swedish", "Japanese", "Ukrainian", "Thai", "Chinese", "English"]);
         const wordsToAccept = [
             { word: "co-operate", expected: "co-operate" },
             { word: "wrap up", expected: "wrap up" },
@@ -550,7 +557,7 @@ describe("background/check words to ignore in plain lookup", () => {
 });
 describe("background/plain-lookup language filtering with detectedLangInContext", () => {
     it("should get both French and English definition when detected lang is fr and English is enabled", async () => {
-        await enableLanguages(["French"], true, false);
+        await simpleEnableLanguages(["French", "English"]);
         const result = await utils.send("look up plain", {
             w: "date",
             detectedLangInContext: "fr",
@@ -569,7 +576,7 @@ describe("background/plain-lookup language filtering with detectedLangInContext"
     });
 
     it("should get only Spanish definition when detected lang is es and English is disabled", async () => {
-        await enableLanguages(["Spanish"], false, false);
+        await simpleEnableLanguages(["Spanish"]);
         const result = await utils.send("look up plain", {
             w: "pie",
             detectedLangInContext: "es",
@@ -585,7 +592,7 @@ describe("background/plain-lookup language filtering with detectedLangInContext"
     });
 
     it("should get Swedish and English definitions when detected lang is sv and English is enabled", async () => {
-        await enableLanguages(["Swedish"], true, false);
+        await simpleEnableLanguages(["Swedish", "English"]);
         const result = await utils.send("look up plain", {
             w: "fart",
             detectedLangInContext: "sv",
@@ -603,7 +610,7 @@ describe("background/plain-lookup language filtering with detectedLangInContext"
     });
 
     it("should get multiple language definitions when no detectedLangInContext is provided", async () => {
-        await enableLanguages(["Spanish"], true, false);
+        await simpleEnableLanguages(["Spanish", "English"]);
         const result = await utils.send("look up plain", {
             w: "pie",
         });

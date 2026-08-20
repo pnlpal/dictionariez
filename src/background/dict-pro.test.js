@@ -13,7 +13,7 @@ const testDict = (name) => {
     };
 };
 
-describe.only("dicts management for pro user", () => {
+describe("dicts management for pro user", () => {
     beforeEach(() => {
         const settingForTest = {};
 
