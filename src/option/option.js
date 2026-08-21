@@ -109,13 +109,14 @@ dictApp.controller("optionCtrl", [
                 // Update local scope settings to reflect changes immediately in UI
                 $scope.setting.enabledLanguages = selected;
 
+                $scope.reloadDictionaries?.();
                 $scope.$apply();
 
                 bootoast.toast({
-                    message: "Language settings saved.",
+                    message: "Language settings and dictionaries updated.",
                     type: "success",
                     position: "top",
-                    timeout: 2,
+                    timeout: 3,
                 });
             });
         };

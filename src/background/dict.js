@@ -255,7 +255,7 @@ export default {
     },
 
     async syncDictsForLanguages(languages, notSyncToCloud) {
-        const suggestedDicts = getDictionariesForLanguages(languages);
+        const suggestedDicts = getDictionariesForLanguages(languages?.length > 0 ? languages : ["English"]);
         const suggestedDictNames = new Set(suggestedDicts.map((d) => d.dictName));
         const added = [];
         const removed = [];

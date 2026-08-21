@@ -22,8 +22,6 @@ import "datatables.net-buttons/js/buttons.html5.js";
 import "datatables.net-rowreorder-bs4";
 import "datatables.net-rowreorder-bs4/css/rowReorder.bootstrap4.css";
 
-import detectLanguage from "../content/detect-language.js";
-
 const confirmDelete = (content, twice) =>
     new Promise((resolve) => {
         $("#confirm-delete-modal")
@@ -58,9 +56,6 @@ const buildActionIcon = (name) => {
     const iEl = `<i class='fa ${faIcon}' aria-hidden='true' data-action='${name}' title='${name}'></i>`;
     return `<a href='' class='action-button ${cls}' data-action='${name}' title='${name}'> ${iEl} </a>`;
 };
-
-const buildActionButton = ({ name, cls = "" }) =>
-    `<a href='' class='action-button btn btn-xs ${cls}' data-action='${name}'> ${name} </a>`;
 
 const bravo = () =>
     bootoast.toast({
@@ -431,4 +426,19 @@ export default ($scope) => {
             $(`.nav li a[href='#${to}']`)[0]?.click();
         }
     });
+
+    // Return a function to reload the dictionary table
+    const reloadDictionaries = async () => {
+        const existingTable = $("#table-dictionary").DataTable();
+        if (existingTable) {
+            const { allDicts, syncDictsError } = await utils.send("get-all-dicts");
+            window.allDicts = allDicts;
+            $scope.syncDictsError = syncDictsError;
+            $scope.$apply();
+            existingTable.clear();
+            existingTable.rows.add(allDicts);
+            existingTable.draw();
+        }
+    };
+    $scope.reloadDictionaries = reloadDictionaries;
 };
