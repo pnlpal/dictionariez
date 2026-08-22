@@ -83,6 +83,11 @@ function preinject(res) {
     }
 
     require("./inject-in-dicts.js").default(res);
+
+    // Inject ad blocker (skip for dynamic dicts like ChatGPT, Gemini, etc.)
+    if (res?.dict && !isDynamicDict(res.dict)) {
+        require("./ad-blocker.js").default();
+    }
 }
 
 chrome.runtime.sendMessage(
