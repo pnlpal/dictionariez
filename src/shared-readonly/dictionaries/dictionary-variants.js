@@ -71,7 +71,7 @@ export const DICTIONARY_VARIANTS = {
     },
   },
   "Dict.com": {
-    css: ".navbar, .menu { display: none; } body { margin-top: 50px !important; }",
+    css: "nav, .navbar, .menu { display: none; !important; }",
     urlTemplate: "https://www.dict.com/{pair}/<word>",
     languages: {
       Spanish: { pair: "spanish-english" },
