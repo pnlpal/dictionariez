@@ -33,12 +33,12 @@ export default [
     windowUrl:
       "https://www.oxfordlearnersdictionaries.com/search/english/?q=<word>",
     ttsHelperSelector: "ul.examples>li",
-    css: "body .mainsearch { display: none; }",
+    css: "body .mainsearch, #ox-header { display: none; }",
   },
   {
     dictName: "Cambridge English",
     windowUrl: "https://dictionary.cambridge.org/dictionary/english/<word>",
-    css: "#header, #ad_topslot_a {display: none;} div.cc { margin-top: -75px !important; }",
+    css: "#header, #ad_topslot_a {display: none;} div.cc { margin-top: -125px !important; }",
     ttsHelperSelector: ".def-body .examp",
   },
 ].filter(Boolean); // Filter out null entries if a variant doesn't support the language
