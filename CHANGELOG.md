@@ -1,3 +1,8 @@
+# v7.6.0 Aug 23, 2026
+- Default dictionary list now automatically adjusts based on user's selected languages.
+- Added built-in ad blocker for dictionary pages to remove common ads and improve readability.
+- Added automatic dark mode support for dictionary pages that follows system preference.
+
 # v7.5.1 Jul 13, 2026 
 - Fixed word context when exporting to Anki. 
 - Fixed bing dict margin top. 
