@@ -7,6 +7,7 @@
             :root {
                 color-scheme: light dark;
                 --text-color: #111;
+                --text-muted: #666;
                 --bg-gradient: linear-gradient(135deg, #fefefe, #eef3ff 40%, #f4f4ff 70%);
                 --highlight-bg: rgba(93, 95, 238, 0.08);
                 --highlight-border: #5d5fee;
@@ -17,11 +18,14 @@
                 --btn-primary-bg: #5d5fee;
                 --btn-primary-text: #fff;
                 --divider-color: rgba(0, 0, 0, 0.08);
+                --puffins-gradient: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffcc02 100%);
+                --step-bg: rgba(0, 0, 0, 0.03);
             }
 
             @media (prefers-color-scheme: dark) {
                 :root {
                     --text-color: #e7e7e7;
+                    --text-muted: #aaa;
                     --bg-gradient: linear-gradient(135deg, #151515, #1f2431 50%, #141a24 90%);
                     --highlight-bg: rgba(93, 95, 238, 0.15);
                     --card-bg: rgba(30, 35, 45, 0.94);
@@ -29,18 +33,8 @@
                     --card-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
                     --btn-ghost-border: rgba(255, 255, 255, 0.2);
                     --divider-color: rgba(255, 255, 255, 0.1);
+                    --step-bg: rgba(255, 255, 255, 0.05);
                 }
-            }
-
-            body.dark-theme {
-                --text-color: #e7e7e7;
-                --bg-gradient: linear-gradient(135deg, #151515, #1f2431 50%, #141a24 90%);
-                --highlight-bg: rgba(93, 95, 238, 0.15);
-                --card-bg: rgba(30, 35, 45, 0.94);
-                --card-border: rgba(255, 255, 255, 0.1);
-                --card-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
-                --btn-ghost-border: rgba(255, 255, 255, 0.2);
-                --divider-color: rgba(255, 255, 255, 0.1);
             }
 
             body {
@@ -56,68 +50,278 @@
             }
 
             main {
-                max-width: 1200px;
+                max-width: 800px;
                 margin: 0 auto;
-                padding: 48px 24px 96px;
+                padding: 40px 24px 80px;
                 font-size: 1rem;
                 line-height: 1.6;
             }
 
-            header.hero {
+            /* Version Update Banner */
+            .version-banner {
+                background: var(--highlight-bg);
+                border: 1px solid var(--highlight-border);
+                border-radius: 10px;
+                padding: 12px 16px;
+                margin-bottom: 32px;
                 display: flex;
-                flex-direction: column;
-                gap: 16px;
-                margin-bottom: 48px;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap;
+                font-size: 0.95rem;
             }
 
-            header.hero h1 {
-                font-size: clamp(2rem, 4vw, 3rem);
-                margin: 0;
+            .version-banner .badge {
+                background: var(--btn-primary-bg);
+                color: var(--btn-primary-text);
+                padding: 3px 8px;
+                border-radius: 5px;
+                font-size: 0.8rem;
+                font-weight: 600;
             }
 
-            header.hero p {
-                font-size: 1.25rem;
+            .version-banner a {
+                color: var(--highlight-border);
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+            .version-banner a:hover {
+                text-decoration: underline;
+            }
+
+            /* Puffins Hero Section */
+            .puffins-hero {
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 24px;
+                padding: 48px 40px;
+                box-shadow: var(--card-shadow);
+                text-align: center;
+                margin-bottom: 32px;
+            }
+
+            .puffins-hero .icon {
+                font-size: 4rem;
+                margin-bottom: 12px;
+            }
+
+            .puffins-hero h1 {
+                font-size: 2rem;
+                margin: 0 0 4px;
+                background: var(--puffins-gradient);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .puffins-hero .tagline {
+                font-size: 1.1rem;
+                color: var(--text-muted);
+                margin: 0 0 20px;
+            }
+
+            .puffins-hero .intro {
+                font-size: 1.05rem;
+                max-width: 500px;
+                margin: 0 auto 28px;
                 line-height: 1.6;
             }
 
-            .hero-highlight {
-                padding: 12px 16px;
-                border-left: 4px solid var(--highlight-border);
-                background: var(--highlight-bg);
-                border-radius: 6px;
-                font-size: 1.25rem;
+            .beta-badge {
+                display: inline-block;
+                background: var(--puffins-gradient);
+                color: #fff;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                margin-bottom: 20px;
             }
 
-            .support-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            .beta-perks {
+                display: flex;
+                justify-content: center;
                 gap: 24px;
-                margin-bottom: 64px;
+                flex-wrap: wrap;
+                margin-bottom: 28px;
+                font-size: 0.95rem;
             }
 
-            .support-card {
+            .beta-perks span {
+                color: var(--text-muted);
+            }
+
+            /* Steps */
+            .steps {
+                background: var(--step-bg);
+                border-radius: 16px;
+                padding: 24px;
+                margin: 28px 0;
+                text-align: left;
+            }
+
+            .steps h3 {
+                margin: 0 0 16px;
+                font-size: 1rem;
+                text-align: center;
+                color: var(--text-muted);
+            }
+
+            .step {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .step:last-child {
+                margin-bottom: 0;
+            }
+
+            .step-num {
+                background: var(--puffins-gradient);
+                color: #fff;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                font-size: 0.9rem;
+                flex-shrink: 0;
+            }
+
+            .step-content {
+                flex: 1;
+            }
+
+            .step-content strong {
+                display: block;
+                margin-bottom: 2px;
+            }
+
+            .step-content small {
+                color: var(--text-muted);
+                font-size: 0.9rem;
+            }
+
+            .puffins-cta {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                background: var(--puffins-gradient);
+                color: #fff;
+                padding: 14px 28px;
+                border-radius: 999px;
+                text-decoration: none;
+                font-weight: 700;
+                font-size: 1.05rem;
+                transition:
+                    transform 0.15s ease,
+                    box-shadow 0.15s ease;
+                box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+            }
+
+            .puffins-cta:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 25px rgba(255, 107, 53, 0.4);
+            }
+
+            /* Features Grid */
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 12px;
+                margin-bottom: 40px;
+            }
+
+            .feature-item {
                 background: var(--card-bg);
                 border: 1px solid var(--card-border);
-                border-radius: 18px;
-                padding: 28px;
-                box-shadow: var(--card-shadow);
-                display: flex;
-                flex-direction: column;
+                border-radius: 14px;
+                padding: 16px 12px;
+                text-align: center;
+            }
+
+            .feature-item .emoji {
+                font-size: 1.6rem;
+                margin-bottom: 6px;
+            }
+
+            .feature-item h4 {
+                margin: 0 0 2px;
+                font-size: 0.85rem;
+                font-weight: 600;
+            }
+
+            .feature-item p {
+                margin: 0;
+                font-size: 0.75rem;
+                color: var(--text-muted);
+            }
+
+            /* Screenshots Gallery */
+            .screenshots {
+                margin-bottom: 40px;
+                margin-left: calc(-50vw + 50%);
+                margin-right: calc(-50vw + 50%);
+                padding: 0 24px;
+                width: 100vw;
+                box-sizing: border-box;
+            }
+
+            .screenshots h2 {
+                font-size: 1.1rem;
+                text-align: center;
+                margin: 0 0 16px;
+                color: var(--text-muted);
+            }
+
+            .screenshots-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
                 gap: 16px;
+                max-width: 1200px;
+                margin: 0 auto;
             }
 
-            .support-card h3 {
-                margin: 0;
-                font-size: 1.4rem;
+            .screenshots-grid img {
+                width: 100%;
+                border-radius: 12px;
+                border: 1px solid var(--card-border);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                transition: transform 0.2s ease;
             }
 
-            .card-icon {
-                font-size: 2rem;
+            .screenshots-grid img:hover {
+                transform: scale(1.03);
             }
 
-            .support-card p {
-                margin: 0;
-                line-height: 1.5;
+            @media (max-width: 600px) {
+                .screenshots-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            /* Support Section */
+            .support-section {
+                border-top: 1px solid var(--divider-color);
+                padding-top: 28px;
+                margin-bottom: 28px;
+            }
+
+            .support-section h2 {
+                font-size: 1.1rem;
+                margin: 0 0 14px;
+            }
+
+            .support-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: center;
             }
 
             .btn-primary,
@@ -125,11 +329,12 @@
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                gap: 8px;
-                padding: 12px 18px;
+                gap: 6px;
+                padding: 10px 14px;
                 border-radius: 999px;
                 text-decoration: none;
                 font-weight: 600;
+                font-size: 0.9rem;
                 transition: transform 0.15s ease;
             }
 
@@ -150,43 +355,53 @@
             }
 
             .share-wrapper {
-                padding: 16px 0px;
+                display: inline-block;
             }
 
+            /* Community */
             .community {
                 border-top: 1px solid var(--divider-color);
-                padding-top: 32px;
-                display: grid;
-                gap: 12px;
+                padding-top: 24px;
+            }
+
+            .community strong {
+                font-size: 0.95rem;
             }
 
             .community-links {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 12px;
+                gap: 14px;
+                margin-top: 10px;
             }
 
             .community-links a {
                 color: inherit;
                 text-decoration: none;
                 border-bottom: 1px dotted currentColor;
-            }
-
-            .donation {
-                margin-top: 24px;
-                display: flex;
-                align-items: center;
-                gap: 16px;
-                flex-wrap: wrap;
+                font-size: 0.9rem;
             }
 
             @media (max-width: 600px) {
                 main {
-                    padding: 32px 20px 64px;
+                    padding: 28px 18px 60px;
                 }
 
-                .support-card {
-                    padding: 22px;
+                .puffins-hero {
+                    padding: 32px 20px;
+                }
+
+                .puffins-hero h1 {
+                    font-size: 1.6rem;
+                }
+
+                .features-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .beta-perks {
+                    flex-direction: column;
+                    gap: 8px;
                 }
             }
         </style>
@@ -194,107 +409,136 @@
 
     <body>
         <main>
-            <header class="hero">
-                <h1>Thank you for using <span class="productName"></span></h1>
-                <p style="font-size: 1.15rem; color: #5d5fee; font-weight: 600">
-                    <a
-                        href="https://pnl.dev/topic/1134/dictionariez-v7-5-0-chat-mode-for-ai-definitions"
-                        target="_blank"
-                        style="text-decoration: none; color: inherit"
+            <!-- Version Update Banner -->
+            <div class="version-banner">
+                <strong class="productName"></strong>
+                <span class="badge" id="app-version"></span>
+                <span>
+                    New milestone: Smart default dicts, dark mode, ad blocker →
+                    <a href="https://pnl.dev/topic/1139/dictionariez-v8-0-0-smarter-cleaner-darker" target="_blank"
+                        >Read changelog</a
                     >
-                        🚀 V7.5.0: turns AI definition into a simple, friendly chat for every word you learn &rarr;
-                    </a>
-                </p>
-                <p>
-                    I am River, the solo dev behind the curtain. I wrangle the code, squash the bugs, and high-five
-                    myself when it works. If <span class="productName"></span> helps you learn faster than you forget,
-                    please take a second to keep this indie ship afloat.
-                </p>
-                <div class="hero-highlight">Choose an action below to instantly refill my HP and Mana.</div>
-            </header>
+                </span>
+            </div>
 
-            <section class="support-grid">
-                <article class="support-card">
-                    <div class="card-icon">⭐</div>
-                    <h3>1. Star it on GitHub</h3>
-                    <p>
-                        Stars are like XP for this repo. They level up its visibility and signal to other players that
-                        <span class="productName"></span> is a legendary item worth equipping.
-                    </p>
+            <!-- Puffins Hero -->
+            <section class="puffins-hero">
+                <div class="icon">🐧</div>
+                <h1>Puffins Early Access</h1>
+                <p class="tagline">Dictionariez for Android</p>
+
+                <span class="beta-badge">🎯 Limited Beta — Be one of the first 12</span>
+
+                <p class="intro">
+                    Take the same powerful dictionary experience to your Android phone. Join the closed beta, shape the
+                    app with your feedback, and get it free during testing.
+                </p>
+
+                <div class="beta-perks">
+                    <span>✓ Full dictionary experience</span>
+                    <span>✓ Shape the app</span>
+                    <span>✓ Free during beta</span>
+                </div>
+
+                <div class="steps">
+                    <h3>How to get early access</h3>
+                    <div class="step">
+                        <span class="step-num">1</span>
+                        <div class="step-content">
+                            <strong>Join the testers group</strong>
+                            <small>Click the button below to join the Google Group</small>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">2</span>
+                        <div class="step-content">
+                            <strong>Download from Play Store</strong>
+                            <small>Access unlocks automatically after joining — check the group for the link</small>
+                        </div>
+                    </div>
+                </div>
+
+                <a
+                    class="puffins-cta"
+                    href="https://groups.google.com/g/puffins-development"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    🐧 Join the Beta
+                </a>
+            </section>
+
+            <!-- Features -->
+            <section class="features-grid">
+                <div class="feature-item">
+                    <div class="emoji">📖</div>
+                    <h4>1000+ Dicts</h4>
+                    <p>Same collection</p>
+                </div>
+                <div class="feature-item">
+                    <div class="emoji">🌍</div>
+                    <h4>20+ Languages</h4>
+                    <p>Multi-language</p>
+                </div>
+                <div class="feature-item">
+                    <div class="emoji">🤖</div>
+                    <h4>AI Definitions</h4>
+                    <p>With AI-powered explanations</p>
+                </div>
+                <div class="feature-item">
+                    <div class="emoji">🌙</div>
+                    <h4>Dark Mode</h4>
+                    <p>Dark mode support</p>
+                </div>
+            </section>
+
+            <!-- Screenshots -->
+            <section class="screenshots">
+                <h2>Screenshots</h2>
+                <div class="screenshots-grid">
+                    <img src="https://puffins.pnl.dev/assets/1.jpg" alt="Puffins screenshot 1" />
+                    <img src="https://puffins.pnl.dev/assets/2.jpg" alt="Puffins screenshot 2" />
+                    <img src="https://puffins.pnl.dev/assets/3.jpg" alt="Puffins screenshot 3" />
+                    <img src="https://puffins.pnl.dev/assets/4.jpg" alt="Puffins screenshot 4" />
+                </div>
+            </section>
+
+            <!-- Support Section -->
+            <section class="support-section">
+                <h2>Support Dictionariez</h2>
+                <div class="support-row">
                     <a
                         class="btn-primary link-github"
                         href="https://github.com/pnlpal/dictionariez"
                         target="_blank"
                         rel="noreferrer"
                     >
+                        ⭐ Star on GitHub
                     </a>
-                </article>
-
-                <article class="support-card">
-                    <div class="card-icon">📣</div>
-                    <h3>2. Share it forward</h3>
-                    <p>
-                        A single post acts as a powerful AOE buff, granting thousands of word players faster lookups and
-                        better TTS. Cast it in your favorite guild or share the loot with a party member.
-                    </p>
+                    <a class="btn-ghost" href="https://pnl.dev/pro" target="_blank" rel="noreferrer"> 🚀 PNL Pro </a>
                     <div class="share-wrapper">
                         <div
                             id="i-share"
-                            data-share-networks="Twitter,Pinterest,Facebook,Reddit,Linkedin,Tumblr,mailto,Evernote,Wechat,Douban"
+                            data-share-networks="Twitter,Facebook,Reddit,Linkedin"
                             data-share-url="https://dictionariez.pnl.dev"
-                            data-share-title="Dictionariez: a customizable browser extension for instant word lookup, sentence translation, realistic text-to-speech, and vocabulary building."
+                            data-share-title="Dictionariez: instant word lookup, TTS, and vocabulary building."
                             class="need-share-panel need-share-button"
                         ></div>
                     </div>
-                </article>
-
-                <article class="support-card">
-                    <div class="card-icon">🚀</div>
-                    <h3>3. Subscribe to PNL Pro</h3>
-                    <p>
-                        PNL Pro applies a permanent buff to your learning stats. It unlocks advanced skill trees across
-                        my indie tools and funds the dev server.
-                    </p>
-                    <a class="btn-ghost" href="https://pnl.dev/pro" target="_blank" rel="noreferrer">
-                        Explore PNL Pro
-                    </a>
-                    <a id="launch-deal-banner" href="https://pnl.dev/pro" target="_blank">
-                        🎉 <strong class="coupon-name"></strong>: <span class="percent-off"></span>% OFF!
-                        <div class="banner-time">Limited time only</div>
-                    </a>
-                </article>
+                </div>
             </section>
 
+            <!-- Community -->
             <section class="community">
-                <strong>Let's keep the conversation going</strong>
-                <p>
-                    Feature ideas, bug reports, or just a quick hello, everything lands directly in my inbox. Join the
-                    Programming N' Language community or reach out through the channels below.
-                </p>
+                <strong>Join the community</strong>
                 <div class="community-links">
-                    <a href="https://pnl.dev" target="_blank" rel="noreferrer">Community site</a>
+                    <a href="https://pnl.dev" target="_blank" rel="noreferrer">PNL Community</a>
                     <a href="https://discord.gg/sazRac4kSa" target="_blank" rel="noreferrer">Discord</a>
                     <a href="https://bsky.app/profile/pnlcommunity.bsky.social" target="_blank" rel="noreferrer"
                         >BlueSky</a
                     >
                     <a href="https://t.me/programmingandlanguage" target="_blank" rel="noreferrer">Telegram</a>
-                    <a href="options.html" target="_blank" rel="noreferrer">Open settings</a>
-                </div>
-
-                <div class="donation">
-                    <span>If you prefer direct support:</span>
-                    <a
-                        href="https://www.buymeacoffee.com/riveryoung"
-                        class="buymeacoffee"
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        <img
-                            src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
-                            height="40"
-                            alt="Buy Me A Coffee"
-                        />
-                    </a>
+                    <a href="options.html">Settings</a>
                 </div>
             </section>
         </main>

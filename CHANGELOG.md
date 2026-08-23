@@ -1,4 +1,4 @@
-# v7.6.0 Aug 23, 2026
+# v8.0.0 Aug 23, 2026
 - Default dictionary list now automatically adjusts based on user's selected languages.
 - Added built-in ad blocker for dictionary pages to remove common ads and improve readability.
 - Added automatic dark mode support for dictionary pages that follows system preference.
