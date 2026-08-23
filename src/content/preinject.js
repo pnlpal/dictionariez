@@ -74,7 +74,7 @@ function preinject(res) {
         }
 
         // Only inject dark mode CSS if the site doesn't already have dark mode and the dictionary is not dynamic (like Mistral, Gemini, ChatGPT, Cpationz, etc.)
-        if (!siteHasDarkMode() && !isDynamicDict(res.dict)) {
+        if (!siteHasDarkMode() && !isDynamicDict(res.dict) && !res.dict.noAutoDarkMode) {
             const darkModeStyle = document.createElement("style");
             darkModeStyle.id = "dictionariez-dark-mode";
             darkModeStyle.innerHTML = `@media (prefers-color-scheme: dark) { ${DARK_MODE_CSS} }`;
@@ -85,7 +85,7 @@ function preinject(res) {
     require("./inject-in-dicts.js").default(res);
 
     // Inject ad blocker (skip for dynamic dicts like ChatGPT, Gemini, etc.)
-    if (res?.dict && !isDynamicDict(res.dict)) {
+    if (res?.dict && !isDynamicDict(res.dict) && !res.dict.noAdBlocker) {
         require("./ad-blocker.js").default();
     }
 }
