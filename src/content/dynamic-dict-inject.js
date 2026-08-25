@@ -1,6 +1,14 @@
 import utils from "utils";
 
-async function doQuery(w, sentence, languagePrompt, dict, isHelpMeRefine) {
+const replacePromptPlaceholders = ({ template, word, sentence, languagePrompt, aiResponseLanguage }) => {
+    return (template || "")
+        .replaceAll("<word>", word)
+        .replaceAll("<sentence>", sentence || "")
+        .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "")
+        .replaceAll("<aiResponseLanguage>", aiResponseLanguage || "");
+};
+
+async function doQuery(w, sentence, languagePrompt, dict, isHelpMeRefine, aiResponseLanguage) {
     if (!w || !dict.inputSelector) return;
     if (w === localStorage.lastWord && (sentence || "") === localStorage.lastSentence) {
         return;
@@ -21,17 +29,36 @@ async function doQuery(w, sentence, languagePrompt, dict, isHelpMeRefine) {
         (couldBeAIDict ? 'Translate this text, keep it simple, clear and natural: "<word>"' : "<word>");
 
     const prompt = isHelpMeRefine
-        ? helpMeRefinePrompt.replaceAll("<word>", w)
+        ? replacePromptPlaceholders({
+              template: helpMeRefinePrompt,
+              word: w,
+              sentence,
+              languagePrompt,
+              aiResponseLanguage,
+          })
         : utils.isSentence(w)
-          ? translationPrompt.replaceAll("<word>", w)
+          ? replacePromptPlaceholders({
+                template: translationPrompt,
+                word: w,
+                sentence,
+                languagePrompt,
+                aiResponseLanguage,
+            })
           : sentence && (dict.chatgptPromptWithContext || dict.promptWithContext)
-            ? (dict.chatgptPromptWithContext || dict.promptWithContext)
-                  .replaceAll("<word>", w)
-                  .replaceAll("<sentence>", sentence)
-                  .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "")
-            : (dict.chatgptPrompt || dict.prompt || "<word>")
-                  .replaceAll("<word>", w)
-                  .replace("<language>", languagePrompt ? ` in ${languagePrompt}` : "");
+            ? replacePromptPlaceholders({
+                  template: dict.chatgptPromptWithContext || dict.promptWithContext,
+                  word: w,
+                  sentence,
+                  languagePrompt,
+                  aiResponseLanguage,
+              })
+            : replacePromptPlaceholders({
+                  template: dict.chatgptPrompt || dict.prompt || "<word>",
+                  word: w,
+                  sentence,
+                  languagePrompt,
+                  aiResponseLanguage,
+              });
 
     const textarea = document.querySelector(dict.inputSelector);
     const isRichEditor = dict.isRichEditor || textarea.contentEditable === "true";
@@ -98,13 +125,20 @@ async function fixQueryingOnEnterForChatGPT(dict) {
     }
 }
 
-export async function initOnLoadDynamicDict({ word, sentence, languagePrompt, dict, isHelpMeRefine }) {
+export async function initOnLoadDynamicDict({
+    word,
+    sentence,
+    languagePrompt,
+    aiResponseLanguage,
+    dict,
+    isHelpMeRefine,
+}) {
     if (dict.windowUrl.includes(location.origin)) {
         if (dict && word) {
             console.log(
                 `[Init Dynamic Dict] word: ${word}, sentence: ${sentence}, language: ${languagePrompt}, isHelpMeRefine: ${isHelpMeRefine}`,
             );
-            doQuery(word, sentence, languagePrompt, dict, isHelpMeRefine);
+            doQuery(word, sentence, languagePrompt, dict, isHelpMeRefine, aiResponseLanguage);
         }
 
         fixQueryingOnEnterForChatGPT(dict);
@@ -113,7 +147,14 @@ export async function initOnLoadDynamicDict({ word, sentence, languagePrompt, di
             console.log(
                 `[Querying] word: ${request.text}, sentence: ${request.sentence}, language: ${request.languagePrompt}`,
             );
-            doQuery(request.text, request.sentence, request.languagePrompt, dict, request.isHelpMeRefine);
+            doQuery(
+                request.text,
+                request.sentence,
+                request.languagePrompt,
+                dict,
+                request.isHelpMeRefine,
+                request.aiResponseLanguage || aiResponseLanguage,
+            );
         });
 
         window.addEventListener("message", (event) => {
@@ -127,6 +168,7 @@ export async function initOnLoadDynamicDict({ word, sentence, languagePrompt, di
                     event.data.languagePrompt,
                     dict,
                     event.data.isHelpMeRefine,
+                    event.data.aiResponseLanguage || aiResponseLanguage,
                 );
             }
         });

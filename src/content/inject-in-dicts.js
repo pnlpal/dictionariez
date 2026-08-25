@@ -50,6 +50,7 @@ export default function injectInDicts(res) {
             word: res.word,
             sentence: res.sentence,
             languagePrompt: res.languagePrompt,
+            aiResponseLanguage: res.aiResponseLanguage,
             dict: res.dict,
             isHelpMeRefine: res.isHelpMeRefine,
         });
@@ -61,6 +62,7 @@ export default function injectInDicts(res) {
             word: res.word,
             sentence: res.sentence,
             languagePrompt: res.languagePrompt,
+            aiResponseLanguage: res.aiResponseLanguage,
             dict: res.dict,
             isHelpMeRefine: res.isHelpMeRefine,
         });

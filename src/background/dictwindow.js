@@ -199,7 +199,13 @@ class DictWindow {
                 this.dictName = dictName;
                 result = dict.query(text, this.dictName || setting.getValue("dictionary"));
                 url = result?.windowUrl;
-                this.sendMessage({ type: "querying", text, sentence, languagePrompt });
+                this.sendMessage({
+                    type: "querying",
+                    text,
+                    sentence,
+                    languagePrompt,
+                    aiResponseLanguage: setting.getValue("aiResponseLanguage"),
+                });
             }
         } else {
             if (this.dictName !== dictName && dictName) {
@@ -628,6 +634,7 @@ export default {
                     sentence: this.mainDictWindow().sentence,
                     detectedLangInContext: this.mainDictWindow().detectedLangInContext,
                     languagePrompt: getLanguageName(this.mainDictWindow().detectedLangInContext),
+                    aiResponseLanguage: setting.getValue("aiResponseLanguage"),
                     isHelpMeRefine: this.mainDictWindow().isHelpMeRefine,
                 };
             }
@@ -646,6 +653,7 @@ export default {
                     sentence: win.sentence,
                     detectedLangInContext: win.detectedLangInContext,
                     languagePrompt: getLanguageName(win.detectedLangInContext),
+                    aiResponseLanguage: setting.getValue("aiResponseLanguage"),
                     isHelpMeRefine: win.isHelpMeRefine,
                 };
             } else if (utils.isMobile()) {
