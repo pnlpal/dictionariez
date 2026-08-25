@@ -73,42 +73,67 @@ async function doQuery(w, sentence, languagePrompt, dict, isHelpMeRefine, aiResp
     const event = new Event("input", { bubbles: true });
     textarea.dispatchEvent(event);
 
-    const triggerClick = (counter = 0) => {
-        if (!dict.submitButtonSelector) return;
-        const btn = document.querySelector(dict.submitButtonSelector);
-        if (btn) {
-            btn.removeAttribute("disabled");
-            btn.click();
-        } else if (counter < 2) {
-            setTimeout(() => triggerClick(counter + 1), 500);
-        }
+    const getSubmitButton = () => {
+        if (!dict.submitButtonSelector) return null;
+        return document.querySelector(dict.submitButtonSelector);
     };
 
-    const triggerMoreClicks = async () => {
-        let maxLoops = 5;
-        while (maxLoops--) {
-            await utils.promisifiedTimeout(500);
+    const isStopButton = (btn) => {
+        if (!btn) return false;
+        const attrs = [btn.getAttribute("data-testid"), btn.getAttribute("aria-label"), btn.getAttribute("title")]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+        return /stop|cancel|abort|interrupt|停止/.test(attrs);
+    };
 
+    const clickSubmitButton = (btn) => {
+        if (!btn) return;
+        btn.removeAttribute("disabled");
+        btn.click();
+    };
+
+    const submitPrompt = async () => {
+        const isLikelyAIChat =
+            dict.doubleClickForMore ||
+            dict.windowUrl.includes("gemini") ||
+            dict.windowUrl.includes("claude") ||
+            dict.windowUrl.includes("chatgpt");
+
+        // First click can be "stop" if a previous response is still running.
+        let btn = getSubmitButton();
+        if (!btn) {
+            await utils.promisifiedTimeout(500);
+            btn = getSubmitButton();
+        }
+
+        if (!btn) return;
+
+        if (isLikelyAIChat && isStopButton(btn)) {
+            clickSubmitButton(btn);
+            // Wait briefly for UI to switch back to a "send" state.
+            await utils.promisifiedTimeout(500);
+            btn = getSubmitButton();
+        }
+
+        if (!btn || (isLikelyAIChat && isStopButton(btn))) {
+            return;
+        }
+
+        clickSubmitButton(btn);
+
+        if (isLikelyAIChat) {
+            // Guarded retry: only retry when nothing started (button still looks like send) and input is unchanged.
+            await utils.promisifiedTimeout(450);
             const inputValue = isRichEditor ? textarea.innerHTML : textarea.value;
-            if (inputValue.includes(prompt)) {
-                triggerClick();
-            } else {
-                break;
+            const nextBtn = getSubmitButton();
+            if (inputValue.includes(prompt) && nextBtn && !isStopButton(nextBtn)) {
+                clickSubmitButton(nextBtn);
             }
         }
     };
 
-    triggerClick();
-
-    // For chatgpt, gemini and claude, when the previous query is still responding, it needs double(or even more) clicks to stop the previous query first then send the request.
-    if (
-        dict.doubleClickForMore ||
-        dict.windowUrl.includes("gemini") ||
-        dict.windowUrl.includes("claude") ||
-        dict.windowUrl.includes("chatgpt")
-    ) {
-        triggerMoreClicks();
-    }
+    await submitPrompt();
 }
 
 async function fixQueryingOnEnterForChatGPT(dict) {
