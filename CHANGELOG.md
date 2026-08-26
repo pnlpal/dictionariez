@@ -1,3 +1,7 @@
+# v8.0.1 Aug 26, 2026
+- Refined handling of stop-response button for AI dicts.
+- Added `aiResponseLanguage` support in prompt. 
+
 # v8.0.0 Aug 23, 2026
 - Default dictionary list now automatically adjusts based on user's selected languages.
 - Added built-in ad blocker for dictionary pages to remove common ads and improve readability.

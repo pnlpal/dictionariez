@@ -447,13 +447,13 @@ export default {
                 // 'look up' can be triggered by the context menu or the hotkey or any webpages
                 let result;
                 const fromSidePanel = sender.id && !sender.tab;
-                console.log("[dictWindow] look up: ", {
-                    w,
-                    detectedLangInContext,
-                    sentence,
-                    dictName,
-                    isInEditable,
-                });
+                // console.log("[dictWindow] look up: ", {
+                //     w,
+                //     detectedLangInContext,
+                //     sentence,
+                //     dictName,
+                //     isInEditable,
+                // });
                 if (means === "mouse" && process.env.PRODUCT !== "SidePal") {
                     if (!setting.getValue("enableMinidict")) {
                         return;
@@ -498,7 +498,7 @@ export default {
             // query message only comes from the dict window.
             let result, targetWin;
             const senderWin = this.getByTab(sender.tab?.id) || this.mainDictWindow();
-            console.log("[dictWindow] query: ", JSON.stringify(request, null, 2));
+            // console.log("[dictWindow] query: ", JSON.stringify(request, null, 2));
 
             let dictName = request.dictName || senderWin.dictName;
             let { w, sentence, detectedLangInContext } = request;
