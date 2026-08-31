@@ -369,7 +369,7 @@ export default {
         }
 
         if (dict.windowUrl) {
-            windowUrl = dict.windowUrl.replace("<word>", word.toLowerCase());
+            windowUrl = dict.windowUrl.replace("<word>", word);
         } else if (dict.chatgptPrompt) {
             ({ windowUrl } = chatgptDefault);
         }
