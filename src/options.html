@@ -522,6 +522,16 @@
 								Disable the lookup item in context menu.
 							</label>
 						</div>
+						<div class="checkbox" ng-if="!setting.disableContextMenu">
+							<label>
+								<input
+									type="checkbox"
+									ng-model="setting.enableMultiDictContextMenu"
+									ng-click="changeKey(!setting.enableMultiDictContextMenu, 'enableMultiDictContextMenu')"
+								/>
+								Show all dictionaries in context menu (hierarchical menu with dictionary options).
+							</label>
+						</div>
 						<div class="checkbox">
 							<label>
 								<input

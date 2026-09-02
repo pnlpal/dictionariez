@@ -26,6 +26,7 @@ export default {
         disableWikipediaCard: false,
         minimalCards: "",
         disableContextMenu: false,
+        enableMultiDictContextMenu: false,
 
         enableSelectionOnMouseMove: true,
         enableSelectionSK1: true,
@@ -94,18 +95,20 @@ export default {
             const settings = request.settings || [{ key: request.key, value: request.value }];
 
             settings.forEach((s) => {
-                if (s.key === "disableContextMenu") {
-                    if (s.value) {
-                        contextMenu.removeLookupItem();
-                    } else {
-                        contextMenu.createLookupItem();
+                if (s.key === "disableContextMenu" || s.key === "enableMultiDictContextMenu") {
+                    if (this.configCache[s.key] !== s.value) {
+                        this.configCache[s.key] = s.value;
                     }
+                    contextMenu.rebuildContextMenu();
                 } else if (s.key === "aiResponseLanguage") {
                     aiLookup.clearCache();
-                }
-
-                if (this.configCache[s.key] !== s.value) {
-                    this.configCache[s.key] = s.value;
+                    if (this.configCache[s.key] !== s.value) {
+                        this.configCache[s.key] = s.value;
+                    }
+                } else {
+                    if (this.configCache[s.key] !== s.value) {
+                        this.configCache[s.key] = s.value;
+                    }
                 }
             });
 

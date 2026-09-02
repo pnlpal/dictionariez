@@ -2,6 +2,7 @@ import message from "./message.js";
 import setting from "./setting.js";
 import storage from "./storage.js";
 import cloudStorage from "./storage-on-cloud.js";
+import contextMenu from "./contextMenu.js";
 import { getDictionariesForLanguages } from "../shared-readonly/dictionaries.js";
 
 function getDefaultDicts() {
@@ -51,6 +52,9 @@ export default {
     },
     async init() {
         await this.initLocalDicts();
+
+        // Set reference in contextMenu to allow access to allDicts
+        contextMenu.dictModule = this;
 
         if (!setting.getValue("lastTimeSyncDicts") && this.hasSelectedLanguages()) {
             await this.syncAllDictsWithCloud();
@@ -216,6 +220,7 @@ export default {
 
         await storage.setAllByK("dict-", "dictName", [dict]);
         await this.syncAllDictsWithCloud("add");
+        contextMenu.rebuildContextMenu(this.allDicts);
 
         return dict;
     },
@@ -227,6 +232,7 @@ export default {
 
         await storage.remove(`dict-${dictName}`);
         await this.syncAllDictsWithCloud("remove");
+        contextMenu.rebuildContextMenu(this.allDicts);
     },
     async restoreDefaultDicts() {
         const added = [];
@@ -251,6 +257,7 @@ export default {
             await storage.setAllByK("dict-", "dictName", added);
             await this.syncAllDictsWithCloud("add");
         }
+        contextMenu.rebuildContextMenu(this.allDicts);
         return added;
     },
 
@@ -304,6 +311,7 @@ export default {
             }
         }
 
+        contextMenu.rebuildContextMenu(this.allDicts);
         return { added, removed };
     },
     async reorderDicts(dictMap) {
@@ -321,6 +329,7 @@ export default {
 
         await storage.setAllByK("dict-", "dictName", changed);
         await this.syncAllDictsWithCloud("reorder");
+        contextMenu.rebuildContextMenu(this.allDicts);
     },
 
     getDict(dictName) {

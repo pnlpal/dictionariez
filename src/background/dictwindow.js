@@ -428,7 +428,7 @@ export default {
         await this.restoreFromStorage();
 
         if (!setting.getValue("disableContextMenu")) {
-            contextMenu.createLookupItem();
+            contextMenu.rebuildContextMenu();
         }
 
         message.on("copy event triggered", async ({ s, sc, sentence, detectedLangInContext }, sender) => {
