@@ -1,3 +1,7 @@
+# v8.1.0 Sep 2, 2026
+- Added multi-dictionary context menu option for quick access to specific dictionaries.
+- Fixed word capitalization preservation when looking up in dictionaries.
+
 # v8.0.1 Aug 26, 2026
 - Refined handling of stop-response button for AI dicts.
 - Added `aiResponseLanguage` support in prompt. 

@@ -1,6 +1,6 @@
 {
     "name": "dictionariez",
-    "version": "8.0.1",
+    "version": "8.1.0",
     "description": "Facilitate your language learning by marking words in articles, looking up in various dictionaries, and exporting to Anki.",
     "repository": {
         "type": "git",
