@@ -11,7 +11,11 @@ export default {
 
         // Check if it's a dictionary submenu item (format: "dict-<dictName>")
         if (info.menuItemId?.startsWith("dict-")) {
-            dictName = info.menuItemId.substring(5); // Remove "dict-" prefix
+            const extracted = info.menuItemId.substring(5); // Remove "dict-" prefix
+            // Keep dictName as null for "default", otherwise use the extracted dict name
+            if (extracted !== "default") {
+                dictName = extracted;
+            }
         } else if (info.menuItemId !== "lookup") {
             return;
         }
@@ -49,6 +53,14 @@ export default {
         chrome.contextMenus.create({
             id: "lookup",
             title: `Look up '%s' in ${process.env.PRODUCT}...`,
+            contexts: ["selection"],
+        });
+
+        // Add default dictionary option
+        chrome.contextMenus.create({
+            id: "dict-default",
+            parentId: "lookup",
+            title: "Default",
             contexts: ["selection"],
         });
 
