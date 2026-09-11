@@ -8,6 +8,20 @@ const replacePromptPlaceholders = ({ template, word, sentence, languagePrompt, a
         .replaceAll("<aiResponseLanguage>", aiResponseLanguage || "");
 };
 
+const setNativeValue = (element, value) => {
+    // For React and other frameworks that intercept .value assignments,
+    // we use the native setter to bypass their event interception
+    const prototype = Object.getPrototypeOf(element);
+    const descriptor = Object.getOwnPropertyDescriptor(prototype, "value");
+    const valueSetter = descriptor ? descriptor.set : null;
+
+    if (valueSetter) {
+        valueSetter.call(element, value);
+    } else {
+        element.value = value;
+    }
+};
+
 async function doQuery(w, sentence, languagePrompt, dict, isHelpMeRefine, aiResponseLanguage) {
     if (!w || !dict.inputSelector) return;
     if (w === localStorage.lastWord && (sentence || "") === localStorage.lastSentence) {
@@ -65,7 +79,8 @@ async function doQuery(w, sentence, languagePrompt, dict, isHelpMeRefine, aiResp
     if (isRichEditor) {
         textarea.innerHTML = `<p>${prompt || w}</p>`;
     } else {
-        textarea.value = prompt || w;
+        // Use native setter to bypass React's event interception
+        setNativeValue(textarea, prompt || w);
     }
 
     await utils.promisifiedTimeout(200);
