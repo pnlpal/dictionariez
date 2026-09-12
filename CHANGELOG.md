@@ -1,3 +1,9 @@
+# v8.1.1 Sep 12, 2026
+
+- Improved AI dictionary lookups on React-based websites by bypassing framework event interception using native value setters.
+- Fixed lookup submission issues on ChatGPT, Gemini, Claude, and other React-powered platforms.
+- Fixed sending AI response language setting to cloud server.
+
 # v8.1.0 Sep 2, 2026
 - Added multi-dictionary context menu option for quick access to specific dictionaries.
 - Fixed word capitalization preservation when looking up in dictionaries.
