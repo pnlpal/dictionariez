@@ -76,14 +76,23 @@ async function doQuery(w, sentence, languagePrompt, dict, isHelpMeRefine, aiResp
 
     const textarea = document.querySelector(dict.inputSelector);
     const isRichEditor = dict.isRichEditor || textarea.contentEditable === "true";
-    if (isRichEditor) {
-        textarea.innerHTML = `<p>${prompt || w}</p>`;
-    } else {
-        // Use native setter to bypass React's event interception
-        setNativeValue(textarea, prompt || w);
-    }
 
+    const setInputValue = (value) => {
+        if (isRichEditor) {
+            textarea.innerHTML = `<p>${value}</p>`;
+        } else {
+            // Use native setter to bypass React's event interception
+            setNativeValue(textarea, value);
+        }
+    };
+    const getInputValue = () => (isRichEditor ? textarea.innerText : textarea.value);
+    setInputValue(prompt || w);
     await utils.promisifiedTimeout(200);
+
+    if (!getInputValue()) {
+        console.warn("Failed to set input value, retrying...");
+        setInputValue(prompt || w);
+    }
 
     const event = new Event("input", { bubbles: true });
     textarea.dispatchEvent(event);
@@ -99,7 +108,7 @@ async function doQuery(w, sentence, languagePrompt, dict, isHelpMeRefine, aiResp
             .filter(Boolean)
             .join(" ")
             .toLowerCase();
-        return /stop|cancel|abort|interrupt|停止/.test(attrs);
+        return /stop|cancel|abort|interrupt|停/.test(attrs);
     };
 
     const clickSubmitButton = (btn) => {
