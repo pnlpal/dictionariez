@@ -32,6 +32,34 @@ const run = () => {
     initAnkiInjection();
     initClipboardReader();
 
+    // Register message listener BEFORE checking excluded sites
+    // so chrome.action can still work even on excluded sites
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        if (request.type === "get info before open dict") {
+            const word = getWordFromSelection(true);
+            const isInEditable = utils.isSentence(word) && checkEditable(window.getSelection().focusNode);
+            const sentence = getSentenceFromAllFrames();
+
+            detectLanguage(sentence, window.getSelection().focusNode).then((detectedLangInContext) => {
+                sendResponse({
+                    w: word,
+                    s: location.href,
+                    sc: document.title,
+                    sentence,
+                    detectedLangInContext,
+                    isInEditable,
+                    screen: {
+                        width: screen.width,
+                        height: screen.height,
+                        availLeft: screen.availLeft,
+                        availTop: screen.availTop,
+                    },
+                });
+            });
+            return true;
+        }
+    });
+
     chrome.runtime.sendMessage(
         {
             type: "setting",
@@ -412,28 +440,6 @@ const run = () => {
                     handleLookupByMouse(event, text);
                 }
             }
-
-            utils.listenToBackground("get info before open dict", async (request, sender, sendResponse) => {
-                const word = getWordFromSelection(true);
-                const isInEditable = utils.isSentence(word) && checkEditable(window.getSelection().focusNode);
-                const sentence = getSentenceFromAllFrames();
-                const detectedLangInContext = await detectLanguage(sentence, window.getSelection().focusNode);
-
-                sendResponse({
-                    w: word,
-                    s: location.href,
-                    sc: document.title,
-                    sentence,
-                    detectedLangInContext,
-                    isInEditable,
-                    screen: {
-                        width: screen.width,
-                        height: screen.height,
-                        availLeft: screen.availLeft,
-                        availTop: screen.availTop,
-                    },
-                });
-            });
         },
     );
 };
