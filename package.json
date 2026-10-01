@@ -44,7 +44,7 @@
         "jquery": "^3.7.1",
         "less": "^4.2.0",
         "lodash": "latest",
-        "moment": "^2.29.4",
+        "moment": "^2.31.0",
         "opencc-js": "^1.0.5",
         "qrcode": "^1.5.4",
         "requirejs": "^2.3.7",
