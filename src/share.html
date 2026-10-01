@@ -20,6 +20,8 @@
                 --divider-color: rgba(0, 0, 0, 0.08);
                 --puffins-gradient: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffcc02 100%);
                 --step-bg: rgba(0, 0, 0, 0.03);
+                --ios-btn-bg: #23272f;
+                --ios-btn-text: #fff;
             }
 
             @media (prefers-color-scheme: dark) {
@@ -34,6 +36,8 @@
                     --btn-ghost-border: rgba(255, 255, 255, 0.2);
                     --divider-color: rgba(255, 255, 255, 0.1);
                     --step-bg: rgba(255, 255, 255, 0.05);
+                    --ios-btn-bg: #f2f2f2;
+                    --ios-btn-text: #111;
                 }
             }
 
@@ -90,176 +94,202 @@
                 text-decoration: underline;
             }
 
-            /* Puffins Hero Section */
-            .puffins-hero {
+            /* Letter from River */
+            .letter {
                 background: var(--card-bg);
                 border: 1px solid var(--card-border);
                 border-radius: 24px;
-                padding: 48px 40px;
+                padding: 40px 44px 36px;
                 box-shadow: var(--card-shadow);
-                text-align: center;
-                margin-bottom: 32px;
+                margin-bottom: 28px;
             }
 
-            .puffins-hero .icon {
-                font-size: 4rem;
-                margin-bottom: 12px;
+            .letter-head {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                margin-bottom: 20px;
             }
 
-            .puffins-hero h1 {
-                font-size: 2rem;
-                margin: 0 0 4px;
+            .letter-head img {
+                width: 64px;
+                height: 64px;
+                border-radius: 16px;
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+            }
+
+            .letter-head h1 {
+                font-size: 1.7rem;
+                margin: 0;
+            }
+
+            .letter-head .sub {
+                margin: 2px 0 0;
+                color: var(--text-muted);
+                font-size: 0.95rem;
+            }
+
+            .letter p {
+                font-size: 1.05rem;
+                line-height: 1.7;
+                margin: 0 0 16px;
+            }
+
+            .letter .highlight {
                 background: var(--puffins-gradient);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
                 background-clip: text;
+                font-weight: 700;
             }
 
-            .puffins-hero .tagline {
-                font-size: 1.1rem;
+            .letter .promise {
+                border-left: 3px solid #f7931e;
+                padding: 4px 0 4px 16px;
+            }
+
+            .signature {
+                margin-top: 24px;
+                font-family: "Segoe Script", "Bradley Hand", "Snell Roundhand", "Brush Script MT", cursive;
+                font-size: 1.6rem;
+                line-height: 1.2;
+            }
+
+            .signature small {
+                display: block;
+                font-family:
+                    "Segoe UI",
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                font-size: 0.85rem;
                 color: var(--text-muted);
+                margin-top: 4px;
+            }
+
+            /* Get Puffins */
+            .get-puffins {
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 24px;
+                padding: 28px 32px;
+                box-shadow: var(--card-shadow);
+                margin-bottom: 28px;
+                text-align: center;
+            }
+
+            .get-puffins h2 {
+                font-size: 1.3rem;
+                margin: 0 0 4px;
+            }
+
+            .get-puffins .caption {
+                color: var(--text-muted);
+                font-size: 0.92rem;
                 margin: 0 0 20px;
             }
 
-            .puffins-hero .intro {
-                font-size: 1.05rem;
-                max-width: 500px;
-                margin: 0 auto 28px;
-                line-height: 1.6;
+            .platforms {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
             }
 
-            .beta-badge {
-                display: inline-block;
-                background: var(--puffins-gradient);
-                color: #fff;
-                padding: 4px 12px;
-                border-radius: 20px;
-                font-size: 0.85rem;
-                font-weight: 600;
-                margin-bottom: 20px;
-            }
-
-            .beta-perks {
-                display: flex;
-                justify-content: center;
-                gap: 24px;
-                flex-wrap: wrap;
-                margin-bottom: 28px;
-                font-size: 0.95rem;
-            }
-
-            .beta-perks span {
-                color: var(--text-muted);
-            }
-
-            /* Steps */
-            .steps {
+            .platform {
                 background: var(--step-bg);
-                border-radius: 16px;
-                padding: 24px;
-                margin: 28px 0;
-                text-align: left;
-            }
-
-            .steps h3 {
-                margin: 0 0 16px;
-                font-size: 1rem;
-                text-align: center;
-                color: var(--text-muted);
-            }
-
-            .step {
+                border-radius: 18px;
+                padding: 20px 16px;
                 display: flex;
-                align-items: flex-start;
-                gap: 12px;
-                margin-bottom: 16px;
-            }
-
-            .step:last-child {
-                margin-bottom: 0;
-            }
-
-            .step-num {
-                background: var(--puffins-gradient);
-                color: #fff;
-                width: 28px;
-                height: 28px;
-                border-radius: 50%;
-                display: flex;
+                flex-direction: column;
                 align-items: center;
-                justify-content: center;
-                font-weight: 700;
-                font-size: 0.9rem;
-                flex-shrink: 0;
+                gap: 10px;
             }
 
-            .step-content {
-                flex: 1;
+            .platform h3 {
+                margin: 0;
+                font-size: 1.05rem;
             }
 
-            .step-content strong {
-                display: block;
-                margin-bottom: 2px;
-            }
-
-            .step-content small {
+            .platform .note {
                 color: var(--text-muted);
-                font-size: 0.9rem;
+                font-size: 0.85rem;
+                margin: 0;
+                min-height: 1.3em;
+            }
+
+            /* QR codes need a light background to scan, even in dark mode. */
+            .qr {
+                background: #fff;
+                padding: 8px;
+                border-radius: 12px;
+                line-height: 0;
+            }
+
+            .qr canvas {
+                width: 140px;
+                height: 140px;
             }
 
             .puffins-cta {
                 display: inline-flex;
                 align-items: center;
-                gap: 10px;
+                gap: 8px;
                 background: var(--puffins-gradient);
                 color: #fff;
-                padding: 14px 28px;
+                padding: 11px 22px;
                 border-radius: 999px;
                 text-decoration: none;
                 font-weight: 700;
-                font-size: 1.05rem;
                 transition:
                     transform 0.15s ease,
                     box-shadow 0.15s ease;
                 box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
             }
 
-            .puffins-cta:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 25px rgba(255, 107, 53, 0.4);
+            .puffins-cta.dark {
+                background: var(--ios-btn-bg);
+                color: var(--ios-btn-text);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
             }
 
-            /* Features Grid */
-            .features-grid {
+            .puffins-cta:hover {
+                transform: translateY(-2px);
+            }
+
+            /* Free vs paid */
+            .free-paid {
                 display: grid;
-                grid-template-columns: repeat(4, 1fr);
-                gap: 12px;
+                grid-template-columns: 1.4fr 1fr;
+                gap: 16px;
                 margin-bottom: 40px;
             }
 
-            .feature-item {
+            .free-paid > div {
                 background: var(--card-bg);
                 border: 1px solid var(--card-border);
-                border-radius: 14px;
-                padding: 16px 12px;
-                text-align: center;
+                border-radius: 18px;
+                padding: 20px 24px;
             }
 
-            .feature-item .emoji {
-                font-size: 1.6rem;
-                margin-bottom: 6px;
+            .free-paid h3 {
+                margin: 0 0 10px;
+                font-size: 1rem;
             }
 
-            .feature-item h4 {
-                margin: 0 0 2px;
-                font-size: 0.85rem;
-                font-weight: 600;
-            }
-
-            .feature-item p {
+            .free-paid ul {
                 margin: 0;
-                font-size: 0.75rem;
+                padding-left: 1.2em;
+                font-size: 0.95rem;
+            }
+
+            .free-paid li {
+                margin-bottom: 4px;
+            }
+
+            .free-paid .why {
                 color: var(--text-muted);
+                font-size: 0.88rem;
+                margin: 10px 0 0;
             }
 
             /* Screenshots Gallery */
@@ -387,21 +417,18 @@
                     padding: 28px 18px 60px;
                 }
 
-                .puffins-hero {
-                    padding: 32px 20px;
+                .letter,
+                .get-puffins {
+                    padding: 28px 20px;
                 }
 
-                .puffins-hero h1 {
-                    font-size: 1.6rem;
+                .letter-head h1 {
+                    font-size: 1.4rem;
                 }
 
-                .features-grid {
-                    grid-template-columns: repeat(2, 1fr);
-                }
-
-                .beta-perks {
-                    flex-direction: column;
-                    gap: 8px;
+                .platforms,
+                .free-paid {
+                    grid-template-columns: 1fr;
                 }
             }
         </style>
@@ -414,81 +441,106 @@
                 <strong class="productName"></strong>
                 <span class="badge" id="app-version"></span>
                 <span>
-                    New milestone: Smart default dicts, dark mode, ad blocker →
-                    <a href="https://pnl.dev/topic/1139/dictionariez-v8-0-0-smarter-cleaner-darker" target="_blank"
+                    Bugfixes and new Puffins on iOS →
+                    <a href="https://pnl.dev/topic/1186/meet-puffins-on-ios-now-open-testing" target="_blank"
                         >Read changelog</a
                     >
                 </span>
             </div>
 
-            <!-- Puffins Hero -->
-            <section class="puffins-hero">
-                <div class="icon">🐧</div>
-                <h1>Puffins Early Access</h1>
-                <p class="tagline">Dictionariez for Android</p>
+            <!-- A letter from River -->
+            <section class="letter">
+                <div class="letter-head">
+                    <img src="https://puffins.pnl.dev/favicon-180.png" alt="Puffins app icon" />
+                    <div>
+                        <h1>Hi, I'm River 👋</h1>
+                        <p class="sub">A note from the developer behind <span class="productName"></span></p>
+                    </div>
+                </div>
 
-                <span class="beta-badge">🎯 Limited Beta — Be one of the first 12</span>
-
-                <p class="intro">
-                    Take the same powerful dictionary experience to your Android phone. Join the closed beta, shape the
-                    app with your feedback, and get it free during testing.
+                <p>
+                    I'm the indie developer behind <span class="productName"></span>. For more than ten years I've been
+                    building it, mostly in my spare time, with a lot of help from people like you.
+                </p>
+                <p>
+                    For months I've been working on something I've wanted to give you for a long time:
+                    <span class="highlight">Puffins</span>, Dictionariez for your phone. Today I'm really excited to say
+                    it's finally here, on <strong>both Android and iPhone</strong>.
+                </p>
+                <p class="promise">
+                    Since the very beginning I've promised the core would always be free, and Puffins keeps that
+                    promise: every dictionary, every lookup, free, with no ads and no tracking.
+                </p>
+                <p>
+                    The only paid part is AI Lookup. Each AI answer costs me real money in AI provider fees and cloud
+                    servers, so after a free trial it's part of Pro. That's what keeps everything else free for
+                    everyone.
+                </p>
+                <p>
+                    If you give it a try, I'd love to hear what you think. Your feedback shaped Dictionariez, and it
+                    will shape Puffins too.
                 </p>
 
-                <div class="beta-perks">
-                    <span>✓ Full dictionary experience</span>
-                    <span>✓ Shape the app</span>
-                    <span>✓ Free during beta</span>
+                <div class="signature">
+                    — River
+                    <small>pnl.dev</small>
                 </div>
-
-                <div class="steps">
-                    <h3>How to get early access</h3>
-                    <div class="step">
-                        <span class="step-num">1</span>
-                        <div class="step-content">
-                            <strong>Join the testers group</strong>
-                            <small>Click the button below to join the Google Group</small>
-                        </div>
-                    </div>
-                    <div class="step">
-                        <span class="step-num">2</span>
-                        <div class="step-content">
-                            <strong>Download from Play Store</strong>
-                            <small>Access unlocks automatically after joining — check the group for the link</small>
-                        </div>
-                    </div>
-                </div>
-
-                <a
-                    class="puffins-cta"
-                    href="https://groups.google.com/g/puffins-development"
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    🐧 Join the Beta
-                </a>
             </section>
 
-            <!-- Features -->
-            <section class="features-grid">
-                <div class="feature-item">
-                    <div class="emoji">📖</div>
-                    <h4>1000+ Dicts</h4>
-                    <p>Same collection</p>
+            <!-- Get Puffins -->
+            <section class="get-puffins">
+                <h2>Get Puffins</h2>
+                <p class="caption">On your computer? Scan with your phone's camera.</p>
+                <div class="platforms">
+                    <div class="platform">
+                        <h3>Android</h3>
+                        <div class="qr">
+                            <canvas data-qr="https://play.google.com/store/apps/details?id=dev.pnl.puffins"></canvas>
+                        </div>
+                        <a
+                            class="puffins-cta"
+                            href="https://play.google.com/store/apps/details?id=dev.pnl.puffins"
+                            target="_blank"
+                            rel="noreferrer"
+                            >Get it on Google Play</a
+                        >
+                        <p class="note">Free on the Play Store</p>
+                    </div>
+                    <div class="platform">
+                        <h3>iPhone</h3>
+                        <div class="qr">
+                            <canvas data-qr="https://testflight.apple.com/join/swFXEk1z"></canvas>
+                        </div>
+                        <a
+                            class="puffins-cta dark"
+                            href="https://testflight.apple.com/join/swFXEk1z"
+                            target="_blank"
+                            rel="noreferrer"
+                            >Join the TestFlight beta</a
+                        >
+                        <p class="note">Install Apple's free TestFlight app first</p>
+                    </div>
                 </div>
-                <div class="feature-item">
-                    <div class="emoji">🌍</div>
-                    <h4>20+ Languages</h4>
-                    <p>Multi-language</p>
+            </section>
+
+            <!-- What's free, what's paid -->
+            <section class="free-paid">
+                <div>
+                    <h3>✓ Free, always</h3>
+                    <ul>
+                        <li>1000+ dictionaries in 20+ languages</li>
+                        <li>Unlimited lookups</li>
+                        <li>On-device history and dark mode</li>
+                        <li>No ads, no tracking</li>
+                    </ul>
                 </div>
-                <div class="feature-item">
-                    <div class="emoji">🤖</div>
-                    <h4>AI Definitions</h4>
-                    <p>With AI-powered explanations</p>
-                </div>
-                <div class="feature-item">
-                    <div class="emoji">🌙</div>
-                    <h4>Dark Mode</h4>
-                    <p>Dark mode support</p>
+                <div>
+                    <h3>🤖 Pro: AI Lookup</h3>
+                    <ul>
+                        <li>Free trial included</li>
+                        <li>Unlimited AI answers with Pro</li>
+                    </ul>
+                    <p class="why">Pro covers what AI and servers actually cost me.</p>
                 </div>
             </section>
 
@@ -532,6 +584,7 @@
             <section class="community">
                 <strong>Join the community</strong>
                 <div class="community-links">
+                    <a href="https://puffins.pnl.dev" target="_blank" rel="noreferrer">Puffins</a>
                     <a href="https://pnl.dev" target="_blank" rel="noreferrer">PNL Community</a>
                     <a href="https://discord.gg/sazRac4kSa" target="_blank" rel="noreferrer">Discord</a>
                     <a href="https://bsky.app/profile/pnlcommunity.bsky.social" target="_blank" rel="noreferrer"

@@ -1,3 +1,8 @@
+# v8.1.2 Oct 1, 2026 
+
+- Disabled adblocker for the Reverso dict as it prevented some of the elements interaction on the page.
+- Fixed the first query on Deepseek.
+
 # v8.1.1 Sep 12, 2026
 
 - Improved AI dictionary lookups on React-based websites by bypassing framework event interception using native value setters.
