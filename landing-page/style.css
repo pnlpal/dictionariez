@@ -239,3 +239,199 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+/* Puffins promo: a bottom banner that slides up after a few seconds (see the
+   inline script in index.html). Once dismissed it moves inline above the FAQ.
+   Desktop shows the landscape promo image; mobile shows a phone screenshot. */
+.puffins-slot {
+    display: none;
+}
+.puffins-slot:not(:empty) {
+    display: block;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.puffins-promo {
+    position: fixed;
+    left: 50%;
+    bottom: 1.2rem;
+    z-index: 100;
+    width: min(1040px, calc(100% - 2.4rem));
+    transform: translate(-50%, calc(100% + 2rem));
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease, visibility 0s linear 0.6s;
+}
+.puffins-promo.is-visible {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    visibility: visible;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
+}
+.puffins-promo.is-inline {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: auto;
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .puffins-promo,
+    .puffins-promo.is-visible {
+        transition: none;
+    }
+}
+
+.puffins-card {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 1.2em;
+    box-shadow: 0 10px 40px rgba(35, 39, 47, 0.25);
+    overflow: hidden;
+}
+.puffins-promo.is-inline .puffins-card {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+}
+
+.puffins-media {
+    flex: 0 0 440px;
+    display: block;
+}
+.puffins-media img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.puffins-copy {
+    padding: 1.2em 3.2em 1.2em 1.8em;
+}
+
+.puffins-copy .eyebrow {
+    margin: 0 0 0.3em 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #e35a2b;
+}
+
+.puffins-copy h2 {
+    font-size: 1.4rem;
+    margin: 0 0 0.4em 0;
+}
+.puffins-copy h2 a {
+    color: #23272f;
+    text-decoration: none;
+}
+.puffins-copy h2 a:hover {
+    text-decoration: underline;
+}
+
+.puffins-copy p {
+    color: #555;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    margin: 0 0 0.9em 0;
+}
+
+.puffins-buttons {
+    display: flex;
+    gap: 0.6em;
+    flex-wrap: wrap;
+}
+
+.puffins-btn {
+    display: inline-block;
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.55em 1.3em;
+    border-radius: 2em;
+    transition: background 0.18s;
+}
+.puffins-btn-android {
+    background: #ff7043;
+}
+.puffins-btn-android:hover {
+    background: #e35a2b;
+}
+.puffins-btn-ios {
+    background: #23272f;
+}
+.puffins-btn-ios:hover {
+    background: #000;
+}
+
+.puffins-close {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.7rem;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: 50%;
+    background: rgba(35, 39, 47, 0.06);
+    color: #555;
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+}
+.puffins-close:hover {
+    background: rgba(35, 39, 47, 0.14);
+    color: #222;
+}
+.puffins-promo.is-inline .puffins-close {
+    display: none;
+}
+
+/* Mobile: vertical screenshot thumbnail beside compact copy. */
+@media (max-width: 699px) {
+    .puffins-promo {
+        bottom: 0.75rem;
+        width: calc(100% - 1.5rem);
+    }
+    .puffins-card {
+        align-items: stretch;
+    }
+    .puffins-media {
+        flex: 0 0 96px;
+    }
+    .puffins-promo.is-inline .puffins-media {
+        flex-basis: 130px;
+    }
+    .puffins-media img {
+        height: 100%;
+        object-fit: cover;
+        object-position: top;
+    }
+    .puffins-copy {
+        padding: 0.9em 2.6em 0.9em 1em;
+    }
+    .puffins-copy .eyebrow {
+        font-size: 0.7rem;
+    }
+    .puffins-copy h2 {
+        font-size: 1.15rem;
+        text-align: left;
+    }
+    .puffins-copy p {
+        font-size: 0.85rem;
+        margin-bottom: 0.7em;
+    }
+    .puffins-btn {
+        font-size: 0.85rem;
+        padding: 0.45em 1em;
+    }
+    .puffins-close {
+        top: 0.4rem;
+        right: 0.4rem;
+    }
+}

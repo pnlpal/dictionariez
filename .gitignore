@@ -9,3 +9,4 @@ secrets.*.js
 
 landing-page/deploy.sh
 landing-page/nginx.backup.conf
+landing-page/.env

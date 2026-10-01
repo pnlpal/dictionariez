@@ -254,6 +254,7 @@
                 <!-- Comments will be dynamically loaded here -->
             </div>
         </section>
+        <section class="puffins-slot"></section>
         <section class="faq">
             <h2>Frequently Asked Questions</h2>
             <div class="faq-item">
@@ -383,5 +384,80 @@
                 >
             </div>
         </footer>
+        <aside class="puffins-promo" aria-label="Puffins mobile app">
+            <div class="puffins-card">
+                <a class="puffins-media" href="https://puffins.pnl.dev/" target="_blank" rel="noopener">
+                    <picture>
+                        <source media="(max-width: 699px)" srcset="https://puffins.pnl.dev/assets/1.jpg" />
+                        <img
+                            src="https://puffins.pnl.dev/assets/promo.jpg"
+                            alt="Puffins dictionary app screenshot"
+                        />
+                    </picture>
+                </a>
+                <div class="puffins-copy">
+                    <p class="eyebrow">Dictionariez on your phone</p>
+                    <h2>
+                        <a href="https://puffins.pnl.dev/" target="_blank" rel="noopener">Meet Puffins</a>
+                    </h2>
+                    <p>
+                        All your dictionaries plus AI Lookup, in a mobile app built from Dictionariez. Free on
+                        Android, public beta on iPhone.
+                    </p>
+                    <div class="puffins-buttons">
+                        <a
+                            class="puffins-btn puffins-btn-android"
+                            href="https://play.google.com/store/apps/details?id=dev.pnl.puffins"
+                            target="_blank"
+                            rel="noopener"
+                            >Google Play</a
+                        >
+                        <a
+                            class="puffins-btn puffins-btn-ios"
+                            href="https://testflight.apple.com/join/swFXEk1z"
+                            target="_blank"
+                            rel="noopener"
+                            >iPhone beta</a
+                        >
+                    </div>
+                </div>
+            </div>
+            <button class="puffins-close" aria-label="Dismiss">&times;</button>
+        </aside>
+
+        <script>
+            // Show the Puffins promo as a bottom banner after 3s. Once dismissed,
+            // move it into its inline slot above the FAQ so it stays on the page.
+            (function () {
+                var KEY = "puffins-promo-dismissed";
+                var promo = document.querySelector(".puffins-promo");
+                var slot = document.querySelector(".puffins-slot");
+
+                function placeInline() {
+                    slot.appendChild(promo);
+                    promo.classList.add("is-inline");
+                }
+
+                var dismissed = false;
+                try {
+                    dismissed = !!localStorage.getItem(KEY);
+                } catch (e) {}
+                if (dismissed) {
+                    placeInline();
+                    return;
+                }
+
+                promo.querySelector(".puffins-close").addEventListener("click", function () {
+                    promo.classList.remove("is-visible");
+                    setTimeout(placeInline, 600);
+                    try {
+                        localStorage.setItem(KEY, "1");
+                    } catch (e) {}
+                });
+                setTimeout(function () {
+                    promo.classList.add("is-visible");
+                }, 3000);
+            })();
+        </script>
     </body>
 </html>
