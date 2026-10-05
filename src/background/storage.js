@@ -133,25 +133,34 @@ export default {
     async syncThenGetHistory() {
         if (this.isProUser() && this.localHistory.length) {
             try {
-                await cloudStorage.batchAddHistory(
-                    this.localHistory.map((item) => ({
-                        word: item.w,
-                        source: item.s,
-                        sourceTitle: item.sc,
-                        rate: item.r,
-                        timestamp: item.t,
-                        sentence: item.sentence,
-                        ankiSaved: item.ankiSaved,
-                        lang: item.lang,
-                    })),
-                );
+                await cloudStorage
+                    .batchAddHistory(
+                        this.localHistory.map((item) => ({
+                            word: item.w,
+                            source: item.s,
+                            sourceTitle: item.sc,
+                            rate: item.r,
+                            timestamp: item.t,
+                            sentence: item.sentence,
+                            ankiSaved: item.ankiSaved,
+                            lang: item.lang,
+                        })),
+                    )
+                    .catch((error) => {
+                        if (error.message === "not-pro-user") {
+                            setting.setValue("isPro", false);
+                            throw error;
+                        }
+                        if (error.status >= 400 && error.status < 500) {
+                            console.warn("Ignore client error during sync, clearing local history:", error);
+                            return;
+                        }
+                        throw error;
+                    });
                 await Item.remove(this.localHistory.map((item) => item.w));
                 this.localHistory = [];
             } catch (error) {
                 console.error("Failed to sync local history to cloud:", error);
-                if (error.message === "not-pro-user") {
-                    setting.setValue("isPro", false);
-                }
             }
         }
         return this.getHistory();

@@ -1,10 +1,18 @@
 const pnlBase = process.env.NODE_ENV === "development" ? "http://localhost:4567" : "https://pnl.dev";
 
+class RequestError extends Error {
+    constructor(message, status) {
+        super(message);
+        this.name = "RequestError";
+        this.status = status;
+    }
+}
+
 export default {
     async handleResponse(response) {
         const responseData = await response.json();
         if (responseData?.error) {
-            throw new Error(responseData.error);
+            throw new RequestError(responseData.error, response.status);
         }
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`);
