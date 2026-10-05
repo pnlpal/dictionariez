@@ -203,7 +203,7 @@ export default {
             return { error: "the name of the dict is required" };
         }
 
-        if (!dict.windowUrl && !dict.chatgptPrompt) {
+        if (!dict.windowUrl && !(dict.chatgptPrompt || dict.prompt || dict.promptWithContext)) {
             return { error: "the url of the dict is required" };
         }
 
