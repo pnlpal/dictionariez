@@ -1,3 +1,13 @@
+# v8.1.3 Oct 6, 2026
+- Change the detected source language in the translator
+  - The "From" language is now a dropdown, so you can fix a wrong detection
+  - Your correction is remembered per site, and only applies when the same language is detected again
+  - Text-to-speech in the reader view uses your corrections too, so it picks the right voice
+- Translator defaults the target language to English for non-English text
+- Not to save the word if 400 errors thrown by the server.
+- Fixed the validators when adding dict.
+
+
 # v8.1.2 Oct 1, 2026 
 
 - Disabled adblocker for the Reverso dict as it prevented some of the elements interaction on the page.
