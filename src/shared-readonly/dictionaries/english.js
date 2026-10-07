@@ -41,4 +41,9 @@ export default [
     css: "#header, #ad_topslot_a {display: none;} div.cc { margin-top: -125px !important; }",
     ttsHelperSelector: ".def-body .examp",
   },
+  {
+    dictName: "Bing Dict (必应词典)",
+    windowUrl: "https://cn.bing.com/dict/search?mkt=zh-cn&q=<word>", // must has mkt
+    css: "body { margin-top: 50px !important; width: auto !important; min-width: auto !important; } header { display: none !important; } .contentPadding {padding-left: 10px !important;}",
+  },
 ].filter(Boolean); // Filter out null entries if a variant doesn't support the language
