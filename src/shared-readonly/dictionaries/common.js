@@ -36,7 +36,7 @@ export default [
     css: "body {margin-top: 50px !important;}",
     inputSelector: "form div[contenteditable], #mobile-composer-prompt",
     submitButtonSelector:
-      "form button[data-testid='send-button'], form button[data-testid='stop-button'], button[data-composer-submit]",
+      "form button[type='submit'], form button[aria-label='Send'], form button[aria-label='Stop']",
   },
   {
     dictName: "Google Image",

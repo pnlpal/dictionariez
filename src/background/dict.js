@@ -14,7 +14,7 @@ const chatgptDefault = {
     windowUrl: "https://chatgpt.com",
     css: "body {margin-top: 50px !important;}",
     inputSelector: "main form div[contenteditable]",
-    submitButtonSelector: "main form button[data-testid='send-button'], main form button[data-testid='stop-button']",
+    submitButtonSelector: "form button[type='submit'], form button[aria-label='Send'], form button[aria-label='Stop']",
 };
 
 function fixChatgptDict(dict) {

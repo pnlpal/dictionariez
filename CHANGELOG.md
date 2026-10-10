@@ -1,3 +1,8 @@
+# v8.1.4 Oct 10, 2026
+- Increased the retry attempts and refactored the header's css to improve reliability
+- Added the Bing dict to the English deault dict list
+- Improved css to the translator panel
+
 # v8.1.3 Oct 6, 2026
 - Change the detected source language in the translator
   - The "From" language is now a dropdown, so you can fix a wrong detection
