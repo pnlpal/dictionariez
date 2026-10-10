@@ -60,7 +60,7 @@ function isDynamicDict(dict) {
 function preinject(res) {
     if (!document.head || !document.body) {
         attempts += 1;
-        if (attempts < 200) {
+        if (attempts < 500) {
             setTimeout(() => preinject(res), 20);
         }
         return;

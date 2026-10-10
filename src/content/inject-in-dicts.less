@@ -1,17 +1,30 @@
+// Everything is !important so that site rules like `iframe { ... !important }` can't override the header.
 #dictionaries-iframe,
 .dictionariez-iframe {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    opacity: 0.95;
+    display: block !important;
+    visibility: visible !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 50px !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    opacity: 0.95 !important;
 
-    z-index: 9999999999;
-    border: none;
-    height: 50px;
+    // max value of a 32-bit signed integer, the highest z-index browsers support.
+    z-index: 2147483647 !important;
+    border: none !important;
 
     &.dropdown-open {
-        height: 420px;
+        height: 420px !important;
     }
 }
 
