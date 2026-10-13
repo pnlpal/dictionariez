@@ -1,6 +1,5 @@
 "use strict";
 import utils from "utils";
-import "./user-profile.less";
 
 const pnlBase = process.env.NODE_ENV === "development" ? "http://localhost:4567" : "https://pnl.dev";
 
@@ -20,38 +19,47 @@ function letterAvatar(letter, bg = "#90b4fa", color = "#fff") {
     return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
-async function updateUserProfile($scope) {
-    let loggedIn = false;
-    $scope.user = {
+// Resolves to the pnl.dev user, or a guest placeholder with `loggedIn: false`.
+async function fetchUserProfile() {
+    const guest = {
+        loggedIn: false,
         username: "Login / Sign up",
         pictureUrl: defaultAvatarSvg,
         link: `${pnlBase}/login`,
         subscriptionLink: `${pnlBase}/pro`,
     };
-    const meRes = await fetch(`${pnlBase}/api/me`, { credentials: "include" });
-    if (meRes.ok) {
-        loggedIn = true;
-        const userslug = await meRes.json();
-        const userRes = await fetch(`${pnlBase}/api${userslug}`);
-        const user = await userRes.json();
-        user.isPro = user.proStatus === "active";
-        user.link = `${pnlBase}/user/${user.userslug}`;
-        user.subscriptionLink = `${pnlBase}/pro`;
-        if (user.picture) {
-            user.pictureUrl = await loadImage(`${pnlBase}${user.picture}`);
-        }
-        if (!user.pictureUrl) {
-            const firstLetter = user.username ? user.username.charAt(0).toUpperCase() : "U";
-            user.pictureUrl = letterAvatar(firstLetter, "#90b4fa", "#fff");
-        }
-        utils.send("save setting", { key: "isPro", value: user.isPro });
-        $scope.setting.isPro = user.isPro;
-        $scope.user = user;
-    } else {
-        $scope.user.loggedIn = false;
+    const meRes = await fetch(`${pnlBase}/api/me`, { credentials: "include" }).catch(() => null);
+    if (!meRes?.ok) {
+        return guest;
     }
-    $scope.$apply();
-    return loggedIn;
+    const userslug = await meRes.json();
+    const userRes = await fetch(`${pnlBase}/api${userslug}`);
+    const user = await userRes.json();
+    user.loggedIn = true;
+    user.isPro = user.proStatus === "active";
+    user.link = `${pnlBase}/user/${user.userslug}`;
+    user.subscriptionLink = `${pnlBase}/pro`;
+    if (user.picture) {
+        user.pictureUrl = await loadImage(`${pnlBase}${user.picture}`);
+    }
+    if (!user.pictureUrl) {
+        const firstLetter = user.username ? user.username.charAt(0).toUpperCase() : "U";
+        user.pictureUrl = letterAvatar(firstLetter, "#90b4fa", "#fff");
+    }
+    utils.send("save setting", { key: "isPro", value: user.isPro });
+    return user;
+}
+
+// Reload the page when the user logs in/out or subscribes on pnl.dev.
+function reloadOnLoginStatusChange(isUserLoggedIn) {
+    utils.listenToBackground("user logged in status", ({ userLoggedIn, origin, userSubscribed }) => {
+        if (origin === pnlBase) {
+            if (userLoggedIn !== isUserLoggedIn || userSubscribed) {
+                console.log("User status changed:", { userLoggedIn, userSubscribed });
+                location.reload();
+            }
+        }
+    });
 }
 
 async function getCurrentCoupon($scope) {
@@ -68,17 +76,4 @@ async function getCurrentCoupon($scope) {
     }
 }
 
-export default async ($scope) => {
-    let isUserLoggedIn = await updateUserProfile($scope);
-
-    utils.listenToBackground("user logged in status", ({ userLoggedIn, origin, userSubscribed }) => {
-        if (origin === pnlBase) {
-            if (userLoggedIn !== isUserLoggedIn || userSubscribed) {
-                console.log("User status changed:", { userLoggedIn, userSubscribed });
-                location.reload();
-            }
-        }
-    });
-};
-
-export { getCurrentCoupon };
+export { fetchUserProfile, reloadOnLoginStatusChange, getCurrentCoupon };

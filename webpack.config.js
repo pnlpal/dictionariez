@@ -61,8 +61,37 @@ var options = {
                 type: "asset/source",
             },
             {
+                test: /\.jsx$/,
+                loader: "esbuild-loader",
+                options: {
+                    loader: "jsx",
+                    jsx: "automatic",
+                    jsxImportSource: "preact",
+                    target: "es2020",
+                },
+            },
+            {
+                // Beer CSS: only bundle the outlined icon font, other fonts/shapes are unused
+                test: /beercss[\\/].*\.css$/,
+                use: [
+                    "style-loader",
+                    {
+                        loader: "css-loader",
+                        options: {
+                            url: { filter: (url) => /material-symbols-(outlined|subset)\.woff2$/.test(url) },
+                        },
+                    },
+                ],
+            },
+            {
+                test: /beercss[\\/].*\.woff2$/,
+                type: "asset/resource",
+                generator: { filename: "fonts/[name][ext]" },
+            },
+            {
                 test: /\.css$/,
                 resourceQuery: { not: [/raw/] },
+                exclude: /beercss[\\/]/,
                 use: ["style-loader", "css-loader"],
             },
             {
@@ -113,6 +142,7 @@ var options = {
     },
     resolve: {
         alias: alias,
+        extensions: [".js", ".jsx", ".json"],
     },
     plugins: [
         // clean the build folder
@@ -254,6 +284,11 @@ var options = {
     ignoreWarnings: [
         {
             module: /node_modules[\\/]mocha[\\/]mocha\.js/,
+            message: /Critical dependency: the request of a dependency is an expression/,
+        },
+        {
+            // Beer CSS' optional on-demand module loader, never used here
+            module: /node_modules[\\/]beercss[\\/]/,
             message: /Critical dependency: the request of a dependency is an expression/,
         },
     ],

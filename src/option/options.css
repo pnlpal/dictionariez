@@ -1,0 +1,117 @@
+/* Only what Beer CSS doesn't provide; colors always come from Beer's theme variables. */
+body.loading {
+    visibility: hidden;
+}
+
+
+.section {
+    scroll-margin-top: 1rem;
+    padding-block-end: 2rem;
+}
+
+.muted {
+    color: var(--on-surface-variant);
+}
+
+.ascii-title pre {
+    all: unset;
+    display: block;
+    white-space: pre;
+    font-family: monospace;
+    font-size: 1rem;
+    line-height: 1.15;
+    overflow-x: auto;
+}
+
+.crafting-topic {
+    max-inline-size: 100%;
+}
+
+.slide-in {
+    animation: slide-in var(--speed4) ease-out;
+}
+
+@keyframes slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(0.75rem);
+    }
+}
+
+/* settings */
+.setting-row {
+    padding-block: 0.5rem;
+    cursor: pointer;
+}
+
+.setting-indent {
+    margin-inline-start: 3.75rem;
+    padding-block-end: 0.5rem;
+}
+
+.key-select {
+    inline-size: 10rem;
+    margin: 0;
+}
+
+.key-select.wide {
+    inline-size: 14rem;
+}
+
+.ai-language {
+    max-inline-size: 22rem;
+}
+
+.help-link {
+    vertical-align: middle;
+}
+
+.hidden-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.theme-swatch {
+    border: 0.125rem solid var(--outline-variant);
+}
+
+.hotkeys-table td:first-child {
+    inline-size: 40%;
+}
+
+/* tables */
+.search-field {
+    inline-size: 18rem;
+    max-inline-size: 100%;
+}
+
+.history-table th.sortable {
+    cursor: pointer;
+}
+
+.history-table td:is(.col-sentence, .col-s) {
+    max-inline-size: 18rem;
+}
+
+.history-table td:is(.col-sentence, .col-s) .truncate {
+    display: block;
+}
+
+.history-table tr.selected {
+    background-color: var(--secondary-container);
+}
+
+.dict-table .drag-handle {
+    cursor: grab;
+}
+
+.table-wrap {
+    margin-block-start: 1rem;
+}
+
+/* keep the wide ascii title from stretching the page on narrow screens */
+#home .max {
+    min-inline-size: 0;
+}

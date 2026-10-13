@@ -1,172 +1,20 @@
-import angular from "angular";
+import "beercss/dist/cdn/beer.min.css";
+import "./options.css";
+import { h, render } from "preact";
 import utils from "utils";
-import debounce from "lodash/debounce";
-import $ from "jquery";
-import "select2";
-import "select2/dist/css/select2.min.css";
-
-import "angular-ui-bootstrap";
-
-import "../vendor/needsharebutton.js";
-import "../vendor/needsharebutton.css";
-
-import(/* webpackChunkName: "github-badge" */ "../vendor/github-badge.js");
-import(/* webpackChunkName: "inject-options" */ "../content/inject.js");
-
-import "bootstrap/dist/css/bootstrap.min.css";
-import "../vendor/font-awesome.css";
-import "./options.less";
-
-import "angularjs-color-picker/dist/angularjs-color-picker.min.css";
-import "angularjs-color-picker/dist/themes/angularjs-color-picker-bootstrap.min.css";
-import "angularjs-color-picker";
-
-import "./pnl-craft-topics.js";
-import { welcomeSetup, setupSelect2 } from "./init-welcome.js";
-import initUserProfile from "./user-profile.js";
-import initHistoryAndDicts from "./tables.js";
-import initAILanguageSelect from "./ai-language-select.js";
-import initSynthesisOptions from "./synthesis-options.js";
-import bootoast from "bootoast/dist/bootoast.min.js";
+import { setting, user, loadSetting, loadHistory, loadDicts } from "./state.js";
+import { applyTheme } from "./theme.js";
+import { fetchUserProfile, reloadOnLoginStatusChange } from "./user-profile.js";
+import { openWelcome } from "./sections/Welcome.jsx";
 import askForFeedback from "./ask-for-feedback.js";
-import enableLanguages from "./enableLanguages.js";
+import App from "./App.jsx";
+
+import(/* webpackChunkName: "inject-options" */ "../content/inject.js");
 
 document.title = `Options - ${process.env.PRODUCT}`;
 
-const dictApp = angular.module("fairyDictApp", ["ui.bootstrap", "color.picker"]);
-
-dictApp.controller("optionCtrl", [
-    "$scope",
-    "$sce",
-    ($scope, $sce) => {
-        $scope.isSidePal = process.env.PRODUCT === "SidePal";
-        $scope.isDictionariez = process.env.PRODUCT === "Dictionariez";
-        $scope.asciiTitle =
-            process.env.PRODUCT === "Dictionariez"
-                ? require("../ascii-title.html").default
-                : require(`../ascii-title.${process.env.PRODUCT.toLowerCase()}.html`).default;
-        $scope.asciiTitleHtml = $sce.trustAsHtml($scope.asciiTitle);
-
-        $scope.version = chrome.runtime.getManifest().version;
-        $scope.allSK = ["", "Ctrl", "Shift", "Alt", "Meta"];
-        $scope.specialKeys = ["No", "Ctrl", "Shift", "Alt", "Meta"];
-        $scope.allLetters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
-        $scope.allLetters.unshift("Disabled");
-
-        $scope.extraKeys = Object.keys(utils.extraKeyMap);
-
-        $scope.allKeys = $scope.allLetters.concat($scope.extraKeys);
-
-        $scope.allPositions = [
-            "topLeft",
-            "topCenter",
-            "topRight",
-            "middleLeft",
-            "middleCenter",
-            "middleRight",
-            "bottomLeft",
-            "bottomCenter",
-            "bottomRight",
-        ];
-        $scope.englishLookupSources = {
-            wiktionary: "Wiktionary",
-            bingCN: "Bing Dict CN",
-        };
-
-        $scope.changeKey = debounce((value, key) => {
-            if (key) {
-                $scope.setting[key] = value;
-            } else {
-                key = value;
-                value = $scope.setting[key];
-            }
-
-            chrome.runtime.sendMessage({
-                type: "save setting",
-                key,
-                value,
-            });
-            bootoast.toast({
-                message: `Setting saved. <br><br>
-                You may need to reload open web pages for the new setting to take effect.`,
-                position: "top",
-                type: "success",
-                timeout: 2,
-            });
-            $scope.$apply();
-        }, 100);
-
-        const initLanguageSelector = async () => {
-            await utils.promisifiedTimeout(1); // Wait for the DOM to be ready
-            const $select = $("#lookup-languages-options");
-            setupSelect2($select, null, $scope.setting);
-
-            $select.on("change", async () => {
-                const selected = $select.val() || [];
-
-                await enableLanguages(selected);
-
-                // Update local scope settings to reflect changes immediately in UI
-                $scope.setting.enabledLanguages = selected;
-
-                $scope.reloadDictionaries?.();
-                $scope.$apply();
-
-                bootoast.toast({
-                    message: "Language settings and dictionaries updated.",
-                    type: "success",
-                    position: "top",
-                    timeout: 3,
-                });
-            });
-        };
-
-        chrome.runtime.sendMessage(
-            {
-                type: "setting",
-            },
-            (config) => {
-                // window.setting = config
-                $scope.setting = config;
-                window.setting = config; // For debugging
-
-                const handleWelcomeComplete = () => {
-                    initLanguageSelector();
-                    initHistoryAndDicts($scope);
-                };
-
-                if (!config.enabledLanguages?.length) {
-                    // Fresh install - show language selection first
-                    // Server conflict check happens AFTER language selection completes
-                    welcomeSetup({
-                        setting: $scope.setting,
-                        applySetting: $scope.$apply.bind($scope),
-                        initialSetup: true,
-                        onSuccess: handleWelcomeComplete,
-                        onEscape: handleWelcomeComplete,
-                    });
-                } else {
-                    initLanguageSelector();
-                    initHistoryAndDicts($scope);
-                }
-                initUserProfile($scope);
-                initAILanguageSelect($scope);
-                if (location.search.includes("synthesis") || location.search.includes("voice")) {
-                    initSynthesisOptions($scope);
-                }
-                askForFeedback($scope);
-                $scope.$apply();
-            },
-        );
-
-        $scope.markColorEvent = {
-            onChange(api, color) {
-                $scope.changeKey(color, "markColor");
-            },
-        };
-
-        const setupDevFunctions = () => {
-            console.log(`\
+const setupDevFunctions = () => {
+    console.log(`\
 .--.        .
 |   : o    _|_   o                    o
 |   | .  .-.|    .  .-. .--. .-.  .--..  .-. ---.
@@ -188,28 +36,42 @@ And use "allDicts" to access all the dicts in your collection.
 Read more here: https://pnl.dev/topic/52/help-more-dictionaries-needed
 \
 `);
-            window.addDict = window.addExtraDict = async (dict) => {
-                await utils.send("dictionary-add", { dict });
-                location.reload();
-            };
-        };
-
-        setupDevFunctions();
-
-        // in order to display the page after css loaded.
-        $("body").show();
-    },
-]);
-
-const setupAppDescription = () => {
-    const appDescription =
-        process.env.PRODUCT === "Dictionariez"
-            ? require("../description-and-badge.html").default
-            : require(`../description-and-badge.${process.env.PRODUCT.toLowerCase()}.html`).default;
-
-    document.querySelector("#app-description").innerHTML = appDescription;
-
-    const { version } = chrome.runtime.getManifest();
-    document.querySelector("#app-description .badge").innerText = `V${version}`;
+    window.addDict = window.addExtraDict = async (dict) => {
+        await utils.send("dictionary-add", { dict });
+        location.reload();
+    };
+    window.welcomeSetup = () => openWelcome({ initialSetup: false });
 };
-setupAppDescription();
+
+const loadTables = () => {
+    loadHistory();
+    loadDicts();
+};
+
+const init = async () => {
+    const config = await loadSetting();
+    await applyTheme(config.themeMode, config.themeColor);
+
+    render(h(App), document.getElementById("app"));
+    // in order to display the page after css loaded.
+    document.body.classList.remove("loading");
+
+    if (!config.enabledLanguages?.length) {
+        // Fresh install - show language selection first
+        // Server conflict check happens AFTER language selection completes
+        openWelcome({ initialSetup: true, onDone: loadTables });
+    } else {
+        loadTables();
+    }
+
+    fetchUserProfile().then((u) => {
+        user.value = u;
+        if (u.loggedIn) setting.value = { ...setting.value, isPro: u.isPro };
+        reloadOnLoginStatusChange(u.loggedIn);
+    });
+
+    askForFeedback();
+    setupDevFunctions();
+};
+
+init();

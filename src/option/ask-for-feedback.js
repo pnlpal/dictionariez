@@ -1,129 +1,67 @@
-import $ from "jquery";
-import bootoast from "bootoast/dist/bootoast.min.js";
+import { setting, saveSetting, toast } from "./state.js";
 
-async function getFeedbackLink() {
+const product = process.env.PRODUCT;
+
+function getFeedbackLink() {
     if (process.env.BROWSER === "Firefox") {
-        const appId =
-            process.env.PRODUCT === "Ordböcker"
-                ? "ordböcker"
-                : process.env.PRODUCT === "SidePal"
-                  ? "sidepal"
-                  : "dictionaries";
+        const appId = product === "Ordböcker" ? "ordböcker" : product === "SidePal" ? "sidepal" : "dictionaries";
         return `https://addons.mozilla.org/firefox/addon/${appId}/reviews`;
     } else if (navigator.userAgent.includes("Edg/")) {
-        const extId = chrome.runtime.id;
-        return `https://microsoftedge.microsoft.com/addons/detail/${extId}`;
-    } else {
-        const extId = chrome.runtime.id;
-        return `https://chrome.google.com/webstore/detail/${extId}/reviews`;
+        return `https://microsoftedge.microsoft.com/addons/detail/${chrome.runtime.id}`;
     }
+    return `https://chrome.google.com/webstore/detail/${chrome.runtime.id}/reviews`;
 }
 
-function directAskForComment() {
-    bootoast.toast({
-        message: `Hi, as an indie tool, would you mind rating ${process.env.PRODUCT}? 
-                                <br><small>It really helps a lot, thank you!</small>
-                                <div class="clearfix" style="margin-top: 10px;">
-                                    <button class="btn btn-xs btn-default feedback-action" data-answer="skip">Later</button>
-                                    <button class="btn btn-xs btn-primary pull-right feedback-action" data-action="rate">Rate Now</button>
-                                </div>`,
-        type: "success",
-        position: "top-center",
-        timeout: 5,
-    });
-}
+const saveStatus = (value) => saveSetting("feedbackStatus", value, { silent: true });
 
-function twoStepsFeedback($scope) {
-    if ($scope.setting.feedbackStatus !== "rated" && $scope.setting.feedbackStatus !== "feedbacked") {
-        setTimeout(() => {
-            bootoast.toast({
-                message: `Are you happy with ${process.env.PRODUCT}? 
-                                <div class="clearfix" style="margin-top: 10px;">
-                                    <button class="btn btn-xs btn-default feedback-answer" data-answer="no">No</button>
-                                    <button class="btn btn-xs btn-success pull-right feedback-answer" data-answer="yes">Yes</button>
-                                </div>`,
-                type: "info",
-                position: "bottom-right",
-                timeout: 10,
-            });
-        }, 2000);
-    }
+const later = { label: "Later", onClick: () => saveStatus("later") };
+const rate = {
+    label: "Rate Now",
+    onClick: () => {
+        window.open(getFeedbackLink(), "_blank");
+        saveStatus("rated");
+    },
+};
+const feedback = {
+    label: "Give Feedback",
+    onClick: () => {
+        window.open("https://pnl.dev/category/3/feedback", "_blank");
+        saveStatus("feedbacked");
+    },
+};
 
-    $(document)
-        .off("click", ".feedback-answer")
-        .on("click", ".feedback-answer", function () {
-            const isHappy = $(this).data("answer") === "yes";
-            $(".bootoast").remove();
+const askToRate = (message, timeout) => toast(message, { type: "primary", timeout, actions: [later, rate] });
 
-            if (isHappy) {
-                bootoast.toast({
-                    message: `Glad to hear that! Would you mind rating me? 
-                                <br><small>It really helps a lot for an indie tool!</small>
-                                <div class="clearfix" style="margin-top: 10px;">
-                                    <button class="btn btn-xs btn-default feedback-action" data-answer="skip">Later</button>
-                                    <button class="btn btn-xs btn-primary pull-right feedback-action" data-action="rate">Rate Now</button>
-                                </div>`,
-                    type: "success",
-                    position: "bottom-right",
-                    timeout: 20,
-                });
-            } else {
-                bootoast.toast({
-                    message: `Sorry to hear that. How can I improve?
-                                <div class="clearfix" style="margin-top: 10px;">
-                                    <button class="btn btn-xs btn-default feedback-action" data-action="skip">Later</button>
-                                    <button class="btn btn-xs btn-primary pull-right feedback-action" data-action="feedback">Give Feedback</button>
-                                </div>`,
-                    type: "warning",
-                    position: "bottom-right",
-                    timeout: 20,
-                });
-            }
+function twoStepsFeedback() {
+    const { feedbackStatus } = setting.value;
+    if (feedbackStatus === "rated" || feedbackStatus === "feedbacked") return;
+
+    setTimeout(() => {
+        toast(`Are you happy with ${product}?`, {
+            type: "secondary",
+            timeout: 10,
+            actions: [
+                {
+                    label: "No",
+                    onClick: () =>
+                        toast("Sorry to hear that. How can I improve?", { type: "tertiary", timeout: 20, actions: [later, feedback] }),
+                },
+                {
+                    label: "Yes",
+                    onClick: () => askToRate("Glad to hear that! Would you mind rating me? It really helps a lot for an indie tool!", 20),
+                },
+            ],
         });
+    }, 2000);
 }
 
-function askForFeedback($scope) {
+export default function askForFeedback() {
     localStorage.visitOptionsCounter = parseInt(localStorage.visitOptionsCounter || "0") + 1;
-    if (localStorage.visitOptionsCounter < 5) {
-        return;
-    }
+    if (localStorage.visitOptionsCounter < 5) return;
 
-    if (localStorage.visitOptionsCounter > 20 && $scope.setting.feedbackStatus !== "rated") {
-        directAskForComment();
+    if (localStorage.visitOptionsCounter > 20 && setting.value.feedbackStatus !== "rated") {
+        askToRate(`Hi, as an indie tool, would you mind rating ${product}? It really helps a lot, thank you!`, 5);
     } else {
-        twoStepsFeedback($scope);
+        twoStepsFeedback();
     }
-
-    $(document)
-        .off("click", ".feedback-action")
-        .on("click", ".feedback-action", function () {
-            const action = $(this).data("action");
-            $(".bootoast").remove();
-
-            if (action === "rate") {
-                getFeedbackLink().then((link) => {
-                    window.open(link, "_blank");
-                });
-                chrome.runtime.sendMessage({
-                    type: "save setting",
-                    key: "feedbackStatus",
-                    value: "rated",
-                });
-            } else if (action === "feedback") {
-                window.open("https://pnl.dev/category/3/feedback", "_blank");
-                chrome.runtime.sendMessage({
-                    type: "save setting",
-                    key: "feedbackStatus",
-                    value: "feedbacked",
-                });
-            } else {
-                chrome.runtime.sendMessage({
-                    type: "save setting",
-                    key: "feedbackStatus",
-                    value: "later",
-                });
-            }
-        });
 }
-
-export default askForFeedback;
