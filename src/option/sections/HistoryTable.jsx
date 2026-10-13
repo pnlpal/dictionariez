@@ -69,6 +69,16 @@ const removeLocally = (items) => {
     history.value = history.value.filter((x) => !removed.has(x));
 };
 
+function EmptyHistory() {
+    return (
+        <article class="round center-align">
+            <i class="extra">menu_book</i>
+            <h6>No words yet, let's look one up!</h6>
+            <p>Every word you look up is saved here, so you can review it, rate it and send it to Anki.</p>
+        </article>
+    );
+}
+
 export default function HistoryTable() {
     const [limit, setLimit] = useState(PAGE_SIZE);
     const table = useTable({
@@ -86,6 +96,8 @@ export default function HistoryTable() {
     const selectedRows = rows.filter((row) => row.getIsSelected());
     const allSelected = rows.length > 0 && selectedRows.length === rows.length;
     const total = history.value.length;
+
+    if (!total) return <EmptyHistory />;
 
     const toggleAll = () =>
         table.setRowSelection(allSelected ? {} : Object.fromEntries(rows.map((row) => [row.id, true])));
@@ -166,7 +178,9 @@ export default function HistoryTable() {
                             <button
                                 class="transparent circle small"
                                 title="Export to Anki"
-                                onClick={() => utils.send("open anki", { ...item, detectedLangInContext: langOf(item) })}
+                                onClick={() =>
+                                    utils.send("open anki", { ...item, detectedLangInContext: langOf(item) })
+                                }
                             >
                                 <i class="tertiary-text">school</i>
                             </button>
@@ -230,7 +244,11 @@ export default function HistoryTable() {
                                     >
                                         <span class="no-wrap">
                                             {header.column.columnDef.header}
-                                            {sorted && <i class="small">{sorted === "desc" ? "arrow_downward" : "arrow_upward"}</i>}
+                                            {sorted && (
+                                                <i class="small">
+                                                    {sorted === "desc" ? "arrow_downward" : "arrow_upward"}
+                                                </i>
+                                            )}
                                         </span>
                                     </th>
                                 );
@@ -257,7 +275,7 @@ export default function HistoryTable() {
                         ))}
                     </tbody>
                 </table>
-                {!rows.length && <p class="center-align muted padding">No words found.</p>}
+                {!rows.length && <p class="center-align muted padding">No words match "{table.state.globalFilter}".</p>}
             </div>
 
             {rows.length > limit && (
