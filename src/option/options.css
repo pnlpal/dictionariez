@@ -28,6 +28,23 @@ body.loading {
     overflow-x: auto;
 }
 
+/* the Pro/Free badge sits on the bottom edge of the avatar */
+.chip.profile-badge {
+    --_size: 1.125rem;
+    --_padding: 0.4rem;
+    position: relative;
+    margin-block-start: -0.6rem;
+    gap: 0.125rem;
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.chip.profile-badge > i {
+    font-size: 0.75rem;
+}
+
 .crafting-topic {
     max-inline-size: 100%;
 }

@@ -119,19 +119,21 @@ function Profile() {
     const u = user.value;
     const isPro = setting.value.isPro;
     return (
-        <nav class="profile">
-            <a class="chip round large" href={u.link} target="_blank">
-                {u.pictureUrl && <img class="circle" src={u.pictureUrl} alt="" />}
-                <span>{u.username}</span>
+        <nav class="vertical center-align no-space profile">
+            <a href={u.link} target="_blank" title={u.loggedIn ? "Your profile on pnl.dev" : "Log in to pnl.dev"}>
+                <img class="circle large border" src={u.pictureUrl} alt="" />
             </a>
             <a
-                class={`chip round ${isPro ? "primary" : "border"}`}
+                class={`chip small round profile-badge ${isPro ? "primary" : "surface-container"}`}
                 href={u.subscriptionLink}
                 target="_blank"
                 title={isPro ? "You are a Pro user!" : "Get Pro to support the development and get more features!"}
             >
-                {isPro && <i class="fill">star</i>}
+                {isPro && <i class="fill small">star</i>}
                 <span>{isPro ? "Pro" : "Free"}</span>
+            </a>
+            <a class="link small-text" href={u.link} target="_blank">
+                {u.username}
             </a>
         </nav>
     );
