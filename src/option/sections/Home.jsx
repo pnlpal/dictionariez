@@ -65,6 +65,56 @@ function CraftingTopic() {
     );
 }
 
+const repo = "pnlpal/dictionariez";
+const formatCount = (n) => (n >= 1000 ? `${(n / 1000).toFixed(1).replace(/\.0$/, "")}k` : String(n));
+
+// Star count from the GitHub API, cached for a day to stay well under the unauthenticated rate limit.
+function useStarCount() {
+    const [count, setCount] = useState(() => {
+        try {
+            const cached = JSON.parse(localStorage.getItem("github-stars"));
+            return cached?.count;
+        } catch {
+            return undefined;
+        }
+    });
+
+    useEffect(() => {
+        let cached;
+        try {
+            cached = JSON.parse(localStorage.getItem("github-stars"));
+        } catch {
+            // ignore broken cache
+        }
+        if (cached && Date.now() - cached.t < 24 * 3600e3) return;
+
+        fetch(`https://api.github.com/repos/${repo}`)
+            .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+            .then(({ stargazers_count: n }) => {
+                setCount(n);
+                try {
+                    localStorage.setItem("github-stars", JSON.stringify({ count: n, t: Date.now() }));
+                } catch {
+                    // localStorage may be disabled or full
+                }
+            })
+            .catch(() => {});
+    }, []);
+
+    return count;
+}
+
+function GitHubStars() {
+    const count = useStarCount();
+    return (
+        <a class="button border" href={`https://github.com/${repo}`} target="_blank" title="It's open source, a star helps a lot!">
+            <i class="fill amber-text">star</i>
+            <span>Star on GitHub</span>
+            {count != null && <span class="chip small round fill">{formatCount(count)}</span>}
+        </a>
+    );
+}
+
 function Profile() {
     const u = user.value;
     const isPro = setting.value.isPro;
@@ -99,11 +149,7 @@ export default function Home() {
             </div>
 
             <nav class="wrap">
-                <a class="button border" href="https://github.com/pnlpal/dictionariez" target="_blank" title="It's open source">
-                    <i>star</i>
-                    <span>Star on GitHub</span>
-                </a>
-                <img src="https://img.shields.io/github/stars/pnlpal/dictionariez.svg?style=social" alt="GitHub stars" height="20" />
+                <GitHubStars />
                 <button class="border">
                     <i>share</i>
                     <span>Share</span>
