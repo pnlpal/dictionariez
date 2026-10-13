@@ -50,7 +50,7 @@ const loadTables = () => {
 
 const init = async () => {
     const config = await loadSetting();
-    await applyTheme(config.themeMode, config.themeColor);
+    await applyTheme(config.themeMode);
 
     render(h(App), document.getElementById("app"));
     // in order to display the page after css loaded.

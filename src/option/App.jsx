@@ -1,13 +1,13 @@
 import { useEffect, useState } from "preact/hooks";
 import utils from "utils";
-import { setting, user, history, historyAlmostFull, allDicts, syncDictsError } from "./state.js";
+import { setting, saveSetting, user, history, historyAlmostFull, allDicts, syncDictsError } from "./state.js";
+import { applyTheme, themeModes } from "./theme.js";
 import { Snackbar } from "./components/controls.jsx";
 import { ConfirmHost } from "./components/Dialog.jsx";
 import Home from "./sections/Home.jsx";
 import HistoryTable from "./sections/HistoryTable.jsx";
 import DictTable from "./sections/DictTable.jsx";
 import { GeneralSettings, ProSettings, Hotkeys } from "./sections/Settings.jsx";
-import Appearance from "./sections/Appearance.jsx";
 import { WelcomeDialog } from "./sections/Welcome.jsx";
 import SynthesisDialog from "./sections/SynthesisDialog.jsx";
 
@@ -19,7 +19,6 @@ const sections = [
     ["function-setting", "tune", "Settings"],
     ["pro-setting", "workspace_premium", "Pro Settings"],
     ["shortcut-setting", "keyboard", "Hotkeys"],
-    ["appearance", "palette", "Appearance"],
 ];
 
 function useActiveSection() {
@@ -47,6 +46,32 @@ function NavLinks({ active, labels = true }) {
     ));
 }
 
+const modeInfo = {
+    auto: ["brightness_auto", "Auto"],
+    light: ["light_mode", "Light"],
+    dark: ["dark_mode", "Dark"],
+};
+
+// Cycles the color mode: auto -> light -> dark
+function ThemeToggle({ labels = true }) {
+    const mode = setting.value.themeMode || "auto";
+    const next = themeModes[(themeModes.indexOf(mode) + 1) % themeModes.length];
+    const [icon, label] = modeInfo[mode];
+
+    const toggle = (e) => {
+        e.preventDefault();
+        saveSetting("themeMode", next, { silent: true });
+        applyTheme(next);
+    };
+
+    return (
+        <a href="" onClick={toggle} title={`Theme: ${label}, click to switch to ${modeInfo[next][1]}`}>
+            <i>{icon}</i>
+            {labels && <span>{label}</span>}
+        </a>
+    );
+}
+
 function Navigation() {
     const active = useActiveSection();
     return (
@@ -59,15 +84,20 @@ function Navigation() {
                     </nav>
                 </header>
                 <NavLinks active={active} />
+                <div class="max"></div>
+                <ThemeToggle />
             </nav>
             <nav class="left m">
                 <header>
                     <img class="circle" src={productIcon} alt="" />
                 </header>
                 <NavLinks active={active} />
+                <div class="max"></div>
+                <ThemeToggle />
             </nav>
             <nav class="bottom s">
                 <NavLinks active={active} labels={false} />
+                <ThemeToggle labels={false} />
             </nav>
         </>
     );
@@ -199,9 +229,6 @@ export default function App() {
                 </Section>
                 <Section id="shortcut-setting" title="Hotkeys">
                     <Hotkeys />
-                </Section>
-                <Section id="appearance" title="Appearance">
-                    <Appearance />
                 </Section>
             </main>
             <Snackbar />

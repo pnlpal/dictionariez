@@ -1,15 +1,17 @@
 import { ui } from "beercss/dist/cdn/beer.min.js";
 import "material-dynamic-colors";
 
-export const defaultThemeColor = "#6750a4"; // Material 3 baseline
+const themeColor = "#2a6fdb"; // Ocean
+
+export const themeModes = ["auto", "light", "dark"];
 
 let currentMode = "auto";
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
     if (currentMode === "auto") ui("mode", "auto");
 });
 
-export async function applyTheme(mode = "auto", color = defaultThemeColor) {
+export async function applyTheme(mode = "auto") {
     currentMode = mode;
-    await ui("theme", color || defaultThemeColor);
+    await ui("theme", themeColor);
     ui("mode", mode);
 }

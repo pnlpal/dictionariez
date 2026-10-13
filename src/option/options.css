@@ -95,10 +95,6 @@ body.loading {
     cursor: pointer;
 }
 
-.theme-swatch {
-    border: 0.125rem solid var(--outline-variant);
-}
-
 .hotkeys-table td:first-child {
     inline-size: 40%;
 }
