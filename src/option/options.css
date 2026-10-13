@@ -1,4 +1,9 @@
 /* Only what Beer CSS doesn't provide; colors always come from Beer's theme variables. */
+:root {
+    /* Beer sizes everything in rem from this root; its default 16px gives 14px body text, too small for reading */
+    --size: 1.125rem;
+}
+
 body.loading {
     visibility: hidden;
 }
@@ -92,7 +97,7 @@ body.loading {
 }
 
 .history-table td:is(.col-sentence, .col-s) {
-    max-inline-size: 18rem;
+    max-inline-size: 13rem;
 }
 
 .history-table td:is(.col-sentence, .col-s) .truncate {

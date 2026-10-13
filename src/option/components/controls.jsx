@@ -26,7 +26,7 @@ export function SwitchRow({ k, label, hint, children, invert = false }) {
     const checked = invert ? !setting.value[k] : !!setting.value[k];
     return (
         <>
-            <label class="row top-align setting-row">
+            <label class="row top-align setting-row medium-text">
                 <span class="switch">
                     <input type="checkbox" checked={checked} onChange={(e) => saveSetting(k, invert !== e.currentTarget.checked)} />
                     <span></span>
