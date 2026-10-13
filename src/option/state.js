@@ -23,9 +23,10 @@ export const syncDictsError = signal(null);
 export const snackbar = signal(null);
 let snackbarTimer;
 
-export function toast(message, { type = "primary", timeout = 3, actions } = {}) {
+// position: "top" (center) or "bottom-right" for less intrusive prompts
+export function toast(message, { type = "primary", timeout = 3, actions, position = "top" } = {}) {
     clearTimeout(snackbarTimer);
-    snackbar.value = { message, type, actions, id: Date.now() };
+    snackbar.value = { message, type, actions, position, id: Date.now() };
     if (timeout > 0) {
         snackbarTimer = setTimeout(() => (snackbar.value = null), timeout * 1000);
     }

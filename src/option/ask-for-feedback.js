@@ -12,6 +12,9 @@ function getFeedbackLink() {
     return `https://chrome.google.com/webstore/detail/${chrome.runtime.id}/reviews`;
 }
 
+// out of the way, unlike the setting-saved toasts at the top
+const position = "bottom-right";
+
 const saveStatus = (value) => saveSetting("feedbackStatus", value, { silent: true });
 
 const later = { label: "Later", onClick: () => saveStatus("later") };
@@ -30,7 +33,7 @@ const feedback = {
     },
 };
 
-const askToRate = (message, timeout) => toast(message, { type: "primary", timeout, actions: [later, rate] });
+const askToRate = (message, timeout) => toast(message, { type: "primary", timeout, actions: [later, rate], position });
 
 function twoStepsFeedback() {
     const { feedbackStatus } = setting.value;
@@ -40,15 +43,25 @@ function twoStepsFeedback() {
         toast(`Are you happy with ${product}?`, {
             type: "secondary",
             timeout: 10,
+            position,
             actions: [
                 {
                     label: "No",
                     onClick: () =>
-                        toast("Sorry to hear that. How can I improve?", { type: "tertiary", timeout: 20, actions: [later, feedback] }),
+                        toast("Sorry to hear that. How can I improve?", {
+                            type: "tertiary",
+                            timeout: 20,
+                            actions: [later, feedback],
+                            position,
+                        }),
                 },
                 {
                     label: "Yes",
-                    onClick: () => askToRate("Glad to hear that! Would you mind rating me? It really helps a lot for an indie tool!", 20),
+                    onClick: () =>
+                        askToRate(
+                            "Glad to hear that! Would you mind rating me? It really helps a lot for an indie tool!",
+                            20,
+                        ),
                 },
             ],
         });
@@ -60,7 +73,7 @@ export default function askForFeedback() {
     if (localStorage.visitOptionsCounter < 5) return;
 
     if (localStorage.visitOptionsCounter > 20 && setting.value.feedbackStatus !== "rated") {
-        askToRate(`Hi, as an indie tool, would you mind rating ${product}? It really helps a lot, thank you!`, 5);
+        askToRate(`Hi, as an indie tool, would you mind rating ${product}? It really helps a lot, thank you!`, 10);
     } else {
         twoStepsFeedback();
     }

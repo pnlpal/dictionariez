@@ -3,7 +3,7 @@ import { setting, saveSetting, snackbar, closeToast } from "../state.js";
 export function Snackbar() {
     const s = snackbar.value;
     return (
-        <div class={`snackbar top ${s ? `active ${s.type}` : ""}`} onClick={() => !s?.actions && closeToast()}>
+        <div class={`snackbar ${s?.position || "top"} ${s ? `active ${s.type}` : ""}`} onClick={() => !s?.actions && closeToast()}>
             <div class="max">{s?.message}</div>
             {s?.actions?.map(({ label, onClick }) => (
                 <button
