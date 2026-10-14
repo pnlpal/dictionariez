@@ -143,7 +143,15 @@ export default function HistoryTable() {
         switch (cell.column.id) {
             case "w":
                 return (
-                    <a href="" class="link bold" onClick={(e) => lookUp(e, item)} title={`Look up "${item.w}"`}>
+                    <a
+                        href=""
+                        class="link bold dictionariez-w"
+                        data-w={item.w}
+                        data-sentence={utils.sanitizeHTML(item.sentence || "")}
+                        data-lang={langOf(item)}
+                        onClick={(e) => lookUp(e, item)}
+                        title={`Look up "${item.w}"`}
+                    >
                         {item.w}
                     </a>
                 );

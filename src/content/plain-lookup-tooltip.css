@@ -2,8 +2,8 @@
     all: initial;
     display: block;
     visibility: visible !important; /* Fix on reddit.com */
-    position: absolute;
-    z-index: 9999999999;
+    position: absolute !important;
+    z-index: 2147483647 !important;
 }
 
 .dictionaries-tooltip {
