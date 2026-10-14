@@ -182,7 +182,7 @@ export default function HistoryTable() {
                                     utils.send("open anki", { ...item, detectedLangInContext: langOf(item) })
                                 }
                             >
-                                <i class="tertiary-text">school</i>
+                                <i class="tertiary-text">share_windows</i>
                             </button>
                         )}
                         <button class="transparent circle small" title="Remove" onClick={() => removeOne(item)}>
