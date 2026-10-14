@@ -1,9 +1,17 @@
+import { useRef } from "preact/hooks";
 import { setting, saveSetting, snackbar, closeToast } from "../state.js";
 
 export function Snackbar() {
-    const s = snackbar.value;
+    const active = !!snackbar.value;
+    // keep rendering the last toast while it animates out, so it hides where it was shown
+    const last = useRef(null);
+    if (active) last.current = snackbar.value;
+    const s = last.current;
     return (
-        <div class={`snackbar ${s?.position || "top"} ${s ? `active ${s.type}` : ""}`} onClick={() => !s?.actions && closeToast()}>
+        <div
+            class={`snackbar ${s?.position || "top"} ${s?.type || ""} ${active ? "active" : ""}`}
+            onClick={() => active && !s?.actions && closeToast()}
+        >
             <div class="max">{s?.message}</div>
             {s?.actions?.map(({ label, onClick }) => (
                 <button

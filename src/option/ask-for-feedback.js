@@ -33,6 +33,30 @@ const feedback = {
     },
 };
 
+// the options page has facelifted, ask the users who already rated for feedback on the new design, once
+function askForDesignFeedback() {
+    if (setting.value.designFeedbackStatus) return;
+
+    const saveDesignStatus = (value) => saveSetting("designFeedbackStatus", value, { silent: true });
+    setTimeout(() => {
+        toast("The options page got a new look! What do you think of it?", {
+            type: "secondary",
+            timeout: 20,
+            position,
+            actions: [
+                { label: "No Thanks", onClick: () => saveDesignStatus("dismissed") },
+                {
+                    label: "Give Feedback",
+                    onClick: () => {
+                        window.open("https://pnl.dev/category/3/feedback", "_blank");
+                        saveDesignStatus("feedbacked");
+                    },
+                },
+            ],
+        });
+    }, 2000);
+}
+
 const askToRate = (message, timeout) => toast(message, { type: "primary", timeout, actions: [later, rate], position });
 
 function twoStepsFeedback() {
@@ -74,6 +98,8 @@ export default function askForFeedback() {
 
     if (localStorage.visitOptionsCounter > 20 && setting.value.feedbackStatus !== "rated") {
         askToRate(`Hi, as an indie tool, would you mind rating ${product}? It really helps a lot, thank you!`, 10);
+    } else if (setting.value.feedbackStatus === "rated") {
+        askForDesignFeedback();
     } else {
         twoStepsFeedback();
     }
