@@ -40,12 +40,26 @@ function HotkeyInline({ sk, k, keys = letters }) {
     );
 }
 
+// Language changes are applied one at a time: overlapping syncs could otherwise finish out of order
+// and leave the dict list showing an older language selection.
+let languageSync = Promise.resolve();
+let latestLanguages;
+
 function LookupLanguages() {
-    const save = async (langs) => {
+    const save = (langs) => {
         updateSetting("enabledLanguages", langs);
-        await enableLanguages(langs);
-        await loadDicts();
-        toast("Language settings and dictionaries updated.");
+        latestLanguages = langs;
+        languageSync = languageSync
+            .then(async () => {
+                if (langs !== latestLanguages) return; // superseded by a newer change that is queued
+                await enableLanguages(langs);
+                await loadDicts();
+                toast("Language settings and dictionaries updated.");
+            })
+            .catch((error) => {
+                console.error("Failed to update languages:", error);
+                toast("Failed to update the dictionaries for your languages, please try again.", { type: "error" });
+            });
     };
 
     const enabled = setting.value.enabledLanguages || [];
