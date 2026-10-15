@@ -4,7 +4,7 @@ import { socialLinks } from "./Welcome.jsx";
 
 const product = process.env.PRODUCT;
 const productFile = product === "Dictionariez" ? "" : `.${product.toLowerCase()}`;
-const asciiTitle = require(`../../ascii-title${productFile}.html`).default;
+export const asciiTitle = require(`../../ascii-title${productFile}.html`).default;
 const description = require(`../../description-and-badge${productFile}.html`)
     .default.replace("VERSION", `V${chrome.runtime.getManifest().version}`)
     // Beer's .badge is a notification dot, use a chip for the version link
@@ -104,7 +104,7 @@ function useStarCount() {
     return count;
 }
 
-function GitHubStars() {
+export function GitHubStars() {
     const count = useStarCount();
     return (
         <a class="button border" href={`https://github.com/${repo}`} target="_blank" title="It's open source, a star helps a lot!">
@@ -115,7 +115,37 @@ function GitHubStars() {
     );
 }
 
-function Profile() {
+export function ShareButton() {
+    return (
+        <button class="border">
+            <i>share</i>
+            <span>Share</span>
+            <menu class="no-wrap">
+                {shareTargets.map(([name, href]) => (
+                    <li>
+                        <a href={href} target="_blank">
+                            {name}
+                        </a>
+                    </li>
+                ))}
+            </menu>
+        </button>
+    );
+}
+
+export function PrivacyNote() {
+    return (
+        <p>
+            Your privacy is valued. Please read the{" "}
+            <a class="link" target="_blank" href="https://github.com/pnlpal/dictionariez/blob/master/privacy.md">
+                privacy policy
+            </a>
+            .
+        </p>
+    );
+}
+
+export function Profile() {
     const u = user.value;
     const isPro = setting.value.isPro;
     return (
@@ -152,29 +182,11 @@ export default function Home() {
 
             <nav class="wrap">
                 <GitHubStars />
-                <button class="border">
-                    <i>share</i>
-                    <span>Share</span>
-                    <menu class="no-wrap">
-                        {shareTargets.map(([name, href]) => (
-                            <li>
-                                <a href={href} target="_blank">
-                                    {name}
-                                </a>
-                            </li>
-                        ))}
-                    </menu>
-                </button>
+                <ShareButton />
                 <span class="muted">it really helps!</span>
             </nav>
 
-            <p>
-                Your privacy is valued. Please read the{" "}
-                <a class="link" target="_blank" href="https://github.com/pnlpal/dictionariez/blob/master/privacy.md">
-                    privacy policy
-                </a>
-                .
-            </p>
+            <PrivacyNote />
             <p>
                 Let's learn programming and languages together, join the discussion in the{" "}
                 <a class="link" target="_blank" href="https://pnl.dev/topic/2/">

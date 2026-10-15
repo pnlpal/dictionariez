@@ -159,9 +159,26 @@ body.loading {
 }
 
 @media only screen and (max-width: 600px) {
-    /* stay above the bottom navigation bar */
     .snackbar.bottom-right {
-        inset: auto 1rem 6rem 1rem;
+        inset: auto 1rem 1rem 1rem;
         max-inline-size: none;
     }
+}
+
+/* mobile hub page */
+.mobile-profile img {
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+}
+
+.mobile-profile .chip {
+    flex: none;
+}
+
+/* shrink the ~50 column ascii title to fit the screen width instead of scrolling */
+.mobile-ascii-title pre {
+    display: inline-block;
+    text-align: start;
+    font-size: max(0.5rem, calc((100vw - 4rem) / 31));
+    margin-block-end: 0.5rem;
 }

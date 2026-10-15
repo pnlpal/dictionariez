@@ -10,25 +10,19 @@ import DictTable from "./sections/DictTable.jsx";
 import { GeneralSettings, ProSettings, Hotkeys } from "./sections/Settings.jsx";
 import { WelcomeDialog } from "./sections/Welcome.jsx";
 import SynthesisDialog from "./sections/SynthesisDialog.jsx";
+import MobileHome from "./sections/MobileHome.jsx";
+import { sections, isMobile, route, goToHub } from "./nav.js";
 
 const productIcon = "/" + chrome.runtime.getManifest().icons["128"];
 
-const sections = [
-    ["history", "history", "History"],
-    ["dictionary", "dictionary", "Dictionaries"],
-    ["function-setting", "tune", "Settings"],
-    ["pro-setting", "workspace_premium", "Pro Settings"],
-    ["shortcut-setting", "keyboard", "Hotkeys"],
-];
-
 function useActiveSection() {
-    const [active, setActive] = useState(sections[0][0]);
+    const [active, setActive] = useState(sections[0].id);
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),
             { rootMargin: "-30% 0px -60% 0px" },
         );
-        sections.forEach(([id]) => {
+        sections.forEach(({ id }) => {
             const el = document.getElementById(id);
             if (el) observer.observe(el);
         });
@@ -37,11 +31,11 @@ function useActiveSection() {
     return active;
 }
 
-function NavLinks({ active, labels = true }) {
-    return sections.map(([id, icon, label]) => (
+function NavLinks({ active }) {
+    return sections.map(({ id, icon, label }) => (
         <a href={`#${id}`} class={active === id ? "active" : ""} title={label}>
             <i>{icon}</i>
-            {labels && <span>{label}</span>}
+            <span>{label}</span>
         </a>
     ));
 }
@@ -52,23 +46,50 @@ const modeInfo = {
     dark: ["dark_mode", "Dark"],
 };
 
+const setThemeMode = (mode) => {
+    saveSetting("themeMode", mode, { silent: true });
+    applyTheme(mode);
+};
+
 // Cycles the color mode: auto -> light -> dark
-function ThemeToggle({ labels = true }) {
+function ThemeToggle() {
     const mode = setting.value.themeMode || "auto";
     const next = themeModes[(themeModes.indexOf(mode) + 1) % themeModes.length];
     const [icon, label] = modeInfo[mode];
 
     const toggle = (e) => {
         e.preventDefault();
-        saveSetting("themeMode", next, { silent: true });
-        applyTheme(next);
+        setThemeMode(next);
     };
 
     return (
         <a href="" onClick={toggle} title={`Theme: ${label}, click to switch to ${modeInfo[next][1]}`}>
             <i>{icon}</i>
-            {labels && <span>{label}</span>}
+            <span>{label}</span>
         </a>
+    );
+}
+
+// All modes side by side, for the mobile hub list where cycling on tap isn't discoverable
+function ThemePicker() {
+    const mode = setting.value.themeMode || "auto";
+    return (
+        <div class="row max">
+            <i>palette</i>
+            <div class="max">Theme</div>
+            <nav class="group connected">
+                {themeModes.map((m) => (
+                    <button
+                        class={`small ${m === mode ? "active" : "border"}`}
+                        onClick={() => setThemeMode(m)}
+                        title={modeInfo[m][1]}
+                        aria-pressed={m === mode}
+                    >
+                        <i>{modeInfo[m][0]}</i>
+                    </button>
+                ))}
+            </nav>
+        </div>
     );
 }
 
@@ -94,10 +115,6 @@ function Navigation() {
                 <NavLinks active={active} />
                 <div class="max"></div>
                 <ThemeToggle />
-            </nav>
-            <nav class="bottom s">
-                <NavLinks active={active} labels={false} />
-                <ThemeToggle labels={false} />
             </nav>
         </>
     );
@@ -139,6 +156,22 @@ function SessionExpired({ what }) {
 }
 
 function Section({ id, title, extra, children }) {
+    if (isMobile.value) {
+        return (
+            <section id={id} class="section">
+                <header class="fixed">
+                    <nav>
+                        <a class="button circle transparent" href="" onClick={goToHub} title="Back">
+                            <i>arrow_back</i>
+                        </a>
+                        <h6 class="max">{title}</h6>
+                        {extra}
+                    </nav>
+                </header>
+                {children}
+            </section>
+        );
+    }
     return (
         <section id={id} class="section">
             <h4 class="row small-space">
@@ -197,40 +230,67 @@ function DictSection() {
     );
 }
 
-export default function App() {
-    const [voicesOpen, setVoicesOpen] = useState(/synthesis|voice/.test(location.search));
+const sectionViews = {
+    history: () => <HistorySection />,
+    dictionary: () => <DictSection />,
+    "function-setting": () => (
+        <Section id="function-setting" title="Settings">
+            <GeneralSettings />
+        </Section>
+    ),
+    "pro-setting": () => (
+        <Section
+            id="pro-setting"
+            title="Pro Settings"
+            extra={
+                <a href="https://pnl.dev/pro" target="_blank" title="What is this?">
+                    <i>help</i>
+                </a>
+            }
+        >
+            <ProSettings />
+        </Section>
+    ),
+    "shortcut-setting": () => (
+        <Section id="shortcut-setting" title="Hotkeys">
+            <Hotkeys />
+        </Section>
+    ),
+};
 
-    useEffect(() => {
-        utils.send("open options request to", ({ to }) => {
-            if (to) document.getElementById(to)?.scrollIntoView();
-        });
-    }, []);
+// Phones: a hub page, or the single section named in the hash
+function MobileMain() {
+    const view = sectionViews[route.value];
+    useEffect(() => scrollTo(0, 0), [route.value]);
+    return <main class="responsive">{view ? view() : <MobileHome themePicker={<ThemePicker />} />}</main>;
+}
 
+function DesktopMain() {
     return (
         <>
             <Navigation />
             <main class="responsive">
                 <Home />
-                <HistorySection />
-                <DictSection />
-                <Section id="function-setting" title="Settings">
-                    <GeneralSettings />
-                </Section>
-                <Section
-                    id="pro-setting"
-                    title="Pro Settings"
-                    extra={
-                        <a href="https://pnl.dev/pro" target="_blank" title="What is this?">
-                            <i>help</i>
-                        </a>
-                    }
-                >
-                    <ProSettings />
-                </Section>
-                <Section id="shortcut-setting" title="Hotkeys">
-                    <Hotkeys />
-                </Section>
+                {sections.map(({ id }) => sectionViews[id]())}
             </main>
+        </>
+    );
+}
+
+export default function App() {
+    const [voicesOpen, setVoicesOpen] = useState(/synthesis|voice/.test(location.search));
+
+    useEffect(() => {
+        utils.send("open options request to", ({ to }) => {
+            if (!to) return;
+            if (isMobile.value) location.hash = to;
+            else document.getElementById(to)?.scrollIntoView();
+        });
+    }, []);
+
+    return (
+        <>
+            {isMobile.value ? <MobileMain /> : <DesktopMain />}
             <Snackbar />
             <ConfirmHost />
             <WelcomeDialog />
