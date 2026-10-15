@@ -1,6 +1,6 @@
 import { user, setting } from "../state.js";
 import { sections } from "../nav.js";
-import { asciiTitle, GitHubStars, ShareButton, PrivacyNote } from "./Home.jsx";
+import { asciiTitle, GitHubStars, ShareButton } from "./Home.jsx";
 
 const version = chrome.runtime.getManifest().version;
 
@@ -65,9 +65,6 @@ export default function MobileHome({ themePicker }) {
                 <GitHubStars />
                 <ShareButton />
             </nav>
-            <div class="center-align small-text">
-                <PrivacyNote />
-            </div>
         </section>
     );
 }

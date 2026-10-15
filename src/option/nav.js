@@ -6,6 +6,7 @@ export const sections = [
     { id: "function-setting", icon: "tune", label: "Settings", hint: "Lookup, languages and appearance" },
     { id: "pro-setting", icon: "workspace_premium", label: "Pro Settings", hint: "AI, cloud sync and more" },
     { id: "shortcut-setting", icon: "keyboard", label: "Hotkeys", hint: "Keyboard shortcuts" },
+    { id: "about", icon: "info", label: "About", hint: "Puffins for your phone, privacy and links" },
 ];
 
 // Phones get a hub page linking to one section per page; Beer's `s` breakpoint

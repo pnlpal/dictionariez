@@ -11,6 +11,7 @@ import { GeneralSettings, ProSettings, Hotkeys } from "./sections/Settings.jsx";
 import { WelcomeDialog } from "./sections/Welcome.jsx";
 import SynthesisDialog from "./sections/SynthesisDialog.jsx";
 import MobileHome from "./sections/MobileHome.jsx";
+import About from "./sections/About.jsx";
 import { sections, isMobile, route, goToHub } from "./nav.js";
 
 const productIcon = "/" + chrome.runtime.getManifest().icons["128"];
@@ -254,6 +255,11 @@ const sectionViews = {
     "shortcut-setting": () => (
         <Section id="shortcut-setting" title="Hotkeys">
             <Hotkeys />
+        </Section>
+    ),
+    about: () => (
+        <Section id="about" title="About">
+            <About />
         </Section>
     ),
 };
