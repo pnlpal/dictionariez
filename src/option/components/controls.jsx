@@ -29,21 +29,36 @@ export function Snackbar() {
     );
 }
 
-// A setting switch with its description; children are rendered as indented sub-options.
-export function SwitchRow({ k, label, hint, children, invert = false }) {
+// A setting switch with its description; `inline` controls (like a key picker) sit right after the text,
+// children are rendered as indented sub-options.
+export function SwitchRow({ k, label, hint, inline, children, invert = false }) {
     const checked = invert ? !setting.value[k] : !!setting.value[k];
+    const row = (
+        <label class="row top-align setting-row medium-text">
+            <span class="switch">
+                <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={(e) => saveSetting(k, invert !== e.currentTarget.checked)}
+                />
+                <span></span>
+            </span>
+            <span class={inline ? "" : "max"}>
+                {label}
+                {hint && <div class="small-text muted">{hint}</div>}
+            </span>
+        </label>
+    );
     return (
         <>
-            <label class="row top-align setting-row medium-text">
-                <span class="switch">
-                    <input type="checkbox" checked={checked} onChange={(e) => saveSetting(k, invert !== e.currentTarget.checked)} />
-                    <span></span>
-                </span>
-                <span class="max">
-                    {label}
-                    {hint && <div class="small-text muted">{hint}</div>}
-                </span>
-            </label>
+            {inline ? (
+                <div class="row small-space wrap">
+                    {row}
+                    {inline}
+                </div>
+            ) : (
+                row
+            )}
             {children && checked && <div class="setting-indent">{children}</div>}
         </>
     );
@@ -68,15 +83,25 @@ export function Select({ value, options, onChange, label, className = "" }) {
 export const modifierKeys = ["Ctrl", "Shift", "Alt", "Meta"];
 
 // Select bound to a setting key
-export function KeySelect({ k, options = modifierKeys, wide = false }) {
-    return <Select className={`key-select ${wide ? "wide" : ""}`} value={setting.value[k]} options={options} onChange={(v) => saveSetting(k, v)} />;
+export function KeySelect({ k, options = modifierKeys }) {
+    return (
+        <Select
+            className="key-select"
+            value={setting.value[k]}
+            options={options}
+            onChange={(v) => saveSetting(k, v)}
+        />
+    );
 }
 
 export function Stars({ value = 0, max = 3, onChange }) {
     return (
         <nav class="no-space" title="Change rating">
             {Array.from({ length: max }, (_, i) => (
-                <button class="transparent circle small no-margin" onClick={() => onChange(value === i + 1 ? 0 : i + 1)}>
+                <button
+                    class="transparent circle small no-margin"
+                    onClick={() => onChange(value === i + 1 ? 0 : i + 1)}
+                >
                     <i class={i < value ? "fill amber-text" : "muted"}>star</i>
                 </button>
             ))}

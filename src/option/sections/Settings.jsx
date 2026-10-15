@@ -51,10 +51,10 @@ function LookupLanguages() {
     const enabled = setting.value.enabledLanguages || [];
     return (
         <div class="setting-block">
-            <LanguagePicker value={enabled} onChange={save} label="Target languages to look up" />
+            <LanguagePicker value={enabled} onChange={save} label="Languages you're learning" />
             <p class="small-text muted">
-                Some words (like "gift") exist in multiple languages (English/German/Swedish). Select the languages you want to
-                capture. See{" "}
+                Words like "gift" exist in several languages (English, German, Swedish), so only words in these languages are
+                looked up. See{" "}
                 <a class="link" href="examples.html" target="_blank">
                     how it works
                 </a>
@@ -62,22 +62,22 @@ function LookupLanguages() {
             </p>
 
             {enabled.includes("Chinese") && (
-                <article class="border round small-padding">
-                    <h6 class="small">Chinese options</h6>
-                    <SwitchRow k="enableConvertCn2T" label="Show definitions in Traditional Chinese instead of Simplified Chinese." />
-                    <p class="small-text muted">
-                        <i class="small">info</i> Japanese Kanji often conflicts with Chinese. Deselect Chinese above if you are
-                        learning Japanese.
-                    </p>
+                <article class="border round">
+                    <h6 class="small">Chinese</h6>
+                    <SwitchRow
+                        k="enableConvertCn2T"
+                        label="Show definitions in Traditional Chinese"
+                        hint="Japanese Kanji overlaps with Chinese, so remove Chinese above if you're learning Japanese."
+                    />
                 </article>
             )}
 
             {enabled.includes("English") && (
-                <article class="border round small-padding">
-                    <h6 class="small">English options</h6>
+                <article class="border round">
+                    <h6 class="small">English</h6>
                     <Select
-                        className="key-select wide"
-                        label="Lookup source"
+                        className="key-select"
+                        label="Definitions from"
                         value={setting.value.englishLookupSource}
                         options={englishLookupSources}
                         onChange={(v) => saveSetting("englishLookupSource", v)}
@@ -96,7 +96,7 @@ export function GeneralSettings() {
         <>
             <article class="round">
                 <h6>Selection & highlight</h6>
-                <SwitchRow k="markWords" label="Highlight your selected words (not permanent, gone after page refresh)">
+                <SwitchRow k="markWords" label="Highlight words you look up" hint="Temporary, cleared when the page reloads.">
                     <label class="button border small" title="Choose highlight color">
                         <i class="fill" style={{ color: toHex(s.markColor) }}>
                             circle
@@ -109,17 +109,15 @@ export function GeneralSettings() {
                             onChange={(e) => saveSetting("markColor", e.currentTarget.value)}
                         />
                     </label>
-                    <SwitchRow k="enableMarkWordsSK1" label="Only when using the hotkey">
-                        <HotkeyInline sk="markWordsSK1" k="markWordsKey" />
-                    </SwitchRow>
+                    <SwitchRow
+                        k="enableMarkWordsSK1"
+                        label="Highlight manually with a hotkey instead"
+                        inline={<HotkeyInline sk="markWordsSK1" k="markWordsKey" />}
+                    />
                 </SwitchRow>
 
-                <SwitchRow k="enableSelectionOnMouseMove" label="Automatically select the word underneath when moving the mouse">
-                    <SwitchRow k="enableSelectionSK1" label="Need to hold the key">
-                        <nav>
-                            <KeySelect k="selectionSK1" />
-                        </nav>
-                    </SwitchRow>
+                <SwitchRow k="enableSelectionOnMouseMove" label="Select the word under the cursor as you move the mouse">
+                    <SwitchRow k="enableSelectionSK1" label="Only while holding this key" inline={<KeySelect k="selectionSK1" />} />
                 </SwitchRow>
             </article>
 
@@ -128,18 +126,14 @@ export function GeneralSettings() {
                     <h6>Definition bubble</h6>
                     <SwitchRow
                         k="enablePlainLookup"
-                        label="Show a floating definition bubble when you select a word (supports multiple languages)"
+                        label="Show a definition bubble when you select a word"
                     >
                         <SwitchRow
                             k="needDblclick"
-                            label="Only trigger lookup when double-clicking a word"
-                            hint="If off, selecting any word will show the definition bubble."
+                            label="Only on double-click"
+                            hint="Otherwise, selecting any word shows the bubble."
                         />
-                        <SwitchRow k="enablePlainSK1" label="Need to hold the key to look up">
-                            <nav>
-                                <KeySelect k="plainSK1" />
-                            </nav>
-                        </SwitchRow>
+                        <SwitchRow k="enablePlainSK1" label="Only while holding this key" inline={<KeySelect k="plainSK1" />} />
                         <LookupLanguages />
                     </SwitchRow>
                 </article>
@@ -148,42 +142,36 @@ export function GeneralSettings() {
             <article class="round">
                 <h6>Dictionary window</h6>
                 {!isSidePal && (
-                    <SwitchRow k="enableMinidict" label="Automatically open the popup dict window to look up the selected word">
-                        <SwitchRow k="enableMouseSK1" label="Need to hold the key">
-                            <nav>
-                                <KeySelect k="mouseSK1" />
-                            </nav>
-                        </SwitchRow>
+                    <SwitchRow k="enableMinidict" label="Open the dictionary window when you select a word">
+                        <SwitchRow k="enableMouseSK1" label="Only while holding this key" inline={<KeySelect k="mouseSK1" />} />
                     </SwitchRow>
                 )}
                 {!isSidePal && (
                     <SwitchRow
                         k="enableAutoCloseMinidict"
-                        label="Automatically close the popup dict window when focusing a normal window"
+                        label="Close the dictionary window when you go back to the browser"
                     />
                 )}
-                {!isSidePal && <SwitchRow k="disableWikipediaCard" label="Disable the Wikipedia result in the popup dict window" />}
-                <SwitchRow k="disableWordHistory" label="Disable word history" />
-                <SwitchRow k="disableContextMenu" label="Disable the lookup item in the context menu" />
+                {!isSidePal && <SwitchRow k="disableWikipediaCard" invert label="Show a Wikipedia card in the dictionary window" />}
+                <SwitchRow k="disableWordHistory" invert label="Save looked-up words to History" />
+                <SwitchRow k="disableContextMenu" invert label={'Add a "Look up" item to the right-click menu'} />
                 {!s.disableContextMenu && (
                     <SwitchRow
                         k="enableMultiDictContextMenu"
-                        label="Show all dictionaries in the context menu (hierarchical menu with dictionary options)"
+                        label="List every dictionary in the right-click menu as a submenu"
                     />
                 )}
                 <SwitchRow
                     k="enableReadClipboard"
-                    label="Enable reading the clipboard to get the selected word"
-                    hint={s.readClipboardError}
+                    label="Look up words you copy"
+                    hint={s.readClipboardError || "Also used when no selected text can be read."}
                 />
             </article>
 
             <article class="round">
-                <h6>Don't run on these websites</h6>
+                <h6>Turn off on these websites</h6>
                 <p class="small-text muted">
-                    This extension injects a script on web pages so that when you select a word or use the keyboard shortcut, it can
-                    look up the word for you. But some websites may not be compatible with it. You can add the exceptions here, one
-                    per line. Regex is supported.
+                    For sites that don't work well with {process.env.PRODUCT}. One per line, regex supported.
                 </p>
                 <div class="field textarea border">
                     <textarea
@@ -252,8 +240,8 @@ export function ProSettings() {
                 <h6>Sentence/paragraph selection bubble</h6>
                 <p class="small-text muted">Quick access to TTS and translation when selecting text.</p>
                 <div class="row small-space wrap">
-                    <span class="max">Show the bubble only when this key is pressed</span>
-                    <KeySelect k="sentenceBubbleSK" options={[["", "None (always show)"], ...modifierKeys]} wide />
+                    <span>Show the bubble only when this key is pressed</span>
+                    <KeySelect k="sentenceBubbleSK" options={[["", "None (always show)"], ...modifierKeys]} />
                 </div>
                 <SwitchRow
                     k="disableTTS"

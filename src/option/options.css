@@ -8,7 +8,6 @@ body.loading {
     visibility: hidden;
 }
 
-
 .section {
     scroll-margin-top: 1rem;
     padding-block-end: 2rem;
@@ -66,18 +65,31 @@ body.loading {
     cursor: pointer;
 }
 
+/* a margin helper class would trigger Beer's padding reset on .setting-indent, so it's set here */
+.setting-block {
+    margin-block-start: 1rem;
+}
+
 .setting-indent {
     margin-inline-start: 3.75rem;
     padding-block-end: 0.5rem;
 }
 
+/* as wide as the longest option: "Ctrl" pickers stay compact, "None (always show)" still fits */
 .key-select {
-    inline-size: 10rem;
+    inline-size: fit-content;
     margin: 0;
 }
 
-.key-select.wide {
-    inline-size: 14rem;
+/* Beer's smallest field is 2.5rem tall, too bulky next to a line of text;
+   fields with a floating label keep the default height to fit the label */
+.field.key-select:not(.label) {
+    --_input: 2rem;
+}
+
+/* leave room for the floating label */
+.key-select.label {
+    min-inline-size: 12rem;
 }
 
 .ai-language {
