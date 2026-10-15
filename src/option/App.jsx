@@ -222,7 +222,7 @@ function DictSection() {
     return (
         <Section id="dictionary" title="Dictionaries" extra={<SyncStatus error={syncDictsError.value} />}>
             <SessionExpired what="dictionaries" />
-            <p class="muted">
+            <p class="muted m l">
                 Tip 1: Ctrl/Cmd + click a dictionary name to open several dictionaries simultaneously. <br />
                 Tip 2: Drag the <i class="small">drag_indicator</i> handle to reorder the dictionaries.
             </p>

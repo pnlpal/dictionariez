@@ -117,6 +117,20 @@ body.loading {
     max-inline-size: 100%;
 }
 
+/* on phones, shrink to share the row with the word count */
+@media only screen and (max-width: 600px) {
+    .search-field {
+        inline-size: auto;
+        flex: 1 1 8rem;
+        min-inline-size: 0;
+    }
+}
+
+/* stays on the right even when the toolbar wraps it onto its own line */
+.delete-button {
+    margin-inline-start: auto;
+}
+
 .history-table th.sortable {
     cursor: pointer;
 }

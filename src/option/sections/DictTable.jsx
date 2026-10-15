@@ -82,9 +82,10 @@ export default function DictTable() {
                 <div class="max"></div>
                 <a class="button primary" href="https://pnl.dev/category/4/dictionariez-trove" target="_blank">
                     <i>add</i>
-                    <span>Add more dicts</span>
+                    <span class="m l">Add more dicts</span>
+                    <span class="s">Add</span>
                 </a>
-                <button class="border" onClick={restoreDefault}>
+                <button class="border m l" onClick={restoreDefault}>
                     <i>restart_alt</i>
                     <span>Restore default</span>
                 </button>

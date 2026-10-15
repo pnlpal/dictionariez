@@ -218,15 +218,15 @@ export default function HistoryTable() {
                     {selectedRows.length > 0 && `, ${selectedRows.length} selected`}
                 </span>
                 <div class="max"></div>
-                <button class="error-container" onClick={deleteRows}>
+                <button class="error-container delete-button" onClick={deleteRows}>
                     <i>delete</i>
                     <span>{selectedRows.length ? "Delete selected" : "Delete"}</span>
                 </button>
-                <button class="secondary-container" onClick={exportRows}>
+                <button class="secondary-container m l" onClick={exportRows}>
                     <i>download</i>
                     <span>Download</span>
                 </button>
-                <a class="button tertiary" href="https://ankiweb.net/study/" target="_blank">
+                <a class="button tertiary m l" href="https://ankiweb.net/study/" target="_blank">
                     <i>school</i>
                     <span>Start Anki Study</span>
                 </a>
