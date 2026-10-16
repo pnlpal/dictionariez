@@ -1,3 +1,18 @@
+# v9.0.0 Oct 16, 2026
+- A complete redesign of the options page: a cleaner, faster look that follows Material Design.
+  - Rebuilt from the ground up with Preact and Beer CSS; Angular, jQuery and select2 are gone, so the page loads faster.
+  - New side navigation: History, Dictionaries, Settings, Pro Settings, Hotkeys and About.
+  - A new mobile layout with its own home screen.
+  - Light, dark and auto themes, switched with one click from the header (this replaces the old Appearance section).
+  - Larger, easier-to-read text, plus clearer wording and layout in Settings.
+- Redesigned dictionaries table, with drag-and-drop reordering rebuilt on SortableJS.
+- History: hover a word to see a quick plain lookup, and a friendlier empty state when no words are saved yet.
+- Languages are saved straight away, with fewer steps.
+- Redesigned welcome dialog for first-time setup.
+- New About page with links to Puffins (for your phone), privacy information and more.
+- A small prompt at the bottom-right asks what you think of the new design.
+
+
 # v8.1.4 Oct 10, 2026
 - Increased the retry attempts and refactored the header's css to improve reliability
 - Added the Bing dict to the English deault dict list

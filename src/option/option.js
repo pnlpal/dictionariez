@@ -6,6 +6,7 @@ import { setting, user, loadSetting, loadHistory, loadDicts } from "./state.js";
 import { applyTheme } from "./theme.js";
 import { fetchUserProfile, reloadOnLoginStatusChange } from "./user-profile.js";
 import { openWelcome } from "./sections/Welcome.jsx";
+import { openWhatsNew } from "./sections/WhatsNew.jsx";
 import askForFeedback from "./ask-for-feedback.js";
 import App from "./App.jsx";
 
@@ -70,7 +71,13 @@ const init = async () => {
         reloadOnLoginStatusChange(u.loggedIn);
     });
 
-    askForFeedback();
+    // Opened by the background after an update: introduce the facelift instead of asking for feedback
+    const justUpdated = new URLSearchParams(location.search).has("updated");
+    if (justUpdated && config.enabledLanguages?.length && !config.faceliftIntroShown) {
+        openWhatsNew();
+    } else {
+        askForFeedback();
+    }
     setupDevFunctions();
 };
 

@@ -48,7 +48,7 @@ function askForDesignFeedback() {
                 {
                     label: "Give Feedback",
                     onClick: () => {
-                        window.open("https://pnl.dev/category/3/feedback", "_blank");
+                        window.open("https://pnl.dev/topic/1192/major-dictionariez-facelift-update-1", "_blank");
                         saveDesignStatus("feedbacked");
                     },
                 },

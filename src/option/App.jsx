@@ -9,6 +9,7 @@ import HistoryTable from "./sections/HistoryTable.jsx";
 import DictTable from "./sections/DictTable.jsx";
 import { GeneralSettings, ProSettings, Hotkeys } from "./sections/Settings.jsx";
 import { WelcomeDialog } from "./sections/Welcome.jsx";
+import { WhatsNewDialog } from "./sections/WhatsNew.jsx";
 import SynthesisDialog from "./sections/SynthesisDialog.jsx";
 import MobileHome from "./sections/MobileHome.jsx";
 import About from "./sections/About.jsx";
@@ -300,6 +301,7 @@ export default function App() {
             <Snackbar />
             <ConfirmHost />
             <WelcomeDialog />
+            <WhatsNewDialog />
             <SynthesisDialog open={voicesOpen} onClose={() => setVoicesOpen(false)} />
         </>
     );
