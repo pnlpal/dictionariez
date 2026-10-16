@@ -31,22 +31,14 @@ function PuffinsCard() {
                 <div class="max">
                     <h6 class="no-margin">Puffins, Dictionariez for your phone</h6>
                     <p class="no-margin">
-                        For months I've been working on something I've wanted to give you for a long time. Today I'm really
-                        excited to say it's finally here, on both Android and iPhone.
+                        For months I've been working on something I've wanted to give you for a long time. Today I'm
+                        really excited to say it's finally here, on both Android and iPhone.
                     </p>
                 </div>
             </div>
             <nav class="wrap">
-                <a class="button" href={puffins.android} target="_blank">
-                    <i>android</i>
-                    <span>Google Play</span>
-                </a>
-                <a class="button border" href={puffins.ios} target="_blank" title="Puffins is in beta on iOS, join via TestFlight">
-                    <i>phone_iphone</i>
-                    <span>iOS beta</span>
-                </a>
                 <a class="button transparent" href={puffins.homepage} target="_blank">
-                    <span>Learn more</span>
+                    <span>Learn more and Download</span>
                     <i>arrow_forward</i>
                 </a>
             </nav>
@@ -62,9 +54,9 @@ function PnlReaderCard() {
                 <div class="max">
                     <h6 class="no-margin">PNL Reader, read quietly or read aloud</h6>
                     <p class="no-margin">
-                        Turn any article, web novel or PDF into a distraction-free page with paper-feel themes and dozens of
-                        fonts, or let natural-sounding text-to-speech read it to you. Click any word to look it up with
-                        Dictionariez.
+                        Turn any article, web novel or PDF into a distraction-free page with paper-feel themes and
+                        dozens of fonts, or let natural-sounding text-to-speech read it to you. Click any word to look
+                        it up with Dictionariez.
                     </p>
                 </div>
             </div>
@@ -97,16 +89,16 @@ export default function About() {
             <PuffinsCard />
 
             <p>
-                Since the very beginning I've promised the core would always be free, and Puffins keeps that promise: every
-                dictionary, every lookup, free, with no ads and no tracking.
+                Since the very beginning I've promised the core would always be free, and Puffins keeps that promise:
+                every dictionary, every lookup, free, with no ads and no tracking.
             </p>
             <p>
-                The only paid part is AI Lookup. Each AI answer costs me real money in AI provider fees and cloud servers, so
-                after a free trial it's part of Pro. That's what keeps everything else free for everyone.
+                The only paid part is AI Lookup. Each AI answer costs me real money in AI provider fees and cloud
+                servers, so after a free trial it's part of Pro. That's what keeps everything else free for everyone.
             </p>
             <p>
-                If you give it a try, I'd love to hear what you think. Your feedback shaped Dictionariez, and it will shape
-                Puffins too.
+                If you give it a try, I'd love to hear what you think. Your feedback shaped Dictionariez, and it will
+                shape Puffins too.
             </p>
             <nav class="wrap">
                 <a class="button border" href="https://pnl.dev/category/3/feedback" target="_blank">
@@ -131,9 +123,9 @@ export default function About() {
                 <div class="row top-align">
                     <i class="muted">cloud</i>
                     <p class="max no-margin">
-                        Text you send to the AI lookup, translation or text-to-speech goes to pnl.dev to generate the result
-                        and isn't kept afterwards. With Pro cloud sync, your history and dictionaries are stored on pnl.dev
-                        so they follow you across devices.
+                        Text you send to the AI lookup, translation or text-to-speech goes to pnl.dev to generate the
+                        result and isn't kept afterwards. With Pro cloud sync, your history and dictionaries are stored
+                        on pnl.dev so they follow you across devices.
                     </p>
                 </div>
                 <hr class="small" />
