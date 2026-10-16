@@ -15,7 +15,7 @@ import MobileHome from "./sections/MobileHome.jsx";
 import About from "./sections/About.jsx";
 import { sections, isMobile, route, goToHub } from "./nav.js";
 
-const productIcon = "/" + chrome.runtime.getManifest().icons["128"];
+const productIcon = chrome.runtime.getURL(chrome.runtime.getManifest().icons["128"]);
 
 function useActiveSection() {
     const [active, setActive] = useState(sections[0].id);

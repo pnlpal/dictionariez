@@ -4,7 +4,7 @@ import { Dialog } from "../components/Dialog.jsx";
 
 const product = process.env.PRODUCT;
 const { icons, version } = chrome.runtime.getManifest();
-const productIcon = icons["128"];
+const productIcon = chrome.runtime.getURL(icons["128"]);
 const feedbackLink = "https://pnl.dev/topic/1192/major-dictionariez-facelift-update-1";
 
 const open = signal(false);
@@ -30,7 +30,7 @@ export function WhatsNewDialog() {
     return (
         <Dialog open={open.value} onClose={close} className="welcome-dialog" overlay="large-blur">
             <div class="row">
-                <img class="round large" src={"/" + productIcon} alt="" />
+                <img class="round large" src={productIcon} alt="" />
                 <div class="max">
                     <h5 class="no-margin">{product} has a new look ✨</h5>
                     <div class="small-text muted">Version {version}</div>

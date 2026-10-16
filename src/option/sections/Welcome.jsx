@@ -8,7 +8,7 @@ import enableLanguages from "../enableLanguages.js";
 import checkServerForDictsConflict from "../checkServerForDictsConflict.js";
 
 const product = process.env.PRODUCT;
-const productIcon = chrome.runtime.getManifest().icons["128"];
+const productIcon = chrome.runtime.getURL(chrome.runtime.getManifest().icons["128"]);
 
 // { step: "languages" | "conflict" | "success", initialSetup, serverDicts, onDone }
 const welcome = signal(null);
@@ -56,7 +56,7 @@ function LanguagesStep() {
     return (
         <>
             <div class="row">
-                <img class="round large" src={"/" + productIcon} alt="" />
+                <img class="round large" src={productIcon} alt="" />
                 <h5 class="max no-margin">Welcome to {product} 👋</h5>
             </div>
             <p>
