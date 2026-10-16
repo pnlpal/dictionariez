@@ -60,8 +60,8 @@ function LanguagesStep() {
                 <h5 class="max no-margin">Welcome to {product} 👋</h5>
             </div>
             <p>
-                Hi, I'm River, the indie developer behind {product}. Thanks so much for giving it a try, I hope it becomes a
-                good companion on your language journey.
+                Hi, I'm River, the indie developer behind {product}. Thanks so much for giving it a try, I hope it
+                becomes a good companion on your language journey.
             </p>
             <p>
                 Let's set it up in a few seconds: pick the languages you want to look up words in.
@@ -73,7 +73,11 @@ function LanguagesStep() {
                     <i class="primary-text">verified_user</i>
                     <p class="max no-margin">
                         No ads, no tracking. Your settings stay in your browser.{" "}
-                        <a class="link" href="https://github.com/pnlpal/dictionariez/blob/master/privacy.md" target="_blank">
+                        <a
+                            class="link"
+                            href="https://github.com/pnlpal/dictionariez/blob/master/privacy.md"
+                            target="_blank"
+                        >
                             Privacy policy
                         </a>
                     </p>
@@ -128,8 +132,8 @@ function ConflictStep() {
                 <h5 class="max no-margin">Welcome back!</h5>
             </div>
             <p>
-                Looks like you've used {product} on another device. We found <strong>{serverDicts.length} dictionaries</strong>{" "}
-                synced there. Which set would you like here?
+                Looks like you've used {product} on another device. We found{" "}
+                <strong>{serverDicts.length} dictionaries</strong> synced there. Which set would you like here?
             </p>
             <div class="grid">
                 <article class="s12 m6 primary-container round">
@@ -156,10 +160,24 @@ function ConflictStep() {
 }
 
 const communities = [
-    ["https://pnl.dev/category/4/dictionariez-trove", "library_books", "Dictionariez Trove", `Find more dictionaries to add to your ${product}.`],
-    ["https://pnl.dev/category/7/language-exchange", "translate", "Language Exchange", "Meet language pals to practice, teach and learn together."],
-    ["https://pnl.dev/category/6/crafting", "code", "Crafting", "Developers, designers and makers sharing what they build."],
-    ["https://pnl.dev/category/3/feedback", "bug_report", "Feedback", "Found a bug or have an idea? I'd love to hear it."],
+    [
+        "https://pnl.dev/category/4/dictionariez-trove",
+        "library_books",
+        "Dictionariez Trove",
+        `Find more dictionaries to add to your ${product}.`,
+    ],
+    [
+        "https://pnl.dev/category/6/crafting",
+        "code",
+        "Crafting",
+        "Developers, designers and makers sharing what they build.",
+    ],
+    [
+        "https://pnl.dev/category/3/feedback",
+        "bug_report",
+        "Feedback",
+        "Found a bug or have an idea? I'd love to hear it.",
+    ],
 ];
 
 export const socialLinks = [
