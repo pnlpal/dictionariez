@@ -17,6 +17,11 @@ body.loading {
     color: var(--on-surface-variant);
 }
 
+/* a closed field menu is only visibility-hidden, so it still stretches the dialog's scroll area */
+dialog .field:not(:focus-within) > menu {
+    display: none;
+}
+
 .ascii-title pre {
     all: unset;
     display: block;

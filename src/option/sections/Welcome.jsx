@@ -8,6 +8,7 @@ import enableLanguages from "../enableLanguages.js";
 import checkServerForDictsConflict from "../checkServerForDictsConflict.js";
 
 const product = process.env.PRODUCT;
+const productIcon = chrome.runtime.getManifest().icons["128"];
 
 // { step: "languages" | "conflict" | "success", initialSetup, serverDicts, onDone }
 const welcome = signal(null);
@@ -29,10 +30,16 @@ const succeed = () => {
 function LanguagesStep() {
     const [langs, setLangs] = useState(welcome.value.initialSetup ? [] : setting.value.enabledLanguages || []);
     const [saving, setSaving] = useState(false);
+    const [error, setError] = useState(null);
+
+    const pick = (next) => {
+        setLangs(next);
+        if (next.length) setError(null);
+    };
 
     const save = async () => {
         if (!langs.length) {
-            toast("Please select at least one language to look up.", { type: "error" });
+            setError("Pick at least one language to get started.");
             return;
         }
         setSaving(true);
@@ -48,32 +55,45 @@ function LanguagesStep() {
 
     return (
         <>
-            <h5>👋 Welcome to {product}!</h5>
-            <p>Thank you for installing {product}, your new language companion!</p>
+            <div class="row">
+                <img class="round large" src={"/" + productIcon} alt="" />
+                <h5 class="max no-margin">Welcome to {product} 👋</h5>
+            </div>
             <p>
-                {product} is open-source, see its progress on{" "}
-                <a class="link" href="https://github.com/pnlpal/dictionariez" target="_blank">
-                    GitHub
-                </a>
-                .
+                Hi, I'm River, the indie developer behind {product}. Thanks so much for giving it a try, I hope it becomes a
+                good companion on your language journey.
             </p>
             <p>
-                Worried about <strong>privacy</strong>? By default, {product} doesn't collect any of your data.{" "}
-                <a class="link" href="https://github.com/pnlpal/dictionariez/blob/master/privacy.md" target="_blank">
-                    Read more about the privacy policy here
-                </a>
-                .
+                Let's set it up in a few seconds: pick the languages you want to look up words in.
+                {product !== "SidePal" && " You can change them anytime in Settings."}
             </p>
-            <p>
-                To get started, select the languages you want to look up words in.{" "}
-                {product !== "SidePal" && "You can always update your choices later in the extension options. "}
-                <span class="primary-text">Happy exploring and language learning!</span>
-            </p>
-            <LanguagePicker value={langs} onChange={setLangs} label="Languages you want to look up" />
+            <LanguagePicker value={langs} onChange={pick} label="Languages you're learning or reading" error={error} />
+            <article class="surface-container round">
+                <div class="row top-align">
+                    <i class="primary-text">verified_user</i>
+                    <p class="max no-margin">
+                        No ads, no tracking. Your settings stay in your browser.{" "}
+                        <a class="link" href="https://github.com/pnlpal/dictionariez/blob/master/privacy.md" target="_blank">
+                            Privacy policy
+                        </a>
+                    </p>
+                </div>
+                <div class="row top-align">
+                    <i class="muted">code</i>
+                    <p class="max no-margin">
+                        Free and{" "}
+                        <a class="link" href="https://github.com/pnlpal/dictionariez" target="_blank">
+                            open source on GitHub
+                        </a>
+                        .
+                    </p>
+                </div>
+            </article>
             <nav class="right-align">
-                <button class="primary" onClick={save} disabled={saving}>
+                <button onClick={save} disabled={saving}>
                     {saving && <progress class="circle small"></progress>}
-                    <span>Save</span>
+                    <span>Let's go</span>
+                    {!saving && <i>arrow_forward</i>}
                 </button>
             </nav>
         </>
@@ -103,24 +123,31 @@ function ConflictStep() {
 
     return (
         <>
-            <h5>🔄 Found synced dictionaries</h5>
+            <div class="row">
+                <i class="large primary-text">sync</i>
+                <h5 class="max no-margin">Welcome back!</h5>
+            </div>
             <p>
-                We found <strong>{serverDicts.length} dictionaries</strong> synced from another device. Would you like to use your
-                synced dictionaries or keep the ones we just created for your selected languages?
+                Looks like you've used {product} on another device. We found <strong>{serverDicts.length} dictionaries</strong>{" "}
+                synced there. Which set would you like here?
             </p>
             <div class="grid">
                 <article class="s12 m6 primary-container round">
-                    <h6>Use synced dicts</h6>
-                    <p>Replace local dicts with your {serverDicts.length} synced dictionaries.</p>
-                    <button class="primary" onClick={() => choose(true)}>
-                        Use Synced Dicts
-                    </button>
+                    <div class="row">
+                        <i>cloud_download</i>
+                        <h6 class="max no-margin">Use my synced dictionaries</h6>
+                    </div>
+                    <p>Bring over the {serverDicts.length} dictionaries from your other device.</p>
+                    <button onClick={() => choose(true)}>Use synced</button>
                 </article>
-                <article class="s12 m6 tertiary-container round">
-                    <h6>Keep local</h6>
-                    <p>Keep the dictionaries created for your selected languages.</p>
-                    <button class="tertiary" onClick={() => choose(false)}>
-                        Keep Local
+                <article class="s12 m6 surface-container round">
+                    <div class="row">
+                        <i>devices</i>
+                        <h6 class="max no-margin">Start fresh here</h6>
+                    </div>
+                    <p>Keep the dictionaries just picked for your languages.</p>
+                    <button class="border" onClick={() => choose(false)}>
+                        Keep these
                     </button>
                 </article>
             </div>
@@ -129,10 +156,10 @@ function ConflictStep() {
 }
 
 const communities = [
-    ["https://pnl.dev/category/4/dictionariez-trove", "📚 Dictionariez Trove", `Enhance your ${product}, add more dictionaries to your collection.`],
-    ["https://pnl.dev/category/7/language-exchange", "🌍 Language Exchange", "Ready to meet a language pal? Practice, teach, and learn together in Language Exchange!"],
-    ["https://pnl.dev/category/6/crafting", "💻 Crafting", "Are you a developer, designer, or entrepreneur? Share your projects, code, and creative work here."],
-    ["https://pnl.dev/category/3/feedback", "🐞 Feedback", "Found a bug or have ideas to improve PNL? Share suggestions and help shape our community."],
+    ["https://pnl.dev/category/4/dictionariez-trove", "library_books", "Dictionariez Trove", `Find more dictionaries to add to your ${product}.`],
+    ["https://pnl.dev/category/7/language-exchange", "translate", "Language Exchange", "Meet language pals to practice, teach and learn together."],
+    ["https://pnl.dev/category/6/crafting", "code", "Crafting", "Developers, designers and makers sharing what they build."],
+    ["https://pnl.dev/category/3/feedback", "bug_report", "Feedback", "Found a bug or have an idea? I'd love to hear it."],
 ];
 
 export const socialLinks = [
@@ -145,32 +172,36 @@ export const socialLinks = [
 function SuccessStep() {
     return (
         <>
-            <h5>🎉 Settings saved! You're ready to explore {product}.</h5>
-            <p>Check out our Programming N' Language Community:</p>
+            <div class="row">
+                <i class="large primary-text">celebration</i>
+                <h5 class="max no-margin">You're all set!</h5>
+            </div>
+            <p>Select any word on a page to look it up. Happy reading and learning! 🎉</p>
+            <p>Come say hi in the PNL community, a friendly place for language lovers and makers:</p>
             <ul class="list border">
-                {communities.map(([href, title, text]) => (
+                {communities.map(([href, icon, title, text]) => (
                     <li>
-                        <a href={href} target="_blank" class="max">
-                            <div class="bold primary-text">{title}</div>
-                            <div class="small-text">{text}</div>
+                        <a class="row max" href={href} target="_blank">
+                            <i class="primary-text">{icon}</i>
+                            <div class="max">
+                                <div class="bold">{title}</div>
+                                <div class="small-text muted">{text}</div>
+                            </div>
+                            <i class="muted">open_in_new</i>
                         </a>
                     </li>
                 ))}
             </ul>
-            <p class="center-align">
-                Want to connect beyond the forum? <strong>Join our community chats and stay in the loop!</strong>
-            </p>
-            <nav class="center-align wrap">
+            <nav class="wrap">
                 {socialLinks.map(([href, name]) => (
                     <a class="chip round" href={href} target="_blank">
-                        {name}
+                        <i>forum</i>
+                        <span>{name}</span>
                     </a>
                 ))}
             </nav>
             <nav class="right-align">
-                <button class="primary" onClick={close}>
-                    Start Exploring!
-                </button>
+                <button onClick={close}>Start exploring</button>
             </nav>
         </>
     );
@@ -187,7 +218,7 @@ export function WelcomeDialog() {
     };
 
     return (
-        <Dialog open={!!state} onClose={onClose} className="welcome-dialog">
+        <Dialog open={!!state} onClose={onClose} className="welcome-dialog" overlay="large-blur">
             {state?.step === "languages" && <LanguagesStep />}
             {state?.step === "conflict" && <ConflictStep />}
             {state?.step === "success" && <SuccessStep />}

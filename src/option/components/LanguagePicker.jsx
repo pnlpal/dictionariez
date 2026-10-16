@@ -11,7 +11,8 @@ const matches = (lang, term) => {
 };
 
 // Multi-select of languages with search (also matching alternative names like "Mandarin").
-export default function LanguagePicker({ value = [], onChange, label = "Languages to look up" }) {
+// error: message shown under the field, which turns red while it's set
+export default function LanguagePicker({ value = [], onChange, label = "Languages to look up", error }) {
     const [term, setTerm] = useState("");
     const [active, setActive] = useState(0);
 
@@ -51,7 +52,7 @@ export default function LanguagePicker({ value = [], onChange, label = "Language
                     ))}
                 </nav>
             )}
-            <div class="field border label prefix">
+            <div class={`field border label prefix${error ? " invalid" : ""}`}>
                 <i>translate</i>
                 <input
                     type="text"
@@ -67,6 +68,7 @@ export default function LanguagePicker({ value = [], onChange, label = "Language
                     onKeyDown={onKeyDown}
                 />
                 <label>{label}</label>
+                {error && <output class="invalid">{error}</output>}
                 <menu role="listbox">
                     {results.map((lang, i) => (
                         <li

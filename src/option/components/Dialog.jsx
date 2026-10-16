@@ -1,25 +1,25 @@
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect } from "preact/hooks";
 import { signal } from "@preact/signals";
 
-export function Dialog({ open, onClose, className = "", children }) {
-    const ref = useRef();
-
+// Opened with Beer CSS's .active instead of showModal(): a modal dialog sits in the browser's top layer,
+// above the lookup tooltip and card, so word lookups inside it would be hidden.
+// overlay: extra Beer CSS overlay classes (e.g. "large-blur") for the backdrop behind the dialog
+export function Dialog({ open, onClose, className = "", overlay = "", children }) {
     useEffect(() => {
-        const dialog = ref.current;
-        if (open && !dialog.open) dialog.showModal();
-        else if (!open && dialog.open) dialog.close();
-    }, [open]);
-
-    const onCancel = (e) => {
-        // Escape key: let the owner decide what closing means
-        e.preventDefault();
-        onClose?.();
-    };
+        if (!open) return;
+        const onKeyDown = (e) => {
+            // Escape key: let the owner decide what closing means
+            if (e.key === "Escape") onClose?.();
+        };
+        document.addEventListener("keydown", onKeyDown);
+        return () => document.removeEventListener("keydown", onKeyDown);
+    }, [open, onClose]);
 
     return (
-        <dialog ref={ref} class={className} onCancel={onCancel}>
-            {open && children}
-        </dialog>
+        <>
+            <div class={`overlay ${overlay}${open ? " active" : ""}`}></div>
+            <dialog class={`${className}${open ? " active" : ""}`}>{open && children}</dialog>
+        </>
     );
 }
 
