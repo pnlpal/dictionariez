@@ -119,7 +119,6 @@ async function doQuery(w, sentence, languagePrompt, dict, isHelpMeRefine, aiResp
 
     const submitPrompt = async () => {
         const isLikelyAIChat =
-            dict.doubleClickForMore ||
             dict.windowUrl.includes("gemini") ||
             dict.windowUrl.includes("claude") ||
             dict.windowUrl.includes("chatgpt");
