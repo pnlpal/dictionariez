@@ -68,8 +68,21 @@ export default {
             await this.removeDict(dictName);
         });
 
-        message.on("dictionary-add", async ({ dict }) => {
-            await this.addToDictionariez(dict);
+        // replace: the dict editor sends the whole dict, so fields cleared in the form are dropped instead of merged
+        // oldName: the dict's name before it was renamed in the editor
+        message.on("dictionary-add", async ({ dict, replace, oldName }) => {
+            return await this.addToDictionariez(dict, { replace, oldName });
+        });
+
+        // The options page hands a dict over to the pnl.dev composer, see pnlpal-inject.js
+        message.on("share dict", async ({ dict }) => {
+            await chrome.storage.local.set({ dictShareData: { dict, timestamp: Date.now() } });
+        });
+
+        message.on("get dict share data", async () => {
+            const { dictShareData } = await chrome.storage.local.get("dictShareData");
+            await chrome.storage.local.remove("dictShareData");
+            return dictShareData || null;
         });
 
         message.on("restore-default-dicts", async () => {
@@ -189,7 +202,7 @@ export default {
         }
     },
 
-    async addToDictionariez(dict) {
+    async addToDictionariez(dict, { replace = false, oldName } = {}) {
         if (dict.name) {
             dict.dictName = dict.name;
             delete dict.name;
@@ -207,9 +220,24 @@ export default {
             return { error: "the url of the dict is required" };
         }
 
-        const existingDict = this.allDicts.find((d) => d.dictName === dict.dictName);
+        const existingName = (replace && oldName) || dict.dictName;
+        const existingDict = this.allDicts.find((d) => d.dictName === existingName);
+        const renamed = existingName !== dict.dictName;
 
-        if (existingDict) {
+        if (renamed && this.allDicts.some((d) => d.dictName === dict.dictName)) {
+            return { error: `a dict named "${dict.dictName}" already exists` };
+        }
+
+        if (existingDict && replace) {
+            // fields the editor doesn't show are kept from the stored dict
+            dict.sequence = existingDict.sequence;
+            dict.troveUrl ??= existingDict.troveUrl;
+            dict.homepageUrl ??= existingDict.homepageUrl;
+            this.allDicts[this.allDicts.indexOf(existingDict)] = dict;
+            if (renamed) {
+                await storage.remove(`dict-${existingName}`);
+            }
+        } else if (existingDict) {
             Object.assign(existingDict, dict);
             dict = existingDict;
         } else {

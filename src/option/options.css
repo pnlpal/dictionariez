@@ -201,3 +201,24 @@ dialog .field:not(:focus-within) > menu {
     font-size: max(0.5rem, calc((100vw - 4rem) / 31));
     margin-block-end: 0.5rem;
 }
+
+/* dict editor */
+.code-input {
+    font-family: monospace;
+}
+
+.field > textarea.json-input {
+    min-block-size: 16rem;
+    max-block-size: 60vh;
+}
+
+/* the help column stays in view while the form scrolls */
+.dict-help {
+    position: sticky;
+    inset-block-start: 0;
+    align-self: start;
+}
+
+.dict-editor details[open] > summary > i {
+    transform: rotate(180deg);
+}

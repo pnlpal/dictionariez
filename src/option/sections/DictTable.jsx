@@ -3,6 +3,7 @@ import Sortable from "sortablejs";
 import utils from "utils";
 import { allDicts, bravo } from "../state.js";
 import { confirm } from "../components/Dialog.jsx";
+import { openDictEditor } from "./DictEditor.jsx";
 
 const bySequence = (a, b) => (a.sequence ?? 0) - (b.sequence ?? 0);
 
@@ -80,10 +81,14 @@ export default function DictTable() {
                 </div>
                 <span class="muted">{filtering ? `${shown.length} of ${dicts.length}` : dicts.length} dictionaries</span>
                 <div class="max"></div>
-                <a class="button primary" href="https://pnl.dev/category/4/dictionariez-trove" target="_blank">
+                <button class="primary" onClick={() => openDictEditor()} title="Make your own dictionary">
                     <i>add</i>
+                    <span class="m l">New dict</span>
+                    <span class="s">New</span>
+                </button>
+                <a class="button border" href="https://pnl.dev/category/4/dictionariez-trove" target="_blank">
+                    <i>travel_explore</i>
                     <span class="m l">Add more dicts</span>
-                    <span class="s">Add</span>
                 </a>
                 <button class="border m l" onClick={restoreDefault}>
                     <i>restart_alt</i>
@@ -115,6 +120,9 @@ export default function DictTable() {
                                             <i>forum</i>
                                         </a>
                                     )}
+                                    <button class="transparent circle small" title="Edit" onClick={() => openDictEditor(dict)}>
+                                        <i>edit</i>
+                                    </button>
                                     <button class="transparent circle small" title="Remove" onClick={() => remove(dict)}>
                                         <i class="error-text">delete</i>
                                     </button>

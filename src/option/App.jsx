@@ -7,6 +7,7 @@ import { ConfirmHost } from "./components/Dialog.jsx";
 import Home from "./sections/Home.jsx";
 import HistoryTable from "./sections/HistoryTable.jsx";
 import DictTable from "./sections/DictTable.jsx";
+import { DictEditorHost } from "./sections/DictEditor.jsx";
 import { GeneralSettings, ProSettings, Hotkeys } from "./sections/Settings.jsx";
 import { WelcomeDialog } from "./sections/Welcome.jsx";
 import { WhatsNewDialog } from "./sections/WhatsNew.jsx";
@@ -299,6 +300,8 @@ export default function App() {
         <>
             {isMobile.value ? <MobileMain /> : <DesktopMain />}
             <Snackbar />
+            {/* before ConfirmHost, so the discard confirmation shows on top of it */}
+            <DictEditorHost />
             <ConfirmHost />
             <WelcomeDialog />
             <WhatsNewDialog />

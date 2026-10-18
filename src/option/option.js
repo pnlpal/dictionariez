@@ -2,7 +2,7 @@ import "beercss/dist/cdn/beer.min.css";
 import "./options.css";
 import { h, render } from "preact";
 import utils from "utils";
-import { setting, user, loadSetting, loadHistory, loadDicts } from "./state.js";
+import { setting, user, loadSetting, loadHistory, loadDicts, bravo } from "./state.js";
 import { applyTheme } from "./theme.js";
 import { fetchUserProfile, reloadOnLoginStatusChange } from "./user-profile.js";
 import { openWelcome } from "./sections/Welcome.jsx";
@@ -23,7 +23,7 @@ const setupDevFunctions = () => {
 '--'-' \`-\`-'\`-'-' \`-\`-' '  \`-\`-'\`-' -' \`-\`--''---
 
 Welcome to dictionariez!
-You can use the function "addDict" to add/change a dict to your dictionary list.
+To make your own dictionary, click "New dict" in the Dictionaries section, or use the function "addDict" to add/change a dict to your dictionary list.
 For example:
 
 addDict({
@@ -39,7 +39,8 @@ Read more here: https://pnl.dev/topic/52/help-more-dictionaries-needed
 `);
     window.addDict = window.addExtraDict = async (dict) => {
         await utils.send("dictionary-add", { dict });
-        location.reload();
+        await loadDicts();
+        bravo();
     };
     window.welcomeSetup = () => openWelcome({ initialSetup: false });
 };

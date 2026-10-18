@@ -33,6 +33,31 @@ const addDictByParseContent = async (contentNode) => {
     await utils.send("look up", dict);
 };
 
+// Fills the composer with the dict shared from the dict editor on the options page
+const fillComposerWithSharedDict = async () => {
+    if (!location.pathname.includes("/compose")) return;
+    const shared = await utils.send("get dict share data");
+    // ignore a stale share, e.g. the composer opened by hand later
+    if (!shared || Date.now() - shared.timestamp > 5 * 60 * 1000) return;
+
+    const { dict } = shared;
+    // the "Add to Dictionariez" button reads the dict back from this json code block
+    const body = `\`\`\`json\n${JSON.stringify(dict, null, 4)}\n\`\`\`\n`;
+
+    const find = (selector) =>
+        utils.checkInTime(() => document.querySelector(selector), 10000).then(() => document.querySelector(selector));
+    try {
+        const title = await find(".composer input.title");
+        const textarea = await find(".composer textarea.write");
+        title.value = dict.dictName;
+        title.dispatchEvent(new Event("input", { bubbles: true }));
+        textarea.value = body;
+        textarea.dispatchEvent(new Event("input", { bubbles: true }));
+    } catch {
+        console.warn("[Dictionariez] Could not find the composer to fill in the shared dict");
+    }
+};
+
 const allowedHosts = ["pnlpal.dev", "pnl.dev", "localhost:4567"];
 
 if (allowedHosts.includes(location.host)) {
@@ -73,6 +98,7 @@ if (allowedHosts.includes(location.host)) {
         const userLoggedIn = !!document.querySelector("#logged-in-menu");
         const userSubscribed = location.pathname === "/pro" && location.search.includes("success=true");
         utils.send("user logged in status", { userLoggedIn, origin: location.origin, userSubscribed });
+        fillComposerWithSharedDict();
 
         // If user is on /words page, redirect to home page.
         if (location.pathname === "/words") {
