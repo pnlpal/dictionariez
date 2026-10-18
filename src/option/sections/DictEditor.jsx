@@ -4,6 +4,8 @@ import utils from "utils";
 import { allDicts, loadDicts, bravo, pnlBase } from "../state.js";
 import { isMobile } from "../nav.js";
 import { Dialog, confirm } from "../components/Dialog.jsx";
+import CodeArea from "../components/CodeArea.jsx";
+import { formatCss, compactCss } from "../code.js";
 import { FIELD_DOCS, PLACEHOLDERS, pick } from "./dictFieldDocs.jsx";
 
 // { original }: the dict being edited, null for a new one
@@ -36,8 +38,8 @@ const ONLY_IN = {
     ],
 };
 const BOOLEAN_FIELDS = ["noAutoDarkMode", "noAdBlocker", "isRichEditor"];
-const MULTILINE_FIELDS = ["css", "prompt", "promptWithContext", "translationPrompt", "helpMeRefinePrompt"];
-const CODE_FIELDS = ["css", "inputSelector", "submitButtonSelector", "ttsHelperSelector"];
+const MULTILINE_FIELDS = ["prompt", "promptWithContext", "translationPrompt", "helpMeRefinePrompt"];
+const CODE_FIELDS = ["inputSelector", "submitButtonSelector", "ttsHelperSelector"];
 // kept by the background on edit, not something to edit or share
 const INTERNAL_KEYS = ["sequence", "troveUrl", "homepageUrl", "queryText"];
 
@@ -59,6 +61,8 @@ function normalize(dict) {
         const key = ALIASES[k] || k;
         if (!(key in next) || k === key) next[key] = v;
     }
+    // shown formatted, stored on one line, see clean()
+    if (typeof next.css === "string") next.css = formatCss(next.css);
     return next;
 }
 
@@ -70,7 +74,7 @@ function clean(draft, type) {
         if (k in dict || !(k in draft) || ONLY_IN[type === "static" ? "dynamic" : "static"].includes(k)) continue;
         const v = typeof draft[k] === "string" ? draft[k].trim() : draft[k];
         if (v === "" || v === false || v == null) continue;
-        dict[k] = v;
+        dict[k] = k === "css" && typeof v === "string" ? compactCss(v) : v;
     }
     return dict;
 }
@@ -176,7 +180,7 @@ function Field({ k, type, value, onChange, error, warning, focused }) {
     const helper = pick(FIELD_DOCS[k].helper, type);
     // on narrow screens the docs of the focused field unfold right below it instead of in the side panel
     const inlineDoc = focused && (
-        <article class="s m surface-container round small-padding">
+        <article class="s m surface-container round">
             <FieldDoc k={k} type={type} />
         </article>
     );
@@ -194,6 +198,15 @@ function Field({ k, type, value, onChange, error, warning, focused }) {
                         <div class="small-text muted">{helper}</div>
                     </span>
                 </label>
+                {inlineDoc}
+            </div>
+        );
+    }
+
+    if (k === "css") {
+        return (
+            <div data-field={k}>
+                <CodeArea value={value} onChange={onChange} label={label} helper={helper} error={error} />
                 {inlineDoc}
             </div>
         );
@@ -358,81 +371,81 @@ function EditorBody({ original, cancelRef }) {
                 </a>
             </div>
 
-            <div class="grid">
-                <div class="s12 l8">
-                    {tab === "form" ? (
-                        <div onFocusIn={onFocusField} onClick={onFocusField}>
-                            {renderField("dictName")}
-                            <div class="row wrap small-space" data-field="type">
-                                <span>Type</span>
-                                <nav class="group connected">
-                                    {[
-                                        ["static", "link", "Static"],
-                                        ["dynamic", "smart_toy", "Dynamic"],
-                                    ].map(([t, icon, label]) => (
-                                        <button
-                                            class={`small ${t === type ? "active" : "border"}`}
-                                            aria-pressed={t === type}
-                                            onClick={() => {
-                                                setType(t);
-                                                setErrors({});
-                                                setFocused(null);
-                                            }}
-                                        >
-                                            <i>{icon}</i>
-                                            <span>{label}</span>
-                                        </button>
-                                    ))}
-                                </nav>
+            <div class="dict-body">
+                <div class="grid">
+                    <div class="s12 l8">
+                        {tab === "form" ? (
+                            <div class="dict-form" onFocusIn={onFocusField} onClick={onFocusField}>
+                                {renderField("dictName")}
+                                <div class="row wrap small-space" data-field="type">
+                                    <span>Type</span>
+                                    <nav class="group connected">
+                                        {[
+                                            ["static", "link", "Static"],
+                                            ["dynamic", "smart_toy", "Dynamic"],
+                                        ].map(([t, icon, label]) => (
+                                            <button
+                                                class={`small ${t === type ? "active" : "border"}`}
+                                                aria-pressed={t === type}
+                                                onClick={() => {
+                                                    setType(t);
+                                                    setErrors({});
+                                                    setFocused(null);
+                                                }}
+                                            >
+                                                <i>{icon}</i>
+                                                <span>{label}</span>
+                                            </button>
+                                        ))}
+                                    </nav>
+                                </div>
+                                {main.map(renderField)}
+                                <details open={advanced.some((k) => draft[k])}>
+                                    <summary class="row small-space padding-block">
+                                        <i>expand_more</i>
+                                        <span>Advanced</span>
+                                    </summary>
+                                    {advanced.map(renderField)}
+                                </details>
                             </div>
-                            {main.map(renderField)}
-                            <details open={advanced.some((k) => draft[k])}>
-                                <summary class="row small-space padding-block">
-                                    <i>expand_more</i>
-                                    <span>Advanced</span>
-                                </summary>
-                                {advanced.map(renderField)}
-                            </details>
-                        </div>
-                    ) : (
-                        <>
-                            <div class={`field textarea border${jsonError ? " invalid" : ""}`}>
-                                <textarea
-                                    class="code-input json-input"
+                        ) : (
+                            <>
+                                <CodeArea
+                                    language="json"
+                                    className="json-code"
                                     value={jsonText}
-                                    spellcheck={false}
-                                    onInput={(e) => {
-                                        setJsonText(e.currentTarget.value);
+                                    onChange={(v) => {
+                                        setJsonText(v);
                                         setJsonError(null);
                                     }}
-                                ></textarea>
-                                <output class="invalid">{jsonError}</output>
-                                <output>Paste a dict from pnl.dev, or edit the fields directly</output>
-                            </div>
-                            <details class="s m">
-                                <summary class="row small-space padding-block">
-                                    <i>expand_more</i>
-                                    <span>Field reference</span>
-                                </summary>
-                                <FieldReference type={type} />
-                            </details>
-                        </>
-                    )}
-                </div>
-                <aside class="l l4 dict-help">
-                    <article class="surface-container round small-padding">
-                        {tab === "json" ? (
-                            <FieldReference type={type} />
-                        ) : focused && FIELD_DOCS[focused] ? (
-                            <FieldDoc k={focused} type={type} />
-                        ) : (
-                            <IntroDoc />
+                                    error={jsonError}
+                                    helper="Paste a dict from pnl.dev, or edit the fields directly"
+                                />
+                                <details class="s m">
+                                    <summary class="row small-space padding-block">
+                                        <i>expand_more</i>
+                                        <span>Field reference</span>
+                                    </summary>
+                                    <FieldReference type={type} />
+                                </details>
+                            </>
                         )}
-                    </article>
-                </aside>
+                    </div>
+                    <aside class="l l4 dict-help">
+                        <article class="surface-container round">
+                            {tab === "json" ? (
+                                <FieldReference type={type} />
+                            ) : focused && FIELD_DOCS[focused] ? (
+                                <FieldDoc k={focused} type={type} />
+                            ) : (
+                                <IntroDoc />
+                            )}
+                        </article>
+                    </aside>
+                </div>
             </div>
 
-            <nav class="right-align wrap">
+            <nav class="dict-actions">
                 <button
                     class="border"
                     onClick={share}
@@ -440,7 +453,7 @@ function EditorBody({ original, cancelRef }) {
                     title="Share this dictionary with others at pnl.dev"
                 >
                     <i>share</i>
-                    <span>Share at pnl.dev</span>
+                    <span class="m l">Share at pnl.dev</span>
                 </button>
                 <div class="max"></div>
                 <button class="border" onClick={cancel} disabled={busy}>

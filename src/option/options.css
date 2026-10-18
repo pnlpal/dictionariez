@@ -203,13 +203,58 @@ dialog .field:not(:focus-within) > menu {
 }
 
 /* dict editor */
-.code-input {
-    font-family: monospace;
+.dict-editor {
+    --code-font: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-.field > textarea.json-input {
+/* Beer spaces only sibling fields, these are each wrapped for their docs */
+.dict-form [data-field],
+.dict-form > details {
+    margin-block-start: 1.25rem;
+}
+
+.dict-form summary {
+    padding-block: 0.5rem;
+}
+
+.dict-editor details[open] > summary > i {
+    transform: rotate(180deg);
+}
+
+.code-input {
+    font-family: var(--code-font);
+}
+
+/* Beer sizes a textarea to its text, so a one-line prompt would look like an input */
+.dict-editor .field.textarea > textarea {
+    min-block-size: 5.5rem;
+}
+
+.json-code .code-area > :is(pre, textarea) {
     min-block-size: 16rem;
-    max-block-size: 60vh;
+}
+
+/* only the body scrolls: the title, tabs and actions stay in view */
+dialog.dict-editor {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.dict-body {
+    flex: 1;
+    min-block-size: 0;
+    overflow-y: auto;
+    /* room for focus rings at the edges */
+    padding: 0.25rem;
+    margin-inline: -0.25rem;
+}
+
+/* the divider spans the dialog's full width */
+.dict-actions {
+    margin-inline: -1.5rem;
+    padding: 1rem 1.5rem 0;
+    border-block-start: 0.0625rem solid var(--outline-variant);
 }
 
 /* the help column stays in view while the form scrolls */
@@ -219,6 +264,123 @@ dialog .field:not(:focus-within) > menu {
     align-self: start;
 }
 
-.dict-editor details[open] > summary > i {
-    transform: rotate(180deg);
+.dict-editor article > :is(p, pre, table) {
+    margin-block-start: 0.75rem;
+}
+
+/* CodeArea: a Beer-like bordered field, the textarea is transparent over its highlighted copy */
+.code-field {
+    position: relative;
+}
+
+.code-area {
+    display: grid;
+    border: 0.0625rem solid var(--outline);
+    border-radius: 0.25rem;
+    transition: border-color var(--speed1);
+}
+
+.code-field:focus-within .code-area {
+    border-color: var(--primary);
+    box-shadow: inset 0 0 0 0.0625rem var(--primary);
+}
+
+.code-field.invalid .code-area {
+    border-color: var(--error);
+}
+
+.code-area > :is(pre, textarea) {
+    grid-area: 1 / 1;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    padding: 0.875rem 1rem;
+    min-block-size: 7.5rem;
+    background: none;
+    font-family: var(--code-font);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    letter-spacing: normal;
+    tab-size: 4;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.code-area > pre {
+    pointer-events: none;
+    color: var(--on-surface);
+}
+
+.code-area > textarea {
+    overflow: hidden;
+    resize: none;
+    outline: none;
+    color: transparent;
+    caret-color: var(--on-surface);
+}
+
+/* translucent, so the highlighted text below stays readable */
+.code-area > textarea::selection {
+    background-color: color-mix(in srgb, var(--primary) 25%, transparent);
+}
+
+/* sits on the top border like Beer's floating label */
+.code-field > label {
+    position: absolute;
+    inset-block-start: -0.5rem;
+    inset-inline-start: 0.75rem;
+    padding-inline: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: var(--on-surface-variant);
+    background-color: var(--surface-container-high);
+}
+
+.code-field:focus-within > label {
+    color: var(--primary);
+}
+
+.code-helper {
+    padding: 0.25rem 1rem;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    color: var(--on-surface-variant);
+}
+
+.code-field.invalid :is(label, .code-helper) {
+    color: var(--error);
+}
+
+.css-selector {
+    color: var(--primary);
+}
+
+.css-at,
+.css-important,
+.json-number,
+.json-literal {
+    color: var(--error);
+}
+
+.css-prop,
+.json-key {
+    color: var(--tertiary);
+}
+
+.css-string,
+.json-string {
+    color: var(--secondary);
+}
+
+.css-open,
+.css-close,
+.css-semi,
+.css-colon,
+.json-punct {
+    color: var(--on-surface-variant);
+}
+
+.css-comment {
+    color: var(--outline);
+    font-style: italic;
 }

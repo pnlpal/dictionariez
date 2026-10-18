@@ -48,7 +48,8 @@ export const FIELD_DOCS = {
                     hide navigation bars and ads, or to make room for the Dictionariez header at the top.
                 </p>
                 <p>
-                    Add <code>!important</code> when the site's own styles win.
+                    Add <code>!important</code> when the site's own styles win. The CSS is tidied up when you leave the
+                    field, and saved on one line.
                 </p>
             </>
         ),
