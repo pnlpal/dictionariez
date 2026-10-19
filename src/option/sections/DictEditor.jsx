@@ -21,8 +21,16 @@ const FIELDS = {
         advanced: ["fixSpaceInWords", "ttsHelperSelector", "noAutoDarkMode", "noAdBlocker"],
     },
     dynamic: {
-        main: ["windowUrl", "inputSelector", "submitButtonSelector", "prompt", "promptWithContext", "css"],
-        advanced: ["translationPrompt", "helpMeRefinePrompt", "ttsHelperSelector", "isRichEditor"],
+        main: [
+            "windowUrl",
+            "inputSelector",
+            "isRichEditor",
+            "submitButtonSelector",
+            "prompt",
+            "promptWithContext",
+            "css",
+        ],
+        advanced: ["translationPrompt", "helpMeRefinePrompt", "ttsHelperSelector"],
     },
 };
 const ONLY_IN = {

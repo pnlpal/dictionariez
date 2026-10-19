@@ -213,6 +213,11 @@ dialog .field:not(:focus-within) > menu {
     margin-block-start: 1.25rem;
 }
 
+/* a switch for the input box, so it sits right under the input selector */
+.dict-form [data-field="isRichEditor"] {
+    margin-block-start: 0;
+}
+
 .dict-form summary {
     padding-block: 0.5rem;
 }

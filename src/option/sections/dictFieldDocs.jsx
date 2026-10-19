@@ -110,6 +110,16 @@ export const FIELD_DOCS = {
         ),
         example: "form div[contenteditable], #mobile-composer-prompt",
     },
+    isRichEditor: {
+        label: "Rich text editor",
+        helper: "For editable divs that ignore typed text",
+        doc: (
+            <p>
+                Turn it on when the input box is a rich text editor (an editable <code>div</code> instead of a{" "}
+                <code>textarea</code>) and the text doesn't appear in it. Gemini and Mistral need it.
+            </p>
+        ),
+    },
     submitButtonSelector: {
         label: "Submit button selector",
         helper: "The button to click after typing",
@@ -123,16 +133,6 @@ export const FIELD_DOCS = {
             </>
         ),
         example: "form button[type='submit'], form button[aria-label='Send']",
-    },
-    isRichEditor: {
-        label: "Rich text editor",
-        helper: "For editable divs that ignore typed text",
-        doc: (
-            <p>
-                Turn it on when the input box is a rich text editor (an editable <code>div</code> instead of a{" "}
-                <code>textarea</code>) and the text doesn't appear in it. Gemini and Mistral need it.
-            </p>
-        ),
     },
     prompt: {
         label: "Prompt",
