@@ -1,7 +1,9 @@
 /* Only what Beer CSS doesn't provide; colors always come from Beer's theme variables. */
 :root {
     /* Beer sizes everything in rem from this root; its default 16px gives 14px body text, too small for reading */
-    --size: 1.125rem;
+    @media only screen and (min-width: 1536px) {
+        --size: 1.125rem;
+    }
 }
 
 body.loading {
@@ -150,6 +152,25 @@ dialog .field:not(:focus-within) > menu {
 
 .history-table tr.selected {
     background-color: var(--secondary-container);
+}
+
+/* laptop screens like a MacBook Air: tighter cells and smaller buttons, so all columns fit without scrolling */
+@media only screen and (max-width: 1260px) {
+    nav.left.max {
+        padding-right: 0;
+    }
+
+    .history-table button.small {
+        --_size: 1.425rem;
+    }
+
+    .history-table button.small > i {
+        --_size: 1.125rem;
+    }
+
+    .history-table td:is(.col-sentence, .col-s) {
+        max-inline-size: 8rem;
+    }
 }
 
 .dict-table .drag-handle {
