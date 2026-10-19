@@ -87,10 +87,11 @@ function clean(draft, type) {
     return dict;
 }
 
-function validate(dict, type, original) {
+// savedName: the dict's name in storage, undefined while it's not saved yet
+function validate(dict, type, savedName) {
     const errors = {};
     if (!dict.dictName) errors.dictName = "The name is required";
-    else if (dict.dictName !== original?.dictName && allDicts.value.some((d) => d.dictName === dict.dictName)) {
+    else if (dict.dictName !== savedName && allDicts.value.some((d) => d.dictName === dict.dictName)) {
         errors.dictName = "A dictionary with this name already exists";
     }
     if (!dict.windowUrl) errors.windowUrl = "The URL is required";
@@ -250,8 +251,11 @@ function EditorBody({ original, cancelRef }) {
     const [jsonError, setJsonError] = useState(null);
     const [errors, setErrors] = useState({});
     const [focused, setFocused] = useState(null);
-    const [busy, setBusy] = useState(false);
-    const [initial] = useState(() => toJson(clean(normalize(original), detectType(normalize(original)))));
+    // "save" or "test" while saving
+    const [busy, setBusy] = useState(null);
+    // Testing saves the dict, so a later save replaces it under this name, even after renaming it
+    const [savedName, setSavedName] = useState(original?.dictName);
+    const [initial, setInitial] = useState(() => toJson(clean(normalize(original), detectType(normalize(original)))));
 
     const set = (k, v) => {
         setDraft((d) => ({ ...d, [k]: v }));
@@ -296,7 +300,7 @@ function EditorBody({ original, cancelRef }) {
             t = detectType(source);
         }
         const dict = clean(source, t);
-        const errs = validate(dict, t, original);
+        const errs = validate(dict, t, savedName);
         if (Object.keys(errs).length) {
             if (tab === "json") setJsonError(Object.values(errs).join(". "));
             else setErrors(errs);
@@ -305,22 +309,37 @@ function EditorBody({ original, cancelRef }) {
         return dict;
     };
 
-    const save = async () => {
+    // Returns the saved dict, or null when it has errors or failed to save
+    const persist = async (action) => {
         const dict = build();
-        if (!dict) return;
-        setBusy(true);
+        if (!dict) return null;
+        setBusy(action);
         try {
-            await utils.send("dictionary-add", { dict, replace: !!original, oldName: original?.dictName });
+            await utils.send("dictionary-add", { dict, replace: !!savedName, oldName: savedName });
             await loadDicts();
-            bravo();
-            close();
+            setSavedName(dict.dictName);
+            setInitial(toJson(dict));
+            return dict;
         } catch (e) {
             const message = `Failed to save: ${e.message}`;
             if (tab === "json") setJsonError(message);
             else setErrors({ dictName: message });
+            return null;
         } finally {
-            setBusy(false);
+            setBusy(null);
         }
+    };
+
+    const save = async () => {
+        if (!(await persist("save"))) return;
+        bravo();
+        close();
+    };
+
+    // Saves it and opens it in the dict window, where any word can be searched; the editor stays open for fixes
+    const test = async () => {
+        const dict = await persist("test");
+        if (dict) utils.send("look up", { dictName: dict.dictName });
     };
 
     const share = async () => {
@@ -330,9 +349,19 @@ function EditorBody({ original, cancelRef }) {
         window.open(`${pnlBase}/compose?cid=4`, "_blank");
     };
 
+    // the dict as it would be saved, to tell whether anything changed
+    const snapshot = () => {
+        if (tab !== "json") return toJson(clean(draft, type));
+        try {
+            const parsed = normalize(JSON.parse(jsonText));
+            return toJson(clean(parsed, detectType(parsed)));
+        } catch {
+            return jsonText;
+        }
+    };
+
     const cancel = async () => {
-        const current = tab === "json" ? jsonText : toJson(clean(draft, type));
-        if (current === initial || (await confirm("Discard your changes?", { confirmLabel: "Discard" }))) close();
+        if (snapshot() === initial || (await confirm("Discard your changes?", { confirmLabel: "Discard" }))) close();
     };
     // Escape goes through the same check
     cancelRef.current = cancel;
@@ -363,7 +392,7 @@ function EditorBody({ original, cancelRef }) {
     return (
         <>
             <nav>
-                <h5 class="max">{original ? `Edit ${original.dictName}` : "New dictionary"}</h5>
+                <h5 class="max">{savedName ? `Edit ${savedName}` : "New dictionary"}</h5>
                 <button class="transparent circle" title="Close" onClick={cancel}>
                     <i>close</i>
                 </button>
@@ -457,18 +486,27 @@ function EditorBody({ original, cancelRef }) {
                 <button
                     class="border"
                     onClick={share}
-                    disabled={busy}
+                    disabled={!!busy}
                     title="Share this dictionary with others at pnl.dev"
                 >
                     <i>share</i>
                     <span class="m l">Share at pnl.dev</span>
                 </button>
                 <div class="max"></div>
-                <button class="border" onClick={cancel} disabled={busy}>
+                <button class="border" onClick={cancel} disabled={!!busy}>
                     Cancel
                 </button>
-                <button onClick={save} disabled={busy}>
-                    {busy && <progress class="circle small"></progress>}
+                <button
+                    class="secondary-container"
+                    onClick={test}
+                    disabled={!!busy}
+                    title="Save it and open it in the dictionary window, then search any word there"
+                >
+                    {busy === "test" ? <progress class="circle small"></progress> : <i>play_arrow</i>}
+                    <span>Test</span>
+                </button>
+                <button onClick={save} disabled={!!busy}>
+                    {busy === "save" && <progress class="circle small"></progress>}
                     <span>Save</span>
                 </button>
             </nav>
