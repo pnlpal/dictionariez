@@ -10,11 +10,17 @@ import checkServerForDictsConflict from "../checkServerForDictsConflict.js";
 const product = process.env.PRODUCT;
 const productIcon = chrome.runtime.getURL(chrome.runtime.getManifest().icons["128"]);
 
-// { step: "languages" | "conflict" | "success", initialSetup, serverDicts, onDone }
+// { step: "languages" | "conflict" | "success", initialSetup, serverDicts, lastTimeSyncDicts, standalone, onDone }
 const welcome = signal(null);
 
 export function openWelcome({ initialSetup = true, onDone } = {}) {
     welcome.value = { step: "languages", initialSetup, onDone };
+}
+
+// A Pro device that has never synced finds dicts on the server outside the welcome flow
+export function openDictsConflict({ serverDicts, lastTimeSyncDicts, onDone }) {
+    if (welcome.value) return;
+    welcome.value = { step: "conflict", serverDicts, lastTimeSyncDicts, standalone: true, onDone };
 }
 
 const goto = (step, extra) => (welcome.value = { ...welcome.value, step, ...extra });
@@ -23,8 +29,10 @@ const close = () => (welcome.value = null);
 
 // The page can load its tables as soon as languages are settled, while the success message is still shown
 const succeed = () => {
-    goto("success");
-    welcome.value.onDone?.();
+    const { standalone, onDone } = welcome.value;
+    if (standalone) close();
+    else goto("success");
+    onDone?.();
 };
 
 function LanguagesStep() {
@@ -47,7 +55,10 @@ function LanguagesStep() {
 
         const serverConflict = setting.value.isPro ? await checkServerForDictsConflict() : null;
         if (serverConflict?.hasServerDicts) {
-            goto("conflict", { serverDicts: serverConflict.serverDicts });
+            goto("conflict", {
+                serverDicts: serverConflict.serverDicts,
+                lastTimeSyncDicts: serverConflict.lastTimeSyncDicts,
+            });
         } else {
             succeed();
         }
@@ -105,14 +116,14 @@ function LanguagesStep() {
 }
 
 function ConflictStep() {
-    const { serverDicts } = welcome.value;
+    const { serverDicts, lastTimeSyncDicts, standalone } = welcome.value;
 
     const choose = async (useServer) => {
         try {
             if (useServer) {
-                await utils.send("accept-server-dicts", { serverDicts });
+                await utils.send("accept-server-dicts", { serverDicts, lastTimeSyncDicts });
             } else {
-                await utils.send("sync-local-dicts-to-server");
+                await utils.send("sync-local-dicts-to-server", { lastTimeSyncDicts });
             }
         } catch (error) {
             console.error("Error syncing dictionaries:", error);
@@ -132,16 +143,16 @@ function ConflictStep() {
                 <h5 class="max no-margin">Welcome back!</h5>
             </div>
             <p>
-                Looks like you've used {product} on another device. We found{" "}
-                <strong>{serverDicts.length} dictionaries</strong> synced there. Which set would you like here?
+                Looks like you've used {product} on another device or previously. We found{" "}
+                <strong>{serverDicts.length} dictionaries</strong> synced to the cloud. Which set would you like here?
             </p>
             <div class="grid">
                 <article class="s12 m6 primary-container round">
                     <div class="row">
                         <i>cloud_download</i>
-                        <h6 class="max no-margin">Use my synced dictionaries</h6>
+                        <h6 class="max no-margin">Use cloud version</h6>
                     </div>
-                    <p>Bring over the {serverDicts.length} dictionaries from your other device.</p>
+                    <p>Bring over the {serverDicts.length} dictionaries from your other device synced to the cloud.</p>
                     <button onClick={() => choose(true)}>Use synced</button>
                 </article>
                 <article class="s12 m6 surface-container round">
@@ -149,7 +160,11 @@ function ConflictStep() {
                         <i>devices</i>
                         <h6 class="max no-margin">Start fresh here</h6>
                     </div>
-                    <p>Keep the dictionaries just picked for your languages.</p>
+                    <p>
+                        {standalone
+                            ? "Keep the dictionaries on this device and sync them to your other devices."
+                            : "Keep the dictionaries just picked for your languages."}
+                    </p>
                     <button class="border" onClick={() => choose(false)}>
                         Keep these
                     </button>

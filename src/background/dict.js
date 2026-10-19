@@ -99,24 +99,19 @@ export default {
                 allDicts: this.allDicts,
                 lastTimeSyncDicts: setting.getValue("lastTimeSyncDicts"),
                 syncDictsError: this.syncDictsError,
+                serverDictsConflict: this.serverDictsConflict,
             };
         });
 
-        // Check if server has existing dicts for Pro user on fresh install
+        // Check if server has existing dicts for a Pro user who has never synced on this device
         // Used for Edge Case 6: New device with existing server data
         message.on("check-server-for-existing-dicts", async () => {
             if (!this.isProUser()) {
                 return { hasServerDicts: false, serverDicts: null };
             }
             try {
-                // Send timestamp=0 to indicate "check only" mode - server always wins
-                const res = await cloudStorage.syncAllDicts(this.allDicts, 0);
-                if (res && res.shouldUpdateClientSide && res.allDicts && res.allDicts.length > 0) {
-                    console.log("Server has existing dicts for Pro user:", res.allDicts);
-                    return { hasServerDicts: true, serverDicts: res.allDicts };
-                }
-                console.log("No existing dicts found on server for Pro user.");
-                return { hasServerDicts: false, serverDicts: null };
+                const conflict = await this.checkServerForExistingDicts();
+                return { hasServerDicts: !!conflict, ...conflict };
             } catch (error) {
                 console.error("check-server-for-existing-dicts error", error);
                 return { hasServerDicts: false, serverDicts: null, error: error.message };
@@ -124,21 +119,24 @@ export default {
         });
 
         // Accept server dicts (user chose "Use server copy" in Edge Case 6)
-        message.on("accept-server-dicts", async ({ serverDicts }) => {
+        // lastTimeSyncDicts: the server's sync time returned by the check, so later syncs start from the server's version
+        message.on("accept-server-dicts", async ({ serverDicts, lastTimeSyncDicts }) => {
             this.allDicts = serverDicts;
             await storage.removeAllByK("dict-");
             await storage.setAllByK("dict-", "dictName", this.allDicts);
+            await setting.setValue("lastTimeSyncDicts", lastTimeSyncDicts);
+            this.serverDictsConflict = null;
+            contextMenu.rebuildContextMenu(this.allDicts);
 
             console.log("User choose to use server dicts: ", this.allDicts.length);
-            // Now sync to update timestamp
-            await this.syncAllDictsWithCloud();
             return { success: true };
         });
 
         // Sync local dicts to server (user chose "Keep local" in Edge Case 6)
-        message.on("sync-local-dicts-to-server", async () => {
+        message.on("sync-local-dicts-to-server", async ({ lastTimeSyncDicts }) => {
             console.log("User choose to keep local dicts", this.allDicts.length);
-            await this.syncAllDictsWithCloud("keep-local-dicts");
+            await this.syncAllDictsWithCloud("keep-local-dicts", lastTimeSyncDicts);
+            if (this.syncDictsError) throw new Error(this.syncDictsError);
             return { success: true };
         });
     },
@@ -166,20 +164,39 @@ export default {
 
         this.allDicts = allDicts;
     },
-    async syncAllDictsWithCloud(action = "") {
+    // Returns { serverDicts, lastTimeSyncDicts } when the server already has dicts, otherwise null
+    async checkServerForExistingDicts() {
+        // timestamp=0 is the server's "check only" mode: nothing is written
+        const res = await cloudStorage.syncAllDicts(this.allDicts, 0);
+        if (res && res.shouldUpdateClientSide && res.allDicts && res.allDicts.length > 0) {
+            console.log("Server has existing dicts for Pro user:", res.allDicts);
+            return { serverDicts: res.allDicts, lastTimeSyncDicts: res.lastTimeSyncDicts };
+        }
+        console.log("No existing dicts found on server for Pro user.");
+        return null;
+    },
+
+    // action: set when the client has changed its dicts, so the server takes the client's version.
+    // lastTimeSyncDicts always holds the server's sync time, never a client clock.
+    async syncAllDictsWithCloud(action = "", lastTimeSyncDicts = setting.getValue("lastTimeSyncDicts")) {
         this.syncDictsError = null;
+        this.serverDictsConflict = null;
         if (this.isProUser()) {
             try {
-                if (action) {
-                    setting.setValue("lastTimeSyncDicts", Date.now());
+                if (!lastTimeSyncDicts) {
+                    // Never synced on this device: neither side may overwrite the other until the user decides
+                    const conflict = await this.checkServerForExistingDicts();
+                    if (conflict) {
+                        this.serverDictsConflict = conflict;
+                        return;
+                    }
                 }
-                const lastTimeSyncDicts = setting.getValue("lastTimeSyncDicts");
                 console.log(
                     "Syncing all dicts with cloud:",
                     lastTimeSyncDicts ? new Date(lastTimeSyncDicts).toISOString() : "[no last time]",
                     action ? `[${action}]` : "",
                 );
-                const res = await cloudStorage.syncAllDicts(this.allDicts, lastTimeSyncDicts);
+                const res = await cloudStorage.syncAllDicts(this.allDicts, lastTimeSyncDicts, action);
                 if (res && res.allDicts) {
                     this.allDicts = res.allDicts;
                     if (res.shouldUpdateClientSide) {

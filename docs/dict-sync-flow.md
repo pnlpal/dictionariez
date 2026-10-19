@@ -6,7 +6,7 @@ This document describes the synchronization flow between the client (browser ext
 
 ## Simplified Sync Model (Proposed)
 
-The sync model is **full state sync** - client always sends complete `allDicts` array, server always overwrites based on timestamp comparison.
+The sync model is **full state sync** - client always sends complete `allDicts` array. `lastTimeSyncDicts` on the client only ever holds a time the server returned; the client never writes its own clock into it. A local change is signalled with `action` instead.
 
 ```mermaid
 flowchart TD
@@ -22,7 +22,9 @@ flowchart TD
         D --> E[Save to Local Storage<br/>batch: removeAll + setAll]
         E --> F{Is Pro User?}
         F -->|No| G[Done - Local Only]
-        F -->|Yes| H[Update lastTimeSyncDicts<br/>to Date.now]
+        F -->|Yes| F2{Has lastTimeSyncDicts?}
+        F2 -->|No| F3[Edge Case 6:<br/>check server first]
+        F2 -->|Yes| H[Send allDicts + lastTimeSyncDicts<br/>+ action]
         H --> I[Call Server API<br/>POST /api/dicts/syncAllDicts]
     end
     
@@ -32,12 +34,14 @@ flowchart TD
         J -->|Pro| L[Validate allDicts array]
         L --> M{First Time Sync?<br/>serverTimestamp == null}
         M -->|Yes| N[Save all client dicts<br/>shouldUpdateClientSide = false]
-        M -->|No| O{Compare Timestamps}
-        O -->|clientTime >= serverTime| P[Delete all server dicts<br/>Save all client dicts<br/>shouldUpdateClientSide = false]
-        O -->|clientTime < serverTime| Q[Keep server dicts<br/>shouldUpdateClientSide = true]
-        
-        N & P & Q --> R[Update serverTimestamp<br/>to new ISO time]
-        R --> S[Return response]
+        M -->|No| O{action sent?}
+        O -->|Yes| P[Delete all server dicts<br/>Save all client dicts<br/>shouldUpdateClientSide = false]
+        O -->|No| O2{clientTime == serverTime?}
+        O2 -->|Yes| P2[In sync, nothing to do]
+        O2 -->|No| Q[Keep server dicts<br/>shouldUpdateClientSide = true]
+
+        N & P --> R[Update serverTimestamp<br/>to new ISO time]
+        R & P2 & Q --> S[Return response<br/>with serverTimestamp]
     end
     
     subgraph Response["Client Handles Response"]
@@ -70,7 +74,7 @@ flowchart LR
 flowchart LR
     E2A[Device A changes dicts] --> E2B[Device A syncs to server<br/>serverTime = T1]
     E2B --> E2C[Device B opens extension]
-    E2C --> E2D[Device B syncs<br/>clientTime < T1]
+    E2C --> E2D[Device B pulls, no action<br/>clientTime < T1]
     E2D --> E2E[Server wins<br/>Device B updates from server]
 ```
 
@@ -81,9 +85,8 @@ flowchart TD
     E3A[User makes changes offline] --> E3B[Changes saved locally]
     E3B --> E3C[User comes online]
     E3C --> E3D[Sync triggered]
-    E3D --> E3E{Client timestamp<br/>vs Server timestamp}
-    E3E -->|Client newer| E3F[Client wins]
-    E3E -->|Server newer| E3G[Server wins<br/>Local changes lost!]
+    E3D --> E3E[Sync with action]
+    E3E --> E3F[Client wins<br/>Changes made meanwhile on other devices are lost!]
 ```
 
 ### Edge Case 4: Pro Expires
@@ -119,7 +122,7 @@ flowchart TD
     E6D -->|Yes| E6F{Has lastTimeSyncDicts?}
     E6F -->|Yes, already synced| E6G[Normal sync flow]
     
-    E6F -->|No, never synced| E6H[Check server with<br/>lastTimeSyncDicts = 0]
+    E6F -->|No, never synced| E6H[Check server with<br/>lastTimeSyncDicts = 0<br/>before any sync, on any trigger]
     E6H --> E6I{Server has dicts?}
     
     E6I -->|No| E6J[Sync to upload local dicts]
@@ -128,18 +131,17 @@ flowchart TD
     E6I -->|Yes| E6L[Show conflict prompt:<br/>'Found synced dicts from another device']
     E6L --> E6M{User choice?}
     
-    E6M -->|Use server copy| E6N[Replace local with server dicts]
-    E6N --> E6O[Sync to confirm]
-    E6O --> E6K
-    
-    E6M -->|Keep local| E6P[Sync to overwrite server<br/>with local dicts]
+    E6M -->|Use server copy| E6N[Replace local with server dicts<br/>Store server's lastTimeSyncDicts]
+    E6N --> E6K
+
+    E6M -->|Keep local| E6P[Sync with action + server's lastTimeSyncDicts<br/>to overwrite server with local dicts]
     E6P --> E6K
 ```
 
-**Key Point**: For Pro users on a fresh install:
+**Key Point**: For Pro users on a device that has never synced (fresh install, or a free user who became Pro):
 1. **Language selection first** (always mandatory)
 2. Generate local dicts from selected languages
-3. If never synced before, **check server** (with timestamp = 0)
+3. If never synced before, **check server** (with timestamp = 0). Every sync does this first, whether it is a pull or a local change, so neither side overwrites the other before the user decides. The options page shows the conflict prompt whenever it finds one, not only in the welcome dialog.
 4. If server has data → **ask user**: "Use server copy?" or "Keep local?"
    - Use server copy → replace local dicts with server dicts
    - Keep local → overwrite server with local dicts
@@ -160,7 +162,7 @@ Language selection happens **before** the sync check, so server data doesn't aff
 ## Key Simplifications
 
 1. **No incremental sync** - Always send full `allDicts` state
-2. **Timestamp-based conflict resolution** - Newer timestamp wins
+2. **Last writer wins** - a sync with `action` overwrites the server; a sync without it takes the server's version unless the timestamps match. Older extensions that send `Date.now()` without `action` still win when their time is newer than the server's
 3. **Batch local storage** - Use `removeAll` + `setAll` instead of individual operations
 4. **Single sync call** - No separate add/remove actions, just full state sync
 

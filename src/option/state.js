@@ -71,4 +71,5 @@ export async function loadDicts() {
     window.allDicts = res.allDicts;
     syncDictsError.value = res.syncDictsError;
     allDicts.value = res.allDicts;
+    return res;
 }

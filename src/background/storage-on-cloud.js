@@ -112,7 +112,7 @@ export default {
         return convertProItem(res);
     },
 
-    async syncAllDicts(allDicts, lastTimeSyncDicts = null) {
-        return await this.post(`/api/dicts/syncAllDicts`, { allDicts, lastTimeSyncDicts });
+    async syncAllDicts(allDicts, lastTimeSyncDicts = null, action = "") {
+        return await this.post(`/api/dicts/syncAllDicts`, { allDicts, lastTimeSyncDicts, action });
     },
 };

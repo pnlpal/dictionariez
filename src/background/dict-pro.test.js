@@ -116,8 +116,8 @@ describe("dicts management for pro user", () => {
         Dict.allDicts = Dict.allDicts.filter((d) => d.dictName !== removedDictName);
         defaultChatgptDict.windowUrl = "https://modified-chatgpt.com";
 
-        // now add a new dict and sync
-        await Dict.addToDictionariez(testDict("test-dict2"));
+        // now pull from the cloud, without an action the server's newer version wins
+        await Dict.syncAllDictsWithCloud();
         expect(Dict._lastTimeSyncDicts).to.be.a("string").that.is.not.empty;
         expect(Dict.allDicts.length).to.be.greaterThan(1);
 
@@ -128,9 +128,6 @@ describe("dicts management for pro user", () => {
         expect(cloudChatgptDict.windowUrl).to.equal("https://chatgpt.com");
         expect(cloudChatgptDict.windowUrl).to.not.equal("https://modified-chatgpt.com");
         expect(Dict._shouldUpdateClientSide).to.be.true;
-
-        // the newly added dict is gone
-        expect(Dict.allDicts.find((d) => d.dictName === "test-dict2")).to.be.undefined;
     });
 
     it("client side dicts still works when cloud sync failed", async () => {

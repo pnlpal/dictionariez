@@ -5,7 +5,7 @@ import utils from "utils";
 import { setting, user, loadSetting, loadHistory, loadDicts, bravo } from "./state.js";
 import { applyTheme } from "./theme.js";
 import { fetchUserProfile, reloadOnLoginStatusChange } from "./user-profile.js";
-import { openWelcome } from "./sections/Welcome.jsx";
+import { openWelcome, openDictsConflict } from "./sections/Welcome.jsx";
 import { openWhatsNew } from "./sections/WhatsNew.jsx";
 import askForFeedback from "./ask-for-feedback.js";
 import App from "./App.jsx";
@@ -45,9 +45,12 @@ Read more here: https://pnl.dev/topic/52/help-more-dictionaries-needed
     window.welcomeSetup = () => openWelcome({ initialSetup: false });
 };
 
-const loadTables = () => {
+const loadTables = async () => {
     loadHistory();
-    loadDicts();
+    const { serverDictsConflict } = await loadDicts();
+    if (serverDictsConflict) {
+        openDictsConflict({ ...serverDictsConflict, onDone: loadDicts });
+    }
 };
 
 const init = async () => {
