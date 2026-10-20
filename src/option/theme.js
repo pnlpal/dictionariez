@@ -1,7 +1,8 @@
 import { ui } from "beercss/dist/cdn/beer.min.js";
 import "material-dynamic-colors";
 
-const themeColor = "#2a6fdb"; // Ocean
+// Beer generates the whole light and dark palette from this seed
+const themeColor = process.env.PRODUCT === "Ordböcker" ? "#0058a3" : "#2a6fdb"; // Ikea-like deep blue : Ocean
 
 export const themeModes = ["auto", "light", "dark"];
 
