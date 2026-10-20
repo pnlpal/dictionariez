@@ -238,12 +238,13 @@ const utils = {
     return REGEX_KOREAN.test(str);
   },
 
-  isValidWordOrPhrase(text = "") {
+  isValidWordOrPhrase(text = "", isPartOfPhrase = false) {
     if (!this.isSentence(text) && text) {
       if (text.split(/\s/).length > 1) {
         const allValid = text
           .split(/\s/)
-          .map((word) => this.isValidWordOrPhrase(word));
+          .filter(Boolean)
+          .map((word) => this.isValidWordOrPhrase(word, true));
         return allValid.every((v) => v);
       }
       let w = text.trim();
@@ -251,28 +252,52 @@ const utils = {
       w = w.replace(/[,:;“”'"-?!.]{1,2}$/, "");
       // Remove up to two leading punctuation marks
       w = w.replace(/^[,:;“”'"-?!.]{1,2}/, "");
-      // Ignore single English letters (likely not a word)
+      // Ignore single English letters (likely not a word), but allow "a" / "I" inside a phrase
       if (this.hasEnglish(w) && w.length === 1) {
-        return false;
+        return isPartOfPhrase;
       }
 
-      // Only allow one hyphen in the middle, no other punctuation
-      // (e.g., "co-operate" is OK, "co--operate" or "co,operate" is not)
-      const hyphenSplit = w.split("-");
-      if (hyphenSplit.length > 2) return false; // More than one hyphen
-
-      // Only allow letters (any language) and at most one hyphen
+      // Only allow single hyphens and apostrophes inside the word, no other punctuation
+      // (e.g., "co-operate", "state-of-the-art", "one's" are OK, "co--operate" or "co,operate" is not)
       // \p{L}: any kind of letter from any language
       // \p{M}: any kind of combining mark (accents, diacritics, etc.)
-      if (!/^[\p{L}\p{M}]+(-[\p{L}\p{M}]+)?$/u.test(w)) return false;
+      if (!/^[\p{L}\p{M}]+(['’-][\p{L}\p{M}]+)*$/u.test(w)) return false;
       return true;
     }
   },
 
-  isSentence(str = "", minLength = 4) {
+  isSentence(str = "", minLength = 3) {
+    str = str.trim();
     if (this.hasChinese(str) || this.hasJapanese(str) || this.hasKorean(str)) {
-      return str.length > minLength;
+      if (/[。！？；，、]/.test(str)) return true;
+      // Japanese with kana, e.g. 猿も木から落ちる, 石の上にも三年
+      if (/[぀-ヿ]/.test(str)) {
+        if (/(です|ます|でした|ました|ません|ください)$/.test(str)) return true;
+        return str.length > (minLength + 1) * 3;
+      }
+      // Chinese idioms are mostly 4 characters, sayings can be longer, e.g. 一不做二不休, 三人行必有我师
+      if (this.hasChinese(str)) {
+        return str.length > (minLength + 1) * 2;
+      }
+      return str.length > minLength + 1;
     } else {
+      const words = str.split(/\s+/).filter(Boolean);
+      if (words.length < minLength) return false;
+
+      // Strong signal: clause punctuation inside the text
+      const body = str.replace(/[.!?…]+["”']?$/, "");
+      if (/[,;:()"“”]/.test(body)) return true;
+      // Capitalized and ends with . ! ? → reads like a sentence
+      if (
+        /^\p{Lu}/u.test(str) &&
+        /[.!?…]["”']?$/.test(str) &&
+        words.length >= minLength
+      ) {
+        return true;
+      }
+
+      // Weak signal: length. Idioms rarely go past ~6 content words,
+      // e.g. "every cloud has a silver lining", "give someone the benefit of the doubt"
       const simpleStopWords = [
         "a",
         "an",
@@ -294,14 +319,36 @@ const utils = {
         "off",
         "mid",
         "up",
+        "and",
+        "or",
+        "not",
+        "is",
+        "are",
+        "be",
+        "it",
+        "its",
+        "my",
+        "your",
+        "his",
+        "her",
+        "our",
+        "their",
+        "has",
+        "have",
+        "one's",
+        "someone",
+        "something",
+        "sb",
+        "sth",
       ];
-      return (
-        str
-          .split(/\s/)
-          .filter(
-            (w) => w.length > 1 && !simpleStopWords.includes(w.toLowerCase()),
-          ).length >= minLength
-      );
+      const contentWords = words.filter((w) => {
+        const n = w
+          .toLowerCase()
+          .replace(/[^\p{L}\p{M}'’]/gu, "")
+          .replace("’", "'");
+        return n.length > 1 && !simpleStopWords.includes(n);
+      });
+      return contentWords.length > 6 || words.length > 9;
     }
   },
 

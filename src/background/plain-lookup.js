@@ -40,7 +40,8 @@ const setEnglishProns = (result) => {
 
 export default {
     checkTypeOfSupport(w, detectedLangInContext = "") {
-        w = w.trim();
+        // Normalize curly apostrophes, e.g. "one’s" → "one's", as dictionaries use the straight one
+        w = w.trim().replace(/’/g, "'");
         if (!w) {
             return;
         }
@@ -56,10 +57,10 @@ export default {
             return;
         }
 
-        // Only allow letters (any language), hyphens, and spaces
+        // Only allow letters (any language), hyphens, apostrophes inside words, and spaces
         // \p{L}: any kind of letter from any language
         // \p{M}: any kind of combining mark (accents, diacritics, etc.)
-        if (!/^[\p{L}\p{M}]+([ -][\p{L}\p{M}]+)*$/u.test(w)) return;
+        if (!/^[\p{L}\p{M}]+([ '’-][\p{L}\p{M}]+)*$/u.test(w)) return;
 
         const possibleLangs = this.checkLangs(w, detectedLangInContext);
         if (this.checkType(w, possibleLangs)) {
@@ -168,7 +169,7 @@ export default {
         });
 
         message.on("look up plain", async ({ w, s, sc, sentence, detectedLangInContext }, sender) => {
-            w = w.trim();
+            w = w.trim().replace(/’/g, "'");
             if (!w) {
                 return;
             }

@@ -510,7 +510,6 @@ describe("background/check words to ignore in plain lookup", () => {
             "I",
             "co--operate",
             "co,operate",
-            "won't",
             "great!!!",
             "co⊙perate",
             "привіт",
@@ -525,12 +524,48 @@ describe("background/check words to ignore in plain lookup", () => {
             expect(result).to.not.exist;
         }
     });
+    it("should ignore sentences", async () => {
+        await simpleEnableLanguages(["Swedish", "English", "Chinese"]);
+        const sentencesToIgnore = [
+            // capitalized and ends with a period
+            "He went to the store yesterday.",
+            // clause punctuation inside
+            "Well, I think so",
+            "she said: come here",
+            // too long, even though it's a proverb on wiktionary
+            "a bird in the hand is worth two in the bush",
+            "this is a much longer piece of text that is certainly a sentence here",
+            // Chinese sentence punctuation
+            "你好。",
+            "塞翁失马，焉知非福",
+            // Japanese polite sentence ending
+            "これはペンです",
+        ];
+        for (const sentence of sentencesToIgnore) {
+            const result = await utils.send("check text supported", {
+                w: sentence,
+            });
+            expect(result, sentence).to.not.exist;
+        }
+    });
     it("should accept words with at most one hyphen in the middle or strip punctuation at the end or phrase", async () => {
         await simpleEnableLanguages(["Swedish", "Japanese", "Ukrainian", "Thai", "Chinese", "English"]);
         const wordsToAccept = [
             { word: "co-operate", expected: "co-operate" },
             { word: "wrap up", expected: "wrap up" },
             { word: "come up with", expected: "come up with" },
+            { word: "state-of-the-art", expected: "state-of-the-art" },
+            { word: "won't", expected: "won't" },
+            { word: "pull one's leg", expected: "pull one's leg" },
+            { word: "pull one’s leg", expected: "pull one's leg" },
+            { word: "Break a leg!", expected: "Break a leg" },
+            { word: "the ball is in your court", expected: "the ball is in your court" },
+            { word: "every cloud has a silver lining", expected: "every cloud has a silver lining" },
+            { word: "give someone the benefit of the doubt", expected: "give someone the benefit of the doubt" },
+            {
+                word: "don't count your chickens before they hatch",
+                expected: "don't count your chickens before they hatch",
+            },
             { word: "fart!!", expected: "fart" },
             { word: "fart.", expected: "fart" },
             { word: "  regeringen ", expected: "regeringen" },
@@ -548,13 +583,149 @@ describe("background/check words to ignore in plain lookup", () => {
                 w: word,
             });
             if (expected === null) {
-                expect(result).to.not.exist;
+                expect(result, word).to.not.exist;
             } else {
-                expect(result).to.equal(expected);
+                expect(result, word).to.equal(expected);
             }
         }
     });
 });
+describe("background/plain-lookup phrases from wiktionary", () => {
+    before(async () => {
+        await simpleEnableLanguages(["Swedish", "English", "Chinese"]);
+        await utils.send("save setting", {
+            key: "englishLookupSource",
+            value: "wiktionary",
+        });
+    });
+
+    // expected is the page title (h1) on wiktionary, which differs from the phrase when wiktionary redirects
+    const phrases = [
+        { phrase: "break a leg", expected: "break a leg" },
+        { phrase: "Break a leg", expected: "break a leg" }, // 404 then retry in lowercase
+        { phrase: "beat around the bush", expected: "beat around the bush" },
+        { phrase: "once in a blue moon", expected: "once in a blue moon" },
+        { phrase: "state-of-the-art", expected: "state-of-the-art" },
+        { phrase: "won't", expected: "won't" },
+        { phrase: "every cloud has a silver lining", expected: "every cloud has a silver lining" },
+        { phrase: "the early bird catches the worm", expected: "the early bird catches the worm" },
+        { phrase: "let the cat out of the bag", expected: "let the cat out of the bag" },
+        { phrase: "actions speak louder than words", expected: "actions speak louder than words" },
+        { phrase: "the ball is in your court", expected: "the ball is in someone's court" }, // redirect
+        { phrase: "pull one's leg", expected: "pull someone's leg" }, // redirect
+        { phrase: "pull one’s leg", expected: "pull someone's leg" }, // curly apostrophe, redirect
+        { phrase: "give someone the benefit of the doubt", expected: "benefit of the doubt" }, // redirect
+        {
+            phrase: "don't count your chickens before they hatch",
+            expected: "don't count your chickens before they're hatched", // redirect
+        },
+    ];
+    for (const { phrase, expected } of phrases) {
+        it(`should get definition of English phrase "${phrase}" from wiktionary`, async () => {
+            const supported = await utils.send("check text supported", { w: phrase });
+            expect(supported, "check text supported").to.exist;
+
+            const result = await utils.send("look up plain", { w: phrase });
+            // console.log(result);
+            expect(result?.length, "result").to.gte(1);
+            expect(result[0].lang).to.equal("English");
+            expect(result[0].w).to.equal(expected);
+            expect(result[0]._source).to.equal("wiktionary");
+            expect(result[0].defs.length).to.gte(1);
+        });
+    }
+});
+
+describe("background/plain-lookup phrases in other languages", () => {
+    before(async () => {
+        await utils.send("save setting", {
+            key: "enableConvertCn2T",
+            value: false,
+        });
+    });
+
+    const checkSupported = async (phrase) => {
+        const supported = await utils.send("check text supported", { w: phrase });
+        expect(supported, "check text supported").to.equal(phrase);
+    };
+
+    // without diacritics these also match English and Swedish, wiktionary should still return the Spanish section
+    const spanishPhrases = [
+        "tomar el pelo",
+        "echar de menos",
+        "dar en el clavo",
+        "costar un ojo de la cara",
+        "no tener pelos en la lengua",
+        "más vale tarde que nunca",
+    ];
+    for (const phrase of spanishPhrases) {
+        it(`should get definition of Spanish phrase "${phrase}" from wiktionary`, async () => {
+            await simpleEnableLanguages(["Spanish", "English"]);
+            await checkSupported(phrase);
+
+            const result = await utils.send("look up plain", { w: phrase });
+            // console.log(result);
+            expect(result?.length, "result").to.gte(1);
+            expect(result[0].lang).to.equal("Spanish");
+            expect(result[0].w).to.equal(phrase);
+            expect(result[0]._source).to.equal("wiktionary");
+            expect(result[0].defs.length).to.gte(1);
+        });
+    }
+
+    const swedishPhrases = ["ta det lugnt", "ha is i magen", "hålla tummarna", "slå två flugor i en smäll"];
+    for (const phrase of swedishPhrases) {
+        it(`should get definition of Swedish phrase "${phrase}" from wiktionary`, async () => {
+            await simpleEnableLanguages(["Swedish", "English"]);
+            await checkSupported(phrase);
+
+            const result = await utils.send("look up plain", { w: phrase });
+            // console.log(result);
+            expect(result?.length, "result").to.gte(1);
+            expect(result[0].lang).to.equal("Swedish");
+            expect(result[0].w).to.equal(phrase);
+            expect(result[0]._source).to.equal("wiktionary");
+            expect(result[0].defs.length).to.gte(1);
+        });
+    }
+
+    // only enable Chinese, otherwise kanji-only text goes to JapanDict first
+    const chineseIdioms = ["画蛇添足", "守株待兔", "对牛弹琴", "一不做二不休", "三人行必有我师"];
+    for (const phrase of chineseIdioms) {
+        it(`should get definition of Chinese idiom "${phrase}" from bingCN`, async () => {
+            await simpleEnableLanguages(["Chinese"]);
+            await checkSupported(phrase);
+
+            const result = await utils.send("look up plain", { w: phrase });
+            console.log(result);
+            expect(result?.w, "result").to.equal(phrase);
+            expect(result._source).to.equal("bingCN");
+            expect(result.defs.length || result.defs2.length).to.gte(1);
+        });
+    }
+
+    const japanesePhrases = [
+        "猫に小判",
+        "一期一会",
+        "花より団子",
+        "七転び八起き",
+        "石の上にも三年",
+        "猿も木から落ちる",
+    ];
+    for (const phrase of japanesePhrases) {
+        it(`should get definition of Japanese phrase "${phrase}" from JapanDict`, async () => {
+            await simpleEnableLanguages(["Japanese"]);
+            await checkSupported(phrase);
+
+            const result = await utils.send("look up plain", { w: phrase });
+            // console.log(result);
+            expect(result?.w, "result").to.equal(phrase);
+            expect(result._source).to.equal("japan");
+            expect(result.defs.length).to.gte(1);
+        });
+    }
+});
+
 describe("background/plain-lookup language filtering with detectedLangInContext", () => {
     it("should get both French and English definition when detected lang is fr and English is enabled", async () => {
         await simpleEnableLanguages(["French", "English"]);
