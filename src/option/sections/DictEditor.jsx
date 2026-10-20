@@ -91,7 +91,7 @@ function clean(draft, type) {
 function validate(dict, type, savedName) {
     const errors = {};
     if (!dict.dictName) errors.dictName = "The name is required";
-    else if (dict.dictName !== savedName && allDicts.value.some((d) => d.dictName === dict.dictName)) {
+    else if (dict.dictName !== savedName && allDicts.value?.some((d) => d.dictName === dict.dictName)) {
         errors.dictName = "A dictionary with this name already exists";
     }
     if (!dict.windowUrl) errors.windowUrl = "The URL is required";

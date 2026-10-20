@@ -1,3 +1,21 @@
+# v9.1.0 Oct 20, 2026
+- Make your own dictionaries: a new dictionary editor in the options page, no more `addDict` in the console.
+  - Click "New dict" above the dictionaries table, or the edit button on any dictionary to change it.
+  - Works for both static dictionaries (a search URL with `<word>`) and dynamic ones like AI chats (an input box to type into, with your own prompts).
+  - Every field explains itself: a short hint below it, and a help panel with details and an example for the field you're editing.
+  - Custom CSS with syntax highlighting, tidied up automatically.
+  - A JSON tab with highlighting too, to paste dictionaries from pnl.dev or edit them as code.
+  - A Test button saves the dictionary and opens it right away, so you can try it with any word.
+  - Share your dictionary at pnl.dev in one click, the post is filled in for you.
+- More compact history table on laptop screens like the MacBook Air.
+- Phrases and proverbs are no longer mistaken for sentences, so they're looked up instead of translated.
+- Your corrections of the detected language now apply to lookups as well, not only the translator.
+- First-time dictionary sync on a new device always checks for dictionaries saved on other devices first, so they're not overwritten.
+- Built-in dictionaries now get all their options from their templates (e.g. ad blocker and dark mode settings).
+- Refined the Reverso dictionary layout.
+- Ordböcker gets a Nordic deep blue theme.
+- Fixed the app icon not showing on the options page in Firefox.
+
 # v9.0.0 Oct 16, 2026
 - A complete redesign of the options page: a cleaner, faster look that follows Material Design.
   - Rebuilt from the ground up with Preact and Beer CSS; Angular, jQuery and select2 are gone, so the page loads faster.

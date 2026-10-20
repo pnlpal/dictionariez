@@ -6,7 +6,7 @@ import { setting, user, loadSetting, loadHistory, loadDicts, bravo } from "./sta
 import { applyTheme } from "./theme.js";
 import { fetchUserProfile, reloadOnLoginStatusChange } from "./user-profile.js";
 import { openWelcome, openDictsConflict } from "./sections/Welcome.jsx";
-import { openWhatsNew } from "./sections/WhatsNew.jsx";
+import { openWhatsNew, WHATS_NEW_RELEASE } from "./sections/WhatsNew.jsx";
 import askForFeedback from "./ask-for-feedback.js";
 import App from "./App.jsx";
 
@@ -75,9 +75,9 @@ const init = async () => {
         reloadOnLoginStatusChange(u.loggedIn);
     });
 
-    // Opened by the background after an update: introduce the facelift instead of asking for feedback
+    // Opened by the background after an update: introduce what's new instead of asking for feedback
     const justUpdated = new URLSearchParams(location.search).has("updated");
-    if (justUpdated && config.enabledLanguages?.length && !config.faceliftIntroShown) {
+    if (justUpdated && config.enabledLanguages?.length && config.whatsNewShown !== WHATS_NEW_RELEASE) {
         openWhatsNew();
     } else {
         askForFeedback();
