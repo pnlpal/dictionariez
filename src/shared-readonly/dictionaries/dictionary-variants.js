@@ -192,9 +192,10 @@ export const buildVariant = (variantKey, language) => {
     return null;
   }
 
-  const langConfig = variant.languages[language];
-  let windowUrl = variant.urlTemplate;
-  let ttsHelperSelector = variant.ttsHelperSelector;
+  const { urlTemplate, languages, ...dictOptions } = variant;
+  const langConfig = languages[language];
+  let windowUrl = urlTemplate;
+  let ttsHelperSelector = dictOptions.ttsHelperSelector;
 
   // Replace template variables
   Object.entries(langConfig).forEach(([key, value]) => {
@@ -204,13 +205,13 @@ export const buildVariant = (variantKey, language) => {
     }
   });
 
+  // every other variant field (css, fixSpaceInWords, noAdBlocker, noAutoDarkMode, ...) goes into the dict as is
   const dict = {
     dictName: `${variantKey}${langConfig.displayName ? ` (${langConfig.displayName})` : ` (${language})`}`,
     windowUrl,
+    ...dictOptions,
   };
 
-  if (variant.css) dict.css = variant.css;
-  if (variant.fixSpaceInWords) dict.fixSpaceInWords = variant.fixSpaceInWords;
   if (ttsHelperSelector) dict.ttsHelperSelector = ttsHelperSelector;
 
   return dict;
