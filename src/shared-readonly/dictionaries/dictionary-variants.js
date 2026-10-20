@@ -64,7 +64,6 @@ export const DICTIONARY_VARIANTS = {
       Finnish: { code1: "fi", code2: "en", langCode: "fi" },
       Malay: { code1: "ms", code2: "en", langCode: "ms" },
       Swahili: { code1: "sw", code2: "en", langCode: "sw" },
-      Dutch: { code1: "nl", code2: "en", langCode: "nl" },
       Thai: { code1: "th", code2: "en", langCode: "th" },
       Tamil: { code1: "ta", code2: "en", langCode: "ta" },
       Tajik: { code1: "tg", code2: "en", langCode: "tg" },
@@ -131,7 +130,7 @@ export const DICTIONARY_VARIANTS = {
     // Reverso uses Angular with zone.js; the MutationObserver in the adblocker interferes
     // with Angular's event handling even when filtered to only respond to added nodes.
     noAdBlocker: true,
-    css: "header, app-translation-input, #top-content {display: none !important;} body {margin-top: -30px !important;}",
+    css: "header, app-translation-input, #top-content {display: none !important;} body {margin-top: -15px !important;}",
     urlTemplate: "https://context.reverso.net/translation/{pair}/<word>",
     languages: {
       Spanish: { pair: "spanish-english" },
